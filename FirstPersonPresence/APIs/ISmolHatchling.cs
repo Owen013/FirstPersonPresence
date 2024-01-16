@@ -1,6 +1,6 @@
 ﻿using UnityEngine;
 
-namespace HikersMod.APIs
+namespace FirstPersonPresence.APIs
 {
     public interface ISmolHatchling
     {
