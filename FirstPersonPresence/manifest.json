@@ -4,7 +4,7 @@
   "author": "Owen_013",
   "name": "First Person Presence",
   "uniqueName": "Owen_013.FirstPersonPresence",
-  "version": "1.0.0_d",
+  "version": "1.0.0",
   "owmlVersion": "2.9.0",
   "dependencies": []
 }
