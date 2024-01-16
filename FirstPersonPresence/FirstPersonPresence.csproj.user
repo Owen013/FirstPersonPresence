@@ -1,0 +1,5 @@
+﻿<Project>
+  <PropertyGroup>
+    <OutputPath>$(AppData)\OuterWildsModManager\OWML\Mods\Owen_013.FirstPersonPresence</OutputPath>
+  </PropertyGroup>
+</Project>

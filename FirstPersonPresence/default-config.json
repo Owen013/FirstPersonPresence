@@ -1,0 +1,48 @@
+{
+  "$schema": "https://raw.githubusercontent.com/ow-mods/owml/master/schemas/config_schema.json",
+  "enabled": true,
+  "settings": {
+
+    "View Bobbing": {
+      "type": "separator"
+    },
+    "View Bob X Sensitivity": {
+      "type": "number",
+      "value": 1,
+      "tooltip": "How much the camera bobs from side to side. Recommended: 1"
+    },
+    "View Bob Y Sensitivity": {
+      "type": "number",
+      "value": 1,
+      "tooltip": "How much the camera bobs up and down. Recommended: 1"
+    },
+    "Tool Bob Sensitivity": {
+      "type": "number",
+      "value": 1,
+      "tooltip": "How much the player's held item bobs.'. Recommended: 1"
+    },
+
+    "Dynamic Tool Height": {
+      "type": "separator"
+    },
+    "Dynamic Tool Height Y Sensitivity": {
+      "type": "number",
+      "value": 1,
+      "tooltip": "How much the held item moves up/down as the player looks up/down. Recommended: 1"
+    },
+    "Dynamic Tool Height Z Sensitivity": {
+      "type": "number",
+      "value": 1,
+      "tooltip": "How much the held item moves forward/backward as the player looks up/down. Recommended: 1"
+    },
+
+    "Other": {
+      "type": "separator"
+    },
+    "Enable Debug Log": {
+      "type": "toggle",
+      "value": false,
+      "tooltip": "Prints certain events to the Outer Wilds Mod Manager console."
+    }
+  }
+}
