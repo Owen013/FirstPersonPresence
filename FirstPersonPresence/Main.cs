@@ -1,5 +1,6 @@
 ﻿using HarmonyLib;
-using HikersMod.APIs;
+using FirstPersonPresence.APIs;
+using FirstPersonPresence.Components;
 using OWML.Common;
 using OWML.ModHelper;
 
@@ -18,16 +19,9 @@ public class Main : ModBehaviour
     public float toolHeightZSensitivity;
     public bool debugLogEnabled;
 
-    private void Awake()
+    public override object GetApi()
     {
-        Instance = this;
-        Harmony.CreateAndPatchAll(typeof(Main));
-    }
-
-    private void Start()
-    {
-        SmolHatchlingAPI = ModHelper.Interaction.TryGetModApi<ISmolHatchling>("Owen013.TeenyHatchling");
-        DebugLog($"First Person Presence is ready to go!", MessageType.Success, true);
+        return new FirstPersonPresenceAPI();
     }
 
     public override void Configure(IModConfig config)
@@ -46,10 +40,22 @@ public class Main : ModBehaviour
         ModHelper.Console.WriteLine(text, type);
     }
 
-    [HarmonyPostfix]
-    [HarmonyPatch(typeof(PlayerCharacterController), nameof(PlayerCharacterController.Start))]
-    private static void OnCharacterControllerStart(PlayerCharacterController __instance)
+    private void Awake()
     {
-        __instance.gameObject.AddComponent<Components.ViewBobController>();
+        Instance = this;
+        Harmony.CreateAndPatchAll(typeof(Main));
+    }
+
+    private void Start()
+    {
+        SmolHatchlingAPI = ModHelper.Interaction.TryGetModApi<ISmolHatchling>("Owen013.TeenyHatchling");
+        DebugLog($"First Person Presence is ready to go!", MessageType.Success, true);
+    }
+
+    [HarmonyPostfix]
+    [HarmonyPatch(typeof(PlayerCameraController), nameof(PlayerCameraController.Start))]
+    private static void OnCameraStart(PlayerCameraController __instance)
+    {
+        __instance.gameObject.AddComponent<ViewBobController>();
     }
 }
