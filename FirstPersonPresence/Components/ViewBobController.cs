@@ -12,6 +12,7 @@ public class ViewBobController : MonoBehaviour
     private PlayerAnimController _animController;
     private float _viewBobTimePosition;
     private float _viewBobIntensity;
+    private const float _probeLauncherRootTransformMultiplier = 3f;
 
     private void Awake()
     {
@@ -51,25 +52,38 @@ public class ViewBobController : MonoBehaviour
         _cameraController._playerCamera.mainCamera.transform.Find("ProbeLauncher").transform.parent = probeLauncherRoot.transform;
     }
 
-    private void FixedUpdate()
+    private void Update()
     {
-        _viewBobTimePosition = Mathf.Repeat(_viewBobTimePosition + Time.fixedDeltaTime * 1.03f * _animController._animator.speed, 1);
-        _viewBobIntensity = Mathf.Lerp(_viewBobIntensity, Mathf.Sqrt(Mathf.Pow(_animController._animator.GetFloat("RunSpeedX"), 2f) + Mathf.Pow(_animController._animator.GetFloat("RunSpeedY"), 2f)) * 0.02f, 0.25f);
+        UpdateViewBob();
+        ApplyDynamicToolHeight();
+    }
 
+    private void UpdateViewBob()
+    {
+        _viewBobTimePosition = Mathf.Repeat(_viewBobTimePosition + Time.deltaTime * 1.03f * _animController._animator.speed, 1);
+        _viewBobIntensity = Mathf.Lerp(_viewBobIntensity, Mathf.Sqrt(Mathf.Pow(_animController._animator.GetFloat("RunSpeedX"), 2f) + Mathf.Pow(_animController._animator.GetFloat("RunSpeedY"), 2f)) * 0.02f, 0.25f);
+        
         // camera bob
         float bobX = Mathf.Sin(2f * Mathf.PI * _viewBobTimePosition) * _viewBobIntensity * Main.Instance.viewBobXSensitivity;
         float bobY = Mathf.Cos(4f * Mathf.PI * _viewBobTimePosition) * _viewBobIntensity * Main.Instance.viewBobYSensitivity;
+        if (Main.Instance.SmolHatchlingAPI != null)
+        {
+            bobX *= Main.Instance.SmolHatchlingAPI != null ? Main.Instance.SmolHatchlingAPI.GetCurrentScale().x : 1f;
+            bobY *= Main.Instance.SmolHatchlingAPI != null ? Main.Instance.SmolHatchlingAPI.GetCurrentScale().y : 1f;
+        }
         viewBobRoot.transform.localPosition = new Vector3(bobX, bobY, 0f);
 
         // tool bob
         float toolBobX = Mathf.Sin(2f * Mathf.PI * _viewBobTimePosition) * _viewBobIntensity * Main.Instance.toolBobSensitivity * 0.5f;
-        toolBobX *= Main.Instance.SmolHatchlingAPI != null ? Main.Instance.SmolHatchlingAPI.GetCurrentScale().x : 1f;
         float toolBobY = Mathf.Cos(4f * Mathf.PI * _viewBobTimePosition) * _viewBobIntensity * Main.Instance.toolBobSensitivity * 0.25f;
-        toolBobY *= Main.Instance.SmolHatchlingAPI != null ? Main.Instance.SmolHatchlingAPI.GetCurrentScale().y : 1f;
+        toolRoot.transform.localPosition = new Vector3(toolBobX, toolBobY, 0f);
+        probeLauncherRoot.transform.localPosition = toolRoot.transform.localPosition * _probeLauncherRootTransformMultiplier;
+    }
 
-        Vector3 dynamicHoldPosition = new Vector3(0f, -_cameraController.GetDegreesY() * 0.02222f * Main.Instance.toolHeightYSensitivity, -(Mathf.Cos(Mathf.PI * _cameraController.GetDegreesY() * 0.01111f) - 1) * 0.3f * Main.Instance.toolHeightZSensitivity) * 0.03f;
-
-        toolRoot.transform.localPosition = new Vector3(toolBobX, toolBobY, 0f) + dynamicHoldPosition;
-        probeLauncherRoot.transform.localPosition = toolRoot.transform.localPosition * 3f;
+    private void ApplyDynamicToolHeight()
+    {
+        Vector3 dynamicToolHeight = new Vector3(0f, -_cameraController.GetDegreesY() * 0.02222f * Main.Instance.toolHeightYSensitivity, -(Mathf.Cos(Mathf.PI * _cameraController.GetDegreesY() * 0.01111f) - 1) * 0.3f * Main.Instance.toolHeightZSensitivity) * 0.03f;
+        toolRoot.transform.localPosition += dynamicToolHeight;
+        probeLauncherRoot.transform.localPosition += dynamicToolHeight * _probeLauncherRootTransformMultiplier;
     }
 }
