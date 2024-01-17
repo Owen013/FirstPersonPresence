@@ -7,16 +7,16 @@ public class FirstPersonPresenceAPI
 {
     public GameObject GetViewBobRoot()
     {
-        return ViewBobController.Instance.viewBobRoot;
+        return CameraController.Instance.viewBobRoot;
     }
 
     public GameObject GetToolRoot()
     {
-        return ViewBobController.Instance.toolRoot;
+        return CameraController.Instance.toolRoot;
     }
 
     public GameObject GetProbeLauncherRoot()
     {
-        return ViewBobController.Instance.probeLauncherRoot;
+        return CameraController.Instance.probeLauncherRoot;
     }
 }

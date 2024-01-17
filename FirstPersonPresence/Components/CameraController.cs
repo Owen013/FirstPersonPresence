@@ -2,9 +2,9 @@
 
 namespace FirstPersonPresence.Components;
 
-public class ViewBobController : MonoBehaviour
+public class CameraController : MonoBehaviour
 {
-    public static ViewBobController Instance;
+    public static CameraController Instance;
     public GameObject viewBobRoot;
     public GameObject toolRoot;
     public GameObject probeLauncherRoot;
