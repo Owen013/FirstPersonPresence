@@ -5,18 +5,9 @@ namespace FirstPersonPresence;
 
 public class FirstPersonPresenceAPI
 {
-    public GameObject GetViewBobRoot()
-    {
-        return CameraController.Instance.viewBobRoot;
-    }
+    public GameObject GetCameraRoot() => CameraController.Instance.GetProbeLauncherRoot();
 
-    public GameObject GetToolRoot()
-    {
-        return CameraController.Instance.toolRoot;
-    }
+    public GameObject GetToolRoot() => CameraController.Instance.GetProbeLauncherRoot();
 
-    public GameObject GetProbeLauncherRoot()
-    {
-        return CameraController.Instance.probeLauncherRoot;
-    }
+    public GameObject GetProbeLauncherRoot() => CameraController.Instance.GetProbeLauncherRoot();
 }

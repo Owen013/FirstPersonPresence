@@ -3,6 +3,7 @@ using FirstPersonPresence.APIs;
 using FirstPersonPresence.Components;
 using OWML.Common;
 using OWML.ModHelper;
+using System.Reflection;
 
 namespace FirstPersonPresence;
 

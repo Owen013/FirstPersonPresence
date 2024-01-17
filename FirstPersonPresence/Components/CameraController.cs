@@ -1,18 +1,26 @@
-﻿using UnityEngine;
+﻿using HarmonyLib;
+using UnityEngine;
+using static UnityEngine.GraphicsBuffer;
 
 namespace FirstPersonPresence.Components;
 
 public class CameraController : MonoBehaviour
 {
     public static CameraController Instance;
-    public GameObject viewBobRoot;
-    public GameObject toolRoot;
-    public GameObject probeLauncherRoot;
     private PlayerCameraController _cameraController;
     private PlayerAnimController _animController;
+    private GameObject _cameraRoot;
+    private GameObject _toolRoot;
+    private GameObject _probeLauncherRoot;
     private float _viewBobTimePosition;
     private float _viewBobIntensity;
     private const float _probeLauncherRootTransformMultiplier = 3f;
+
+    public GameObject GetCameraRoot() => _cameraRoot;
+
+    public GameObject GetToolRoot() => _toolRoot;
+
+    public GameObject GetProbeLauncherRoot() => _probeLauncherRoot;
 
     private void Awake()
     {
@@ -25,31 +33,31 @@ public class CameraController : MonoBehaviour
         _animController = Locator.GetPlayerBody().GetComponentInChildren<PlayerAnimController>();
 
         // create view bob root and parent camera to it
-        viewBobRoot = new();
-        viewBobRoot.name = "ViewBobRoot";
-        viewBobRoot.transform.parent = _cameraController._playerCamera.mainCamera.transform.parent;
-        viewBobRoot.transform.localPosition = Vector3.zero;
-        viewBobRoot.transform.localRotation = Quaternion.identity;
-        _cameraController._playerCamera.mainCamera.transform.parent = viewBobRoot.transform;
+        _cameraRoot = new();
+        _cameraRoot.name = "CameraRoot";
+        _cameraRoot.transform.parent = _cameraController._playerCamera.mainCamera.transform.parent;
+        _cameraRoot.transform.localPosition = Vector3.zero;
+        _cameraRoot.transform.localRotation = Quaternion.identity;
+        _cameraController._playerCamera.mainCamera.transform.parent = _cameraRoot.transform;
 
         // create tool root and parent tools to it
-        toolRoot = new();
-        toolRoot.name = "ToolRoot";
-        toolRoot.transform.parent = _cameraController._playerCamera.mainCamera.transform;
-        toolRoot.transform.localPosition = Vector3.zero;
-        toolRoot.transform.localRotation = Quaternion.identity;
-        _cameraController._playerCamera.mainCamera.transform.Find("ItemCarryTool").transform.parent = toolRoot.transform;
-        _cameraController._playerCamera.mainCamera.transform.Find("FlashlightRoot").transform.parent = toolRoot.transform;
-        _cameraController._playerCamera.mainCamera.transform.Find("Signalscope").transform.parent = toolRoot.transform;
-        _cameraController._playerCamera.mainCamera.transform.Find("NomaiTranslatorProp").transform.parent = toolRoot.transform;
+        _toolRoot = new();
+        _toolRoot.name = "ToolRoot";
+        _toolRoot.transform.parent = _cameraController._playerCamera.mainCamera.transform;
+        _toolRoot.transform.localPosition = Vector3.zero;
+        _toolRoot.transform.localRotation = Quaternion.identity;
+        _cameraController._playerCamera.mainCamera.transform.Find("ItemCarryTool").transform.parent = _toolRoot.transform;
+        _cameraController._playerCamera.mainCamera.transform.Find("FlashlightRoot").transform.parent = _toolRoot.transform;
+        _cameraController._playerCamera.mainCamera.transform.Find("Signalscope").transform.parent = _toolRoot.transform;
+        _cameraController._playerCamera.mainCamera.transform.Find("NomaiTranslatorProp").transform.parent = _toolRoot.transform;
 
         // create a separate root for the scout launcher since it's seemingly less reactive to transformations
-        probeLauncherRoot = new();
-        probeLauncherRoot.name = "ProbeLauncherRoot";
-        probeLauncherRoot.transform.parent = _cameraController._playerCamera.mainCamera.transform;
-        probeLauncherRoot.transform.localPosition = Vector3.zero;
-        probeLauncherRoot.transform.localRotation = Quaternion.identity;
-        _cameraController._playerCamera.mainCamera.transform.Find("ProbeLauncher").transform.parent = probeLauncherRoot.transform;
+        _probeLauncherRoot = new();
+        _probeLauncherRoot.name = "ProbeLauncherRoot";
+        _probeLauncherRoot.transform.parent = _cameraController._playerCamera.mainCamera.transform;
+        _probeLauncherRoot.transform.localPosition = Vector3.zero;
+        _probeLauncherRoot.transform.localRotation = Quaternion.identity;
+        _cameraController._playerCamera.mainCamera.transform.Find("ProbeLauncher").transform.parent = _probeLauncherRoot.transform;
     }
 
     private void Update()
@@ -71,19 +79,19 @@ public class CameraController : MonoBehaviour
             bobX *= Main.Instance.SmolHatchlingAPI != null ? Main.Instance.SmolHatchlingAPI.GetCurrentScale().x : 1f;
             bobY *= Main.Instance.SmolHatchlingAPI != null ? Main.Instance.SmolHatchlingAPI.GetCurrentScale().y : 1f;
         }
-        viewBobRoot.transform.localPosition = new Vector3(bobX, bobY, 0f);
+        _cameraRoot.transform.localPosition = new Vector3(bobX, bobY, 0f);
 
         // tool bob
         float toolBobX = Mathf.Sin(2f * Mathf.PI * _viewBobTimePosition) * _viewBobIntensity * Main.Instance.toolBobSensitivity * 0.5f;
         float toolBobY = Mathf.Cos(4f * Mathf.PI * _viewBobTimePosition) * _viewBobIntensity * Main.Instance.toolBobSensitivity * 0.25f;
-        toolRoot.transform.localPosition = new Vector3(toolBobX, toolBobY, 0f);
-        probeLauncherRoot.transform.localPosition = toolRoot.transform.localPosition * _probeLauncherRootTransformMultiplier;
+        _toolRoot.transform.localPosition = new Vector3(toolBobX, toolBobY, 0f);
+        _probeLauncherRoot.transform.localPosition = _toolRoot.transform.localPosition * _probeLauncherRootTransformMultiplier;
     }
 
     private void ApplyDynamicToolHeight()
     {
         Vector3 dynamicToolHeight = new Vector3(0f, -_cameraController.GetDegreesY() * 0.02222f * Main.Instance.toolHeightYSensitivity, -(Mathf.Cos(Mathf.PI * _cameraController.GetDegreesY() * 0.01111f) - 1) * 0.3f * Main.Instance.toolHeightZSensitivity) * 0.03f;
-        toolRoot.transform.localPosition += dynamicToolHeight;
-        probeLauncherRoot.transform.localPosition += dynamicToolHeight * _probeLauncherRootTransformMultiplier;
+        _toolRoot.transform.localPosition += dynamicToolHeight;
+        _probeLauncherRoot.transform.localPosition += dynamicToolHeight * _probeLauncherRootTransformMultiplier;
     }
 }
