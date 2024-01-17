@@ -14,7 +14,12 @@ public class CameraController : MonoBehaviour
     private GameObject _probeLauncherRoot;
     private float _viewBobTimePosition;
     private float _viewBobIntensity;
+    private Vector3 _currentSway;
     private const float _probeLauncherRootTransformMultiplier = 3f;
+
+    private float _toolSwaySensitivity = 1f;
+    private float _maxToolSwayAmount = 0.2f;
+    private float _toolSwaySmoothingRate = 0.1f;
 
     public GameObject GetCameraRoot() => _cameraRoot;
 
@@ -64,6 +69,7 @@ public class CameraController : MonoBehaviour
     {
         UpdateViewBob();
         ApplyDynamicToolHeight();
+        ApplyToolSway();
     }
 
     private void UpdateViewBob()
@@ -93,5 +99,13 @@ public class CameraController : MonoBehaviour
         Vector3 dynamicToolHeight = new Vector3(0f, -_cameraController.GetDegreesY() * 0.02222f * Main.Instance.toolHeightYSensitivity, -(Mathf.Cos(Mathf.PI * _cameraController.GetDegreesY() * 0.01111f) - 1) * 0.3f * Main.Instance.toolHeightZSensitivity) * 0.03f;
         _toolRoot.transform.localPosition += dynamicToolHeight;
         _probeLauncherRoot.transform.localPosition += dynamicToolHeight * _probeLauncherRootTransformMultiplier;
+    }
+
+    private void ApplyToolSway()
+    {
+        Vector2 lookInput = OWInput.GetAxisValue(InputLibrary.look);
+        _currentSway = Vector3.Lerp(_currentSway, Vector3.ClampMagnitude(new Vector3(-lookInput.x, -lookInput.y, 0f) * Time.deltaTime, _maxToolSwayAmount), 1 - Mathf.Pow(Mathf.Pow(_toolSwaySmoothingRate, 2f), Time.deltaTime));
+        _toolRoot.transform.localPosition += _currentSway * _toolSwaySensitivity;
+        _probeLauncherRoot.transform.localPosition += _currentSway * _toolSwaySensitivity * _probeLauncherRootTransformMultiplier;
     }
 }
