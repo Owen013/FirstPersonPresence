@@ -88,7 +88,7 @@ public class CameraController : MonoBehaviour
 
     private void ApplyDynamicToolHeight()
     {
-        Vector3 dynamicToolHeight = new Vector3(0f, -_cameraController.GetDegreesY() * 0.02222f * Main.Instance.toolHeightYSensitivity, -(Mathf.Cos(Mathf.PI * _cameraController.GetDegreesY() * 0.01111f) - 1) * 0.3f * Main.Instance.toolHeightZSensitivity) * 0.03f;
+        Vector3 dynamicToolHeight = new Vector3(0f, -_cameraController.GetDegreesY() * 0.02222f * Main.Instance.toolHeightYSensitivity, (Mathf.Cos(Mathf.PI * _cameraController.GetDegreesY() * 0.01111f) - 1) * 0.3f * Main.Instance.toolHeightZSensitivity) * 0.05f;
         _toolRoot.transform.localPosition += dynamicToolHeight;
         _probeLauncherRoot.transform.localPosition += dynamicToolHeight * _probeLauncherRootTransformMultiplier;
     }
