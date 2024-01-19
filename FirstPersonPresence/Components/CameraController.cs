@@ -19,7 +19,7 @@ public class CameraController : MonoBehaviour
 
     private float _toolSwaySensitivity = 1f;
     private float _maxToolSwayAmount = 0.2f;
-    private float _toolSwaySmoothingRate = 0.1f;
+    private float _toolSwayLerpRate = 0.2f;
 
     public GameObject GetCameraRoot() => _cameraRoot;
 
@@ -104,7 +104,7 @@ public class CameraController : MonoBehaviour
     private void ApplyToolSway()
     {
         Vector2 lookInput = OWInput.GetAxisValue(InputLibrary.look);
-        _currentSway = Vector3.Lerp(_currentSway, Vector3.ClampMagnitude(new Vector3(-lookInput.x, -lookInput.y, 0f) * Time.deltaTime, _maxToolSwayAmount), 1 - Mathf.Pow(Mathf.Pow(_toolSwaySmoothingRate, 2f), Time.deltaTime));
+        _currentSway = Vector3.Lerp(_currentSway, Vector3.ClampMagnitude(new Vector3(-lookInput.x, -lookInput.y, 0f) * Time.deltaTime, _maxToolSwayAmount), _toolSwayLerpRate);
         _toolRoot.transform.localPosition += _currentSway * _toolSwaySensitivity;
         _probeLauncherRoot.transform.localPosition += _currentSway * _toolSwaySensitivity * _probeLauncherRootTransformMultiplier;
     }
