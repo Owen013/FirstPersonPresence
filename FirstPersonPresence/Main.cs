@@ -12,12 +12,12 @@ public class Main : ModBehaviour
     public ISmolHatchling SmolHatchlingAPI;
 
     // Config
-    public float viewBobXSensitivity;
-    public float viewBobYSensitivity;
-    public float toolBobSensitivity;
-    public float toolHeightYSensitivity;
-    public float toolHeightZSensitivity;
-    public bool debugLogEnabled;
+    public float ViewBobXSensitivity;
+    public float ViewBobYSensitivity;
+    public float ToolBobSensitivity;
+    public float ToolHeightYSensitivity;
+    public float ToolHeightZSensitivity;
+    public bool DebugLogEnabled;
 
     public override object GetApi()
     {
@@ -26,17 +26,17 @@ public class Main : ModBehaviour
 
     public override void Configure(IModConfig config)
     {
-        viewBobXSensitivity = config.GetSettingsValue<float>("View Bob X Sensitivity");
-        viewBobYSensitivity = config.GetSettingsValue<float>("View Bob Y Sensitivity");
-        toolBobSensitivity = config.GetSettingsValue<float>("Tool Bob Sensitivity");
-        toolHeightYSensitivity = config.GetSettingsValue<float>("Dynamic Tool Height Y Sensitivity");
-        toolHeightZSensitivity = config.GetSettingsValue<float>("Dynamic Tool Height Z Sensitivity");
-        debugLogEnabled = config.GetSettingsValue<bool>("Enable Debug Log");
+        ViewBobXSensitivity = config.GetSettingsValue<float>("View Bob X Sensitivity");
+        ViewBobYSensitivity = config.GetSettingsValue<float>("View Bob Y Sensitivity");
+        ToolBobSensitivity = config.GetSettingsValue<float>("Tool Bob Sensitivity");
+        ToolHeightYSensitivity = config.GetSettingsValue<float>("Dynamic Tool Height Y Sensitivity");
+        ToolHeightZSensitivity = config.GetSettingsValue<float>("Dynamic Tool Height Z Sensitivity");
+        DebugLogEnabled = config.GetSettingsValue<bool>("Enable Debug Log");
     }
 
     public void DebugLog(string text, MessageType type = MessageType.Message, bool forceMessage = false)
     {
-        if (!debugLogEnabled && !forceMessage) return;
+        if (!DebugLogEnabled && !forceMessage) return;
         ModHelper.Console.WriteLine(text, type);
     }
 
