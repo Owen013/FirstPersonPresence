@@ -3,4 +3,4 @@ Adds view bobbing and dynamic tool height!
 
 ![ezgif-2-94c39a0dbb](https://github.com/Owen013/FirstPersonPresence/assets/96493201/7724a86f-9ef3-49d0-ae13-a74b0b4e0dd7)
 
-![ezgif-2-4acb48b463](https://github.com/Owen013/FirstPersonPresence/assets/96493201/b1b919fd-f9f4-4e6a-9452-0694aa4eeb90)
+![ezgif-7-f3e8c3b3b2](https://github.com/Owen013/FirstPersonPresence/assets/96493201/805267e2-d187-4f26-93ab-0a6db5a11b73)
