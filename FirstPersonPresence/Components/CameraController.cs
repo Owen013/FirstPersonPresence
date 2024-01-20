@@ -14,12 +14,7 @@ public class CameraController : MonoBehaviour
     private GameObject _probeLauncherRoot;
     private float _viewBobTimePosition;
     private float _viewBobIntensity;
-    private Vector3 _currentSway;
-    private const float _probeLauncherRootTransformMultiplier = 3f;
-
-    private float _toolSwaySensitivity = 1f;
-    private float _maxToolSwayAmount = 0.2f;
-    private float _toolSwayLerpRate = 0.2f;
+    private const float PROBE_LAUNCHER_TRANSFORM_MULTIPLIER = 3f;
 
     public GameObject GetCameraRoot() => _cameraRoot;
 
@@ -34,7 +29,7 @@ public class CameraController : MonoBehaviour
 
     private void Start()
     {
-        _cameraController = Locator.GetPlayerCameraController();
+        _cameraController = GetComponent<PlayerCameraController>();
         _animController = Locator.GetPlayerBody().GetComponentInChildren<PlayerAnimController>();
 
         // create view bob root and parent camera to it
@@ -78,8 +73,8 @@ public class CameraController : MonoBehaviour
         _viewBobIntensity = Mathf.Lerp(_viewBobIntensity, Mathf.Sqrt(Mathf.Pow(_animController._animator.GetFloat("RunSpeedX"), 2f) + Mathf.Pow(_animController._animator.GetFloat("RunSpeedY"), 2f)) * 0.02f, 0.25f);
         
         // camera bob
-        float bobX = Mathf.Sin(2f * Mathf.PI * _viewBobTimePosition) * _viewBobIntensity * Main.Instance.viewBobXSensitivity;
-        float bobY = Mathf.Cos(4f * Mathf.PI * _viewBobTimePosition) * _viewBobIntensity * Main.Instance.viewBobYSensitivity;
+        float bobX = Mathf.Sin(2f * Mathf.PI * _viewBobTimePosition) * _viewBobIntensity * Main.Instance.ViewBobXSensitivity;
+        float bobY = Mathf.Cos(4f * Mathf.PI * _viewBobTimePosition) * _viewBobIntensity * Main.Instance.ViewBobYSensitivity;
         if (Main.Instance.SmolHatchlingAPI != null)
         {
             bobX *= Main.Instance.SmolHatchlingAPI != null ? Main.Instance.SmolHatchlingAPI.GetCurrentScale().x : 1f;
@@ -88,24 +83,16 @@ public class CameraController : MonoBehaviour
         _cameraRoot.transform.localPosition = new Vector3(bobX, bobY, 0f);
 
         // tool bob
-        float toolBobX = Mathf.Sin(2f * Mathf.PI * _viewBobTimePosition) * _viewBobIntensity * Main.Instance.toolBobSensitivity * 0.5f;
-        float toolBobY = Mathf.Cos(4f * Mathf.PI * _viewBobTimePosition) * _viewBobIntensity * Main.Instance.toolBobSensitivity * 0.25f;
+        float toolBobX = Mathf.Sin(2f * Mathf.PI * _viewBobTimePosition) * _viewBobIntensity * Main.Instance.ToolBobSensitivity * 0.5f;
+        float toolBobY = Mathf.Cos(4f * Mathf.PI * _viewBobTimePosition) * _viewBobIntensity * Main.Instance.ToolBobSensitivity * 0.25f;
         _toolRoot.transform.localPosition = new Vector3(toolBobX, toolBobY, 0f);
-        _probeLauncherRoot.transform.localPosition = _toolRoot.transform.localPosition * _probeLauncherRootTransformMultiplier;
+        _probeLauncherRoot.transform.localPosition = _toolRoot.transform.localPosition * PROBE_LAUNCHER_TRANSFORM_MULTIPLIER;
     }
 
     private void ApplyDynamicToolHeight()
     {
-        Vector3 dynamicToolHeight = new Vector3(0f, -_cameraController.GetDegreesY() * 0.02222f * Main.Instance.toolHeightYSensitivity, -(Mathf.Cos(Mathf.PI * _cameraController.GetDegreesY() * 0.01111f) - 1) * 0.3f * Main.Instance.toolHeightZSensitivity) * 0.03f;
+        Vector3 dynamicToolHeight = new Vector3(0f, -_cameraController.GetDegreesY() * 0.02222f * Main.Instance.ToolHeightYSensitivity, (Mathf.Cos(Mathf.PI * _cameraController.GetDegreesY() * 0.01111f) - 1) * 0.3f * Main.Instance.ToolHeightZSensitivity) * 0.04f;
         _toolRoot.transform.localPosition += dynamicToolHeight;
-        _probeLauncherRoot.transform.localPosition += dynamicToolHeight * _probeLauncherRootTransformMultiplier;
-    }
-
-    private void ApplyToolSway()
-    {
-        Vector2 lookInput = OWInput.GetAxisValue(InputLibrary.look);
-        _currentSway = Vector3.Lerp(_currentSway, Vector3.ClampMagnitude(new Vector3(-lookInput.x, -lookInput.y, 0f) * Time.deltaTime, _maxToolSwayAmount), _toolSwayLerpRate);
-        _toolRoot.transform.localPosition += _currentSway * _toolSwaySensitivity;
-        _probeLauncherRoot.transform.localPosition += _currentSway * _toolSwaySensitivity * _probeLauncherRootTransformMultiplier;
+        _probeLauncherRoot.transform.localPosition += dynamicToolHeight * PROBE_LAUNCHER_TRANSFORM_MULTIPLIER;
     }
 }
