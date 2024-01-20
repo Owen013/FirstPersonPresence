@@ -12,12 +12,12 @@ public class Main : ModBehaviour
     public ISmolHatchling SmolHatchlingAPI;
 
     // Config
-    public float ViewBobXSensitivity;
-    public float ViewBobYSensitivity;
-    public float ToolBobSensitivity;
-    public float ToolHeightYSensitivity;
-    public float ToolHeightZSensitivity;
-    public bool DebugLogEnabled;
+    public float ViewBobXAmount;
+    public float ViewBobYAmount;
+    public float ToolBobAmount;
+    public float ToolHeightYAmount;
+    public float ToolHeightZAmount;
+    public bool IsDebugLogEnabled;
 
     public override object GetApi()
     {
@@ -26,17 +26,17 @@ public class Main : ModBehaviour
 
     public override void Configure(IModConfig config)
     {
-        ViewBobXSensitivity = config.GetSettingsValue<float>("View Bob X Sensitivity");
-        ViewBobYSensitivity = config.GetSettingsValue<float>("View Bob Y Sensitivity");
-        ToolBobSensitivity = config.GetSettingsValue<float>("Tool Bob Sensitivity");
-        ToolHeightYSensitivity = config.GetSettingsValue<float>("Dynamic Tool Height Y Sensitivity");
-        ToolHeightZSensitivity = config.GetSettingsValue<float>("Dynamic Tool Height Z Sensitivity");
-        DebugLogEnabled = config.GetSettingsValue<bool>("Enable Debug Log");
+        ViewBobXAmount = config.GetSettingsValue<float>("View Bob X Amount");
+        ViewBobYAmount = config.GetSettingsValue<float>("View Bob Y Amount");
+        ToolBobAmount = config.GetSettingsValue<float>("Tool Bob Amount");
+        ToolHeightYAmount = config.GetSettingsValue<float>("Dynamic Tool Height Y Amount");
+        ToolHeightZAmount = config.GetSettingsValue<float>("Dynamic Tool Height Z Amount");
+        IsDebugLogEnabled = config.GetSettingsValue<bool>("Enable Debug Log");
     }
 
     public void DebugLog(string text, MessageType type = MessageType.Message, bool forceMessage = false)
     {
-        if (!DebugLogEnabled && !forceMessage) return;
+        if (!IsDebugLogEnabled && !forceMessage) return;
         ModHelper.Console.WriteLine(text, type);
     }
 
