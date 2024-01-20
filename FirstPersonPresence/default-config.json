@@ -6,31 +6,36 @@
     "View Bobbing": {
       "type": "separator"
     },
-    "View Bob X Amount": {
+    "ViewBobX": {
+      "title": "View Bob X Amount",
       "type": "number",
       "value": 1,
-      "tooltip": "How much the camera bobs from side to side. Recommended: 1"
+      "tooltip": "How much the camera bobs from side to side. Set to 0 to disable horizontal bobbing. Recommended: 1"
     },
-    "View Bob Y Amount": {
+    "ViewBobY": {
+      "title": "View Bob Y Amount",
       "type": "number",
       "value": 1,
-      "tooltip": "How much the camera bobs up and down. Recommended: 1"
+      "tooltip": "How much the camera bobs up and down. Set to 0 to disable vertical bobbing. Recommended: 1"
     },
-    "Tool Bob Amount": {
+    "ToolBob": {
+      "title": "Tool Bob Amount",
       "type": "number",
       "value": 1,
-      "tooltip": "How much the player's held item bobs.'. Recommended: 1"
+      "tooltip": "How much the player's held item bobs. Set to 0 to disable tool bobbing. Recommended: 1"
     },
 
     "Dynamic Tool Height": {
       "type": "separator"
     },
-    "Dynamic Tool Height Y Amount": {
+    "ToolHeightY": {
+      "title": "Dynamic Tool Height Y Amount",
       "type": "number",
       "value": 1,
       "tooltip": "How much the held item moves up/down as the player looks up/down. Recommended: 1"
     },
-    "Dynamic Tool Height Z Amount": {
+    "ToolHeightZ": {
+      "title": "Dynamic Tool Height Z Amount",
       "type": "number",
       "value": 1,
       "tooltip": "How much the held item moves forward/backward as the player looks up/down. Recommended: 1"
@@ -39,24 +44,27 @@
     "Tool Sway": {
       "type": "separator"
     },
-    "Tool Sway Sensitivity": {
+    "ToolSway": {
+      "title": "Tool Sway Sensitivity",
       "type": "number",
       "value": 1,
-      "tooltip": ""
+      "tooltip": "How much tool sway there is for a given mouse input. Set to 0 to disable tool swaying. Recommended: 1"
     },
-    "Tool Sway Smoothing Amount": {
+    "ToolSwaySmoothing": {
+      "title": "Tool Sway Smoothing Amount",
       "type": "number",
       "value": 1,
-      "tooltip": ""
+      "tooltip": "How smoothly the held item moves back to its normal position. Recommended: 1"
     },
 
     "Other": {
       "type": "separator"
     },
-    "Enable Debug Log": {
+    "DebugLog": {
+      "title": "Enable Debugging Logs",
       "type": "toggle",
       "value": false,
-      "tooltip": "Prints certain events to the Outer Wilds Mod Manager console."
+      "tooltip": "Prints logs to the Outer Wilds Mod Manager console for debugging."
     }
   }
 }

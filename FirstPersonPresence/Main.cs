@@ -28,14 +28,14 @@ public class Main : ModBehaviour
 
     public override void Configure(IModConfig config)
     {
-        ViewBobXAmount = config.GetSettingsValue<float>("View Bob X Amount");
-        ViewBobYAmount = config.GetSettingsValue<float>("View Bob Y Amount");
-        ToolBobAmount = config.GetSettingsValue<float>("Tool Bob Amount");
-        ToolHeightYAmount = config.GetSettingsValue<float>("Dynamic Tool Height Y Amount");
-        ToolHeightZAmount = config.GetSettingsValue<float>("Dynamic Tool Height Z Amount");
-        ToolSwaySensitivity = config.GetSettingsValue<float>("Tool Sway Sensitivity");
-        ToolSwaySmoothing = config.GetSettingsValue<float>("Tool Sway Smoothing Amount");
-        IsDebugLogEnabled = config.GetSettingsValue<bool>("Enable Debug Log");
+        ViewBobXAmount = config.GetSettingsValue<float>("ViewBobX");
+        ViewBobYAmount = config.GetSettingsValue<float>("ViewBobY");
+        ToolBobAmount = config.GetSettingsValue<float>("ToolBob");
+        ToolHeightYAmount = config.GetSettingsValue<float>("ToolHeightY");
+        ToolHeightZAmount = config.GetSettingsValue<float>("ToolHeightZ");
+        ToolSwaySensitivity = config.GetSettingsValue<float>("ToolSway");
+        ToolSwaySmoothing = config.GetSettingsValue<float>("ToolSwaySmoothing");
+        IsDebugLogEnabled = config.GetSettingsValue<bool>("DebugLog");
     }
 
     public void DebugLog(string text, MessageType type = MessageType.Message, bool forceMessage = false)

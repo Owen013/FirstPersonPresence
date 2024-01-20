@@ -18,7 +18,6 @@ public class CameraController : MonoBehaviour
     private Vector3 _currentToolSway;
     private Vector3 _toolSwayVelocity;
     private const float MAX_SWAY_MAGNITUDE = 0.25f;
-    private float ZERO_G_SWAY_MULTIPLIER = 0.25f;
     private const float PROBE_LAUNCHER_TRANSFORM_MULTIPLIER = 3f;
 
     public GameObject GetCameraRoot() => _cameraRoot;
@@ -107,13 +106,9 @@ public class CameraController : MonoBehaviour
     {
         // get input
         Vector2 lookDelta;
-        if (!OWInput.IsInputMode(InputMode.Character))
+        if (PlayerState.InZeroG() && PlayerState.IsWearingSuit() || !OWInput.IsInputMode(InputMode.Character))
         {
             lookDelta = Vector2.zero;
-        }
-        else if (PlayerState.InZeroG() && PlayerState.IsWearingSuit())
-        {
-            lookDelta = new Vector2(OWInput.GetValue(InputLibrary.yaw), OWInput.GetValue(InputLibrary.pitch)) * ZERO_G_SWAY_MULTIPLIER;
         }
         else
         {
@@ -121,7 +116,9 @@ public class CameraController : MonoBehaviour
         }
         lookDelta *= 0.25f * Time.deltaTime * Main.Instance.ToolSwaySensitivity;
 
-        if ((lookDelta.y > 0 && _cameraController.GetDegreesY() >= PlayerCameraController._maxDegreesYNormal) || (lookDelta.y < 0 && _cameraController.GetDegreesY() <= PlayerCameraController._minDegreesYNormal))
+        float degreesY = _cameraController.GetDegreesY();
+        lookDelta.x *= (Mathf.Cos(Mathf.PI * degreesY * 0.01111f) + 1f) * 0.5f;
+        if ((lookDelta.y > 0 && degreesY >= PlayerCameraController._maxDegreesYNormal) || (lookDelta.y < 0 && degreesY <= PlayerCameraController._minDegreesYNormal))
         {
             lookDelta.y = 0f;
         }
