@@ -1,4 +1,5 @@
 ﻿using HarmonyLib;
+using TMPro;
 using UnityEngine;
 using static UnityEngine.GraphicsBuffer;
 
@@ -14,10 +15,10 @@ public class CameraController : MonoBehaviour
     private GameObject _probeLauncherRoot;
     private float _viewBobTimePosition;
     private float _viewBobIntensity;
-    private Vector3 _currentSway;
-    private float _toolSwaySensitivity = 1.5f;
-    private float _maxToolSwayAmount = 0.2f;
-    private float _toolSwayLerpRate = 0.1f;
+    private Vector3 _currentToolSway;
+    private Vector3 _toolSwayVelocity;
+    private const float MAX_SWAY_MAGNITUDE = 0.25f;
+    private float ZERO_G_SWAY_MULTIPLIER = 0.25f;
     private const float PROBE_LAUNCHER_TRANSFORM_MULTIPLIER = 3f;
 
     public GameObject GetCameraRoot() => _cameraRoot;
@@ -104,9 +105,31 @@ public class CameraController : MonoBehaviour
 
     private void ApplyToolSway()
     {
-        Vector2 lookInput = OWInput.GetAxisValue(InputLibrary.look);
-        _currentSway = Vector3.Lerp(_currentSway, Vector3.ClampMagnitude(new Vector3(-lookInput.x, -lookInput.y, 0f) * _toolSwaySensitivity * Time.deltaTime, _maxToolSwayAmount), _toolSwayLerpRate);
-        _currentSway.z = (Mathf.Cos(Mathf.PI * _currentSway.magnitude * 0.5f) - 1f) / _maxToolSwayAmount;
-        _toolRoot.transform.localPosition += _currentSway;
+        // get input
+        Vector2 lookDelta;
+        if (!OWInput.IsInputMode(InputMode.Character))
+        {
+            lookDelta = Vector2.zero;
+        }
+        else if (PlayerState.InZeroG() && PlayerState.IsWearingSuit())
+        {
+            lookDelta = new Vector2(OWInput.GetValue(InputLibrary.yaw), OWInput.GetValue(InputLibrary.pitch)) * ZERO_G_SWAY_MULTIPLIER;
+        }
+        else
+        {
+            lookDelta = OWInput.GetAxisValue(InputLibrary.look);
+        }
+        lookDelta *= 0.25f * Time.deltaTime * Main.Instance.ToolSwaySensitivity;
+
+        if ((lookDelta.y > 0 && _cameraController.GetDegreesY() >= PlayerCameraController._maxDegreesYNormal) || (lookDelta.y < 0 && _cameraController.GetDegreesY() <= PlayerCameraController._minDegreesYNormal))
+        {
+            lookDelta.y = 0f;
+        }
+
+        _currentToolSway = Vector3.SmoothDamp(_currentToolSway, Vector3.zero, ref _toolSwayVelocity, 0.25f * Main.Instance.ToolSwaySmoothing);
+        _currentToolSway += new Vector3(-lookDelta.x, -lookDelta.y, 0f) * (MAX_SWAY_MAGNITUDE - _currentToolSway.magnitude) / MAX_SWAY_MAGNITUDE;
+        _currentToolSway.z = Mathf.Cos(Mathf.PI * _currentToolSway.magnitude * 0.5f) - 1f;
+
+        _toolRoot.transform.localPosition += _currentToolSway;
     }
 }

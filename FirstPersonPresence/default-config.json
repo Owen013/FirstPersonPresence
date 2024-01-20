@@ -36,6 +36,20 @@
       "tooltip": "How much the held item moves forward/backward as the player looks up/down. Recommended: 1"
     },
 
+    "Tool Sway": {
+      "type": "separator"
+    },
+    "Tool Sway Sensitivity": {
+      "type": "number",
+      "value": 1,
+      "tooltip": ""
+    },
+    "Tool Sway Smoothing Amount": {
+      "type": "number",
+      "value": 1,
+      "tooltip": ""
+    },
+
     "Other": {
       "type": "separator"
     },

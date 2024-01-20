@@ -3,7 +3,6 @@ using FirstPersonPresence.APIs;
 using FirstPersonPresence.Components;
 using OWML.Common;
 using OWML.ModHelper;
-using System.Reflection;
 
 namespace FirstPersonPresence;
 
@@ -18,6 +17,8 @@ public class Main : ModBehaviour
     public float ToolBobAmount;
     public float ToolHeightYAmount;
     public float ToolHeightZAmount;
+    public float ToolSwaySmoothing;
+    public float ToolSwaySensitivity;
     public bool IsDebugLogEnabled;
 
     public override object GetApi()
@@ -32,6 +33,8 @@ public class Main : ModBehaviour
         ToolBobAmount = config.GetSettingsValue<float>("Tool Bob Amount");
         ToolHeightYAmount = config.GetSettingsValue<float>("Dynamic Tool Height Y Amount");
         ToolHeightZAmount = config.GetSettingsValue<float>("Dynamic Tool Height Z Amount");
+        ToolSwaySensitivity = config.GetSettingsValue<float>("Tool Sway Sensitivity");
+        ToolSwaySmoothing = config.GetSettingsValue<float>("Tool Sway Smoothing Amount");
         IsDebugLogEnabled = config.GetSettingsValue<bool>("Enable Debug Log");
     }
 
