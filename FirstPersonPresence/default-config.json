@@ -6,17 +6,17 @@
     "View Bobbing": {
       "type": "separator"
     },
-    "View Bob X Sensitivity": {
+    "View Bob X Amount": {
       "type": "number",
       "value": 1,
       "tooltip": "How much the camera bobs from side to side. Recommended: 1"
     },
-    "View Bob Y Sensitivity": {
+    "View Bob Y Amount": {
       "type": "number",
       "value": 1,
       "tooltip": "How much the camera bobs up and down. Recommended: 1"
     },
-    "Tool Bob Sensitivity": {
+    "Tool Bob Amount": {
       "type": "number",
       "value": 1,
       "tooltip": "How much the player's held item bobs.'. Recommended: 1"
@@ -25,12 +25,12 @@
     "Dynamic Tool Height": {
       "type": "separator"
     },
-    "Dynamic Tool Height Y Sensitivity": {
+    "Dynamic Tool Height Y Amount": {
       "type": "number",
       "value": 1,
       "tooltip": "How much the held item moves up/down as the player looks up/down. Recommended: 1"
     },
-    "Dynamic Tool Height Z Sensitivity": {
+    "Dynamic Tool Height Z Amount": {
       "type": "number",
       "value": 1,
       "tooltip": "How much the held item moves forward/backward as the player looks up/down. Recommended: 1"
