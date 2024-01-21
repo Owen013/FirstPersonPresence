@@ -51,11 +51,10 @@ public class CameraController : MonoBehaviour
         _toolRoot.transform.localPosition = Vector3.zero;
         _toolRoot.transform.localRotation = Quaternion.identity;
         _cameraController._playerCamera.mainCamera.transform.Find("ItemCarryTool").transform.parent = _toolRoot.transform;
-        _cameraController._playerCamera.mainCamera.transform.Find("FlashlightRoot").transform.parent = _toolRoot.transform;
         _cameraController._playerCamera.mainCamera.transform.Find("Signalscope").transform.parent = _toolRoot.transform;
         _cameraController._playerCamera.mainCamera.transform.Find("NomaiTranslatorProp").transform.parent = _toolRoot.transform;
 
-        // create a separate root for the scout launcher since it's seemingly less reactive to transformations
+        // create a separate root for the scout launcher since it's a lot bigger and farther from the camera
         _probeLauncherRoot = new();
         _probeLauncherRoot.name = "ProbeLauncherRoot";
         _probeLauncherRoot.transform.parent = _cameraController._playerCamera.mainCamera.transform;
@@ -76,8 +75,8 @@ public class CameraController : MonoBehaviour
     private void UpdateViewBob()
     {
         _viewBobTimePosition = Mathf.Repeat(_viewBobTimePosition + Time.deltaTime * 1.03f * _animController._animator.speed, 1);
-        _viewBobIntensity = Mathf.Lerp(_viewBobIntensity, Mathf.Sqrt(Mathf.Pow(_animController._animator.GetFloat("RunSpeedX"), 2f) + Mathf.Pow(_animController._animator.GetFloat("RunSpeedY"), 2f)) * 0.02f, 0.25f);
-        
+        _viewBobIntensity = Mathf.MoveTowards(_viewBobIntensity, Mathf.Sqrt(Mathf.Pow(_animController._animator.GetFloat("RunSpeedX"), 2f) + Mathf.Pow(_animController._animator.GetFloat("RunSpeedY"), 2f)) * 0.02f, Time.deltaTime);
+
         // camera bob
         float bobX = Mathf.Sin(2f * Mathf.PI * _viewBobTimePosition) * _viewBobIntensity * Main.Instance.ViewBobXAmount;
         float bobY = Mathf.Cos(4f * Mathf.PI * _viewBobTimePosition) * _viewBobIntensity * Main.Instance.ViewBobYAmount;
