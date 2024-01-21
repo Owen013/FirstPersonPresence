@@ -60,6 +60,6 @@ public class Main : ModBehaviour
     [HarmonyPatch(typeof(PlayerCameraController), nameof(PlayerCameraController.Start))]
     private static void OnCameraStart(PlayerCameraController __instance)
     {
-        __instance.gameObject.AddComponent<CameraController>();
+        __instance.gameObject.AddComponent<RootController>();
     }
 }

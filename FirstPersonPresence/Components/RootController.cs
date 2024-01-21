@@ -1,30 +1,28 @@
-﻿using HarmonyLib;
-using TMPro;
-using UnityEngine;
-using static UnityEngine.GraphicsBuffer;
+﻿using UnityEngine;
 
 namespace FirstPersonPresence.Components;
 
-public class CameraController : MonoBehaviour
+public class RootController : MonoBehaviour
 {
-    public static CameraController Instance;
+    public static RootController Instance;
     private PlayerCameraController _cameraController;
     private PlayerAnimController _animController;
     private GameObject _cameraRoot;
     private GameObject _toolRoot;
-    private GameObject _probeLauncherRoot;
+    private GameObject _bigToolRoot;
     private float _viewBobTimePosition;
     private float _viewBobIntensity;
     private Vector3 _currentToolSway;
     private Vector3 _toolSwayVelocity;
+    private const float BIG_ROOT_TRANSFORM_MULTIPLIER = 3f;
     private const float MAX_SWAY_MAGNITUDE = 0.25f;
-    private const float PROBE_LAUNCHER_TRANSFORM_MULTIPLIER = 3f;
+    private const float MAX_VIEW_BOB_INTENSITY_CHANGE = 0.25f;
 
     public GameObject GetCameraRoot() => _cameraRoot;
 
     public GameObject GetToolRoot() => _toolRoot;
 
-    public GameObject GetProbeLauncherRoot() => _probeLauncherRoot;
+    public GameObject GetBigToolRoot() => _bigToolRoot;
 
     private void Awake()
     {
@@ -52,15 +50,15 @@ public class CameraController : MonoBehaviour
         _toolRoot.transform.localRotation = Quaternion.identity;
         _cameraController._playerCamera.mainCamera.transform.Find("ItemCarryTool").transform.parent = _toolRoot.transform;
         _cameraController._playerCamera.mainCamera.transform.Find("Signalscope").transform.parent = _toolRoot.transform;
-        _cameraController._playerCamera.mainCamera.transform.Find("NomaiTranslatorProp").transform.parent = _toolRoot.transform;
 
         // create a separate root for the scout launcher since it's a lot bigger and farther from the camera
-        _probeLauncherRoot = new();
-        _probeLauncherRoot.name = "ProbeLauncherRoot";
-        _probeLauncherRoot.transform.parent = _cameraController._playerCamera.mainCamera.transform;
-        _probeLauncherRoot.transform.localPosition = Vector3.zero;
-        _probeLauncherRoot.transform.localRotation = Quaternion.identity;
-        _cameraController._playerCamera.mainCamera.transform.Find("ProbeLauncher").transform.parent = _probeLauncherRoot.transform;
+        _bigToolRoot = new();
+        _bigToolRoot.name = "AlternateToolRoot";
+        _bigToolRoot.transform.parent = _cameraController._playerCamera.mainCamera.transform;
+        _bigToolRoot.transform.localPosition = Vector3.zero;
+        _bigToolRoot.transform.localRotation = Quaternion.identity;
+        _cameraController._playerCamera.mainCamera.transform.Find("ProbeLauncher").transform.parent = _bigToolRoot.transform;
+        _cameraController._playerCamera.mainCamera.transform.Find("NomaiTranslatorProp").transform.parent = _bigToolRoot.transform;
     }
 
     private void Update()
@@ -69,13 +67,13 @@ public class CameraController : MonoBehaviour
         ApplyDynamicToolHeight();
         ApplyToolSway();
 
-        _probeLauncherRoot.transform.localPosition = _toolRoot.transform.localPosition * PROBE_LAUNCHER_TRANSFORM_MULTIPLIER;
+        _bigToolRoot.transform.localPosition = _toolRoot.transform.localPosition * BIG_ROOT_TRANSFORM_MULTIPLIER;
     }
 
     private void UpdateViewBob()
     {
         _viewBobTimePosition = Mathf.Repeat(_viewBobTimePosition + Time.deltaTime * 1.03f * _animController._animator.speed, 1);
-        _viewBobIntensity = Mathf.MoveTowards(_viewBobIntensity, Mathf.Sqrt(Mathf.Pow(_animController._animator.GetFloat("RunSpeedX"), 2f) + Mathf.Pow(_animController._animator.GetFloat("RunSpeedY"), 2f)) * 0.02f, Time.deltaTime);
+        _viewBobIntensity = Mathf.MoveTowards(_viewBobIntensity, Mathf.Sqrt(Mathf.Pow(_animController._animator.GetFloat("RunSpeedX"), 2f) + Mathf.Pow(_animController._animator.GetFloat("RunSpeedY"), 2f)) * 0.02f, MAX_VIEW_BOB_INTENSITY_CHANGE * Time.deltaTime);
 
         // camera bob
         float bobX = Mathf.Sin(2f * Mathf.PI * _viewBobTimePosition) * _viewBobIntensity * Main.Instance.ViewBobXAmount;
