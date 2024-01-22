@@ -103,7 +103,7 @@ public class RootController : MonoBehaviour
     {
         // get input
         Vector2 lookDelta;
-        if (PlayerState.InZeroG() && PlayerState.IsWearingSuit() || !OWInput.IsInputMode(InputMode.Character))
+        if (!OWInput.IsInputMode(InputMode.Character) || PlayerState.InZeroG() && PlayerState.IsWearingSuit())
         {
             lookDelta = Vector2.zero;
         }
