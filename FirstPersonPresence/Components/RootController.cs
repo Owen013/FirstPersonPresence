@@ -72,7 +72,7 @@ public class RootController : MonoBehaviour
 
     private void UpdateViewBob()
     {
-        _viewBobTimePosition = Mathf.Repeat(_viewBobTimePosition + Time.deltaTime * 1.03f * _animController._animator.speed, 1);
+        _viewBobTimePosition = Mathf.Repeat(_viewBobTimePosition + Time.deltaTime * 1.033333f * _animController._animator.speed, 1);
         _viewBobIntensity = Mathf.MoveTowards(_viewBobIntensity, Mathf.Sqrt(Mathf.Pow(_animController._animator.GetFloat("RunSpeedX"), 2f) + Mathf.Pow(_animController._animator.GetFloat("RunSpeedY"), 2f)) * 0.02f, MAX_VIEW_BOB_INTENSITY_CHANGE * Time.deltaTime);
 
         // camera bob
@@ -103,7 +103,7 @@ public class RootController : MonoBehaviour
     {
         // get input
         Vector2 lookDelta;
-        if (PlayerState.InZeroG() && PlayerState.IsWearingSuit() || !OWInput.IsInputMode(InputMode.Character))
+        if (!OWInput.IsInputMode(InputMode.Character) || (PlayerState.InZeroG() && PlayerState.IsWearingSuit()))
         {
             lookDelta = Vector2.zero;
         }
@@ -115,7 +115,7 @@ public class RootController : MonoBehaviour
 
         float degreesY = _cameraController.GetDegreesY();
         lookDelta.x *= (Mathf.Cos(Mathf.PI * degreesY * 0.01111f) + 1f) * 0.5f;
-        if ((lookDelta.y > 0 && degreesY >= PlayerCameraController._maxDegreesYNormal) || (lookDelta.y < 0 && degreesY <= PlayerCameraController._minDegreesYNormal))
+        if ((lookDelta.y > 0f && degreesY >= PlayerCameraController._maxDegreesYNormal) || (lookDelta.y < 0f && degreesY <= PlayerCameraController._minDegreesYNormal))
         {
             lookDelta.y = 0f;
         }

@@ -17,8 +17,8 @@ public class Main : ModBehaviour
     public float ToolBobAmount;
     public float ToolHeightYAmount;
     public float ToolHeightZAmount;
-    public float ToolSwaySmoothing;
     public float ToolSwaySensitivity;
+    public float ToolSwaySmoothing;
     public bool IsDebugLogEnabled;
 
     public override object GetApi()
@@ -57,9 +57,16 @@ public class Main : ModBehaviour
     }
 
     [HarmonyPostfix]
-    [HarmonyPatch(typeof(PlayerCameraController), nameof(PlayerCameraController.Start))]
-    private static void OnCameraStart(PlayerCameraController __instance)
+    [HarmonyPatch(typeof(PlayerCameraController), nameof(PlayerCameraController.Awake))]
+    private static void OnCameraAwake(PlayerCameraController __instance)
     {
         __instance.gameObject.AddComponent<RootController>();
     }
+
+    //[HarmonyPostfix]
+    //[HarmonyPatch(typeof(PlayerAnimController), nameof(PlayerAnimController.Awake))]
+    //private static void OnAnimatorAwake(PlayerAnimController __instance)
+    //{
+    //    __instance.gameObject.AddComponent<StepCounter>();
+    //}
 }
