@@ -62,11 +62,4 @@ public class Main : ModBehaviour
     {
         __instance.gameObject.AddComponent<RootController>();
     }
-
-    //[HarmonyPostfix]
-    //[HarmonyPatch(typeof(PlayerAnimController), nameof(PlayerAnimController.Awake))]
-    //private static void OnAnimatorAwake(PlayerAnimController __instance)
-    //{
-    //    __instance.gameObject.AddComponent<StepCounter>();
-    //}
 }

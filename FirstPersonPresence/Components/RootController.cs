@@ -34,6 +34,9 @@ public class RootController : MonoBehaviour
         _cameraController = GetComponent<PlayerCameraController>();
         _animController = Locator.GetPlayerBody().GetComponentInChildren<PlayerAnimController>();
 
+        _animController.OnLeftFootGrounded += LineUpLeftFoot;
+        _animController.OnRightFootGrounded += LineUpRightFoot;
+
         // create view bob root and parent camera to it
         _cameraRoot = new();
         _cameraRoot.name = "CameraRoot";
@@ -72,7 +75,7 @@ public class RootController : MonoBehaviour
 
     private void UpdateViewBob()
     {
-        _viewBobTimePosition = Mathf.Repeat(_viewBobTimePosition + Time.deltaTime * 1.033333f * _animController._animator.speed, 1);
+        _viewBobTimePosition = Mathf.Repeat(_viewBobTimePosition + Time.deltaTime * 1.033333f * _animController._animator.speed, 1f);
         _viewBobIntensity = Mathf.MoveTowards(_viewBobIntensity, Mathf.Sqrt(Mathf.Pow(_animController._animator.GetFloat("RunSpeedX"), 2f) + Mathf.Pow(_animController._animator.GetFloat("RunSpeedY"), 2f)) * 0.02f, MAX_VIEW_BOB_INTENSITY_CHANGE * Time.deltaTime);
 
         // camera bob
@@ -89,6 +92,25 @@ public class RootController : MonoBehaviour
         float toolBobX = Mathf.Sin(2f * Mathf.PI * _viewBobTimePosition) * _viewBobIntensity * Main.Instance.ToolBobAmount * 0.5f;
         float toolBobY = Mathf.Cos(4f * Mathf.PI * _viewBobTimePosition) * _viewBobIntensity * Main.Instance.ToolBobAmount * 0.25f;
         _toolRoot.transform.localPosition = new Vector3(toolBobX, toolBobY, 0f);
+    }
+
+    private void LineUpLeftFoot()
+    {
+        _viewBobTimePosition = Mathf.SmoothStep(_viewBobTimePosition, 0.5f, 0.1f);
+        Main.Instance.DebugLog($"view bob time position on left foot grounded: {_viewBobTimePosition}");
+    }
+
+    private void LineUpRightFoot()
+    {
+        if (_viewBobTimePosition < 0.5f)
+        {
+            _viewBobTimePosition = Mathf.SmoothStep(_viewBobTimePosition, 0f, 0.1f);
+        }
+        else if (_viewBobTimePosition >= 0.5f)
+        {
+            _viewBobTimePosition = Mathf.SmoothStep(_viewBobTimePosition, 1f, 0.1f);
+        }
+        Main.Instance.DebugLog($"view bob time position on right foot grounded: {_viewBobTimePosition}");
     }
 
     private void ApplyDynamicToolHeight()
