@@ -4,12 +4,13 @@ namespace FirstPersonPresence.Components;
 
 public class RootController : MonoBehaviour
 {
-    public static RootController Instance;
+    public static RootController Instance { get; private set; }
+    public GameObject CameraRoot { get; private set; }
+    public GameObject ToolRoot { get; private set; }
+    public GameObject BigToolRoot { get; private set; }
+
     private PlayerCameraController _cameraController;
     private PlayerAnimController _animController;
-    private GameObject _cameraRoot;
-    private GameObject _toolRoot;
-    private GameObject _bigToolRoot;
     private float _viewBobTimePosition;
     private float _viewBobIntensity;
     private Vector3 _currentToolSway;
@@ -29,30 +30,30 @@ public class RootController : MonoBehaviour
         _animController = Locator.GetPlayerBody().GetComponentInChildren<PlayerAnimController>();
 
         // create view bob root and parent camera to it
-        _cameraRoot = new();
-        _cameraRoot.name = "CameraRoot";
-        _cameraRoot.transform.parent = _cameraController._playerCamera.mainCamera.transform.parent;
-        _cameraRoot.transform.localPosition = Vector3.zero;
-        _cameraRoot.transform.localRotation = Quaternion.identity;
-        _cameraController._playerCamera.mainCamera.transform.parent = _cameraRoot.transform;
+        CameraRoot = new();
+        CameraRoot.name = "CameraRoot";
+        CameraRoot.transform.parent = _cameraController._playerCamera.mainCamera.transform.parent;
+        CameraRoot.transform.localPosition = Vector3.zero;
+        CameraRoot.transform.localRotation = Quaternion.identity;
+        _cameraController._playerCamera.mainCamera.transform.parent = CameraRoot.transform;
 
         // create tool root and parent tools to it
-        _toolRoot = new();
-        _toolRoot.name = "ToolRoot";
-        _toolRoot.transform.parent = _cameraController._playerCamera.mainCamera.transform;
-        _toolRoot.transform.localPosition = Vector3.zero;
-        _toolRoot.transform.localRotation = Quaternion.identity;
-        _cameraController._playerCamera.mainCamera.transform.Find("ItemCarryTool").transform.parent = _toolRoot.transform;
-        _cameraController._playerCamera.mainCamera.transform.Find("Signalscope").transform.parent = _toolRoot.transform;
+        ToolRoot = new();
+        ToolRoot.name = "ToolRoot";
+        ToolRoot.transform.parent = _cameraController._playerCamera.mainCamera.transform;
+        ToolRoot.transform.localPosition = Vector3.zero;
+        ToolRoot.transform.localRotation = Quaternion.identity;
+        _cameraController._playerCamera.mainCamera.transform.Find("ItemCarryTool").transform.parent = ToolRoot.transform;
+        _cameraController._playerCamera.mainCamera.transform.Find("Signalscope").transform.parent = ToolRoot.transform;
 
         // create a separate root for the scout launcher since it's a lot bigger and farther from the camera
-        _bigToolRoot = new();
-        _bigToolRoot.name = "BigToolRoot";
-        _bigToolRoot.transform.parent = _cameraController._playerCamera.mainCamera.transform;
-        _bigToolRoot.transform.localPosition = Vector3.zero;
-        _bigToolRoot.transform.localRotation = Quaternion.identity;
-        _cameraController._playerCamera.mainCamera.transform.Find("ProbeLauncher").transform.parent = _bigToolRoot.transform;
-        _cameraController._playerCamera.mainCamera.transform.Find("NomaiTranslatorProp").transform.parent = _bigToolRoot.transform;
+        BigToolRoot = new();
+        BigToolRoot.name = "BigToolRoot";
+        BigToolRoot.transform.parent = _cameraController._playerCamera.mainCamera.transform;
+        BigToolRoot.transform.localPosition = Vector3.zero;
+        BigToolRoot.transform.localRotation = Quaternion.identity;
+        _cameraController._playerCamera.mainCamera.transform.Find("ProbeLauncher").transform.parent = BigToolRoot.transform;
+        _cameraController._playerCamera.mainCamera.transform.Find("NomaiTranslatorProp").transform.parent = BigToolRoot.transform;
     }
 
     private void Update()
@@ -68,7 +69,7 @@ public class RootController : MonoBehaviour
             ApplyToolSway();
         }
 
-        _bigToolRoot.transform.localPosition = _toolRoot.transform.localPosition * BIG_ROOT_TRANSFORM_MULTIPLIER;
+        BigToolRoot.transform.localPosition = ToolRoot.transform.localPosition * BIG_ROOT_TRANSFORM_MULTIPLIER;
     }
 
     private void UpdateViewBob()
@@ -84,19 +85,19 @@ public class RootController : MonoBehaviour
             bobX *= Main.Instance.SmolHatchlingAPI.GetCurrentScale().x;
             bobY *= Main.Instance.SmolHatchlingAPI.GetCurrentScale().y;
         }
-        _cameraRoot.transform.localPosition = new Vector3(bobX, bobY, 0f);
+        CameraRoot.transform.localPosition = new Vector3(bobX, bobY, 0f);
 
         // tool bob
         float toolBobX = Mathf.Sin(2f * Mathf.PI * _viewBobTimePosition) * _viewBobIntensity * Config.ToolBobAmount * 0.5f;
         float toolBobY = Mathf.Cos(4f * Mathf.PI * _viewBobTimePosition) * _viewBobIntensity * Config.ToolBobAmount * 0.25f;
-        _toolRoot.transform.localPosition = new Vector3(toolBobX, toolBobY, 0f);
+        ToolRoot.transform.localPosition = new Vector3(toolBobX, toolBobY, 0f);
     }
 
     private void ApplyDynamicToolHeight()
     {
         float degreesY = _cameraController.GetDegreesY();
         Vector3 dynamicToolHeight = new Vector3(0f, -degreesY * 0.02222f * Config.ToolHeightYAmount, (Mathf.Cos(Mathf.PI * degreesY * 0.01111f) - 1) * 0.3f * Config.ToolHeightZAmount) * 0.04f;
-        _toolRoot.transform.localPosition += dynamicToolHeight;
+        ToolRoot.transform.localPosition += dynamicToolHeight;
     }
 
 
@@ -125,12 +126,6 @@ public class RootController : MonoBehaviour
         _currentToolSway += new Vector3(-lookDelta.x, -lookDelta.y, 0f) * (MAX_SWAY_MAGNITUDE - _currentToolSway.magnitude) / MAX_SWAY_MAGNITUDE;
         _currentToolSway.z = Mathf.Cos(Mathf.PI * _currentToolSway.magnitude * 0.5f) - 1f;
 
-        _toolRoot.transform.localPosition += _currentToolSway;
+        ToolRoot.transform.localPosition += _currentToolSway;
     }
-
-    public GameObject GetCameraRoot() => _cameraRoot;
-
-    public GameObject GetToolRoot() => _toolRoot;
-
-    public GameObject GetBigToolRoot() => _bigToolRoot;
 }

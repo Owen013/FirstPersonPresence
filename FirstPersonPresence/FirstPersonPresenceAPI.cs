@@ -5,9 +5,9 @@ namespace FirstPersonPresence;
 
 public class FirstPersonPresenceAPI
 {
-    public GameObject GetCameraRoot() => RootController.Instance.GetBigToolRoot();
+    public GameObject GetCameraRoot() => RootController.Instance.CameraRoot;
 
-    public GameObject GetToolRoot() => RootController.Instance.GetBigToolRoot();
+    public GameObject GetToolRoot() => RootController.Instance.ToolRoot;
 
-    public GameObject GetProbeLauncherRoot() => RootController.Instance.GetBigToolRoot();
+    public GameObject GetBigToolRoot() => RootController.Instance.BigToolRoot;
 }
