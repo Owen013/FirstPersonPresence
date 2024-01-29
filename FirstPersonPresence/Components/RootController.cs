@@ -78,8 +78,8 @@ public class RootController : MonoBehaviour
         _viewBobIntensity = Mathf.MoveTowards(_viewBobIntensity, Mathf.Sqrt(Mathf.Pow(_animController._animator.GetFloat("RunSpeedX"), 2f) + Mathf.Pow(_animController._animator.GetFloat("RunSpeedY"), 2f)) * 0.02f, MAX_VIEW_BOB_INTENSITY_CHANGE * Time.deltaTime);
 
         // camera bob
-        float bobX = Mathf.Sin(2f * Mathf.PI * _viewBobTimePosition) * _viewBobIntensity * Config.ViewBobXAmount;
-        float bobY = Mathf.Cos(4f * Mathf.PI * _viewBobTimePosition) * _viewBobIntensity * Config.ViewBobYAmount;
+        float bobX = Mathf.Sin(_viewBobTimePosition * 6.28318f) * _viewBobIntensity * Config.ViewBobXAmount;
+        float bobY = Mathf.Cos(_viewBobTimePosition * 12.5664f) * _viewBobIntensity * Config.ViewBobYAmount;
         if (Main.Instance.SmolHatchlingAPI != null)
         {
             bobX *= Main.Instance.SmolHatchlingAPI.GetCurrentScale().x;
@@ -88,15 +88,15 @@ public class RootController : MonoBehaviour
         CameraRoot.transform.localPosition = new Vector3(bobX, bobY, 0f);
 
         // tool bob
-        float toolBobX = Mathf.Sin(2f * Mathf.PI * _viewBobTimePosition) * _viewBobIntensity * Config.ToolBobAmount * 0.5f;
-        float toolBobY = Mathf.Cos(4f * Mathf.PI * _viewBobTimePosition) * _viewBobIntensity * Config.ToolBobAmount * 0.25f;
+        float toolBobX = Mathf.Sin(_viewBobTimePosition * 6.28318f) * _viewBobIntensity * Config.ToolBobAmount * 0.5f;
+        float toolBobY = Mathf.Cos(_viewBobTimePosition * 12.5664f) * _viewBobIntensity * Config.ToolBobAmount * 0.25f;
         ToolRoot.transform.localPosition = new Vector3(toolBobX, toolBobY, 0f);
     }
 
     private void ApplyDynamicToolHeight()
     {
         float degreesY = _cameraController.GetDegreesY();
-        Vector3 dynamicToolHeight = new Vector3(0f, -degreesY * 0.02222f * Config.ToolHeightYAmount, (Mathf.Cos(Mathf.PI * degreesY * 0.01111f) - 1) * 0.3f * Config.ToolHeightZAmount) * 0.04f;
+        Vector3 dynamicToolHeight = new Vector3(0f, -degreesY * 0.02222f * Config.ToolHeightYAmount, (Mathf.Cos(degreesY * 0.03490f) - 1) * 0.3f * Config.ToolHeightZAmount) * 0.04f;
         ToolRoot.transform.localPosition += dynamicToolHeight;
     }
 
@@ -116,7 +116,7 @@ public class RootController : MonoBehaviour
         lookDelta *= 0.25f * Time.deltaTime * Config.ToolSwaySensitivity;
 
         float degreesY = _cameraController.GetDegreesY();
-        lookDelta.x *= (Mathf.Cos(Mathf.PI * degreesY * 0.01111f) + 1f) * 0.5f;
+        lookDelta.x *= (Mathf.Cos(degreesY * 0.03490f) + 1f) * 0.5f;
         if ((lookDelta.y > 0f && degreesY >= PlayerCameraController._maxDegreesYNormal) || (lookDelta.y < 0f && degreesY <= PlayerCameraController._minDegreesYNormal))
         {
             lookDelta.y = 0f;
@@ -124,7 +124,7 @@ public class RootController : MonoBehaviour
 
         _currentToolSway = Vector3.SmoothDamp(_currentToolSway, Vector3.zero, ref _toolSwayVelocity, 0.2f * Config.ToolSwaySmoothing);
         _currentToolSway += new Vector3(-lookDelta.x, -lookDelta.y, 0f) * (MAX_SWAY_MAGNITUDE - _currentToolSway.magnitude) / MAX_SWAY_MAGNITUDE;
-        _currentToolSway.z = Mathf.Cos(Mathf.PI * _currentToolSway.magnitude * 0.5f) - 1f;
+        _currentToolSway.z = Mathf.Cos(_currentToolSway.magnitude * 1.57080f) - 1f;
 
         ToolRoot.transform.localPosition += _currentToolSway;
     }
