@@ -1,8 +1,8 @@
 ﻿using HarmonyLib;
 using FirstPersonPresence.APIs;
-using FirstPersonPresence.Components;
 using OWML.Common;
 using OWML.ModHelper;
+using System.Reflection;
 
 namespace FirstPersonPresence;
 
@@ -11,16 +11,6 @@ public class Main : ModBehaviour
     public static Main Instance;
     public ISmolHatchling SmolHatchlingAPI;
 
-    // Config
-    public float ViewBobXAmount;
-    public float ViewBobYAmount;
-    public float ToolBobAmount;
-    public float ToolHeightYAmount;
-    public float ToolHeightZAmount;
-    public float ToolSwaySensitivity;
-    public float ToolSwaySmoothing;
-    public bool IsDebugLogEnabled;
-
     public override object GetApi()
     {
         return new FirstPersonPresenceAPI();
@@ -28,38 +18,30 @@ public class Main : ModBehaviour
 
     public override void Configure(IModConfig config)
     {
-        ViewBobXAmount = config.GetSettingsValue<float>("ViewBobX");
-        ViewBobYAmount = config.GetSettingsValue<float>("ViewBobY");
-        ToolBobAmount = config.GetSettingsValue<float>("ToolBob");
-        ToolHeightYAmount = config.GetSettingsValue<float>("ToolHeightY");
-        ToolHeightZAmount = config.GetSettingsValue<float>("ToolHeightZ");
-        ToolSwaySensitivity = config.GetSettingsValue<float>("ToolSway");
-        ToolSwaySmoothing = config.GetSettingsValue<float>("ToolSwaySmoothing");
-        IsDebugLogEnabled = config.GetSettingsValue<bool>("DebugLog");
-    }
-
-    public void DebugLog(string text, MessageType type = MessageType.Message, bool forceMessage = false)
-    {
-        if (!IsDebugLogEnabled && !forceMessage) return;
-        ModHelper.Console.WriteLine(text, type);
+        Config.ViewBobXAmount = config.GetSettingsValue<float>("ViewBobX");
+        Config.ViewBobYAmount = config.GetSettingsValue<float>("ViewBobY");
+        Config.ToolBobAmount = config.GetSettingsValue<float>("ToolBob");
+        Config.ToolHeightYAmount = config.GetSettingsValue<float>("ToolHeightY");
+        Config.ToolHeightZAmount = config.GetSettingsValue<float>("ToolHeightZ");
+        Config.ToolSwaySensitivity = config.GetSettingsValue<float>("ToolSway");
+        Config.ToolSwaySmoothing = config.GetSettingsValue<float>("ToolSwaySmoothing");
+        Config.IsDebugLogEnabled = config.GetSettingsValue<bool>("DebugLog");
     }
 
     private void Awake()
     {
         Instance = this;
-        Harmony.CreateAndPatchAll(typeof(Main));
+        Harmony.CreateAndPatchAll(Assembly.GetExecutingAssembly());
     }
 
     private void Start()
     {
         SmolHatchlingAPI = ModHelper.Interaction.TryGetModApi<ISmolHatchling>("Owen013.TeenyHatchling");
-        DebugLog($"First Person Presence is ready to go!", MessageType.Success, true);
+        Log($"First Person Presence is ready to go!", MessageType.Success);
     }
 
-    [HarmonyPostfix]
-    [HarmonyPatch(typeof(PlayerCameraController), nameof(PlayerCameraController.Awake))]
-    private static void OnCameraAwake(PlayerCameraController __instance)
+    public void Log(string text, MessageType type = MessageType.Message)
     {
-        __instance.gameObject.AddComponent<RootController>();
+        ModHelper.Console.WriteLine(text, type);
     }
 }
