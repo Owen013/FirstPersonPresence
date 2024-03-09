@@ -10,7 +10,13 @@
       "title": "Enable View Bobbing",
       "type": "toggle",
       "value": true,
-      "tooltip": "Enable the bobbing of the camera and held item while moving."
+      "tooltip": "Enable the bobbing of the camera while moving."
+    },
+    "FlipViewBob": {
+      "title": "Flip View Bob",
+      "type": "toggle",
+      "value": false,
+      "tooltip": "Flips the vertical component of the camera movement; if this is enabled, the camera will move in a 'u' shape instead of a 'n' shape."
     },
     "ViewBobX": {
       "title": "View Bob X Amount",
@@ -44,7 +50,13 @@
       "title": "Enable Tool Bobbing",
       "type": "toggle",
       "value": true,
-      "tooltip": ""
+      "tooltip": "Enable the bobbing of the held item while moving."
+    },
+    "FlipToolBob": {
+      "title": "Flip Tool Bob",
+      "type": "toggle",
+      "value": false,
+      "tooltip": "Flips the vertical component of the held item's movement; if this is enabled, the tool will move in a 'u' shape instead of a 'n' shape."
     },
     "ToolBobX": {
       "title": "Tool Bob X Amount",
@@ -63,6 +75,18 @@
       "type": "number",
       "value": 1,
       "tooltip": "How much your held item bobs forward and backward. Recommended: 1"
+    },
+    "ToolBobRoll": {
+      "title": "Tool Bob Roll Amount",
+      "type": "number",
+      "value": 1,
+      "tooltip": "How much your held item should roll from side to side while moving. Recommended: 1"
+    },
+    "ToolBobPitch": {
+      "title": "Tool Bob Pitch Amount",
+      "type": "number",
+      "value": 1,
+      "tooltip": "How much your held item should rotate up and down while moving. Recommended: 1"
     },
 
     "Dynamic Tool Height": {

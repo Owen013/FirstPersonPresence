@@ -1,9 +1,9 @@
-﻿using FirstPersonPresence.Components;
+﻿using Immersion.Components;
 using UnityEngine;
 
-namespace FirstPersonPresence;
+namespace Immersion;
 
-public class FirstPersonPresenceAPI
+public class ImmersionAPI
 {
     public GameObject GetCameraRoot() => CameraMovementController.Instance.CameraRoot;
 

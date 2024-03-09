@@ -1,6 +1,6 @@
 ﻿using UnityEngine;
 
-namespace FirstPersonPresence.APIs
+namespace Immersion.APIs
 {
     public interface ISmolHatchling
     {

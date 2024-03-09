@@ -1,7 +1,7 @@
-﻿using FirstPersonPresence.Components;
+﻿using Immersion.Components;
 using HarmonyLib;
 
-namespace FirstPersonPresence;
+namespace Immersion;
 
 [HarmonyPatch]
 public static class Patches

@@ -1,6 +1,6 @@
 ﻿using UnityEngine;
 
-namespace FirstPersonPresence.Components;
+namespace Immersion.Components;
 
 public class CameraMovementController : MonoBehaviour
 {
@@ -90,10 +90,12 @@ public class CameraMovementController : MonoBehaviour
         CameraRoot.transform.localRotation = Quaternion.Euler(new Vector3(bobY * 5f * Config.ViewBobPitchAmount, 0f, bobX * 5f * Config.ViewBobRollAmount));
 
         // tool bob
-        float toolBobX = Mathf.Sin(_viewBobTimePosition * 6.28318f) * _viewBobIntensity * Config.ToolBobXAmount * 0.5f;
+        float toolBobX = Mathf.Sin(_viewBobTimePosition * 6.28318f) * _viewBobIntensity * Config.ToolBobXAmount * 0.25f;
         float toolBobY = Mathf.Cos(_viewBobTimePosition * 12.5664f) * _viewBobIntensity * Config.ToolBobYAmount * 0.25f;
         float toolBobZ = -Mathf.Sin(_viewBobTimePosition * 6.28318f) * _viewBobIntensity * Config.ToolBobZAmount * 0.25f;
         ToolRoot.transform.localPosition = new Vector3(toolBobX, toolBobY, toolBobZ);
+        ToolRoot.transform.localRotation = Quaternion.Euler(new Vector3(bobY * 25f * Config.ToolBobPitchAmount, 0f, bobX * 25f * Config.ToolBobRollAmount));
+        BigToolRoot.transform.localRotation = ToolRoot.transform.localRotation;
     }
 
     private void ApplyDynamicToolHeight()

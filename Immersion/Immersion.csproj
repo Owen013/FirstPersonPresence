@@ -29,6 +29,6 @@
     </None>
   </ItemGroup>
   <ItemGroup>
-    <Content Include="FirstPersonPresence.csproj.user" />
+    <Content Include="Immersion.csproj.user" />
   </ItemGroup>
 </Project>

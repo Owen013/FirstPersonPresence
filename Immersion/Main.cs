@@ -1,10 +1,10 @@
 ﻿using HarmonyLib;
-using FirstPersonPresence.APIs;
+using Immersion.APIs;
 using OWML.Common;
 using OWML.ModHelper;
 using System.Reflection;
 
-namespace FirstPersonPresence;
+namespace Immersion;
 
 public class Main : ModBehaviour
 {
@@ -13,7 +13,7 @@ public class Main : ModBehaviour
 
     public override object GetApi()
     {
-        return new FirstPersonPresenceAPI();
+        return new ImmersionAPI();
     }
 
     public override void Configure(IModConfig config)
@@ -31,6 +31,8 @@ public class Main : ModBehaviour
             Config.ViewBobYAmount = config.GetSettingsValue<float>("ViewBobY");
             Config.ViewBobRollAmount = config.GetSettingsValue<float>("ViewBobRoll");
             Config.ViewBobPitchAmount = config.GetSettingsValue<float>("ViewBobPitch");
+
+            if (config.GetSettingsValue<bool>("FlipViewBob")) Config.ViewBobYAmount *= -1f;
         }
 
         if (config.GetSettingsValue<bool>("EnableToolBob") == false)
@@ -38,12 +40,22 @@ public class Main : ModBehaviour
             Config.ToolBobXAmount = 0f;
             Config.ToolBobYAmount = 0f;
             Config.ToolBobZAmount = 0f;
+            Config.ToolBobRollAmount = 0f;
+            Config.ToolBobPitchAmount = 0f;
         }
         else
         {
             Config.ToolBobXAmount = config.GetSettingsValue<float>("ToolBobX");
             Config.ToolBobYAmount = config.GetSettingsValue<float>("ToolBobY");
             Config.ToolBobZAmount = config.GetSettingsValue<float>("ToolBobZ");
+            Config.ToolBobRollAmount = config.GetSettingsValue<float>("ToolBobRoll");
+            Config.ToolBobPitchAmount = config.GetSettingsValue<float>("ToolBobPitch");
+
+            if (config.GetSettingsValue<bool>("FlipToolBob"))
+            {
+                Config.ToolBobYAmount *= -1f;
+                Config.ToolBobPitchAmount *= -1f;
+            }
         }
 
         if (config.GetSettingsValue<bool>("EnableToolHeight") == false)

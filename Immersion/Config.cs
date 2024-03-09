@@ -1,4 +1,4 @@
-﻿namespace FirstPersonPresence;
+﻿namespace Immersion;
 
 public static class Config
 {
@@ -9,6 +9,8 @@ public static class Config
     public static float ToolBobXAmount;
     public static float ToolBobYAmount;
     public static float ToolBobZAmount;
+    public static float ToolBobRollAmount;
+    public static float ToolBobPitchAmount;
     public static float ToolHeightYAmount;
     public static float ToolHeightZAmount;
     public static float ToolSwaySensitivity;
