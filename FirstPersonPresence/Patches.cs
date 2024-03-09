@@ -10,6 +10,6 @@ public static class Patches
     [HarmonyPatch(typeof(PlayerCameraController), nameof(PlayerCameraController.Awake))]
     private static void OnCameraAwake(PlayerCameraController __instance)
     {
-        __instance.gameObject.AddComponent<RootController>();
+        __instance.gameObject.AddComponent<CameraMovementController>();
     }
 }

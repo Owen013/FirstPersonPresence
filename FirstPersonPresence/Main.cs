@@ -18,14 +18,58 @@ public class Main : ModBehaviour
 
     public override void Configure(IModConfig config)
     {
-        Config.ViewBobXAmount = config.GetSettingsValue<float>("ViewBobX");
-        Config.ViewBobYAmount = config.GetSettingsValue<float>("ViewBobY");
-        Config.ToolBobAmount = config.GetSettingsValue<float>("ToolBob");
-        Config.ToolHeightYAmount = config.GetSettingsValue<float>("ToolHeightY");
-        Config.ToolHeightZAmount = config.GetSettingsValue<float>("ToolHeightZ");
-        Config.ToolSwaySensitivity = config.GetSettingsValue<float>("ToolSway");
-        Config.ToolSwaySmoothing = config.GetSettingsValue<float>("ToolSwaySmoothing");
-        Config.IsDebugLogEnabled = config.GetSettingsValue<bool>("DebugLog");
+        if (config.GetSettingsValue<bool>("EnableViewBob") == false)
+        {
+            Config.ViewBobXAmount = 0f;
+            Config.ViewBobYAmount = 0f;
+            Config.ViewBobRollAmount = 0f;
+            Config.ViewBobPitchAmount = 0f;
+        }
+        else
+        {
+            Config.ViewBobXAmount = config.GetSettingsValue<float>("ViewBobX");
+            Config.ViewBobYAmount = config.GetSettingsValue<float>("ViewBobY");
+            Config.ViewBobRollAmount = config.GetSettingsValue<float>("ViewBobRoll");
+            Config.ViewBobPitchAmount = config.GetSettingsValue<float>("ViewBobPitch");
+        }
+
+        if (config.GetSettingsValue<bool>("EnableToolBob") == false)
+        {
+            Config.ToolBobXAmount = 0f;
+            Config.ToolBobYAmount = 0f;
+            Config.ToolBobZAmount = 0f;
+        }
+        else
+        {
+            Config.ToolBobXAmount = config.GetSettingsValue<float>("ToolBobX");
+            Config.ToolBobYAmount = config.GetSettingsValue<float>("ToolBobY");
+            Config.ToolBobZAmount = config.GetSettingsValue<float>("ToolBobZ");
+        }
+
+        if (config.GetSettingsValue<bool>("EnableToolHeight") == false)
+        {
+            Config.ToolHeightYAmount = 0f;
+            Config.ToolHeightZAmount = 0f;
+        }
+        else
+        {
+            Config.ToolHeightYAmount = config.GetSettingsValue<float>("ToolHeightY");
+            Config.ToolHeightZAmount = config.GetSettingsValue<float>("ToolHeightZ");
+        }
+        if (config.GetSettingsValue<bool>("EnableToolSway") == false)
+        {
+            Config.ToolSwaySensitivity = 0f;
+            Config.ToolSwaySmoothing = 0f;
+            Config.MaxSwayX = 0f;
+            Config.MaxSwayY = 0f;
+        }
+        else
+        {
+            Config.ToolSwaySensitivity = config.GetSettingsValue<float>("ToolSwaySensitivity");
+            Config.ToolSwaySmoothing = config.GetSettingsValue<float>("ToolSwaySmoothing");
+            Config.MaxSwayX = config.GetSettingsValue<float>("MaxSwayX");
+            Config.MaxSwayY = config.GetSettingsValue<float>("MaxSwayY");
+        }
     }
 
     private void Awake()

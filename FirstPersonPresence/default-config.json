@@ -6,45 +6,97 @@
     "View Bobbing": {
       "type": "separator"
     },
+    "EnableViewBob": {
+      "title": "Enable View Bobbing",
+      "type": "toggle",
+      "value": true,
+      "tooltip": "Enable the bobbing of the camera and held item while moving."
+    },
     "ViewBobX": {
       "title": "View Bob X Amount",
       "type": "number",
       "value": 1,
-      "tooltip": "How much the camera bobs from side to side. Set to 0 to disable horizontal bobbing. Recommended: 1"
+      "tooltip": "How much the camera bobs from side to side. Recommended: 1"
     },
     "ViewBobY": {
       "title": "View Bob Y Amount",
       "type": "number",
       "value": 1,
-      "tooltip": "How much the camera bobs up and down. Set to 0 to disable vertical bobbing. Recommended: 1"
+      "tooltip": "How much the camera bobs up and down. Recommended: 1"
     },
-    "ToolBob": {
-      "title": "Tool Bob Amount",
+    "ViewBobRoll": {
+      "title": "View Bob Roll Amount",
       "type": "number",
       "value": 1,
-      "tooltip": "How much the player's held item bobs. Set to 0 to disable tool bobbing. Recommended: 1"
+      "tooltip": "How much the camera should roll from side to side while moving. Recommended: 1"
+    },
+    "ViewBobPitch": {
+      "title": "View Bob Pitch Amount",
+      "type": "number",
+      "value": 1,
+      "tooltip": "How much the camera should rotate up and down while moving. Recommended: 1"
+    },
+
+    "Tool Bobbing": {
+      "type": "separator"
+    },
+    "EnableToolBob": {
+      "title": "Enable Tool Bobbing",
+      "type": "toggle",
+      "value": true,
+      "tooltip": ""
+    },
+    "ToolBobX": {
+      "title": "Tool Bob X Amount",
+      "type": "number",
+      "value": 1,
+      "tooltip": "How much your held item bobs from side to side. Recommended: 1"
+    },
+    "ToolBobY": {
+      "title": "Tool Bob Y Amount",
+      "type": "number",
+      "value": 1,
+      "tooltip": "How much your held item bobs up and down. Recommended: 1"
+    },
+    "ToolBobZ": {
+      "title": "Tool Bob Z Amount",
+      "type": "number",
+      "value": 1,
+      "tooltip": "How much your held item bobs forward and backward. Recommended: 1"
     },
 
     "Dynamic Tool Height": {
       "type": "separator"
     },
+    "EnableToolHeight": {
+      "title": "Enable Dynamic Tool Height",
+      "type": "toggle",
+      "value": true,
+      "tooltip": "When this is enabled, you will hold your tool at different positions based on how your camera is oriented."
+    },
     "ToolHeightY": {
       "title": "Dynamic Tool Height Y Amount",
       "type": "number",
       "value": 1,
-      "tooltip": "How much the held item moves up/down as the player looks up/down. Recommended: 1"
+      "tooltip": "How much your held item moves up/down as the player looks up/down. Recommended: 1"
     },
     "ToolHeightZ": {
       "title": "Dynamic Tool Height Z Amount",
       "type": "number",
       "value": 1,
-      "tooltip": "How much the held item moves forward/backward as the player looks up/down. Recommended: 1"
+      "tooltip": "How much your held item moves forward/backward as the player looks up/down. Recommended: 1"
     },
 
     "Tool Sway": {
       "type": "separator"
     },
-    "ToolSway": {
+    "EnableToolSway": {
+      "title": "Enable Tool Sway",
+      "type": "toggle",
+      "value": true,
+      "tooltip": "When enabled, your held item will lag behind the camera a bit as you look around."
+    },
+    "ToolSwaySensitivity": {
       "title": "Tool Sway Sensitivity",
       "type": "number",
       "value": 1,
@@ -56,15 +108,17 @@
       "value": 1,
       "tooltip": "How smoothly the held item moves back to its normal position. Recommended: 1"
     },
-
-    "Other": {
-      "type": "separator"
+    "MaxSwayX": {
+      "title": "Max Side-to-Side Sway",
+      "type": "number",
+      "value": 1,
+      "tooltip": "The maximum distance the tool can sway to the left and right. Recommended: 1"
     },
-    "DebugLog": {
-      "title": "Enable Debugging Logs",
-      "type": "toggle",
-      "value": false,
-      "tooltip": "Prints logs to the Outer Wilds Mod Manager console for debugging."
+    "MaxSwayY": {
+      "title": "Max Up-and-Down Sway",
+      "type": "number",
+      "value": 1,
+      "tooltip": "The maximum distance the tool can sway up and down. Recommended: 1"
     }
   }
 }
