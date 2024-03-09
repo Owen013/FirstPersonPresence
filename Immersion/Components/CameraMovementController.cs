@@ -10,13 +10,14 @@ public class CameraMovementController : MonoBehaviour
     public GameObject BigToolRoot { get; private set; }
 
     private readonly float _bigRootTransformMultiplier = 3f;
+    private readonly float _viewBobSmoothTime = 0.075f;
     private readonly float _maxSwayMagnitude = 0.25f;
-    private readonly float _bobIntensityStepSize = 0.25f;
 
     private PlayerCameraController _cameraController;
     private PlayerAnimController _animController;
     private float _viewBobTimePosition;
     private float _viewBobIntensity;
+    private float _viewBobVelocity;
     private Vector3 _currentToolSway;
     private Vector3 _toolSwayVelocity;
 
@@ -75,9 +76,9 @@ public class CameraMovementController : MonoBehaviour
 
     private void UpdateViewBob()
     {
-        _viewBobTimePosition = Mathf.Repeat(_viewBobTimePosition + Time.deltaTime * 1.033333f * _animController._animator.speed, 1f);
-        _viewBobIntensity = Mathf.MoveTowards(_viewBobIntensity, Mathf.Sqrt(Mathf.Pow(_animController._animator.GetFloat("RunSpeedX"), 2f) + Mathf.Pow(_animController._animator.GetFloat("RunSpeedY"), 2f)) * 0.02f, _bobIntensityStepSize * Time.deltaTime);
-        
+        _viewBobTimePosition = Mathf.Repeat(_viewBobTimePosition + 1.033333f * _animController._animator.speed * Time.deltaTime, 1f);
+        _viewBobIntensity = Mathf.SmoothDamp(_viewBobIntensity, Mathf.Sqrt(Mathf.Pow(_animController._animator.GetFloat("RunSpeedX"), 2f) + Mathf.Pow(_animController._animator.GetFloat("RunSpeedY"), 2f)) * 0.02f, ref _viewBobVelocity, _viewBobSmoothTime);
+
         // camera bob
         float bobX = Mathf.Sin(_viewBobTimePosition * 6.28318f) * _viewBobIntensity;
         float bobY = Mathf.Cos(_viewBobTimePosition * 12.5664f) * _viewBobIntensity;
