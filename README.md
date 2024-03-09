@@ -1,10 +1,11 @@
-# Outer Wilds: First Person Presence Mod
-Adds view bobbing, dynamic tool height, and tool sway!
+# Outer Wilds: Immersion
+### View Bobbing
+![ezgif-2-eb1775bde3](https://github.com/Owen013/FirstPersonPresence/assets/96493201/99bb866b-01b0-427c-87bf-081f53a77cc0)
+
+### Tool Sway:
+![ezgif-2-43ebd3b8d2](https://github.com/Owen013/FirstPersonPresence/assets/96493201/474acf26-61b5-48f5-9d5f-7adaf29567c1)
+
+### Dynamic Tool Hold Height
+![ezgif-2-50e8e1708d](https://github.com/Owen013/FirstPersonPresence/assets/96493201/ec3d85c5-408b-4083-9aa7-fb4a76797dfa)
 
 All features are configurable and can be disabled if you don't like them.
-
-![](https://s6.ezgif.com/tmp/ezgif-6-808daad4b1.gif)
-
-![ezgif-7-f3e8c3b3b2](https://github.com/Owen013/FirstPersonPresence/assets/96493201/805267e2-d187-4f26-93ab-0a6db5a11b73)
-
-![ezgif-1-6c0c5866fd](https://github.com/Owen013/FirstPersonPresence/assets/96493201/cc17df49-cb63-4d76-9187-66226e73eed5)
