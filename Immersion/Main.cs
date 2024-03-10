@@ -60,6 +60,7 @@ public class Main : ModBehaviour
 
         Config.UseJumpAnim = config.GetSettingsValue<bool>("UseJumpAnim");
         Config.UseFallAnim = config.GetSettingsValue<bool>("UseFallAnim");
+        Config.UseScoutAnim = config.GetSettingsValue<bool>("UseScoutAnim");
 
         if (config.GetSettingsValue<bool>("EnableToolHeight") == false)
         {

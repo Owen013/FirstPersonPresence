@@ -96,13 +96,19 @@
       "title": "Use Jumping Animation",
       "type": "toggle",
       "value": true,
-      "tooltip": "Makes the camera shake a bit when you jump, based on the view/tool bob amount you set above. Recommended: Enabled"
+      "tooltip": "Makes the camera shake a bit when you jump, based on the view/tool bob amounts you set above. Recommended: Enabled"
     },
     "UseFallAnim": {
       "title": "Use Falling Animation",
       "type": "toggle",
       "value": true,
-      "tooltip": "Makes the camera sway a bit as you fall, based on the view/tool bob amount you set above. Recommended: Enabled"
+      "tooltip": "Makes the camera sway a bit as you fall, based on the view/tool bob amounts you set above. Recommended: Enabled"
+    },
+    "UseScoutAnim": {
+      "title": "Use Scout Launcher Fire Animation",
+      "type": "toggle",
+      "value": true,
+      "tooltip": "Makes the camera and scout launcher recoil when you launch a scout. Recommended: Enabled"
     },
 
     "Dynamic Tool Height": {
