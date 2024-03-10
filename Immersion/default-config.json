@@ -89,6 +89,22 @@
       "tooltip": "How much your held item should rotate up and down while moving. Recommended: 1"
     },
 
+    "Jumping & Falling Animations": {
+      "type": "separator"
+    },
+    "UseJumpAnim": {
+      "title": "Use Jumping Animation",
+      "type": "toggle",
+      "value": true,
+      "tooltip": "Makes the camera shake a bit when you jump, based on the view/tool bob amount you set above. Recommended: Enabled"
+    },
+    "UseFallAnim": {
+      "title": "Use Falling Animation",
+      "type": "toggle",
+      "value": true,
+      "tooltip": "Makes the camera sway a bit as you fall, based on the view/tool bob amount you set above. Recommended: Enabled"
+    },
+
     "Dynamic Tool Height": {
       "type": "separator"
     },

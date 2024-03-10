@@ -9,17 +9,15 @@ public class CameraMovementController : MonoBehaviour
     public GameObject ToolRoot { get; private set; }
     public GameObject BigToolRoot { get; private set; }
 
-    private readonly float _bigRootTransformMultiplier = 3f;
-    private readonly float _viewBobSmoothTime = 0.075f;
-    private readonly float _maxSwayMagnitude = 0.25f;
-
     private PlayerCameraController _cameraController;
     private PlayerAnimController _animController;
+    private PlayerCharacterController _characterController;
     private float _viewBobTimePosition;
     private float _viewBobIntensity;
     private float _viewBobVelocity;
     private Vector3 _currentToolSway;
     private Vector3 _toolSwayVelocity;
+    private readonly float _maxSwayMagnitude = 0.25f;
 
     private void Awake()
     {
@@ -30,6 +28,7 @@ public class CameraMovementController : MonoBehaviour
     {
         _cameraController = GetComponent<PlayerCameraController>();
         _animController = Locator.GetPlayerBody().GetComponentInChildren<PlayerAnimController>();
+        _characterController = Locator.GetPlayerController();
 
         // create view bob root and parent camera to it
         CameraRoot = new();
@@ -71,13 +70,23 @@ public class CameraMovementController : MonoBehaviour
             ApplyToolSway();
         }
 
-        BigToolRoot.transform.localPosition = ToolRoot.transform.localPosition * _bigRootTransformMultiplier;
+        BigToolRoot.transform.localPosition = ToolRoot.transform.localPosition * 3f;
     }
 
     private void UpdateViewBob()
     {
         _viewBobTimePosition = Mathf.Repeat(_viewBobTimePosition + 1.033333f * _animController._animator.speed * Time.deltaTime, 1f);
-        _viewBobIntensity = Mathf.SmoothDamp(_viewBobIntensity, Mathf.Sqrt(Mathf.Pow(_animController._animator.GetFloat("RunSpeedX"), 2f) + Mathf.Pow(_animController._animator.GetFloat("RunSpeedY"), 2f)) * 0.02f, ref _viewBobVelocity, _viewBobSmoothTime);
+
+        if (!_characterController.IsGrounded() && !_characterController._isMovementLocked)
+        {
+            float jumpFraction = Config.UseJumpAnim ? Mathf.Max((_characterController._lastJumpTime + 0.5f - Time.time) * 2f, 0f) : 0f;
+            float fallFraction = Config.UseFallAnim ? _animController._animator.GetFloat("FreefallSpeed") : 0f;
+            _viewBobIntensity = Mathf.SmoothDamp(_viewBobIntensity, Mathf.Min(fallFraction + jumpFraction, 1f) * 0.075f, ref _viewBobVelocity, 0.075f);
+        }
+        else
+        {
+            _viewBobIntensity = Mathf.SmoothDamp(_viewBobIntensity, Mathf.Min(Mathf.Sqrt(Mathf.Pow(_animController._animator.GetFloat("RunSpeedX"), 2f) + Mathf.Pow(_animController._animator.GetFloat("RunSpeedY"), 2f)), 10f) * 0.02f, ref _viewBobVelocity, 0.075f);
+        }
 
         // camera bob
         float bobX = Mathf.Sin(_viewBobTimePosition * 6.28318f) * _viewBobIntensity;
