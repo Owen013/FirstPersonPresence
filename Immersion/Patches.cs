@@ -11,5 +11,6 @@ public static class Patches
     private static void OnCameraAwake(PlayerCameraController __instance)
     {
         __instance.gameObject.AddComponent<CameraMovementController>();
+        __instance.gameObject.AddComponent<ToolArmHandler>();
     }
 }
