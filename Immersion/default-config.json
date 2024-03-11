@@ -104,6 +104,12 @@
       "value": true,
       "tooltip": "Makes the camera sway a bit as you fall, based on the view/tool bob amounts you set above. Recommended: Enabled"
     },
+    "UseLandingAnim": {
+      "title": "Use Landing Animation",
+      "type": "toggle",
+      "value": true,
+      "tooltip": "Makes the camera shake a bit when you land on the ground, based on the view/tool bob amounts you set above. Recommended: Enabled"
+    },
     "UseScoutAnim": {
       "title": "Use Scout Launcher Fire Animation",
       "type": "toggle",

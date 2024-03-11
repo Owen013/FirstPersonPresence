@@ -13,6 +13,7 @@ public static class Config
     public static float ToolBobPitchAmount;
     public static bool UseJumpAnim;
     public static bool UseFallAnim;
+    public static bool UseLandingAnim;
     public static bool UseScoutAnim;
     public static float ToolHeightYAmount;
     public static float ToolHeightZAmount;

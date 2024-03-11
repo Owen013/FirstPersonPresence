@@ -15,6 +15,7 @@ public class CameraMovementController : MonoBehaviour
     private float _viewBobTime;
     private float _viewBobIntensity;
     private float _viewBobVelocity;
+    private float _lastLandedTime;
     private float _lastScoutLaunchTime;
     private float _scoutRecoil;
     private float _scoutRecoilVelocity;
@@ -31,6 +32,11 @@ public class CameraMovementController : MonoBehaviour
         _cameraController = GetComponent<PlayerCameraController>();
         _animController = Locator.GetPlayerBody().GetComponentInChildren<PlayerAnimController>();
         _characterController = Locator.GetPlayerController();
+
+        _characterController.OnBecomeGrounded += () =>
+        {
+            _lastLandedTime = Time.time;
+        };
 
         _characterController.GetComponentInChildren<PlayerProbeLauncher>().OnLaunchProbe += (probe) =>
         {
@@ -100,7 +106,9 @@ public class CameraMovementController : MonoBehaviour
         }
         else
         {
-            _viewBobIntensity = Mathf.SmoothDamp(_viewBobIntensity, Mathf.Min(Mathf.Sqrt(Mathf.Pow(_animController._animator.GetFloat("RunSpeedX"), 2f) + Mathf.Pow(_animController._animator.GetFloat("RunSpeedY"), 2f)), 10f) * 0.02f, ref _viewBobVelocity, 0.075f);
+            float walkFraction = Mathf.Sqrt(Mathf.Pow(_animController._animator.GetFloat("RunSpeedX"), 2f) + Mathf.Pow(_animController._animator.GetFloat("RunSpeedY"), 2f));
+            float landingFraction = Config.UseLandingAnim ? Mathf.Max((_lastLandedTime + 0.25f - Time.time) * 6f, 0f) : 0f;
+            _viewBobIntensity = Mathf.SmoothDamp(_viewBobIntensity, Mathf.Min(walkFraction + landingFraction, 10f) * 0.02f, ref _viewBobVelocity, 0.075f);
         }
 
         // camera bob

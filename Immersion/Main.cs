@@ -60,6 +60,7 @@ public class Main : ModBehaviour
 
         Config.UseJumpAnim = config.GetSettingsValue<bool>("UseJumpAnim");
         Config.UseFallAnim = config.GetSettingsValue<bool>("UseFallAnim");
+        Config.UseLandingAnim = config.GetSettingsValue<bool>("UseLandingAnim");
         Config.UseScoutAnim = config.GetSettingsValue<bool>("UseScoutAnim");
 
         if (config.GetSettingsValue<bool>("EnableToolHeight") == false)
@@ -97,7 +98,7 @@ public class Main : ModBehaviour
     private void Start()
     {
         SmolHatchlingAPI = ModHelper.Interaction.TryGetModApi<ISmolHatchling>("Owen013.TeenyHatchling");
-        Log($"First Person Presence is ready to go!", MessageType.Success);
+        Log($"Immersion is ready to go!", MessageType.Success);
     }
 
     public void Log(string text, MessageType type = MessageType.Message)
