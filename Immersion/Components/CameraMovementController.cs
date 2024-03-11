@@ -33,19 +33,6 @@ public class CameraMovementController : MonoBehaviour
         _animController = Locator.GetPlayerBody().GetComponentInChildren<PlayerAnimController>();
         _characterController = Locator.GetPlayerController();
 
-        _characterController.OnBecomeGrounded += () =>
-        {
-            _lastLandedTime = Time.time;
-        };
-
-        _characterController.GetComponentInChildren<PlayerProbeLauncher>().OnLaunchProbe += (probe) =>
-        {
-            if (Config.UseScoutAnim)
-            {
-                _lastScoutLaunchTime = Time.time;
-            }
-        };
-
         // create view bob root and parent camera to it
         CameraRoot = new();
         CameraRoot.name = "CameraRoot";
@@ -71,49 +58,46 @@ public class CameraMovementController : MonoBehaviour
         BigToolRoot.transform.localRotation = Quaternion.identity;
         _cameraController._playerCamera.mainCamera.transform.Find("ProbeLauncher").transform.parent = BigToolRoot.transform;
         _cameraController._playerCamera.mainCamera.transform.Find("NomaiTranslatorProp").transform.parent = BigToolRoot.transform;
+
+        // subscribe to events
+        _characterController.OnBecomeGrounded += () =>
+        {
+            _lastLandedTime = Time.time;
+        };
+
+        _characterController.GetComponentInChildren<PlayerProbeLauncher>().OnLaunchProbe += (probe) =>
+        {
+            if (Config.UseScoutAnim)
+            {
+                _lastScoutLaunchTime = Time.time;
+            }
+        };
     }
 
     private void Update()
     {
-        UpdateViewBob();
-
-        if (Config.ToolHeightYAmount != 0f || Config.ToolHeightZAmount != 0f)
-        {
-            ApplyDynamicToolHeight();
-        }
-        if (Config.ToolSwaySensitivity != 0f || _toolSway != Vector3.zero)
-        {
-            ApplyToolSway();
-        }
-
-        BigToolRoot.transform.localPosition = ToolRoot.transform.localPosition * 3f;
-
-        if (Config.UseScoutAnim)
-        {
-            ApplyScoutAnim();
-        }
-    }
-
-    private void UpdateViewBob()
-    {
+        // step viewbob time based on how fast the animator is going and wrap between 0 and 1
         _viewBobTime = Mathf.Repeat(_viewBobTime + 1.033333f * _animController._animator.speed * Time.deltaTime, 1f);
 
         if (!_characterController.IsGrounded() && !_characterController._isMovementLocked)
         {
-            float jumpFraction = Config.UseJumpAnim ? Mathf.Max((_characterController._lastJumpTime + 0.5f - Time.time) * 2f, 0f) : 0f;
+            // if in midair, use falling and/or jumping animation
             float fallFraction = Config.UseFallAnim ? _animController._animator.GetFloat("FreefallSpeed") : 0f;
+            float jumpFraction = Config.UseJumpAnim ? Mathf.Max((_characterController._lastJumpTime + 0.5f - Time.time) * 2f, 0f) : 0f;
             _viewBobIntensity = Mathf.SmoothDamp(_viewBobIntensity, Mathf.Min(fallFraction + jumpFraction, 1f) * 0.075f, ref _viewBobVelocity, 0.075f);
         }
         else
         {
+            // if on ground, use walking and/or landing animation
             float walkFraction = Mathf.Sqrt(Mathf.Pow(_animController._animator.GetFloat("RunSpeedX"), 2f) + Mathf.Pow(_animController._animator.GetFloat("RunSpeedY"), 2f));
             float landingFraction = Config.UseLandingAnim ? Mathf.Max((_lastLandedTime + 0.25f - Time.time) * 6f, 0f) : 0f;
-            _viewBobIntensity = Mathf.SmoothDamp(_viewBobIntensity, Mathf.Min(walkFraction + landingFraction, 10f) * 0.02f, ref _viewBobVelocity, 0.075f);
+            _viewBobIntensity = Mathf.SmoothDamp(_viewBobIntensity, Mathf.Min(walkFraction + landingFraction, 5f) * 0.02f, ref _viewBobVelocity, 0.075f);
         }
 
         // camera bob
         float bobX = Mathf.Sin(_viewBobTime * 6.28318f) * _viewBobIntensity;
         float bobY = Mathf.Cos(_viewBobTime * 12.5664f) * _viewBobIntensity;
+        // scale camera bob if Smol Hatchling is installed
         if (Main.Instance.SmolHatchlingAPI != null)
         {
             bobX *= Main.Instance.SmolHatchlingAPI.GetCurrentScale().x;
@@ -128,21 +112,39 @@ public class CameraMovementController : MonoBehaviour
         float toolBobZ = -Mathf.Sin(_viewBobTime * 6.28318f) * _viewBobIntensity * Config.ToolBobZAmount * 0.25f;
         ToolRoot.transform.localPosition = new Vector3(toolBobX, toolBobY, toolBobZ);
         ToolRoot.transform.localRotation = Quaternion.Euler(new Vector3(bobY * 25f * Config.ToolBobPitchAmount, 0f, bobX * 25f * Config.ToolBobRollAmount));
+
+        if (Config.ToolHeightYAmount != 0f || Config.ToolHeightZAmount != 0f)
+        {
+            UpdateDynamicToolHeight();
+        }
+        if (Config.ToolSwaySensitivity != 0f || _toolSway != Vector3.zero)
+        {
+            UpdateToolSway();
+        }
+
+        // big tool root position offset needs to be 3x bigger because the tools in it are further away and appear to move less
+        BigToolRoot.transform.localPosition = ToolRoot.transform.localPosition * 3f;
         BigToolRoot.transform.localRotation = ToolRoot.transform.localRotation;
+        
+        // do this after setting the big tool position as it only applyies to big tool root
+        if (Config.UseScoutAnim)
+        {
+            UpdateScoutAnim();
+        }
     }
 
-    private void ApplyDynamicToolHeight()
+    private void UpdateDynamicToolHeight()
     {
         float degreesY = _cameraController.GetDegreesY();
         Vector3 dynamicToolHeight = new Vector3(0f, -degreesY * 0.02222f * Config.ToolHeightYAmount, (Mathf.Cos(degreesY * 0.03490f) - 1) * 0.3f * Config.ToolHeightZAmount) * 0.04f;
         ToolRoot.transform.localPosition += dynamicToolHeight;
     }
 
-
-    private void ApplyToolSway()
+    private void UpdateToolSway()
     {
         // get input
         Vector2 lookDelta;
+        // don't increase tool sway if player isn't in regular movement mode
         if (!OWInput.IsInputMode(InputMode.Character) || (PlayerState.InZeroG() && PlayerState.IsWearingSuit()))
         {
             lookDelta = Vector2.zero;
@@ -154,27 +156,32 @@ public class CameraMovementController : MonoBehaviour
         lookDelta *= 0.25f * Time.deltaTime * Config.ToolSwaySensitivity;
 
         float degreesY = _cameraController.GetDegreesY();
+        // decrease horizontal sway the further up or down the player is looking
         lookDelta.x *= (Mathf.Cos(degreesY * 0.03490f) + 1f) * 0.5f;
+        // cancel out vertical sway if the player can't turn anymore in that direction
         if ((lookDelta.y > 0f && degreesY >= PlayerCameraController._maxDegreesYNormal) || (lookDelta.y < 0f && degreesY <= PlayerCameraController._minDegreesYNormal))
         {
             lookDelta.y = 0f;
         }
 
+        // decay already existing tool sway and then add new tool sway
         _toolSway = Vector3.SmoothDamp(_toolSway, Vector3.zero, ref _toolSwayVelocity, 0.2f * Config.ToolSwaySmoothing);
         _toolSway += new Vector3(-lookDelta.x, -lookDelta.y, 0f) * (0.25f - _toolSway.magnitude) / 0.25f;
+        // move tool backward the further it is from the default position to make tool sway move in a circular motion
         _toolSway.z = Mathf.Cos(_toolSway.magnitude * 1.57080f) - 1f;
 
         ToolRoot.transform.localPosition += _toolSway;
     }
 
-    private void ApplyScoutAnim()
+    private void UpdateScoutAnim()
     {
-        float targetRecoil = Mathf.Max(_lastScoutLaunchTime + 0.5f - Time.time, 0f);
+        // plays a recoil animation for 0.5 seconds after scout launch
+        float targetRecoil = Mathf.Max(_lastScoutLaunchTime + 0.5f - Time.time, 0f) * 2f;
         float dampTime = targetRecoil > _scoutRecoil ? 0.05f : 0.1f;
-        _scoutRecoil = Mathf.SmoothDamp(_scoutRecoil, targetRecoil * 2f * 0.25f, ref _scoutRecoilVelocity, dampTime);
-        CameraRoot.transform.localPosition += new Vector3(0f, 0f, 0.6f) * _scoutRecoil;
-        CameraRoot.transform.localRotation *= Quaternion.Euler(new Vector3(-45f, 0f, -22.5f) * _scoutRecoil);
-        BigToolRoot.transform.localPosition += new Vector3(2f, -1f, -2f) * _scoutRecoil;
-        BigToolRoot.transform.localRotation *= Quaternion.Euler(new Vector3(-45f, 0f, -90f) * _scoutRecoil);
+        _scoutRecoil = Mathf.SmoothDamp(_scoutRecoil, targetRecoil, ref _scoutRecoilVelocity, dampTime);
+        CameraRoot.transform.localPosition += new Vector3(0f, 0f, 0.15f) * _scoutRecoil;
+        CameraRoot.transform.localRotation *= Quaternion.Euler(new Vector3(-10f, 0f, -5f) * _scoutRecoil);
+        BigToolRoot.transform.localPosition += new Vector3(0.5f, 0.25f, -0.5f) * _scoutRecoil;
+        BigToolRoot.transform.localRotation *= Quaternion.Euler(new Vector3(-10f, 0f, -20f) * _scoutRecoil);
     }
 }

@@ -89,7 +89,7 @@
       "tooltip": "How much your held item should rotate up and down while moving. Recommended: 1"
     },
 
-    "Jumping & Falling Animations": {
+    "Other Animations": {
       "type": "separator"
     },
     "UseJumpAnim": {
