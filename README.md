@@ -8,4 +8,4 @@
 ### Dynamic Tool Hold Height
 ![ezgif-2-50e8e1708d](https://github.com/Owen013/FirstPersonPresence/assets/96493201/ec3d85c5-408b-4083-9aa7-fb4a76797dfa)
 
-All features are configurable and can be disabled if you don't like them.
+All features are configurable and can be adjusted or disabled to your liking!
