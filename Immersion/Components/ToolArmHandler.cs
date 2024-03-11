@@ -5,24 +5,25 @@ namespace Immersion.Components;
 
 public class ToolArmHandler : MonoBehaviour
 {
-    private void Start()
+    public static GameObject NewArm(Transform parent, Vector3 localPos, Quaternion localRot, Vector3 scale)
     {
-        NewToolArm(GameObject.Find("Player_Body/ShakeRoot/CameraRoot/PlayerCamera/ToolRoot/Signalscope/Props_HEA_Signalscope").transform, new Vector3(0.01f, -0.09f, -0.21f), new Vector3(0.4f, 0.4f, 0.4f)).AddComponent<SignalscopeArm>();
-    }
+        if (parent == null)
+        {
+            Main.Instance.Log($"Can't create new arm; parent is null");
+            return null;
+        }
 
-    private GameObject NewToolArm(Transform parent, Vector3 localPos, Vector3 scale)
-    {
         GameObject arm = new("Arm");
         arm.transform.parent = parent;
         arm.transform.localPosition = localPos;
-        arm.transform.localRotation = Quaternion.identity;
+        arm.transform.localRotation = localRot;
         arm.transform.localScale = scale;
 
         GameObject noSuit = Instantiate(GameObject.Find("Player_Body/RoastingSystem/Stick_Root/Stick_Pivot/Stick_Tip/Props_HEA_RoastingStick/RoastingStick_Arm_NoSuit"));
         noSuit.name = "NoSuit";
         noSuit.transform.parent = arm.transform;
         noSuit.transform.localPosition = Vector3.zero;
-        noSuit.transform.localRotation = Quaternion.identity;
+        noSuit.transform.localRotation = Quaternion.Euler(330f, 0f, 300f);
         noSuit.transform.localScale = Vector3.one;
         foreach (Material material in noSuit.GetComponent<MeshRenderer>().materials)
         {
@@ -33,8 +34,8 @@ public class ToolArmHandler : MonoBehaviour
         GameObject suit = Instantiate(GameObject.Find("Player_Body/RoastingSystem/Stick_Root/Stick_Pivot/Stick_Tip/Props_HEA_RoastingStick/RoastingStick_Arm"));
         suit.name = "Suit";
         suit.transform.parent = arm.transform;
-        suit.transform.localPosition = Vector3.zero;
-        suit.transform.localRotation = Quaternion.identity;
+        suit.transform.localPosition = new Vector3(-0.02f, 0.03f, 0.02f);
+        suit.transform.localRotation = Quaternion.Euler(330f, 0f, 300f);
         suit.transform.localScale = Vector3.one;
         foreach (Material material in suit.GetComponent<MeshRenderer>().materials)
         {
