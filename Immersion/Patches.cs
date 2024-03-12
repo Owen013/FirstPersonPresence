@@ -93,7 +93,16 @@ public static class Patches
     [HarmonyPatch(typeof(DreamLanternItem), nameof(DreamLanternItem.Awake))]
     private static void OnDreamLanternAwake(DreamLanternItem __instance)
     {
-        ToolArmHandler.NewArm(__instance.transform.Find("Props_IP_Artifact_ViewModel/artifact_geo"), new Vector3(0.1389f, 0.3851f, -0.144f), Quaternion.Euler(0f, 0f, 90f), new Vector3(1.2f, 1.2f, 1.2f))?.AddComponent<ItemToolArm>();
+        GameObject arm = ToolArmHandler.NewArm(__instance.transform.Find("Props_IP_Artifact_ViewModel/artifact_geo"), new Vector3(0.1389f, 0.3851f, -0.144f), Quaternion.Euler(0f, 0f, 90f), new Vector3(1.2f, 1.2f, 1.2f));
+        if (arm == null)
+        {
+            arm = ToolArmHandler.NewArm(__instance.transform.Find("ViewModel/Props_IP_DreamLanternItem_Malfunctioning (1)/PrototypeArtifact_2"), new Vector3(0.1389f, 0.836f, -0.144f), Quaternion.Euler(0f, 0f, 90f), new Vector3(1.2f, 1.2f, 1.2f));
+            if (arm == null)
+            {
+                arm = ToolArmHandler.NewArm(__instance.transform.Find("Props_IP_DreamLanternItem_Nonfunctioning/PrototypeArtifact"), new Vector3(0.1593f, 0.7578f, -0.144f), Quaternion.Euler(330f, 0f, 90f), new Vector3(1.2f, 1.2f, 1.2f));
+            }
+        }
+        arm?.AddComponent<ItemToolArm>();
     }
 
     [HarmonyPostfix]
