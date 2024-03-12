@@ -18,7 +18,7 @@ public class Main : ModBehaviour
 
     public override void Configure(IModConfig config)
     {
-        Config.UseVisibleHands = config.GetSettingsValue<bool>("EnableVisibleHands");
+        Config.UseViewmodelHands = config.GetSettingsValue<bool>("EnableViewmodelHands");
 
         if (config.GetSettingsValue<bool>("EnableViewBob") == false)
         {

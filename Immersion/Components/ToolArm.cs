@@ -20,7 +20,7 @@ public class ToolArm : MonoBehaviour
 
     protected virtual void Update()
     {
-        if (!Config.UseVisibleHands)
+        if (!Config.UseViewmodelHands)
         {
             _noSuitArm.SetActive(false);
             _suitArm.SetActive(false);

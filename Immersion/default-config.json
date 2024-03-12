@@ -5,8 +5,8 @@
     "Visible Hands": {
       "type": "separator"
     },
-    "EnableVisibleHands": {
-      "title": "Enable Visible Hands",
+    "EnableViewmodelHands": {
+      "title": "Enable Viewmodel Hands",
       "type": "toggle",
       "value": true,
       "tooltip": "Adds a hand to every item and tool so that they aren't just floating in front of the camera! Recommended: Enabled"

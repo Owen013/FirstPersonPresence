@@ -34,7 +34,7 @@ public static class Patches
     [HarmonyPatch(typeof(NomaiTranslatorProp), nameof(NomaiTranslatorProp.Awake))]
     private static void OnTranslatorAwake(NomaiTranslatorProp __instance)
     {
-        ToolArmHandler.NewArm(__instance.transform.Find("TranslatorGroup/Props_HEA_Translator/Props_HEA_Translator_Geo"), new Vector3(0.6342f, -0.5804f, -0.2f), Quaternion.identity, new Vector3(1.2f, 1.2f, 1.2f))?.AddComponent<ToolArm>();
+        ToolArmHandler.NewArm(__instance.transform.Find("TranslatorGroup/Props_HEA_Translator/Props_HEA_Translator_Geo"), new Vector3(0.6251f, -0.5804f, -0.2715f), Quaternion.identity, new Vector3(1.2f, 1.2f, 1.2f))?.AddComponent<ToolArm>();
     }
 
     [HarmonyPostfix]

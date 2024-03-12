@@ -1,5 +1,4 @@
-﻿using System.CodeDom;
-using UnityEngine;
+﻿using UnityEngine;
 
 namespace Immersion.Components;
 
@@ -9,7 +8,7 @@ public class ToolArmHandler : MonoBehaviour
     {
         if (parent == null)
         {
-            Main.Instance.Log($"Can't create new arm; parent is null");
+            Main.Instance.Log($"Can't create new arm; parent is null", OWML.Common.MessageType.Debug);
             return null;
         }
 
