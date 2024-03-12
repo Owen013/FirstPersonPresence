@@ -24,6 +24,7 @@ public class ToolArm : MonoBehaviour
         {
             _noSuitArm.SetActive(false);
             _suitArm.SetActive(false);
+            return;
         }
 
         _noSuitArm.SetActive(_realNoSuitArm.activeInHierarchy);
