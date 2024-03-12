@@ -153,7 +153,7 @@ public class CameraMovementController : MonoBehaviour
         {
             lookDelta = OWInput.GetAxisValue(InputLibrary.look);
         }
-        lookDelta *= 0.25f * Time.deltaTime * Config.ToolSwaySensitivity;
+        lookDelta *= 0.005f * Config.ToolSwaySensitivity;
 
         float degreesY = _cameraController.GetDegreesY();
         // decrease horizontal sway the further up or down the player is looking
