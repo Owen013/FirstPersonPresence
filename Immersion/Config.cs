@@ -16,10 +16,11 @@ public static class Config
     public static bool UseFallAnim;
     public static bool UseLandingAnim;
     public static bool UseScoutAnim;
-    public static float ToolHeightYAmount;
-    public static float ToolHeightZAmount;
     public static float ToolSwaySensitivity;
     public static float ToolSwaySmoothing;
     public static float MaxSwayX;
     public static float MaxSwayY;
+    public static string ToolHeightBehavior;
+    public static float ToolHeightYAmount;
+    public static float ToolHeightZAmount;
 }

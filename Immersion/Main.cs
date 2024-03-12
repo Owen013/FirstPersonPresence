@@ -65,6 +65,7 @@ public class Main : ModBehaviour
         Config.UseLandingAnim = config.GetSettingsValue<bool>("UseLandingAnim");
         Config.UseScoutAnim = config.GetSettingsValue<bool>("UseScoutAnim");
 
+        Config.ToolHeightBehavior = config.GetSettingsValue<string>("ToolHeightBehavior");
         if (config.GetSettingsValue<bool>("EnableToolHeight") == false)
         {
             Config.ToolHeightYAmount = 0f;

@@ -11,6 +11,11 @@ public class ToolArmHandler : MonoBehaviour
             Main.Instance.Log($"Can't create new arm; parent is null", OWML.Common.MessageType.Debug);
             return null;
         }
+        if (parent.transform.Find("Arm") != null)
+        {
+            Main.Instance.Log($"{parent.name} already has an arm. Replacing it.", OWML.Common.MessageType.Debug);
+            Destroy(parent.transform.Find("Arm").gameObject);
+        }
 
         GameObject arm = new("Arm");
         arm.transform.parent = parent;
@@ -32,19 +37,18 @@ public class ToolArmHandler : MonoBehaviour
         suit.transform.localRotation = Quaternion.Euler(330f, 0f, 300f);
         suit.transform.localScale = Vector3.one;
 
-        if (!useDefaultShader)
+        MeshRenderer noSuitMeshRenderer = noSuit.GetComponent<MeshRenderer>();
+        MeshRenderer suitMeshRenderer = suit.GetComponent<MeshRenderer>();
+        foreach (Material material in noSuitMeshRenderer.materials)
         {
-            foreach (Material material in noSuit.GetComponent<MeshRenderer>().materials)
+            material.renderQueue = parent.GetComponent<MeshRenderer>().material.renderQueue;
+            if (!useDefaultShader)
             {
-                material.renderQueue = parent.GetComponent<MeshRenderer>().material.renderQueue;
-                material.shader = parent.GetComponent<MeshRenderer>().material.shader;
-            }
-            foreach (Material material in suit.GetComponent<MeshRenderer>().materials)
-            {
-                material.renderQueue = parent.GetComponent<MeshRenderer>().material.renderQueue;
                 material.shader = parent.GetComponent<MeshRenderer>().material.shader;
             }
         }
+        suitMeshRenderer.material.renderQueue = noSuitMeshRenderer.material.renderQueue;
+        suitMeshRenderer.material.shader = noSuitMeshRenderer.material.shader;
 
         return arm;
     }

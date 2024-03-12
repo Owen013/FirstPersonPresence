@@ -126,28 +126,6 @@
       "tooltip": "Makes the camera and scout launcher recoil when you launch a scout. Recommended: Enabled"
     },
 
-    "Dynamic Tool Height": {
-      "type": "separator"
-    },
-    "EnableToolHeight": {
-      "title": "Enable Dynamic Tool Height",
-      "type": "toggle",
-      "value": true,
-      "tooltip": "When this is enabled, you will hold your tool at different positions based on how your camera is oriented."
-    },
-    "ToolHeightY": {
-      "title": "Dynamic Tool Height Y Amount",
-      "type": "number",
-      "value": 1,
-      "tooltip": "How much your held item moves up/down as the player looks up/down. Recommended: 1"
-    },
-    "ToolHeightZ": {
-      "title": "Dynamic Tool Height Z Amount",
-      "type": "number",
-      "value": 1,
-      "tooltip": "How much your held item moves forward/backward as the player looks up/down. Recommended: 1"
-    },
-
     "Tool Sway": {
       "type": "separator"
     },
@@ -180,6 +158,35 @@
       "type": "number",
       "value": 1,
       "tooltip": "The maximum distance the tool can sway up and down. Recommended: 1"
+    },
+
+    "Dynamic Tool Grip": {
+      "type": "separator"
+    },
+    "EnableToolHeight": {
+      "title": "Enable Dynamic Tool Grip",
+      "type": "toggle",
+      "value": true,
+      "tooltip": "When this is enabled, you will hold your tool at different positions based on how your camera is oriented."
+    },
+    "ToolHeightBehavior": {
+      "title": "Dynamic Tool Grip Behavior",
+      "type": "selector",
+      "value": "Default",
+      "options": [ "Default", "Legacy" ],
+      "tooltip": "Default: The tool will be held further away when looking down and closer when looking up. Legacy: the tool will be held at the normal distance when looking directly forward and closer when looking up or down. Recommended: Default"
+    },
+    "ToolHeightY": {
+      "title": "Dynamic Tool Grip Y Amount",
+      "type": "number",
+      "value": 1,
+      "tooltip": "How much your held item moves up/down as the player looks up/down. Recommended: 1"
+    },
+    "ToolHeightZ": {
+      "title": "Dynamic Tool Grip Z Amount",
+      "type": "number",
+      "value": 1,
+      "tooltip": "How much your held item moves forward/backward as the player looks up/down. Recommended: 1"
     }
   }
 }

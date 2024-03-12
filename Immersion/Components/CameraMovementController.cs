@@ -136,7 +136,17 @@ public class CameraMovementController : MonoBehaviour
     private void UpdateDynamicToolHeight()
     {
         float degreesY = _cameraController.GetDegreesY();
-        Vector3 dynamicToolHeight = new Vector3(0f, -degreesY * 0.02222f * Config.ToolHeightYAmount, (Mathf.Cos(degreesY * 0.03490f) - 1) * 0.3f * Config.ToolHeightZAmount) * 0.04f;
+        Vector3 dynamicToolHeight;
+
+        if (Config.ToolHeightBehavior == "Legacy")
+        {
+            dynamicToolHeight = new Vector3(0f, -degreesY * 0.02222f * Config.ToolHeightYAmount, (Mathf.Cos(degreesY * 0.03490f) - 1) * 0.3f * Config.ToolHeightZAmount) * 0.04f;
+        }
+        else
+        {
+            dynamicToolHeight = new Vector3(0f, -degreesY * 0.02222f * Config.ToolHeightYAmount, -degreesY * 0.01111f * Config.ToolHeightZAmount) * 0.04f;
+        }
+        
         ToolRoot.transform.localPosition += dynamicToolHeight;
     }
 
@@ -151,9 +161,8 @@ public class CameraMovementController : MonoBehaviour
         }
         else
         {
-            lookDelta = OWInput.GetAxisValue(InputLibrary.look);
+            lookDelta = OWInput.GetAxisValue(InputLibrary.look) * 0.005f * Config.ToolSwaySensitivity; // * 0.25f * Time.deltaTime * Config.ToolSwaySensitivity;
         }
-        lookDelta *= 0.005f * Config.ToolSwaySensitivity;
 
         float degreesY = _cameraController.GetDegreesY();
         // decrease horizontal sway the further up or down the player is looking

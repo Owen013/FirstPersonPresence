@@ -41,7 +41,7 @@ public static class Patches
     [HarmonyPatch(typeof(SharedStone), nameof(SharedStone.Awake))]
     private static void OnSharedStoneAwake(SharedStone __instance)
     {
-        ToolArmHandler.NewArm(__instance.transform.Find("AnimRoot/Props_NOM_SharedStone"), new Vector3(0.1865f, -0.0744f, -0.2171f), Quaternion.Euler(0f, 320f, 310f), new Vector3(0.9f, 0.9f, 0.9f))?.AddComponent<ItemToolArm>();
+        ToolArmHandler.NewArm(__instance.transform.Find("AnimRoot/Props_NOM_SharedStone"), new Vector3(0.1865f, -0.0744f, -0.2171f), Quaternion.Euler(0f, 320f, 310f), new Vector3(0.9f, 0.9f, 0.9f), true)?.AddComponent<ItemToolArm>();
     }
 
     [HarmonyPostfix]
@@ -87,10 +87,10 @@ public static class Patches
     [HarmonyPatch(typeof(SimpleLanternItem), nameof(SimpleLanternItem.Awake))]
     private static void OnSimpleLanternAwake(SimpleLanternItem __instance)
     {
-        GameObject arm = ToolArmHandler.NewArm(__instance.transform.Find("Props_IP_Lantern/Lantern_geo"), new Vector3(-0.2524f, 0.2953f, -0.0524f), Quaternion.Euler(330f, 140f, 90f), new Vector3(1.2f, 1.2f, 1.2f));
+        GameObject arm = ToolArmHandler.NewArm(__instance.transform.Find("Props_IP_Lantern/Lantern_geo"), new Vector3(-0.2524f, 0.2953f, -0.0524f), Quaternion.Euler(330f, 140f, 90f), new Vector3(1.2f, 1.2f, 1.2f), true);
         if (arm == null)
         {
-            arm = ToolArmHandler.NewArm(__instance.transform.Find("Props_IP_Lantern_Crack/Lantern_geo"), new Vector3(0.2494f, 0.6859f, 0.0476f), Quaternion.Euler(330f, 320f, 90f), new Vector3(1.2f, 1.2f, 1.2f));
+            arm = ToolArmHandler.NewArm(__instance.transform.Find("Props_IP_Lantern_Crack/Lantern_geo"), new Vector3(0.2494f, 0.6859f, 0.0476f), Quaternion.Euler(330f, 320f, 90f), new Vector3(1.2f, 1.2f, 1.2f), true);
         }
         arm?.AddComponent<ItemToolArm>();
     }
@@ -103,7 +103,7 @@ public static class Patches
         {
             if (renderer.name.Contains("Frame_"))
             {
-                ToolArmHandler.NewArm(renderer.transform, new Vector3(-0.3298f, 0.121f, 0.133f), Quaternion.Euler(358.9547f, 87.493f, 84.6117f), new Vector3(0.9f, 0.9f, 0.9f))?.AddComponent<ItemToolArm>();
+                ToolArmHandler.NewArm(renderer.transform, new Vector3(-0.3298f, 0.121f, 0.133f), Quaternion.Euler(358.9547f, 87.493f, 84.6117f), new Vector3(0.9f, 0.9f, 0.9f), true)?.AddComponent<ItemToolArm>();
             }
         }
     }
@@ -128,9 +128,6 @@ public static class Patches
     [HarmonyPatch(typeof(VisionTorchItem), nameof(VisionTorchItem.Awake))]
     private static void OnVisionTorchAwake(VisionTorchItem __instance)
     {
-        ToolArmHandler.NewArm(__instance.transform.Find("Prefab_IP_VisionTorchProjector/Props_IP_ScannerStaff/Scannerstaff_geo"), new Vector3(0.0403f, 1.0224f, 0.141f), Quaternion.Euler(345.0329f, 184.0765f, 358.0521f), Vector3.one)?.AddComponent<ItemToolArm>();
+        ToolArmHandler.NewArm(__instance.transform.Find("Prefab_IP_VisionTorchProjector/Props_IP_ScannerStaff/Scannerstaff_geo"), new Vector3(0.0403f, 1.0224f, 0.141f), Quaternion.Euler(345.0329f, 184.0765f, 358.0521f), Vector3.one, true)?.AddComponent<ItemToolArm>();
     }
-
-    // Props_NOM_WarpCore_Advanced/Props_NOM_WarpCore_Advance_Geo
-    // ADD HAND MODELS FOR BLACK/WHITE HOLE CORES AND WARP CORES (AND SECRET BH SCROLL???)
 }
