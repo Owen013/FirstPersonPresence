@@ -45,6 +45,13 @@ public static class Patches
     }
 
     [HarmonyPostfix]
+    [HarmonyPatch(typeof(ScrollItem), nameof(ScrollItem.Awake))]
+    private static void OnScrollAwake(SharedStone __instance)
+    {
+        ToolArmHandler.NewArm(__instance.transform.Find("Props_NOM_Scroll/Props_NOM_Scroll_Geo/"), new Vector3(-0.1748f, -0.0246f, -0.1213f), Quaternion.Euler(358.7909f, 107.971f, 3.502f), new Vector3(0.9f, 0.9f, 0.9f))?.AddComponent<ItemToolArm>();
+    }
+
+    [HarmonyPostfix]
     [HarmonyPatch(typeof(NomaiConversationStone), nameof(NomaiConversationStone.Awake))]
     private static void OnSolanumStoneAwake(NomaiConversationStone __instance)
     {
@@ -52,16 +59,9 @@ public static class Patches
         {
             if (renderer.name.Contains("_Back"))
             {
-                ToolArmHandler.NewArm(renderer.transform, new Vector3(0.1855f, -0.0942f, -0.184f), Quaternion.Euler(0f, 0f, 340.6367f), new Vector3(0.9f, 0.9f, 0.9f))?.AddComponent<ItemToolArm>();
+                ToolArmHandler.NewArm(renderer.transform, new Vector3(0.1855f, -0.124f, -0.184f), Quaternion.Euler(0f, 0f, 340.6367f), new Vector3(0.9f, 0.9f, 0.9f), true)?.AddComponent<ItemToolArm>();
             }
         }
-    }
-
-    [HarmonyPostfix]
-    [HarmonyPatch(typeof(ScrollItem), nameof(ScrollItem.Awake))]
-    private static void OnScrollAwake(SharedStone __instance)
-    {
-        ToolArmHandler.NewArm(__instance.transform.Find("Props_NOM_Scroll/Props_NOM_Scroll_Geo/"), new Vector3(-0.1748f, -0.0246f, -0.1213f), Quaternion.Euler(358.7909f, 107.971f, 3.502f), new Vector3(0.9f, 0.9f, 0.9f))?.AddComponent<ItemToolArm>();
     }
 
     [HarmonyPostfix]
