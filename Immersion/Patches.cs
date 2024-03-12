@@ -48,7 +48,8 @@ public static class Patches
     [HarmonyPatch(typeof(ScrollItem), nameof(ScrollItem.Awake))]
     private static void OnScrollAwake(SharedStone __instance)
     {
-        ToolArmHandler.NewArm(__instance.transform.Find("Props_NOM_Scroll/Props_NOM_Scroll_Geo/"), new Vector3(-0.1748f, -0.0246f, -0.1213f), Quaternion.Euler(358.7909f, 107.971f, 3.502f), new Vector3(0.9f, 0.9f, 0.9f))?.AddComponent<ItemToolArm>();
+        Vector3 position = __instance.name == "Prefab_NOM_Scroll_egg" ? new Vector3(-0.2028f, 0.0195f, - 0.2974f) : new Vector3(-0.1748f, -0.0246f, -0.1213f);
+        ToolArmHandler.NewArm(__instance.transform.Find("Props_NOM_Scroll/Props_NOM_Scroll_Geo/"), position, Quaternion.Euler(358.7909f, 107.971f, 3.502f), new Vector3(0.9f, 0.9f, 0.9f), true)?.AddComponent<ItemToolArm>();
     }
 
     [HarmonyPostfix]
@@ -61,6 +62,24 @@ public static class Patches
             {
                 ToolArmHandler.NewArm(renderer.transform, new Vector3(0.1855f, -0.124f, -0.184f), Quaternion.Euler(0f, 0f, 340.6367f), new Vector3(0.9f, 0.9f, 0.9f), true)?.AddComponent<ItemToolArm>();
             }
+        }
+    }
+
+    [HarmonyPostfix]
+    [HarmonyPatch(typeof(WarpCoreItem), nameof(WarpCoreItem.Awake))]
+    private static void OnWarpCoreAwake(WarpCoreItem __instance)
+    {
+        if (__instance._warpCoreType == WarpCoreType.Vessel)
+        {
+            ToolArmHandler.NewArm(__instance.transform.Find("Props_NOM_WarpCore_Advanced/Props_NOM_WarpCore_Advance_Geo"), new Vector3(0.2098f, -0.3825f, -0.0593f), Quaternion.Euler(8.5636f, 336.946f, 331.5615f), new Vector3(0.9f, 0.9f, 0.9f), true)?.AddComponent<ItemToolArm>();
+        }
+        else if (__instance._warpCoreType == WarpCoreType.VesselBroken)
+        {
+            ToolArmHandler.NewArm(__instance.transform.Find("Props_NOM_WarpCore_Advanced_Broken_V3/Props_NOM_WarpCore_Advance_Broken_Geo"), new Vector3(-0.2098f, -0.3825f, 0.0593f), Quaternion.Euler(8.5636f, 156.946f, 331.5615f), new Vector3(0.9f, 0.9f, 0.9f), true)?.AddComponent<ItemToolArm>();
+        }
+        else
+        {
+            ToolArmHandler.NewArm(__instance.transform.Find("Props_NOM_WarpCore_Simple"), new Vector3(0.057f, -0.4437f, -0.4526f), Quaternion.Euler(323.3099f, 77.0467f, 330.0953f), new Vector3(2f, 2f, 2f), true)?.AddComponent<ItemToolArm>();
         }
     }
 
@@ -111,4 +130,7 @@ public static class Patches
     {
         ToolArmHandler.NewArm(__instance.transform.Find("Prefab_IP_VisionTorchProjector/Props_IP_ScannerStaff/Scannerstaff_geo"), new Vector3(0.0403f, 1.0224f, 0.141f), Quaternion.Euler(345.0329f, 184.0765f, 358.0521f), Vector3.one)?.AddComponent<ItemToolArm>();
     }
+
+    // Props_NOM_WarpCore_Advanced/Props_NOM_WarpCore_Advance_Geo
+    // ADD HAND MODELS FOR BLACK/WHITE HOLE CORES AND WARP CORES (AND SECRET BH SCROLL???)
 }
