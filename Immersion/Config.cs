@@ -2,6 +2,7 @@
 
 public static class Config
 {
+    public static bool UseVisibleHands;
     public static float ViewBobXAmount;
     public static float ViewBobRollAmount;
     public static float ViewBobPitchAmount;
