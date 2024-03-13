@@ -64,7 +64,6 @@ public class CameraMovementController : MonoBehaviour
         {
             _lastLandedTime = Time.time;
         };
-
         _characterController.GetComponentInChildren<PlayerProbeLauncher>().OnLaunchProbe += (probe) =>
         {
             if (Config.UseScoutAnim)
@@ -152,16 +151,15 @@ public class CameraMovementController : MonoBehaviour
 
     private void UpdateToolSway()
     {
-        // get input
+        // get look input if player is in normal movement mode
         Vector2 lookDelta;
-        // don't increase tool sway if player isn't in regular movement mode
         if (!OWInput.IsInputMode(InputMode.Character) || (PlayerState.InZeroG() && PlayerState.IsWearingSuit()))
         {
             lookDelta = Vector2.zero;
         }
         else
         {
-            lookDelta = OWInput.GetAxisValue(InputLibrary.look) * 0.005f * Config.ToolSwaySensitivity; // * 0.25f * Time.deltaTime * Config.ToolSwaySensitivity;
+            lookDelta = OWInput.GetAxisValue(InputLibrary.look) * 0.005f * Config.ToolSwaySensitivity;
         }
 
         float degreesY = _cameraController.GetDegreesY();

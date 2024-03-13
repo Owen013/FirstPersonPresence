@@ -60,6 +60,21 @@ public class Main : ModBehaviour
             }
         }
 
+        if (config.GetSettingsValue<bool>("EnableToolSway") == false)
+        {
+            Config.ToolSwaySensitivity = 0f;
+            Config.ToolSwaySmoothing = 0f;
+            Config.MaxSwayX = 0f;
+            Config.MaxSwayY = 0f;
+        }
+        else
+        {
+            Config.ToolSwaySensitivity = config.GetSettingsValue<float>("ToolSwaySensitivity");
+            Config.ToolSwaySmoothing = config.GetSettingsValue<float>("ToolSwaySmoothing");
+            Config.MaxSwayX = config.GetSettingsValue<float>("MaxSwayX");
+            Config.MaxSwayY = config.GetSettingsValue<float>("MaxSwayY");
+        }
+
         Config.UseJumpAnim = config.GetSettingsValue<bool>("UseJumpAnim");
         Config.UseFallAnim = config.GetSettingsValue<bool>("UseFallAnim");
         Config.UseLandingAnim = config.GetSettingsValue<bool>("UseLandingAnim");
@@ -75,20 +90,6 @@ public class Main : ModBehaviour
         {
             Config.ToolHeightYAmount = config.GetSettingsValue<float>("ToolHeightY");
             Config.ToolHeightZAmount = config.GetSettingsValue<float>("ToolHeightZ");
-        }
-        if (config.GetSettingsValue<bool>("EnableToolSway") == false)
-        {
-            Config.ToolSwaySensitivity = 0f;
-            Config.ToolSwaySmoothing = 0f;
-            Config.MaxSwayX = 0f;
-            Config.MaxSwayY = 0f;
-        }
-        else
-        {
-            Config.ToolSwaySensitivity = config.GetSettingsValue<float>("ToolSwaySensitivity");
-            Config.ToolSwaySmoothing = config.GetSettingsValue<float>("ToolSwaySmoothing");
-            Config.MaxSwayX = config.GetSettingsValue<float>("MaxSwayX");
-            Config.MaxSwayY = config.GetSettingsValue<float>("MaxSwayY");
         }
     }
 

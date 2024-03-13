@@ -48,7 +48,7 @@ public static class Patches
     [HarmonyPatch(typeof(ScrollItem), nameof(ScrollItem.Awake))]
     private static void OnScrollAwake(SharedStone __instance)
     {
-        Vector3 position = __instance.name == "Prefab_NOM_Scroll_egg" ? new Vector3(-0.2028f, 0.0195f, - 0.2974f) : new Vector3(-0.1748f, -0.0246f, -0.1213f);
+        Vector3 position = __instance.name == "Prefab_NOM_Scroll_egg" ? new Vector3(-0.2028f, 0.0195f, - 0.2974f) : new Vector3(-0.1748f, 0.0613f, -0.2957f);
         ToolArmHandler.NewArm(__instance.transform.Find("Props_NOM_Scroll/Props_NOM_Scroll_Geo/"), position, Quaternion.Euler(358.7909f, 107.971f, 3.502f), new Vector3(0.9f, 0.9f, 0.9f), true)?.AddComponent<ItemToolArm>();
     }
 
@@ -60,7 +60,7 @@ public static class Patches
         {
             if (renderer.name.Contains("_Back"))
             {
-                ToolArmHandler.NewArm(renderer.transform, new Vector3(0.1855f, -0.124f, -0.184f), Quaternion.Euler(0f, 0f, 340.6367f), new Vector3(0.9f, 0.9f, 0.9f), true)?.AddComponent<ItemToolArm>();
+                ToolArmHandler.NewArm(renderer.transform, new Vector3(0.2121f, -0.0855f, -0.184f), Quaternion.Euler(0f, 0f, 340.6367f), new Vector3(0.9f, 0.9f, 0.9f), true)?.AddComponent<ItemToolArm>();
             }
         }
     }
@@ -103,7 +103,7 @@ public static class Patches
         {
             if (renderer.name.Contains("Frame_"))
             {
-                ToolArmHandler.NewArm(renderer.transform, new Vector3(-0.3298f, 0.121f, 0.133f), Quaternion.Euler(358.9547f, 87.493f, 84.6117f), new Vector3(0.9f, 0.9f, 0.9f), true)?.AddComponent<ItemToolArm>();
+                ToolArmHandler.NewArm(renderer.transform, new Vector3(-0.4143f, 0.1576f, -0.2241f), Quaternion.Euler(4.0031f, 145.1847f, 70.3509f), new Vector3(0.9f, 0.9f, 0.9f), true)?.AddComponent<ItemToolArm>();
             }
         }
     }

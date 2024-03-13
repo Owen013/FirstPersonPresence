@@ -1,17 +1,13 @@
-﻿using UnityEngine;
+﻿namespace Immersion.Components;
 
-namespace Immersion.Components
+public class ItemToolArm : ToolArm
 {
-    public class ItemToolArm : ToolArm
+    private void LateUpdate()
     {
-        protected override void Update()
+        if (!GetComponentInParent<ItemTool>())
         {
-            base.Update();
-            if (!GetComponentInParent<ItemTool>())
-            {
-                _noSuitArm.SetActive(false);
-                _suitArm.SetActive(false);
-            }
+            _noSuitArm.SetActive(false);
+            _suitArm.SetActive(false);
         }
     }
 }
