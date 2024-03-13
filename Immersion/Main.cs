@@ -18,79 +18,8 @@ public class Main : ModBehaviour
 
     public override void Configure(IModConfig config)
     {
-        Config.UseViewmodelHands = config.GetSettingsValue<bool>("EnableViewmodelHands");
-
-        if (config.GetSettingsValue<bool>("EnableViewBob") == false)
-        {
-            Config.ViewBobXAmount = 0f;
-            Config.ViewBobYAmount = 0f;
-            Config.ViewBobRollAmount = 0f;
-            Config.ViewBobPitchAmount = 0f;
-        }
-        else
-        {
-            Config.ViewBobXAmount = config.GetSettingsValue<float>("ViewBobX");
-            Config.ViewBobYAmount = config.GetSettingsValue<float>("ViewBobY");
-            Config.ViewBobRollAmount = config.GetSettingsValue<float>("ViewBobRoll");
-            Config.ViewBobPitchAmount = config.GetSettingsValue<float>("ViewBobPitch");
-
-            if (config.GetSettingsValue<bool>("FlipViewBob")) Config.ViewBobYAmount *= -1f;
-        }
-
-        if (config.GetSettingsValue<bool>("EnableToolBob") == false)
-        {
-            Config.ToolBobXAmount = 0f;
-            Config.ToolBobYAmount = 0f;
-            Config.ToolBobZAmount = 0f;
-            Config.ToolBobRollAmount = 0f;
-            Config.ToolBobPitchAmount = 0f;
-        }
-        else
-        {
-            Config.ToolBobXAmount = config.GetSettingsValue<float>("ToolBobX");
-            Config.ToolBobYAmount = config.GetSettingsValue<float>("ToolBobY");
-            Config.ToolBobZAmount = config.GetSettingsValue<float>("ToolBobZ");
-            Config.ToolBobRollAmount = config.GetSettingsValue<float>("ToolBobRoll");
-            Config.ToolBobPitchAmount = config.GetSettingsValue<float>("ToolBobPitch");
-
-            if (config.GetSettingsValue<bool>("FlipToolBob"))
-            {
-                Config.ToolBobYAmount *= -1f;
-                Config.ToolBobPitchAmount *= -1f;
-            }
-        }
-
-        if (config.GetSettingsValue<bool>("EnableToolSway") == false)
-        {
-            Config.ToolSwaySensitivity = 0f;
-            Config.ToolSwaySmoothing = 0f;
-            Config.MaxSwayX = 0f;
-            Config.MaxSwayY = 0f;
-        }
-        else
-        {
-            Config.ToolSwaySensitivity = config.GetSettingsValue<float>("ToolSwaySensitivity");
-            Config.ToolSwaySmoothing = config.GetSettingsValue<float>("ToolSwaySmoothing");
-            Config.MaxSwayX = config.GetSettingsValue<float>("MaxSwayX");
-            Config.MaxSwayY = config.GetSettingsValue<float>("MaxSwayY");
-        }
-
-        Config.UseJumpAnim = config.GetSettingsValue<bool>("UseJumpAnim");
-        Config.UseFallAnim = config.GetSettingsValue<bool>("UseFallAnim");
-        Config.UseLandingAnim = config.GetSettingsValue<bool>("UseLandingAnim");
-        Config.UseScoutAnim = config.GetSettingsValue<bool>("UseScoutAnim");
-
-        Config.ToolHeightBehavior = config.GetSettingsValue<string>("ToolHeightBehavior");
-        if (config.GetSettingsValue<bool>("EnableToolHeight") == false)
-        {
-            Config.ToolHeightYAmount = 0f;
-            Config.ToolHeightZAmount = 0f;
-        }
-        else
-        {
-            Config.ToolHeightYAmount = config.GetSettingsValue<float>("ToolHeightY");
-            Config.ToolHeightZAmount = config.GetSettingsValue<float>("ToolHeightZ");
-        }
+        base.Configure(config);
+        Config.UpdateConfig(config);
     }
 
     private void Awake()

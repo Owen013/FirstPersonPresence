@@ -98,34 +98,6 @@
       "tooltip": "How much your held item should rotate up and down while moving. Recommended: 1"
     },
 
-    "Other Animations": {
-      "type": "separator"
-    },
-    "UseJumpAnim": {
-      "title": "Use Jumping Animation",
-      "type": "toggle",
-      "value": true,
-      "tooltip": "Makes the camera shake a bit when you jump, based on the view/tool bob amounts you set above. Recommended: Enabled"
-    },
-    "UseFallAnim": {
-      "title": "Use Falling Animation",
-      "type": "toggle",
-      "value": true,
-      "tooltip": "Makes the camera sway a bit as you fall, based on the view/tool bob amounts you set above. Recommended: Enabled"
-    },
-    "UseLandingAnim": {
-      "title": "Use Landing Animation",
-      "type": "toggle",
-      "value": true,
-      "tooltip": "Makes the camera shake a bit when you land on the ground, based on the view/tool bob amounts you set above. Recommended: Enabled"
-    },
-    "UseScoutAnim": {
-      "title": "Use Scout Launcher Fire Animation",
-      "type": "toggle",
-      "value": true,
-      "tooltip": "Makes the camera and scout launcher recoil when you launch a scout. Recommended: Enabled"
-    },
-
     "Tool Sway": {
       "type": "separator"
     },
@@ -187,6 +159,34 @@
       "type": "number",
       "value": 1,
       "tooltip": "How much your held item moves forward/backward as the player looks up/down. Recommended: 1"
+    },
+
+    "Other": {
+      "type": "separator"
+    },
+    "UseJumpAnim": {
+      "title": "Use Jumping Animation",
+      "type": "toggle",
+      "value": true,
+      "tooltip": "Makes the camera shake a bit when you jump, based on the view/tool bob amounts you set above. Recommended: Enabled"
+    },
+    "UseFallAnim": {
+      "title": "Use Falling Animation",
+      "type": "toggle",
+      "value": true,
+      "tooltip": "Makes the camera sway a bit as you fall, based on the view/tool bob amounts you set above. Recommended: Enabled"
+    },
+    "UseLandingAnim": {
+      "title": "Use Landing Animation",
+      "type": "toggle",
+      "value": true,
+      "tooltip": "Makes the camera shake a bit when you land on the ground, based on the view/tool bob amounts you set above. Recommended: Enabled"
+    },
+    "UseScoutAnim": {
+      "title": "Use Scout Launcher Fire Animation",
+      "type": "toggle",
+      "value": true,
+      "tooltip": "Makes the camera and scout launcher recoil when you launch a scout. Recommended: Enabled"
     }
   }
 }
