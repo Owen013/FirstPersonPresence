@@ -192,7 +192,7 @@
       "title": "Lefty Mode",
       "type": "toggle",
       "value": false,
-      "tooltip": ""
+      "tooltip": "Makes you left handed!"
     }
   }
 }
