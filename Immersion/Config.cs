@@ -25,6 +25,7 @@ public static class Config
     public static bool UseFallAnim { get; private set; }
     public static bool UseLandingAnim { get; private set; }
     public static bool UseScoutAnim { get; private set; }
+    public static bool UseLeftyMode { get; private set; }
 
     public static void UpdateConfig(IModConfig config)
     {
@@ -101,5 +102,6 @@ public static class Config
         UseFallAnim = config.GetSettingsValue<bool>("UseFallAnim");
         UseLandingAnim = config.GetSettingsValue<bool>("UseLandingAnim");
         UseScoutAnim = config.GetSettingsValue<bool>("UseScoutAnim");
+        UseLeftyMode = config.GetSettingsValue<bool>("UseLeftyMode");
     }
 }

@@ -16,6 +16,46 @@ public static class Patches
     }
 
     [HarmonyPostfix]
+    [HarmonyPatch(typeof(PlayerAnimController), nameof(PlayerAnimController.LateUpdate))]
+    private static void OnAnimControllerLateUpdate(PlayerAnimController __instance)
+    {
+        GameObject[] leftArmObjects =
+        {
+            __instance.transform.Find("player_mesh_noSuit:Traveller_HEA_Player/player_mesh_noSuit:Player_LeftArm").gameObject,
+            __instance.transform.Find("Traveller_Mesh_v01:Traveller_Geo/Traveller_Mesh_v01:PlayerSuit_LeftArm").gameObject
+        };
+
+        for (int i = 0; i < __instance._rightArmObjects.Length; i++)
+        {
+            __instance._rightArmObjects[i].layer = __instance._defaultLayer;
+        }
+        for (int i = 0; i < leftArmObjects.Length; i++)
+        {
+            leftArmObjects[i].layer = __instance._defaultLayer;
+        }
+
+        ToolMode toolMode = Locator.GetToolModeSwapper().GetToolMode();
+        __instance._rightArmHidden = toolMode > ToolMode.None;
+        if (__instance._rightArmHidden)
+        {
+            if (Config.UseLeftyMode && toolMode != ToolMode.Translator)
+            {
+                for (int i = 0; i < __instance._rightArmObjects.Length; i++)
+                {
+                    leftArmObjects[i].layer = __instance._rightArmHidden ? __instance._probeOnlyLayer : __instance._defaultLayer;
+                }
+            }
+            else
+            {
+                for (int i = 0; i < __instance._rightArmObjects.Length; i++)
+                {
+                    __instance._rightArmObjects[i].layer = __instance._rightArmHidden ? __instance._probeOnlyLayer : __instance._defaultLayer;
+                }
+            }
+        }
+    }
+
+    [HarmonyPostfix]
     [HarmonyPatch(typeof(Signalscope), nameof(Signalscope.Awake))]
     private static void OnSignalscopeAwake(Signalscope __instance)
     {

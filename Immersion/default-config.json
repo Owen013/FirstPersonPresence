@@ -187,6 +187,12 @@
       "type": "toggle",
       "value": true,
       "tooltip": "Makes the camera and scout launcher recoil when you launch a scout. Recommended: Enabled"
+    },
+    "UseLeftyMode": {
+      "title": "Lefty Mode",
+      "type": "toggle",
+      "value": false,
+      "tooltip": ""
     }
   }
 }

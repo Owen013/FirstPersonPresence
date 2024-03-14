@@ -9,6 +9,8 @@ namespace Immersion;
 public class Main : ModBehaviour
 {
     public static Main Instance;
+    public delegate void ConfigureEvent();
+    public event ConfigureEvent OnConfigure;
     public ISmolHatchling SmolHatchlingAPI;
 
     public override object GetApi()
@@ -20,6 +22,12 @@ public class Main : ModBehaviour
     {
         base.Configure(config);
         Config.UpdateConfig(config);
+        OnConfigure?.Invoke();
+    }
+
+    public void Log(string text, MessageType type = MessageType.Message)
+    {
+        ModHelper.Console.WriteLine(text, type);
     }
 
     private void Awake()
@@ -32,10 +40,5 @@ public class Main : ModBehaviour
     {
         SmolHatchlingAPI = ModHelper.Interaction.TryGetModApi<ISmolHatchling>("Owen013.TeenyHatchling");
         Log($"Immersion is ready to go!", MessageType.Success);
-    }
-
-    public void Log(string text, MessageType type = MessageType.Message)
-    {
-        ModHelper.Console.WriteLine(text, type);
     }
 }

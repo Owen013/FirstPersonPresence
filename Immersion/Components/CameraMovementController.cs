@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using System;
+using UnityEngine;
 
 namespace Immersion.Components;
 
@@ -60,6 +61,7 @@ public class CameraMovementController : MonoBehaviour
         _cameraController._playerCamera.mainCamera.transform.Find("NomaiTranslatorProp").transform.parent = BigToolRoot.transform;
 
         // subscribe to events
+        Main.Instance.OnConfigure += UpdateLeftyMode;
         _characterController.OnBecomeGrounded += () =>
         {
             _lastLandedTime = Time.time;
@@ -71,6 +73,13 @@ public class CameraMovementController : MonoBehaviour
                 _lastScoutLaunchTime = Time.time;
             }
         };
+
+        UpdateLeftyMode();
+    }
+
+    private void OnDestroy()
+    {
+        Main.Instance.OnConfigure -= UpdateLeftyMode;
     }
 
     private void Update()
@@ -109,6 +118,10 @@ public class CameraMovementController : MonoBehaviour
         float toolBobX = Mathf.Sin(_viewBobTime * 6.28318f) * _viewBobIntensity * Config.ToolBobXAmount * 0.25f;
         float toolBobY = Mathf.Cos(_viewBobTime * 12.5664f) * _viewBobIntensity * Config.ToolBobYAmount * 0.25f;
         float toolBobZ = -Mathf.Sin(_viewBobTime * 6.28318f) * _viewBobIntensity * Config.ToolBobZAmount * 0.25f;
+        if (Config.UseLeftyMode)
+        {
+            toolBobZ *= -1f;
+        }
         ToolRoot.transform.localPosition = new Vector3(toolBobX, toolBobY, toolBobZ);
         ToolRoot.transform.localRotation = Quaternion.Euler(new Vector3(bobY * 25f * Config.ToolBobPitchAmount, 0f, bobX * 25f * Config.ToolBobRollAmount));
 
@@ -132,23 +145,6 @@ public class CameraMovementController : MonoBehaviour
         }
     }
 
-    private void UpdateDynamicToolHeight()
-    {
-        float degreesY = _cameraController.GetDegreesY();
-        Vector3 dynamicToolHeight;
-
-        if (Config.ToolHeightBehavior == "Legacy")
-        {
-            dynamicToolHeight = new Vector3(0f, -degreesY * 0.02222f * Config.ToolHeightYAmount, (Mathf.Cos(degreesY * 0.03490f) - 1) * 0.3f * Config.ToolHeightZAmount) * 0.04f;
-        }
-        else
-        {
-            dynamicToolHeight = new Vector3(0f, -degreesY * 0.02222f * Config.ToolHeightYAmount, -degreesY * 0.01111f * Config.ToolHeightZAmount) * 0.04f;
-        }
-        
-        ToolRoot.transform.localPosition += dynamicToolHeight;
-    }
-
     private void UpdateToolSway()
     {
         // get look input if player is in normal movement mode
@@ -159,7 +155,9 @@ public class CameraMovementController : MonoBehaviour
         }
         else
         {
-            lookDelta = OWInput.GetAxisValue(InputLibrary.look) * 0.005f * Config.ToolSwaySensitivity;
+            lookDelta = OWInput.GetAxisValue(InputLibrary.look) * _characterController._playerCam.fieldOfView / _characterController._initFOV * 0.002f * Time.deltaTime / Time.timeScale * Config.ToolSwaySensitivity;
+            bool isAlarming = Locator.GetAlarmSequenceController() != null && Locator.GetAlarmSequenceController().IsAlarmWakingPlayer();
+            lookDelta *= (_characterController._signalscopeZoom || isAlarming) ? (PlayerCameraController.LOOK_RATE * PlayerCameraController.ZOOM_SCALAR) : PlayerCameraController.LOOK_RATE;
         }
 
         float degreesY = _cameraController.GetDegreesY();
@@ -180,6 +178,23 @@ public class CameraMovementController : MonoBehaviour
         ToolRoot.transform.localPosition += _toolSway;
     }
 
+    private void UpdateDynamicToolHeight()
+    {
+        float degreesY = _cameraController.GetDegreesY();
+        Vector3 dynamicToolHeight;
+
+        if (Config.ToolHeightBehavior == "Legacy")
+        {
+            dynamicToolHeight = new Vector3(0f, -degreesY * 0.02222f * Config.ToolHeightYAmount, (Mathf.Cos(degreesY * 0.03490f) - 1) * 0.3f * Config.ToolHeightZAmount) * 0.04f;
+        }
+        else
+        {
+            dynamicToolHeight = new Vector3(0f, -degreesY * 0.02222f * Config.ToolHeightYAmount, -degreesY * 0.01111f * Config.ToolHeightZAmount) * 0.04f;
+        }
+
+        ToolRoot.transform.localPosition += dynamicToolHeight;
+    }
+
     private void UpdateScoutAnim()
     {
         // plays a recoil animation for 0.5 seconds after scout launch
@@ -187,8 +202,24 @@ public class CameraMovementController : MonoBehaviour
         float dampTime = targetRecoil > _scoutRecoil ? 0.05f : 0.1f;
         _scoutRecoil = Mathf.SmoothDamp(_scoutRecoil, targetRecoil, ref _scoutRecoilVelocity, dampTime);
         CameraRoot.transform.localPosition += new Vector3(0f, 0f, 0.15f) * _scoutRecoil;
-        CameraRoot.transform.localRotation *= Quaternion.Euler(new Vector3(-10f, 0f, -5f) * _scoutRecoil);
-        BigToolRoot.transform.localPosition += new Vector3(0.5f, 0.25f, -0.5f) * _scoutRecoil;
-        BigToolRoot.transform.localRotation *= Quaternion.Euler(new Vector3(-10f, 0f, -20f) * _scoutRecoil);
+        CameraRoot.transform.localRotation *= Quaternion.Euler(new Vector3(-10f, 0f, -5f * (Config.UseLeftyMode ? -1f : 1f)) * _scoutRecoil);
+        BigToolRoot.transform.localPosition += new Vector3(0.5f * (Config.UseLeftyMode ? -1f : 1f), 0.25f, -0.5f) * _scoutRecoil;
+        BigToolRoot.transform.localRotation *= Quaternion.Euler(new Vector3(-10f, 0f, -20f * (Config.UseLeftyMode ? -1f : 1f)) * _scoutRecoil);
+    }
+
+    private void UpdateLeftyMode()
+    {
+        if (Config.UseLeftyMode)
+        {
+            ToolRoot.transform.localScale = new Vector3(-1f, 1f, 1f);
+            BigToolRoot.transform.localScale = new Vector3(-1f, 1f, 1f);
+            BigToolRoot.GetComponentInChildren<NomaiTranslator>().transform.localScale = new Vector3(-1f, 1f, 1f);
+        }
+        else
+        {
+            ToolRoot.transform.localScale = Vector3.one;
+            BigToolRoot.transform.localScale = Vector3.one;
+            BigToolRoot.GetComponentInChildren<NomaiTranslator>().transform.localScale = Vector3.one;
+        }
     }
 }
