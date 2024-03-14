@@ -1,5 +1,4 @@
-﻿using System;
-using UnityEngine;
+﻿using UnityEngine;
 
 namespace Immersion.Components;
 
@@ -103,7 +102,7 @@ public class CameraMovementController : MonoBehaviour
         }
 
         // camera bob
-        float bobX = Mathf.Sin(_viewBobTime * 6.28318f) * _viewBobIntensity;
+        float bobX = Mathf.Sin(_viewBobTime * 6.28318f) * _viewBobIntensity * (Config.UseLeftyMode ? -1f : 1f);
         float bobY = Mathf.Cos(_viewBobTime * 12.5664f) * _viewBobIntensity;
         // scale camera bob if Smol Hatchling is installed
         if (Main.Instance.SmolHatchlingAPI != null)
@@ -115,13 +114,9 @@ public class CameraMovementController : MonoBehaviour
         CameraRoot.transform.localRotation = Quaternion.Euler(new Vector3(bobY * 5f * Config.ViewBobPitchAmount, 0f, bobX * 5f * Config.ViewBobRollAmount));
 
         // tool bob
-        float toolBobX = Mathf.Sin(_viewBobTime * 6.28318f) * _viewBobIntensity * Config.ToolBobXAmount * 0.25f;
+        float toolBobX = Mathf.Sin(_viewBobTime * 6.28318f) * _viewBobIntensity * Config.ToolBobXAmount * 0.25f * (Config.UseLeftyMode ? -1f : 1f);
         float toolBobY = Mathf.Cos(_viewBobTime * 12.5664f) * _viewBobIntensity * Config.ToolBobYAmount * 0.25f;
         float toolBobZ = -Mathf.Sin(_viewBobTime * 6.28318f) * _viewBobIntensity * Config.ToolBobZAmount * 0.25f;
-        if (Config.UseLeftyMode)
-        {
-            toolBobZ *= -1f;
-        }
         ToolRoot.transform.localPosition = new Vector3(toolBobX, toolBobY, toolBobZ);
         ToolRoot.transform.localRotation = Quaternion.Euler(new Vector3(bobY * 25f * Config.ToolBobPitchAmount, 0f, bobX * 25f * Config.ToolBobRollAmount));
 
@@ -149,7 +144,7 @@ public class CameraMovementController : MonoBehaviour
     {
         // get look input if player is in normal movement mode
         Vector2 lookDelta;
-        if (!OWInput.IsInputMode(InputMode.Character) || (PlayerState.InZeroG() && PlayerState.IsWearingSuit()))
+        if (!OWInput.IsInputMode(InputMode.Character) || (PlayerState.InZeroG() && PlayerState.IsWearingSuit()) || Time.timeScale == 0f)
         {
             lookDelta = Vector2.zero;
         }
@@ -171,9 +166,9 @@ public class CameraMovementController : MonoBehaviour
 
         // decay already existing tool sway and then add new tool sway
         _toolSway = Vector3.SmoothDamp(_toolSway, Vector3.zero, ref _toolSwayVelocity, 0.2f * Config.ToolSwaySmoothing);
-        _toolSway += new Vector3(-lookDelta.x, -lookDelta.y, 0f) * (0.25f - _toolSway.magnitude) / 0.25f;
+        _toolSway += new Vector3(-lookDelta.x, -lookDelta.y, 0f) * (0.2f - _toolSway.magnitude) / 0.2f;
         // move tool backward the further it is from the default position to make tool sway move in a circular motion
-        _toolSway.z = Mathf.Cos(_toolSway.magnitude * 1.57080f) - 1f;
+        _toolSway.z = Mathf.Cos(_toolSway.magnitude * 1.5f) - 1f;
 
         ToolRoot.transform.localPosition += _toolSway;
     }
