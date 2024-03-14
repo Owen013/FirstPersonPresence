@@ -119,18 +119,6 @@
       "value": 1,
       "tooltip": "How smoothly the held item moves back to its normal position. Recommended: 1"
     },
-    "MaxSwayX": {
-      "title": "Max Side-to-Side Sway",
-      "type": "number",
-      "value": 1,
-      "tooltip": "The maximum distance the tool can sway to the left and right. Recommended: 1"
-    },
-    "MaxSwayY": {
-      "title": "Max Up-and-Down Sway",
-      "type": "number",
-      "value": 1,
-      "tooltip": "The maximum distance the tool can sway up and down. Recommended: 1"
-    },
 
     "Dynamic Tool Grip": {
       "type": "separator"

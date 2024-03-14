@@ -16,8 +16,6 @@ public static class Config
     public static float ToolBobPitchAmount { get; private set; }
     public static float ToolSwaySensitivity { get; private set; }
     public static float ToolSwaySmoothing { get; private set; }
-    public static float MaxSwayX { get; private set; }
-    public static float MaxSwayY { get; private set; }
     public static string ToolHeightBehavior { get; private set; }
     public static float ToolHeightYAmount { get; private set; }
     public static float ToolHeightZAmount { get; private set; }
@@ -75,15 +73,11 @@ public static class Config
         {
             ToolSwaySensitivity = 0f;
             ToolSwaySmoothing = 0f;
-            MaxSwayX = 0f;
-            MaxSwayY = 0f;
         }
         else
         {
             ToolSwaySensitivity = config.GetSettingsValue<float>("ToolSwaySensitivity");
             ToolSwaySmoothing = config.GetSettingsValue<float>("ToolSwaySmoothing");
-            MaxSwayX = config.GetSettingsValue<float>("MaxSwayX");
-            MaxSwayY = config.GetSettingsValue<float>("MaxSwayY");
         }
 
         ToolHeightBehavior = config.GetSettingsValue<string>("ToolHeightBehavior");
