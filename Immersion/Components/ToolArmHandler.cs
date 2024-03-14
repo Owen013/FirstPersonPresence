@@ -38,8 +38,8 @@ public class ToolArmHandler : MonoBehaviour
         suit.transform.localScale = Vector3.one;
 
         MeshRenderer noSuitMeshRenderer = noSuit.GetComponent<MeshRenderer>();
-        noSuitMeshRenderer.shadowCastingMode = UnityEngine.Rendering.ShadowCastingMode.Off;
         MeshRenderer suitMeshRenderer = suit.GetComponent<MeshRenderer>();
+        noSuitMeshRenderer.shadowCastingMode = UnityEngine.Rendering.ShadowCastingMode.Off;
         suitMeshRenderer.shadowCastingMode = UnityEngine.Rendering.ShadowCastingMode.Off;
         foreach (Material material in noSuitMeshRenderer.materials)
         {
