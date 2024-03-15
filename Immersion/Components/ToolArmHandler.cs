@@ -26,6 +26,7 @@ public class ToolArmHandler : MonoBehaviour
         GameObject noSuit = Instantiate(GameObject.Find("Player_Body/RoastingSystem/Stick_Root/Stick_Pivot/Stick_Tip/Props_HEA_RoastingStick/RoastingStick_Arm_NoSuit"));
         noSuit.name = "NoSuit";
         noSuit.transform.parent = arm.transform;
+        noSuit.layer = 27;
         noSuit.transform.localPosition = Vector3.zero;
         noSuit.transform.localRotation = Quaternion.Euler(330f, 0f, 300f);
         noSuit.transform.localScale = Vector3.one;
@@ -33,6 +34,7 @@ public class ToolArmHandler : MonoBehaviour
         GameObject suit = Instantiate(GameObject.Find("Player_Body/RoastingSystem/Stick_Root/Stick_Pivot/Stick_Tip/Props_HEA_RoastingStick/RoastingStick_Arm"));
         suit.name = "Suit";
         suit.transform.parent = arm.transform;
+        suit.layer = 27;
         suit.transform.localPosition = new Vector3(-0.02f, 0.03f, 0.02f);
         suit.transform.localRotation = Quaternion.Euler(330f, 0f, 300f);
         suit.transform.localScale = Vector3.one;
