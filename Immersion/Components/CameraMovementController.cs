@@ -19,6 +19,7 @@ public class CameraMovementController : MonoBehaviour
     private float _lastScoutLaunchTime;
     private float _scoutRecoil;
     private float _scoutRecoilVelocity;
+    private readonly float _maxSwayMagnitude = 0.2f;
     private Vector3 _toolSway;
     private Vector3 _toolSwayVelocity;
 
@@ -165,8 +166,7 @@ public class CameraMovementController : MonoBehaviour
         }
 
         // decay already existing tool sway and then add new tool sway
-        _toolSway = Vector3.SmoothDamp(_toolSway, Vector3.zero, ref _toolSwayVelocity, 0.2f * Config.ToolSwaySmoothing);
-        _toolSway += new Vector3(-lookDelta.x, -lookDelta.y, 0f) * (0.2f - _toolSway.magnitude) / 0.2f;
+        _toolSway = Vector3.ClampMagnitude(Vector3.SmoothDamp(_toolSway, Vector3.zero, ref _toolSwayVelocity, 0.2f * Config.ToolSwaySmoothing) + (new Vector3(-lookDelta.x, -lookDelta.y, 0f) * (_maxSwayMagnitude - _toolSway.magnitude) / _maxSwayMagnitude), _maxSwayMagnitude);
         // move tool backward the further it is from the default position to make tool sway move in a circular motion
         _toolSway.z = Mathf.Cos(_toolSway.magnitude * 1.5f) - 1f;
 
@@ -197,7 +197,7 @@ public class CameraMovementController : MonoBehaviour
         float dampTime = targetRecoil > _scoutRecoil ? 0.05f : 0.1f;
         _scoutRecoil = Mathf.SmoothDamp(_scoutRecoil, targetRecoil, ref _scoutRecoilVelocity, dampTime);
         CameraRoot.transform.localPosition += new Vector3(0f, 0f, 0.15f) * _scoutRecoil;
-        CameraRoot.transform.localRotation *= Quaternion.Euler(new Vector3(-10f, 0f, -5f * (Config.UseLeftyMode ? -1f : 1f)) * _scoutRecoil);
+        CameraRoot.transform.localRotation *= Quaternion.Euler(new Vector3(-10f, (Config.UseLeftyMode ? -1f : 1f), -5f * (Config.UseLeftyMode ? -1f : 1f)) * _scoutRecoil);
         BigToolRoot.transform.localPosition += new Vector3(0.5f * (Config.UseLeftyMode ? -1f : 1f), 0.25f, -0.5f) * _scoutRecoil;
         BigToolRoot.transform.localRotation *= Quaternion.Euler(new Vector3(-10f, 0f, -20f * (Config.UseLeftyMode ? -1f : 1f)) * _scoutRecoil);
     }
