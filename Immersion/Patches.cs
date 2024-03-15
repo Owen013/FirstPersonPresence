@@ -67,7 +67,7 @@ public static class Patches
     private static void OnProbeLauncherAwake(ProbeLauncher __instance)
     {
         if (!__instance.GetComponentInParent<PlayerBody>()) return;
-        ToolArmHandler.NewArm(__instance.transform.Find("Props_HEA_ProbeLauncher/ProbeLauncherChassis"), new Vector3(0.0615f, - 0.6004f, 0.0698f), Quaternion.identity, new Vector3(0.9f, 0.9f, 0.9f))?.AddComponent<ToolArm>();
+        ToolArmHandler.NewArm(__instance.transform.Find("Props_HEA_ProbeLauncher/ProbeLauncherChassis"), new Vector3(0.0556f, -0.5777f, 0.0957f), Quaternion.Euler(24.6841f, 0f, 0f), new Vector3(0.9f, 0.9f, 0.9f))?.AddComponent<ToolArm>();
     }
 
     [HarmonyPostfix]
