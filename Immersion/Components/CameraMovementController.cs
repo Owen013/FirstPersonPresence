@@ -129,19 +129,19 @@ public class CameraMovementController : MonoBehaviour
         ToolRoot.transform.localPosition = new Vector3(toolBobX, toolBobY, toolBobZ);
         ToolRoot.transform.localRotation = Quaternion.Euler(new Vector3(bobY * 25f * Config.ToolBobPitchAmount, 0f, bobX * 25f * Config.ToolBobRollAmount));
 
-        if (Config.ToolHeightYAmount != 0f || Config.ToolHeightZAmount != 0f)
-        {
-            UpdateDynamicToolHeight();
-        }
         if (Config.ToolSwaySensitivity != 0f || _toolSway != Vector3.zero)
         {
             UpdateToolSway();
+        }
+        if (Config.ToolHeightYAmount != 0f || Config.ToolHeightZAmount != 0f)
+        {
+            UpdateDynamicToolHeight();
         }
 
         // big tool root position offset needs to be 3x bigger because the tools in it are further away and appear to move less
         ProbeLauncherRoot.transform.localPosition = ToolRoot.transform.localPosition * 3f;
         ProbeLauncherRoot.transform.localRotation = ToolRoot.transform.localRotation;
-        TranslatorRoot.transform.localPosition = new Vector3(ToolRoot.transform.localPosition.x * 1.41f, ToolRoot.transform.localPosition.y, 0f) * 3f;
+        TranslatorRoot.transform.localPosition = new Vector3(ToolRoot.transform.localPosition.x * 1.41f, ToolRoot.transform.localPosition.y, ToolRoot.transform.localPosition.z - toolBobZ) * 3f;
         TranslatorRoot.transform.localRotation = ToolRoot.transform.localRotation;
 
         // do this after setting the big tool position as it only applyies to big tool root
@@ -176,9 +176,9 @@ public class CameraMovementController : MonoBehaviour
         }
 
         // decay already existing tool sway and then add new tool sway
-        _toolSway = Vector3.ClampMagnitude(Vector3.SmoothDamp(_toolSway, Vector3.zero, ref _toolSwayVelocity, 0.2f * Config.ToolSwaySmoothing) + (new Vector3(-lookDelta.x, -lookDelta.y, 0f) * (_maxSwayMagnitude - _toolSway.magnitude) / _maxSwayMagnitude), _maxSwayMagnitude);
+        _toolSway = Vector3.ClampMagnitude(Vector3.SmoothDamp(_toolSway, Vector3.zero, ref _toolSwayVelocity, 0.2f * Config.ToolSwaySmoothing, 1f) + (new Vector3(-lookDelta.x, -lookDelta.y, 0f) * (_maxSwayMagnitude - _toolSway.magnitude) / _maxSwayMagnitude), _maxSwayMagnitude);
         // move tool backward the further it is from the default position to make tool sway move in a circular motion
-        _toolSway.z = Mathf.Cos(_toolSway.magnitude * 1.5f) - 1f;
+        _toolSway.z = Mathf.Cos(_toolSway.magnitude * 2f) - 1f;
 
         ToolRoot.transform.localPosition += _toolSway;
     }

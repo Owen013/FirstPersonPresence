@@ -100,7 +100,7 @@ public static class Patches
         {
             if (renderer.name.Contains("_Back"))
             {
-                ToolArmHandler.NewArmPrefab(renderer.transform, new Vector3(0.2121f, -0.0855f, -0.184f), Quaternion.Euler(0f, 0f, 340.6367f), new Vector3(0.9f, 0.9f, 0.9f), true)?.AddComponent<ItemToolArm>();
+                ToolArmHandler.NewArmPrefab(renderer.transform, new Vector3(0.1748f, -0.1398f, -0.2008f), Quaternion.Euler(0f, 0f, 292.1743f), new Vector3(0.6f, 0.6f, 0.6f), true)?.AddComponent<ItemToolArm>();
             }
         }
     }
