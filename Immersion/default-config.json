@@ -7,9 +7,9 @@
     },
     "EnableViewmodelHands": {
       "title": "Enable Viewmodel Hands",
+      "tooltip": "Adds a hand to every item and tool so that they aren't just floating in front of the camera! Recommended: Enabled",
       "type": "toggle",
-      "value": true,
-      "tooltip": "Adds a hand to every item and tool so that they aren't just floating in front of the camera! Recommended: Enabled"
+      "value": true
     },
 
     "View Bobbing": {
@@ -17,39 +17,47 @@
     },
     "EnableViewBob": {
       "title": "Enable View Bobbing",
+      "tooltip": "Enable the bobbing of the camera while moving.",
       "type": "toggle",
-      "value": true,
-      "tooltip": "Enable the bobbing of the camera while moving."
+      "value": true
     },
     "FlipViewBob": {
       "title": "Flip View Bob",
+      "tooltip": "Flips the vertical component of the camera movement; if this is enabled, the camera will move in a 'u' shape instead of a 'n' shape.",
       "type": "toggle",
-      "value": false,
-      "tooltip": "Flips the vertical component of the camera movement; if this is enabled, the camera will move in a 'u' shape instead of a 'n' shape."
+      "value": false
     },
     "ViewBobX": {
       "title": "View Bob X Amount",
-      "type": "number",
-      "value": 1,
-      "tooltip": "How much the camera bobs from side to side. Recommended: 1"
+      "tooltip": "How much the camera bobs from side to side. Recommended: 1",
+      "type": "slider",
+      "min": 0,
+      "max": 2,
+      "value": 1
     },
     "ViewBobY": {
       "title": "View Bob Y Amount",
-      "type": "number",
-      "value": 1,
-      "tooltip": "How much the camera bobs up and down. Recommended: 1"
+      "tooltip": "How much the camera bobs up and down. Recommended: 1",
+      "type": "slider",
+      "min": 0,
+      "max": 2,
+      "value": 1
     },
     "ViewBobRoll": {
       "title": "View Bob Roll Amount",
-      "type": "number",
-      "value": 1,
-      "tooltip": "How much the camera should roll from side to side while moving. Recommended: 1"
+      "tooltip": "How much the camera should roll from side to side while moving. Recommended: 1",
+      "type": "slider",
+      "min": 0,
+      "max": 2,
+      "value": 1
     },
     "ViewBobPitch": {
       "title": "View Bob Pitch Amount",
-      "type": "number",
-      "value": 1,
-      "tooltip": "How much the camera should rotate up and down while moving. Recommended: 1"
+      "tooltip": "How much the camera should rotate up and down while moving. Recommended: 1",
+      "type": "slider",
+      "min": 0,
+      "max": 2,
+      "value": 1
     },
 
     "Tool Bobbing": {
@@ -57,45 +65,55 @@
     },
     "EnableToolBob": {
       "title": "Enable Tool Bobbing",
+      "tooltip": "Enable the bobbing of the held item while moving.",
       "type": "toggle",
-      "value": true,
-      "tooltip": "Enable the bobbing of the held item while moving."
+      "value": true
     },
     "FlipToolBob": {
       "title": "Flip Tool Bob",
+      "tooltip": "Flips the vertical component of the held item's movement; if this is enabled, the tool will move in a 'u' shape instead of a 'n' shape.",
       "type": "toggle",
-      "value": false,
-      "tooltip": "Flips the vertical component of the held item's movement; if this is enabled, the tool will move in a 'u' shape instead of a 'n' shape."
+      "value": false
     },
     "ToolBobX": {
       "title": "Tool Bob X Amount",
-      "type": "number",
-      "value": 1,
-      "tooltip": "How much your held item bobs from side to side. Recommended: 1"
+      "tooltip": "How much your held item bobs from side to side. Recommended: 1",
+      "type": "slider",
+      "min": 0,
+      "max": 2,
+      "value": 1
     },
     "ToolBobY": {
       "title": "Tool Bob Y Amount",
-      "type": "number",
-      "value": 1,
-      "tooltip": "How much your held item bobs up and down. Recommended: 1"
+      "tooltip": "How much your held item bobs up and down. Recommended: 1",
+      "type": "slider",
+      "min": 0,
+      "max": 2,
+      "value": 1
     },
     "ToolBobZ": {
       "title": "Tool Bob Z Amount",
-      "type": "number",
-      "value": 1,
-      "tooltip": "How much your held item bobs forward and backward. Recommended: 1"
+      "tooltip": "How much your held item bobs forward and backward. Recommended: 1",
+      "type": "slider",
+      "min": 0,
+      "max": 2,
+      "value": 1
     },
     "ToolBobRoll": {
       "title": "Tool Bob Roll Amount",
-      "type": "number",
-      "value": 1,
-      "tooltip": "How much your held item should roll from side to side while moving. Recommended: 1"
+      "tooltip": "How much your held item should roll from side to side while moving. Recommended: 1",
+      "type": "slider",
+      "min": 0,
+      "max": 2,
+      "value": 1
     },
     "ToolBobPitch": {
       "title": "Tool Bob Pitch Amount",
-      "type": "number",
-      "value": 1,
-      "tooltip": "How much your held item should rotate up and down while moving. Recommended: 1"
+      "tooltip": "How much your held item should rotate up and down while moving. Recommended: 1",
+      "type": "slider",
+      "min": 0,
+      "max": 2,
+      "value": 1
     },
 
     "Tool Sway": {
@@ -103,21 +121,25 @@
     },
     "EnableToolSway": {
       "title": "Enable Tool Sway",
+      "tooltip": "When enabled, your held item will lag behind the camera a bit as you look around.",
       "type": "toggle",
-      "value": true,
-      "tooltip": "When enabled, your held item will lag behind the camera a bit as you look around."
+      "value": true
     },
     "ToolSwaySensitivity": {
       "title": "Tool Sway Sensitivity",
-      "type": "number",
-      "value": 1,
-      "tooltip": "How much tool sway there is for a given mouse input. Set to 0 to disable tool swaying. Recommended: 1"
+      "tooltip": "How much tool sway there is for a given mouse input. Set to 0 to disable tool swaying. Recommended: 1",
+      "type": "slider",
+      "min": 0,
+      "max": 2,
+      "value": 1
     },
     "ToolSwaySmoothing": {
       "title": "Tool Sway Smoothing Amount",
-      "type": "number",
-      "value": 1,
-      "tooltip": "How smoothly the held item moves back to its normal position. Recommended: 1"
+      "tooltip": "How smoothly the held item moves back to its normal position. Recommended: 1",
+      "type": "slider",
+      "min": 0,
+      "max": 2,
+      "value": 1
     },
 
     "Dynamic Tool Grip": {
@@ -125,28 +147,32 @@
     },
     "EnableToolHeight": {
       "title": "Enable Dynamic Tool Grip",
+      "tooltip": "When this is enabled, you will hold your tool at different positions based on how your camera is oriented.",
       "type": "toggle",
-      "value": true,
-      "tooltip": "When this is enabled, you will hold your tool at different positions based on how your camera is oriented."
+      "value": true
     },
     "ToolHeightBehavior": {
       "title": "Dynamic Tool Grip Behavior",
+      "tooltip": "Default: The tool will be held further away when looking down and closer when looking up. Legacy: the tool will be held at the normal distance when looking directly forward and closer when looking up or down. Recommended: Default",
       "type": "selector",
       "value": "Default",
-      "options": [ "Default", "Legacy" ],
-      "tooltip": "Default: The tool will be held further away when looking down and closer when looking up. Legacy: the tool will be held at the normal distance when looking directly forward and closer when looking up or down. Recommended: Default"
+      "options": [ "Default", "Legacy" ]
     },
     "ToolHeightY": {
       "title": "Dynamic Tool Grip Y Amount",
-      "type": "number",
-      "value": 1,
-      "tooltip": "How much your held item moves up/down as the player looks up/down. Recommended: 1"
+      "tooltip": "How much your held item moves up/down as the player looks up/down. Recommended: 1",
+      "type": "slider",
+      "min": 0,
+      "max": 2,
+      "value": 1
     },
     "ToolHeightZ": {
       "title": "Dynamic Tool Grip Z Amount",
-      "type": "number",
-      "value": 1,
-      "tooltip": "How much your held item moves forward/backward as the player looks up/down. Recommended: 1"
+      "tooltip": "How much your held item moves forward/backward as the player looks up/down. Recommended: 1",
+      "type": "slider",
+      "min": 0,
+      "max": 2,
+      "value": 1
     },
 
     "Other": {
@@ -154,33 +180,33 @@
     },
     "UseJumpAnim": {
       "title": "Use Jumping Animation",
+      "tooltip": "Makes the camera shake a bit when you jump, based on the view/tool bob amounts you set above. Recommended: Enabled",
       "type": "toggle",
-      "value": true,
-      "tooltip": "Makes the camera shake a bit when you jump, based on the view/tool bob amounts you set above. Recommended: Enabled"
+      "value": true
     },
     "UseFallAnim": {
       "title": "Use Falling Animation",
+      "tooltip": "Makes the camera sway a bit as you fall, based on the view/tool bob amounts you set above. Recommended: Enabled",
       "type": "toggle",
-      "value": true,
-      "tooltip": "Makes the camera sway a bit as you fall, based on the view/tool bob amounts you set above. Recommended: Enabled"
+      "value": true
     },
     "UseLandingAnim": {
       "title": "Use Landing Animation",
+      "tooltip": "Makes the camera shake a bit when you land on the ground, based on the view/tool bob amounts you set above. Recommended: Enabled",
       "type": "toggle",
-      "value": true,
-      "tooltip": "Makes the camera shake a bit when you land on the ground, based on the view/tool bob amounts you set above. Recommended: Enabled"
+      "value": true
     },
     "UseScoutAnim": {
       "title": "Use Scout Launcher Fire Animation",
+      "tooltip": "Makes the camera and scout launcher recoil when you launch a scout. Recommended: Enabled",
       "type": "toggle",
-      "value": true,
-      "tooltip": "Makes the camera and scout launcher recoil when you launch a scout. Recommended: Enabled"
+      "value": true
     },
     "UseLeftyMode": {
       "title": "Lefty Mode",
+      "tooltip": "Makes you left handed!",
       "type": "toggle",
-      "value": false,
-      "tooltip": "Makes you left handed!"
+      "value": false
     }
   }
 }
