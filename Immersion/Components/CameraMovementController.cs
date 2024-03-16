@@ -141,7 +141,7 @@ public class CameraMovementController : MonoBehaviour
         // big tool root position offset needs to be 3x bigger because the tools in it are further away and appear to move less
         ProbeLauncherRoot.transform.localPosition = ToolRoot.transform.localPosition * 3f;
         ProbeLauncherRoot.transform.localRotation = ToolRoot.transform.localRotation;
-        TranslatorRoot.transform.localPosition = new Vector3(ToolRoot.transform.localPosition.x, ToolRoot.transform.localPosition.y, 0f) * 3f;
+        TranslatorRoot.transform.localPosition = new Vector3(ToolRoot.transform.localPosition.x * 1.41f, ToolRoot.transform.localPosition.y, 0f) * 3f;
         TranslatorRoot.transform.localRotation = ToolRoot.transform.localRotation;
 
         // do this after setting the big tool position as it only applyies to big tool root
