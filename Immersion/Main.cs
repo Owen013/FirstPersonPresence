@@ -20,7 +20,6 @@ public class Main : ModBehaviour
 
     public override void Configure(IModConfig config)
     {
-        base.Configure(config);
         Config.UpdateConfig(config);
         OnConfigure?.Invoke();
     }
