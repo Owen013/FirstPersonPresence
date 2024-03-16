@@ -7,7 +7,8 @@ public class CameraMovementController : MonoBehaviour
     public static CameraMovementController Instance { get; private set; }
     public GameObject CameraRoot { get; private set; }
     public GameObject ToolRoot { get; private set; }
-    public GameObject BigToolRoot { get; private set; }
+    public GameObject ProbeLauncherRoot { get; private set; }
+    public GameObject TranslatorRoot { get; private set; }
 
     private PlayerCameraController _cameraController;
     private PlayerAnimController _animController;
@@ -52,13 +53,20 @@ public class CameraMovementController : MonoBehaviour
         _cameraController._playerCamera.mainCamera.transform.Find("Signalscope").transform.parent = ToolRoot.transform;
 
         // create a separate root for the scout launcher since it's a lot bigger and farther from the camera
-        BigToolRoot = new();
-        BigToolRoot.name = "BigToolRoot";
-        BigToolRoot.transform.parent = _cameraController._playerCamera.mainCamera.transform;
-        BigToolRoot.transform.localPosition = Vector3.zero;
-        BigToolRoot.transform.localRotation = Quaternion.identity;
-        _cameraController._playerCamera.mainCamera.transform.Find("ProbeLauncher").transform.parent = BigToolRoot.transform;
-        _cameraController._playerCamera.mainCamera.transform.Find("NomaiTranslatorProp").transform.parent = BigToolRoot.transform;
+        ProbeLauncherRoot = new();
+        ProbeLauncherRoot.name = "ProbeLauncherRoot";
+        ProbeLauncherRoot.transform.parent = _cameraController._playerCamera.mainCamera.transform;
+        ProbeLauncherRoot.transform.localPosition = Vector3.zero;
+        ProbeLauncherRoot.transform.localRotation = Quaternion.identity;
+        _cameraController._playerCamera.mainCamera.transform.Find("ProbeLauncher").transform.parent = ProbeLauncherRoot.transform;
+
+        // create a separate root for the translator tool since it doesn't bob forward and backward
+        TranslatorRoot = new();
+        TranslatorRoot.name = "TranslatorRoot";
+        TranslatorRoot.transform.parent = _cameraController._playerCamera.mainCamera.transform;
+        TranslatorRoot.transform.localPosition = Vector3.zero;
+        TranslatorRoot.transform.localRotation = Quaternion.identity;
+        _cameraController._playerCamera.mainCamera.transform.Find("NomaiTranslatorProp").transform.parent = TranslatorRoot.transform;
 
         // subscribe to events
         Main.Instance.OnConfigure += UpdateLeftyMode;
@@ -103,7 +111,7 @@ public class CameraMovementController : MonoBehaviour
         }
 
         // camera bob
-        float bobX = Mathf.Sin(_viewBobTime * 6.28318f) * _viewBobIntensity * (Config.UseLeftyMode ? -1f : 1f);
+        float bobX = Mathf.Sin(_viewBobTime * 6.28318f) * _viewBobIntensity;
         float bobY = Mathf.Cos(_viewBobTime * 12.5664f) * _viewBobIntensity;
         // scale camera bob if Smol Hatchling is installed
         if (Main.Instance.SmolHatchlingAPI != null)
@@ -115,9 +123,9 @@ public class CameraMovementController : MonoBehaviour
         CameraRoot.transform.localRotation = Quaternion.Euler(new Vector3(bobY * 5f * Config.ViewBobPitchAmount, 0f, bobX * 5f * Config.ViewBobRollAmount));
 
         // tool bob
-        float toolBobX = Mathf.Sin(_viewBobTime * 6.28318f) * _viewBobIntensity * Config.ToolBobXAmount * 0.25f * (Config.UseLeftyMode ? -1f : 1f);
+        float toolBobX = Mathf.Sin(_viewBobTime * 6.28318f) * _viewBobIntensity * Config.ToolBobXAmount * 0.25f;
         float toolBobY = Mathf.Cos(_viewBobTime * 12.5664f) * _viewBobIntensity * Config.ToolBobYAmount * 0.25f;
-        float toolBobZ = -Mathf.Sin(_viewBobTime * 6.28318f) * _viewBobIntensity * Config.ToolBobZAmount * 0.25f;
+        float toolBobZ = -Mathf.Sin(_viewBobTime * 6.28318f) * _viewBobIntensity * Config.ToolBobZAmount * 0.25f * (Config.UseLeftyMode ? -1f : 1f);
         ToolRoot.transform.localPosition = new Vector3(toolBobX, toolBobY, toolBobZ);
         ToolRoot.transform.localRotation = Quaternion.Euler(new Vector3(bobY * 25f * Config.ToolBobPitchAmount, 0f, bobX * 25f * Config.ToolBobRollAmount));
 
@@ -131,9 +139,11 @@ public class CameraMovementController : MonoBehaviour
         }
 
         // big tool root position offset needs to be 3x bigger because the tools in it are further away and appear to move less
-        BigToolRoot.transform.localPosition = ToolRoot.transform.localPosition * 3f;
-        BigToolRoot.transform.localRotation = ToolRoot.transform.localRotation;
-        
+        ProbeLauncherRoot.transform.localPosition = ToolRoot.transform.localPosition * 3f;
+        ProbeLauncherRoot.transform.localRotation = ToolRoot.transform.localRotation;
+        TranslatorRoot.transform.localPosition = new Vector3(ToolRoot.transform.localPosition.x, ToolRoot.transform.localPosition.y, 0f) * 3f;
+        TranslatorRoot.transform.localRotation = ToolRoot.transform.localRotation;
+
         // do this after setting the big tool position as it only applyies to big tool root
         if (Config.UseScoutAnim)
         {
@@ -198,8 +208,8 @@ public class CameraMovementController : MonoBehaviour
         _scoutRecoil = Mathf.SmoothDamp(_scoutRecoil, targetRecoil, ref _scoutRecoilVelocity, dampTime);
         CameraRoot.transform.localPosition += new Vector3(0f, 0f, 0.15f) * _scoutRecoil;
         CameraRoot.transform.localRotation *= Quaternion.Euler(new Vector3(-10f, (Config.UseLeftyMode ? -1f : 1f), -5f * (Config.UseLeftyMode ? -1f : 1f)) * _scoutRecoil);
-        BigToolRoot.transform.localPosition += new Vector3(0.5f * (Config.UseLeftyMode ? -1f : 1f), 0.25f, -0.5f) * _scoutRecoil;
-        BigToolRoot.transform.localRotation *= Quaternion.Euler(new Vector3(-10f, 0f, -20f * (Config.UseLeftyMode ? -1f : 1f)) * _scoutRecoil);
+        ProbeLauncherRoot.transform.localPosition += new Vector3(0.5f * (Config.UseLeftyMode ? -1f : 1f), 0.25f, -0.5f) * _scoutRecoil;
+        ProbeLauncherRoot.transform.localRotation *= Quaternion.Euler(new Vector3(-10f, 0f, -20f * (Config.UseLeftyMode ? -1f : 1f)) * _scoutRecoil);
     }
 
     private void UpdateLeftyMode()
@@ -207,14 +217,12 @@ public class CameraMovementController : MonoBehaviour
         if (Config.UseLeftyMode)
         {
             ToolRoot.transform.localScale = new Vector3(-1f, 1f, 1f);
-            BigToolRoot.transform.localScale = new Vector3(-1f, 1f, 1f);
-            BigToolRoot.GetComponentInChildren<NomaiTranslator>().transform.localScale = new Vector3(-1f, 1f, 1f);
+            ProbeLauncherRoot.transform.localScale = new Vector3(-1f, 1f, 1f);
         }
         else
         {
             ToolRoot.transform.localScale = Vector3.one;
-            BigToolRoot.transform.localScale = Vector3.one;
-            BigToolRoot.GetComponentInChildren<NomaiTranslator>().transform.localScale = Vector3.one;
+            ProbeLauncherRoot.transform.localScale = Vector3.one;
         }
     }
 }

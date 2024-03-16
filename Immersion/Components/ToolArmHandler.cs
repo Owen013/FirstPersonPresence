@@ -4,20 +4,20 @@ namespace Immersion.Components;
 
 public class ToolArmHandler : MonoBehaviour
 {
-    public static GameObject NewArm(Transform parent, Vector3 localPos, Quaternion localRot, Vector3 scale, bool useDefaultShader = false)
+    public static GameObject NewArmPrefab(Transform parent, Vector3 localPos, Quaternion localRot, Vector3 scale, bool useDefaultShader = false)
     {
         if (parent == null)
         {
-            Main.Instance.Log($"Can't create new arm; parent is null", OWML.Common.MessageType.Debug);
+            Main.Instance.Log($"Can't create new arm prefab; parent is null", OWML.Common.MessageType.Debug);
             return null;
         }
-        if (parent.transform.Find("Arm") != null)
+        if (parent.GetComponent<ToolArm>() != null)
         {
             Main.Instance.Log($"{parent.name} already has an arm. Replacing it.", OWML.Common.MessageType.Debug);
-            Destroy(parent.transform.Find("Arm").gameObject);
+            Destroy(parent.GetComponent<ToolArm>().gameObject);
         }
 
-        GameObject arm = new("Arm");
+        GameObject arm = new("ViewmodelArm");
         arm.transform.parent = parent;
         arm.transform.localPosition = localPos;
         arm.transform.localRotation = localRot;

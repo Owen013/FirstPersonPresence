@@ -9,5 +9,7 @@ public class ImmersionAPI
 
     public GameObject GetToolRoot() => CameraMovementController.Instance.ToolRoot;
 
-    public GameObject GetBigToolRoot() => CameraMovementController.Instance.BigToolRoot;
+    public GameObject GetProbeLauncherRoot() => CameraMovementController.Instance.ProbeLauncherRoot;
+
+    public GameObject GetTranslatorRoot() => CameraMovementController.Instance.TranslatorRoot;
 }
