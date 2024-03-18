@@ -9,8 +9,6 @@ namespace Immersion;
 public class Main : ModBehaviour
 {
     public static Main Instance;
-    public delegate void ConfigureEvent();
-    public event ConfigureEvent OnConfigure;
     public ISmolHatchling SmolHatchlingAPI;
 
     public override object GetApi()
@@ -21,7 +19,6 @@ public class Main : ModBehaviour
     public override void Configure(IModConfig config)
     {
         Config.UpdateConfig(config);
-        OnConfigure?.Invoke();
     }
 
     public void Log(string text, MessageType type = MessageType.Message)

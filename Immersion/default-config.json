@@ -202,6 +202,12 @@
       "type": "toggle",
       "value": true
     },
+    "HideStowedItems": {
+      "title": "Hide Stowed Items",
+      "tooltip": "Makes held items disappear when they go into the stowed position (i.e. you start using another tool or roasting a marshmallow while holding an item).",
+      "type": "toggle",
+      "value": true
+    },
     "UseLeftyMode": {
       "title": "Lefty Mode",
       "tooltip": "Makes you left handed!",

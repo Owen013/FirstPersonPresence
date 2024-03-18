@@ -5,11 +5,11 @@ namespace Immersion;
 
 public class ImmersionAPI
 {
-    public GameObject GetCameraRoot() => CameraMovementController.Instance.CameraRoot;
+    public GameObject GetCameraRoot() => ImmersionController.Instance.CameraRoot;
 
-    public GameObject GetToolRoot() => CameraMovementController.Instance.ToolRoot;
+    public GameObject GetToolRoot() => ImmersionController.Instance.ToolRoot;
 
-    public GameObject GetProbeLauncherRoot() => CameraMovementController.Instance.ProbeLauncherRoot;
+    public GameObject GetProbeLauncherRoot() => ImmersionController.Instance.ProbeLauncherRoot;
 
-    public GameObject GetTranslatorRoot() => CameraMovementController.Instance.TranslatorRoot;
+    public GameObject GetTranslatorRoot() => ImmersionController.Instance.TranslatorRoot;
 }

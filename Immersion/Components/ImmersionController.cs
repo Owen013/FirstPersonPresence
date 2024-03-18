@@ -2,9 +2,9 @@
 
 namespace Immersion.Components;
 
-public class CameraMovementController : MonoBehaviour
+public class ImmersionController : MonoBehaviour
 {
-    public static CameraMovementController Instance { get; private set; }
+    public static ImmersionController Instance { get; private set; }
     public GameObject CameraRoot { get; private set; }
     public GameObject ToolRoot { get; private set; }
     public GameObject ProbeLauncherRoot { get; private set; }
@@ -20,7 +20,6 @@ public class CameraMovementController : MonoBehaviour
     private float _lastScoutLaunchTime;
     private float _scoutRecoil;
     private float _scoutRecoilVelocity;
-    private readonly float _maxSwayMagnitude = 0.2f;
     private Vector3 _toolSway;
     private Vector3 _toolSwayVelocity;
 
@@ -69,7 +68,7 @@ public class CameraMovementController : MonoBehaviour
         _cameraController._playerCamera.mainCamera.transform.Find("NomaiTranslatorProp").transform.parent = TranslatorRoot.transform;
 
         // subscribe to events
-        Main.Instance.OnConfigure += UpdateLeftyMode;
+        Config.OnConfigure += UpdateLeftyMode;
         _characterController.OnBecomeGrounded += () =>
         {
             _lastLandedTime = Time.time;
@@ -87,7 +86,7 @@ public class CameraMovementController : MonoBehaviour
 
     private void OnDestroy()
     {
-        Main.Instance.OnConfigure -= UpdateLeftyMode;
+        Config.OnConfigure -= UpdateLeftyMode;
     }
 
     private void Update()
@@ -176,7 +175,8 @@ public class CameraMovementController : MonoBehaviour
         }
 
         // decay already existing tool sway and then add new tool sway
-        _toolSway = Vector3.ClampMagnitude(Vector3.SmoothDamp(_toolSway, Vector3.zero, ref _toolSwayVelocity, 0.2f * Config.ToolSwaySmoothing, 1f) + (new Vector3(-lookDelta.x, -lookDelta.y, 0f) * (_maxSwayMagnitude - _toolSway.magnitude) / _maxSwayMagnitude), _maxSwayMagnitude);
+        float maxSwayMagnitude = 0.2f;
+        _toolSway = Vector3.ClampMagnitude(Vector3.SmoothDamp(_toolSway, Vector3.zero, ref _toolSwayVelocity, 0.2f * Config.ToolSwaySmoothing, 1f) + (new Vector3(-lookDelta.x, -lookDelta.y, 0f) * (maxSwayMagnitude - _toolSway.magnitude) / maxSwayMagnitude), maxSwayMagnitude);
         // move tool backward the further it is from the default position to make tool sway move in a circular motion
         _toolSway.z = Mathf.Cos(_toolSway.magnitude * 2f) - 1f;
 

@@ -11,7 +11,7 @@ public static class Patches
     [HarmonyPatch(typeof(PlayerCameraController), nameof(PlayerCameraController.Awake))]
     private static void OnCameraAwake(PlayerCameraController __instance)
     {
-        __instance.gameObject.AddComponent<CameraMovementController>();
+        __instance.gameObject.AddComponent<ImmersionController>();
         __instance.gameObject.AddComponent<ToolArmHandler>();
     }
 
@@ -56,6 +56,22 @@ public static class Patches
     }
 
     [HarmonyPostfix]
+    [HarmonyPatch(typeof(PlayerTool), nameof(PlayerTool.Update))]
+    private static void OnItemToolUpdate(PlayerTool __instance)
+    {
+        if (__instance is not ItemTool) return;
+
+        if (Config.HideStowedItems && !__instance.IsEquipped() && !__instance.IsPuttingAway())
+        {
+            __instance.transform.localScale = Vector3.zero;
+        }
+        else
+        {
+            __instance.transform.localScale = Vector3.one;
+        }
+    }
+
+    [HarmonyPostfix]
     [HarmonyPatch(typeof(Signalscope), nameof(Signalscope.Awake))]
     private static void OnSignalscopeAwake(Signalscope __instance)
     {
@@ -88,7 +104,7 @@ public static class Patches
     [HarmonyPatch(typeof(ScrollItem), nameof(ScrollItem.Awake))]
     private static void OnScrollAwake(SharedStone __instance)
     {
-        Vector3 position = __instance.name == "Prefab_NOM_Scroll_egg" ? new Vector3(-0.2028f, 0.0195f, - 0.2974f) : new Vector3(-0.1748f, 0.0613f, -0.2957f);
+        Vector3 position = __instance.name == "Prefab_NOM_Scroll_egg" ? new Vector3(-0.2028f, 0.0195f, -0.2974f) : new Vector3(-0.1748f, 0.0613f, -0.2957f);
         ToolArmHandler.NewArmPrefab(__instance.transform.Find("Props_NOM_Scroll/Props_NOM_Scroll_Geo/"), position, Quaternion.Euler(358.7909f, 107.971f, 3.502f), new Vector3(0.9f, 0.9f, 0.9f), true)?.AddComponent<ItemToolArm>();
     }
 

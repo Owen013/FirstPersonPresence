@@ -4,6 +4,9 @@ namespace Immersion;
 
 public static class Config
 {
+    public delegate void ConfigureEvent();
+    public static event ConfigureEvent OnConfigure;
+
     public static bool UseViewmodelHands { get; private set; }
     public static float ViewBobXAmount { get; private set; }
     public static float ViewBobRollAmount { get; private set; }
@@ -23,6 +26,8 @@ public static class Config
     public static bool UseFallAnim { get; private set; }
     public static bool UseLandingAnim { get; private set; }
     public static bool UseScoutAnim { get; private set; }
+
+    public static bool HideStowedItems { get; private set; }
     public static bool UseLeftyMode { get; private set; }
 
     public static void UpdateConfig(IModConfig config)
@@ -96,6 +101,9 @@ public static class Config
         UseFallAnim = config.GetSettingsValue<bool>("UseFallAnim");
         UseLandingAnim = config.GetSettingsValue<bool>("UseLandingAnim");
         UseScoutAnim = config.GetSettingsValue<bool>("UseScoutAnim");
+        HideStowedItems = config.GetSettingsValue<bool>("HideStowedItems");
         UseLeftyMode = config.GetSettingsValue<bool>("UseLeftyMode");
+
+        OnConfigure?.Invoke();
     }
 }
