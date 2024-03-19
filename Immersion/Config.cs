@@ -7,7 +7,7 @@ public static class Config
     public delegate void ConfigureEvent();
     public static event ConfigureEvent OnConfigure;
 
-    public static bool UseViewmodelHands { get; private set; }
+    public static bool IsViewModelHandsEnabled { get; private set; }
     public static float ViewBobXAmount { get; private set; }
     public static float ViewBobRollAmount { get; private set; }
     public static float ViewBobPitchAmount { get; private set; }
@@ -22,17 +22,17 @@ public static class Config
     public static string ToolHeightBehavior { get; private set; }
     public static float ToolHeightYAmount { get; private set; }
     public static float ToolHeightZAmount { get; private set; }
-    public static bool UseJumpAnim { get; private set; }
-    public static bool UseFallAnim { get; private set; }
-    public static bool UseLandingAnim { get; private set; }
-    public static bool UseScoutAnim { get; private set; }
+    public static bool IsJumpAnimEnabled { get; private set; }
+    public static bool IsFallAnimEnabled { get; private set; }
+    public static bool IsLandingAnimEnabled { get; private set; }
+    public static bool IsScoutAnimEnabled { get; private set; }
 
-    public static bool HideStowedItems { get; private set; }
-    public static bool UseLeftyMode { get; private set; }
+    public static bool IsHideStowedItemsEnabled { get; private set; }
+    public static bool IsLeftyModeEnabled { get; private set; }
 
     public static void UpdateConfig(IModConfig config)
     {
-        UseViewmodelHands = config.GetSettingsValue<bool>("EnableViewmodelHands");
+        IsViewModelHandsEnabled = config.GetSettingsValue<bool>("EnableViewmodelHands");
 
         if (config.GetSettingsValue<bool>("EnableViewBob") == false)
         {
@@ -97,12 +97,12 @@ public static class Config
             ToolHeightZAmount = config.GetSettingsValue<float>("ToolHeightZ");
         }
 
-        UseJumpAnim = config.GetSettingsValue<bool>("UseJumpAnim");
-        UseFallAnim = config.GetSettingsValue<bool>("UseFallAnim");
-        UseLandingAnim = config.GetSettingsValue<bool>("UseLandingAnim");
-        UseScoutAnim = config.GetSettingsValue<bool>("UseScoutAnim");
-        HideStowedItems = config.GetSettingsValue<bool>("HideStowedItems");
-        UseLeftyMode = config.GetSettingsValue<bool>("UseLeftyMode");
+        IsJumpAnimEnabled = config.GetSettingsValue<bool>("UseJumpAnim");
+        IsFallAnimEnabled = config.GetSettingsValue<bool>("UseFallAnim");
+        IsLandingAnimEnabled = config.GetSettingsValue<bool>("UseLandingAnim");
+        IsScoutAnimEnabled = config.GetSettingsValue<bool>("UseScoutAnim");
+        IsHideStowedItemsEnabled = config.GetSettingsValue<bool>("HideStowedItems");
+        IsLeftyModeEnabled = config.GetSettingsValue<bool>("UseLeftyMode");
 
         OnConfigure?.Invoke();
     }

@@ -24,14 +24,14 @@ public class ToolArm : MonoBehaviour
 
     protected virtual void Update()
     {
-        if (!Config.UseViewmodelHands)
+        if (!Config.IsViewModelHandsEnabled)
         {
             _noSuitArm.SetActive(false);
             _suitArm.SetActive(false);
             return;
         }
 
-        if (Config.UseLeftyMode && Locator.GetToolModeSwapper()._currentToolMode != ToolMode.Translator)
+        if (Config.IsLeftyModeEnabled && Locator.GetToolModeSwapper()._currentToolMode != ToolMode.Translator)
         {
             _noSuitArm.SetActive(_realNoSuitLeftArm.activeInHierarchy);
             _suitArm.SetActive(_realSuitLeftArm.activeInHierarchy);

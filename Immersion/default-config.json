@@ -204,7 +204,7 @@
     },
     "HideStowedItems": {
       "title": "Hide Stowed Items",
-      "tooltip": "Makes held items disappear when they go into the stowed position (i.e. you start using another tool or roasting a marshmallow while holding an item).",
+      "tooltip": "Makes held items disappear when they go into the stowed position (i.e. if you start using another tool or roasting a marshmallow while holding an item).",
       "type": "toggle",
       "value": true
     },

@@ -12,7 +12,9 @@ public static class Patches
     private static void OnCameraAwake(PlayerCameraController __instance)
     {
         __instance.gameObject.AddComponent<ImmersionController>();
+        Main.Instance.Log($"{nameof(ImmersionController)} added to {__instance.name}", OWML.Common.MessageType.Debug);
         __instance.gameObject.AddComponent<ToolArmHandler>();
+        Main.Instance.Log($"{nameof(ToolArmHandler)} added to {__instance.name}", OWML.Common.MessageType.Debug);
     }
 
     [HarmonyPostfix]
@@ -38,7 +40,7 @@ public static class Patches
         __instance._rightArmHidden = toolMode > ToolMode.None;
         if (__instance._rightArmHidden)
         {
-            if (Config.UseLeftyMode && toolMode != ToolMode.Translator)
+            if (Config.IsLeftyModeEnabled && toolMode != ToolMode.Translator)
             {
                 for (int i = 0; i < __instance._rightArmObjects.Length; i++)
                 {
@@ -61,13 +63,9 @@ public static class Patches
     {
         if (__instance is not ItemTool) return;
 
-        if (Config.HideStowedItems && !__instance.IsEquipped() && !__instance.IsPuttingAway())
+        if (Config.IsHideStowedItemsEnabled && !__instance.IsEquipped() && !__instance.IsPuttingAway())
         {
-            __instance.transform.localScale = Vector3.zero;
-        }
-        else
-        {
-            __instance.transform.localScale = Vector3.one;
+            __instance.transform.localRotation = Quaternion.Euler(90f, 90f, 0f);
         }
     }
 

@@ -75,7 +75,7 @@ public class ImmersionController : MonoBehaviour
         };
         _characterController.GetComponentInChildren<PlayerProbeLauncher>().OnLaunchProbe += (probe) =>
         {
-            if (Config.UseScoutAnim)
+            if (Config.IsScoutAnimEnabled)
             {
                 _lastScoutLaunchTime = Time.time;
             }
@@ -97,15 +97,15 @@ public class ImmersionController : MonoBehaviour
         if (!_characterController.IsGrounded() && !_characterController._isMovementLocked)
         {
             // if in midair, use falling and/or jumping animation
-            float fallFraction = Config.UseFallAnim ? _animController._animator.GetFloat("FreefallSpeed") : 0f;
-            float jumpFraction = Config.UseJumpAnim ? Mathf.Max((_characterController._lastJumpTime + 0.5f - Time.time) * 2f, 0f) : 0f;
+            float fallFraction = Config.IsFallAnimEnabled ? _animController._animator.GetFloat("FreefallSpeed") : 0f;
+            float jumpFraction = Config.IsJumpAnimEnabled ? Mathf.Max((_characterController._lastJumpTime + 0.5f - Time.time) * 2f, 0f) : 0f;
             _viewBobIntensity = Mathf.SmoothDamp(_viewBobIntensity, Mathf.Min(fallFraction + jumpFraction, 1f) * 0.075f, ref _viewBobVelocity, 0.075f);
         }
         else
         {
             // if on ground, use walking and/or landing animation
             float walkFraction = Mathf.Sqrt(Mathf.Pow(_animController._animator.GetFloat("RunSpeedX"), 2f) + Mathf.Pow(_animController._animator.GetFloat("RunSpeedY"), 2f));
-            float landingFraction = Config.UseLandingAnim ? Mathf.Max((_lastLandedTime + 0.25f - Time.time) * 6f, 0f) : 0f;
+            float landingFraction = Config.IsLandingAnimEnabled ? Mathf.Max((_lastLandedTime + 0.25f - Time.time) * 6f, 0f) : 0f;
             _viewBobIntensity = Mathf.SmoothDamp(_viewBobIntensity, Mathf.Min(walkFraction + landingFraction, 5f) * 0.02f, ref _viewBobVelocity, 0.075f);
         }
 
@@ -124,7 +124,7 @@ public class ImmersionController : MonoBehaviour
         // tool bob
         float toolBobX = Mathf.Sin(_viewBobTime * 6.28318f) * _viewBobIntensity * Config.ToolBobXAmount * 0.25f;
         float toolBobY = Mathf.Cos(_viewBobTime * 12.5664f) * _viewBobIntensity * Config.ToolBobYAmount * 0.25f;
-        float toolBobZ = -Mathf.Sin(_viewBobTime * 6.28318f) * _viewBobIntensity * Config.ToolBobZAmount * 0.25f * (Config.UseLeftyMode ? -1f : 1f);
+        float toolBobZ = -Mathf.Sin(_viewBobTime * 6.28318f) * _viewBobIntensity * Config.ToolBobZAmount * 0.25f * (Config.IsLeftyModeEnabled ? -1f : 1f);
         ToolRoot.transform.localPosition = new Vector3(toolBobX, toolBobY, toolBobZ);
         ToolRoot.transform.localRotation = Quaternion.Euler(new Vector3(bobY * 25f * Config.ToolBobPitchAmount, 0f, bobX * 25f * Config.ToolBobRollAmount));
 
@@ -144,7 +144,7 @@ public class ImmersionController : MonoBehaviour
         TranslatorRoot.transform.localRotation = ToolRoot.transform.localRotation;
 
         // do this after setting the big tool position as it only applyies to big tool root
-        if (Config.UseScoutAnim)
+        if (Config.IsScoutAnimEnabled)
         {
             UpdateScoutAnim();
         }
@@ -152,7 +152,7 @@ public class ImmersionController : MonoBehaviour
 
     private void UpdateToolSway()
     {
-        // get look input if player is in normal movement mode
+        // get look input only if player is in normal movement mode
         Vector2 lookDelta;
         if (!OWInput.IsInputMode(InputMode.Character) || (PlayerState.InZeroG() && PlayerState.IsWearingSuit()) || Time.timeScale == 0f)
         {
@@ -164,7 +164,6 @@ public class ImmersionController : MonoBehaviour
             bool isAlarming = Locator.GetAlarmSequenceController() != null && Locator.GetAlarmSequenceController().IsAlarmWakingPlayer();
             lookDelta *= (_characterController._signalscopeZoom || isAlarming) ? (PlayerCameraController.LOOK_RATE * PlayerCameraController.ZOOM_SCALAR) : PlayerCameraController.LOOK_RATE;
         }
-
         float degreesY = _cameraController.GetDegreesY();
         // decrease horizontal sway the further up or down the player is looking
         lookDelta.x *= (Mathf.Cos(degreesY * 0.03490f) + 1f) * 0.5f;
@@ -187,16 +186,16 @@ public class ImmersionController : MonoBehaviour
     {
         float degreesY = _cameraController.GetDegreesY();
         Vector3 dynamicToolHeight;
-
         if (Config.ToolHeightBehavior == "Legacy")
         {
+            // legacy behavior moves tool closer to camera the more you are looking up/down
             dynamicToolHeight = new Vector3(0f, -degreesY * 0.02222f * Config.ToolHeightYAmount, (Mathf.Cos(degreesY * 0.03490f) - 1) * 0.3f * Config.ToolHeightZAmount) * 0.04f;
         }
         else
         {
+            // new behavior moves tool closer when looking up and further when looking down
             dynamicToolHeight = new Vector3(0f, -degreesY * 0.02222f * Config.ToolHeightYAmount, -degreesY * 0.01111f * Config.ToolHeightZAmount) * 0.04f;
         }
-
         ToolRoot.transform.localPosition += dynamicToolHeight;
     }
 
@@ -207,14 +206,14 @@ public class ImmersionController : MonoBehaviour
         float dampTime = targetRecoil > _scoutRecoil ? 0.05f : 0.1f;
         _scoutRecoil = Mathf.SmoothDamp(_scoutRecoil, targetRecoil, ref _scoutRecoilVelocity, dampTime);
         CameraRoot.transform.localPosition += new Vector3(0f, 0f, 0.15f) * _scoutRecoil;
-        CameraRoot.transform.localRotation *= Quaternion.Euler(new Vector3(-10f, (Config.UseLeftyMode ? -1f : 1f), -5f * (Config.UseLeftyMode ? -1f : 1f)) * _scoutRecoil);
-        ProbeLauncherRoot.transform.localPosition += new Vector3(0.5f * (Config.UseLeftyMode ? -1f : 1f), 0.25f, -0.5f) * _scoutRecoil;
-        ProbeLauncherRoot.transform.localRotation *= Quaternion.Euler(new Vector3(-10f, 0f, -20f * (Config.UseLeftyMode ? -1f : 1f)) * _scoutRecoil);
+        CameraRoot.transform.localRotation *= Quaternion.Euler(new Vector3(-10f, (Config.IsLeftyModeEnabled ? -1f : 1f), -5f * (Config.IsLeftyModeEnabled ? -1f : 1f)) * _scoutRecoil);
+        ProbeLauncherRoot.transform.localPosition += new Vector3(0.5f * (Config.IsLeftyModeEnabled ? -1f : 1f), 0.25f, -0.5f) * _scoutRecoil;
+        ProbeLauncherRoot.transform.localRotation *= Quaternion.Euler(new Vector3(-10f, 0f, -20f * (Config.IsLeftyModeEnabled ? -1f : 1f)) * _scoutRecoil);
     }
 
     private void UpdateLeftyMode()
     {
-        if (Config.UseLeftyMode)
+        if (Config.IsLeftyModeEnabled)
         {
             ToolRoot.transform.localScale = new Vector3(-1f, 1f, 1f);
             ProbeLauncherRoot.transform.localScale = new Vector3(-1f, 1f, 1f);
