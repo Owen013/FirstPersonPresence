@@ -8,13 +8,11 @@ namespace Immersion;
 public static class Patches
 {
     [HarmonyPostfix]
-    [HarmonyPatch(typeof(PlayerCameraController), nameof(PlayerCameraController.Awake))]
+    [HarmonyPatch(typeof(PlayerCameraController), nameof(PlayerCameraController.Start))]
     private static void OnCameraAwake(PlayerCameraController __instance)
     {
         __instance.gameObject.AddComponent<ImmersionController>();
-        Main.Instance.Log($"{nameof(ImmersionController)} added to {__instance.name}", OWML.Common.MessageType.Debug);
-        __instance.gameObject.AddComponent<ToolArmHandler>();
-        Main.Instance.Log($"{nameof(ToolArmHandler)} added to {__instance.name}", OWML.Common.MessageType.Debug);
+        //Main.Instance.Log($"{nameof(ImmersionController)} added to {__instance.name}", OWML.Common.MessageType.Debug);
     }
 
     [HarmonyPostfix]
@@ -70,14 +68,14 @@ public static class Patches
     }
 
     [HarmonyPostfix]
-    [HarmonyPatch(typeof(Signalscope), nameof(Signalscope.Awake))]
+    [HarmonyPatch(typeof(Signalscope), nameof(Signalscope.Start))]
     private static void OnSignalscopeAwake(Signalscope __instance)
     {
         ToolArmHandler.NewArmPrefab(__instance.transform.Find("Props_HEA_Signalscope"), new Vector3(-0.01f, -0.11f, -0.16f), Quaternion.identity, new Vector3(0.3f, 0.3f, 0.3f))?.AddComponent<ToolArm>();
     }
 
     [HarmonyPostfix]
-    [HarmonyPatch(typeof(ProbeLauncher), nameof(ProbeLauncher.Awake))]
+    [HarmonyPatch(typeof(ProbeLauncher), nameof(ProbeLauncher.Start))]
     private static void OnProbeLauncherAwake(ProbeLauncher __instance)
     {
         if (!__instance.GetComponentInParent<PlayerBody>()) return;
@@ -85,7 +83,7 @@ public static class Patches
     }
 
     [HarmonyPostfix]
-    [HarmonyPatch(typeof(NomaiTranslatorProp), nameof(NomaiTranslatorProp.Awake))]
+    [HarmonyPatch(typeof(NomaiTranslatorProp), nameof(NomaiTranslatorProp.Start))]
     private static void OnTranslatorAwake(NomaiTranslatorProp __instance)
     {
         ToolArmHandler.NewArmPrefab(__instance.transform.Find("TranslatorGroup/Props_HEA_Translator/Props_HEA_Translator_Geo"), new Vector3(0.6251f, -0.5804f, -0.2715f), Quaternion.identity, new Vector3(1.2f, 1.2f, 1.2f))?.AddComponent<ToolArm>();
@@ -138,7 +136,7 @@ public static class Patches
     }
 
     [HarmonyPostfix]
-    [HarmonyPatch(typeof(SimpleLanternItem), nameof(SimpleLanternItem.Awake))]
+    [HarmonyPatch(typeof(SimpleLanternItem), nameof(SimpleLanternItem.Start))]
     private static void OnSimpleLanternAwake(SimpleLanternItem __instance)
     {
         GameObject arm = ToolArmHandler.NewArmPrefab(__instance.transform.Find("Props_IP_Lantern/Lantern_geo"), new Vector3(-0.2524f, 0.2953f, -0.0524f), Quaternion.Euler(330f, 140f, 90f), new Vector3(1.2f, 1.2f, 1.2f), true);
@@ -150,7 +148,7 @@ public static class Patches
     }
 
     [HarmonyPostfix]
-    [HarmonyPatch(typeof(SlideReelItem), nameof(SlideReelItem.Awake))]
+    [HarmonyPatch(typeof(SlideReelItem), nameof(SlideReelItem.Start))]
     private static void OnSlideReelAwake(SlideReelItem __instance)
     {
         foreach (MeshRenderer renderer in __instance.GetComponentsInChildren<MeshRenderer>())
@@ -163,7 +161,7 @@ public static class Patches
     }
 
     [HarmonyPostfix]
-    [HarmonyPatch(typeof(DreamLanternItem), nameof(DreamLanternItem.Awake))]
+    [HarmonyPatch(typeof(DreamLanternItem), nameof(DreamLanternItem.Start))]
     private static void OnDreamLanternAwake(DreamLanternItem __instance)
     {
         GameObject arm = ToolArmHandler.NewArmPrefab(__instance.transform.Find("Props_IP_Artifact_ViewModel/artifact_geo"), new Vector3(0.1389f, 0.3851f, -0.144f), Quaternion.Euler(0f, 0f, 90f), new Vector3(1.2f, 1.2f, 1.2f));
@@ -179,7 +177,7 @@ public static class Patches
     }
 
     [HarmonyPostfix]
-    [HarmonyPatch(typeof(VisionTorchItem), nameof(VisionTorchItem.Awake))]
+    [HarmonyPatch(typeof(VisionTorchItem), nameof(VisionTorchItem.Start))]
     private static void OnVisionTorchAwake(VisionTorchItem __instance)
     {
         ToolArmHandler.NewArmPrefab(__instance.transform.Find("Prefab_IP_VisionTorchProjector/Props_IP_ScannerStaff/Scannerstaff_geo"), new Vector3(0.0403f, 1.0224f, 0.141f), Quaternion.Euler(345.0329f, 184.0765f, 358.0521f), Vector3.one, true)?.AddComponent<ItemToolArm>();

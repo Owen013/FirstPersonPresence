@@ -2,19 +2,19 @@
 
 namespace Immersion.Components;
 
-public class ToolArmHandler : MonoBehaviour
+public class ToolArmHandler
 {
     public static GameObject NewArmPrefab(Transform parent, Vector3 localPos, Quaternion localRot, Vector3 scale, bool useDefaultShader = false)
     {
         if (parent == null)
         {
-            Main.Instance.Log($"Can't create new arm prefab; parent is null", OWML.Common.MessageType.Debug);
+            Main.Instance.WriteLine($"Can't create new arm prefab; parent is null", OWML.Common.MessageType.Debug);
             return null;
         }
         if (parent.GetComponent<ToolArm>() != null)
         {
-            Main.Instance.Log($"{parent.name} already has an arm. Replacing it.", OWML.Common.MessageType.Debug);
-            Destroy(parent.GetComponent<ToolArm>().gameObject);
+            Main.Instance.WriteLine($"{parent.name} already has an arm. Replacing it.", OWML.Common.MessageType.Debug);
+            GameObject.Destroy(parent.GetComponent<ToolArm>().gameObject);
         }
 
         GameObject arm = new("ViewmodelArm");
@@ -23,7 +23,7 @@ public class ToolArmHandler : MonoBehaviour
         arm.transform.localRotation = localRot;
         arm.transform.localScale = scale;
 
-        GameObject noSuit = Instantiate(GameObject.Find("Player_Body/RoastingSystem/Stick_Root/Stick_Pivot/Stick_Tip/Props_HEA_RoastingStick/RoastingStick_Arm_NoSuit"));
+        GameObject noSuit = GameObject.Instantiate(GameObject.Find("Player_Body/RoastingSystem/Stick_Root/Stick_Pivot/Stick_Tip/Props_HEA_RoastingStick/RoastingStick_Arm_NoSuit"));
         noSuit.name = "NoSuit";
         noSuit.transform.parent = arm.transform;
         noSuit.layer = 27;
@@ -31,7 +31,7 @@ public class ToolArmHandler : MonoBehaviour
         noSuit.transform.localRotation = Quaternion.Euler(330f, 0f, 300f);
         noSuit.transform.localScale = Vector3.one;
 
-        GameObject suit = Instantiate(GameObject.Find("Player_Body/RoastingSystem/Stick_Root/Stick_Pivot/Stick_Tip/Props_HEA_RoastingStick/RoastingStick_Arm"));
+        GameObject suit = GameObject.Instantiate(GameObject.Find("Player_Body/RoastingSystem/Stick_Root/Stick_Pivot/Stick_Tip/Props_HEA_RoastingStick/RoastingStick_Arm"));
         suit.name = "Suit";
         suit.transform.parent = arm.transform;
         suit.layer = 27;

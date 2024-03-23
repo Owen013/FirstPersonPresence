@@ -11,17 +11,17 @@ public class Main : ModBehaviour
     public static Main Instance;
     public ISmolHatchling SmolHatchlingAPI;
 
-    public override object GetApi()
-    {
-        return new ImmersionAPI();
-    }
+    //public override object GetApi()
+    //{
+    //    return new ImmersionAPI();
+    //}
 
     public override void Configure(IModConfig config)
     {
         Config.UpdateConfig(config);
     }
 
-    public void Log(string text, MessageType type = MessageType.Message)
+    public void WriteLine(string text, MessageType type = MessageType.Message)
     {
         ModHelper.Console.WriteLine(text, type);
     }
@@ -35,6 +35,6 @@ public class Main : ModBehaviour
     private void Start()
     {
         SmolHatchlingAPI = ModHelper.Interaction.TryGetModApi<ISmolHatchling>("Owen013.TeenyHatchling");
-        Log($"Immersion is ready to go!", MessageType.Success);
+        WriteLine($"Immersion is ready to go!", MessageType.Success);
     }
 }
