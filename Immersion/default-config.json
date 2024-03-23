@@ -192,9 +192,9 @@
     },
     "UseLandingAnim": {
       "title": "Use Landing Animation",
-      "tooltip": "Makes the camera shake a bit when you land on the ground, based on the view/tool bob amounts you set above. Recommended: DISABLED BECAUSE IT CRASHES THE GAME WHEN YOU STATUE-SYNC AND I DON'T KNOW WHY",
+      "tooltip": "Makes the camera shake a bit when you land on the ground, based on the view/tool bob amounts you set above. Recommended: Enabled",
       "type": "toggle",
-      "value": false
+      "value": true
     },
     "UseScoutAnim": {
       "title": "Use Scout Launcher Fire Animation",
