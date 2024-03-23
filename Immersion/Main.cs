@@ -11,10 +11,10 @@ public class Main : ModBehaviour
     public static Main Instance;
     public ISmolHatchling SmolHatchlingAPI;
 
-    //public override object GetApi()
-    //{
-    //    return new ImmersionAPI();
-    //}
+    public override object GetApi()
+    {
+        return new ImmersionAPI();
+    }
 
     public override void Configure(IModConfig config)
     {
