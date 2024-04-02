@@ -4,9 +4,6 @@ namespace Immersion;
 
 public static class Config
 {
-    public delegate void ConfigureEvent();
-    public static event ConfigureEvent OnConfigure;
-
     public static bool IsViewModelHandsEnabled { get; private set; }
     public static float ViewBobXAmount { get; private set; }
     public static float ViewBobRollAmount { get; private set; }
@@ -26,9 +23,11 @@ public static class Config
     public static bool IsFallAnimEnabled { get; private set; }
     public static bool IsLandingAnimEnabled { get; private set; }
     public static bool IsScoutAnimEnabled { get; private set; }
-
     public static bool IsHideStowedItemsEnabled { get; private set; }
     public static bool IsLeftyModeEnabled { get; private set; }
+
+    public delegate void ConfigureEvent();
+    public static event ConfigureEvent OnConfigure;
 
     public static void UpdateConfig(IModConfig config)
     {
@@ -86,7 +85,7 @@ public static class Config
         }
 
         ToolHeightBehavior = config.GetSettingsValue<string>("ToolHeightBehavior");
-        if (config.GetSettingsValue<bool>("EnableToolHeight") == false)
+        if (ToolHeightBehavior == "Disabled")
         {
             ToolHeightYAmount = 0f;
             ToolHeightZAmount = 0f;

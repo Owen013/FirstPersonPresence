@@ -11,8 +11,15 @@ public static class Patches
     [HarmonyPatch(typeof(PlayerCameraController), nameof(PlayerCameraController.Start))]
     private static void OnCameraAwake(PlayerCameraController __instance)
     {
-        __instance.gameObject.AddComponent<ImmersionController>();
-        //Main.Instance.Log($"{nameof(ImmersionController)} added to {__instance.name}", OWML.Common.MessageType.Debug);
+        __instance.gameObject.AddComponent<CameraMovementController>();
+        Main.Instance.WriteLine($"{nameof(CameraMovementController)} added to {__instance.name}", OWML.Common.MessageType.Debug);
+    }
+
+    [HarmonyPostfix]
+    [HarmonyPatch(typeof(PlayerAnimController), nameof(PlayerAnimController.Start))]
+    private static void OnAnimControllerStart(PlayerAnimController __instance)
+    {
+        __instance.gameObject.AddComponent<AnimSpeedController>();
     }
 
     [HarmonyPostfix]

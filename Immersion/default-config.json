@@ -145,18 +145,12 @@
     "Dynamic Tool Grip": {
       "type": "separator"
     },
-    "EnableToolHeight": {
-      "title": "Enable Dynamic Tool Grip",
-      "tooltip": "When this is enabled, you will hold your tool at different positions based on how your camera is oriented.",
-      "type": "toggle",
-      "value": true
-    },
     "ToolHeightBehavior": {
       "title": "Dynamic Tool Grip Behavior",
       "tooltip": "Default: The tool will be held further away when looking down and closer when looking up. Legacy: the tool will be held at the normal distance when looking directly forward and closer when looking up or down. Recommended: Default",
       "type": "selector",
       "value": "Default",
-      "options": [ "Default", "Legacy" ]
+      "options": [ "Disabled", "Default", "Legacy" ]
     },
     "ToolHeightY": {
       "title": "Dynamic Tool Grip Y Amount",
