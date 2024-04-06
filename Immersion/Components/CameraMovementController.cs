@@ -123,7 +123,12 @@ public class CameraMovementController : MonoBehaviour
         ToolRoot.transform.localPosition = new Vector3(toolBobX, toolBobY, toolBobZ);
 
         // rotation bob
-        float playerScale = ModMain.Instance.SmolHatchlingAPI != null ? ModMain.Instance.SmolHatchlingAPI.GetTargetScale().z : 1f;
+        float playerScale = 1f;
+        if (ModMain.Instance.SmolHatchlingAPI != null)
+        {
+            playerScale = ModMain.Instance.SmolHatchlingAPI.GetTargetScale().z;
+            if (playerScale == 0f) playerScale = 1f;
+        }
         CameraRoot.transform.localRotation = Quaternion.Euler(new Vector3(bobY * 5f * Config.ViewBobPitchAmount, 0f, bobX * 5f * Config.ViewBobRollAmount) / playerScale);
         ToolRoot.transform.localRotation = Quaternion.Euler(new Vector3(bobY * 25f * Config.ToolBobPitchAmount, 0f, bobX * 25f * Config.ToolBobRollAmount) / playerScale);
 
