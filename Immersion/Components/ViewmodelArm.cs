@@ -2,7 +2,7 @@
 
 namespace Immersion.Components;
 
-public class ToolArm : MonoBehaviour
+public class ViewmodelArm : MonoBehaviour
 {
     private bool _isItemToolArm;
     private GameObject _noSuitArm;
@@ -23,8 +23,9 @@ public class ToolArm : MonoBehaviour
             _isItemToolArm = false;
         }
 
-        _noSuitArm = gameObject.transform.Find("NoSuit").gameObject;
-        _suitArm = gameObject.transform.Find("Suit").gameObject;
+        _noSuitArm = gameObject.transform.Find("Arm_NoSuit").gameObject;
+        _suitArm = gameObject.transform.Find("Arm_Suit").gameObject;
+
         PlayerAnimController _playerVisuals = Locator.GetPlayerController().GetComponentInChildren<PlayerAnimController>();
         _realNoSuitRightArm = _playerVisuals.transform.Find("player_mesh_noSuit:Traveller_HEA_Player/player_mesh_noSuit:Player_RightArm").gameObject;
         _realSuitRightArm = _playerVisuals.transform.Find("Traveller_Mesh_v01:Traveller_Geo/Traveller_Mesh_v01:PlayerSuit_RightArm").gameObject;
@@ -34,14 +35,12 @@ public class ToolArm : MonoBehaviour
 
     private void Update()
     {
-        if (!Config.IsViewModelHandsEnabled)
+        if (!Config.IsViewModelHandsEnabled || (_isItemToolArm && !GetComponentInParent<ItemTool>()))
         {
             _noSuitArm.SetActive(false);
             _suitArm.SetActive(false);
-            return;
         }
-
-        if (Config.IsLeftyModeEnabled && Locator.GetToolModeSwapper()._currentToolMode != ToolMode.Translator)
+        else if (Config.IsLeftyModeEnabled && Locator.GetToolModeSwapper()._currentToolMode != ToolMode.Translator)
         {
             _noSuitArm.SetActive(_realNoSuitLeftArm.activeInHierarchy);
             _suitArm.SetActive(_realSuitLeftArm.activeInHierarchy);
@@ -50,12 +49,6 @@ public class ToolArm : MonoBehaviour
         {
             _noSuitArm.SetActive(_realNoSuitRightArm.activeInHierarchy);
             _suitArm.SetActive(_realSuitRightArm.activeInHierarchy);
-        }
-
-        if (_isItemToolArm && !GetComponentInParent<ItemTool>())
-        {
-            _noSuitArm.SetActive(false);
-            _suitArm.SetActive(false);
         }
     }
 }

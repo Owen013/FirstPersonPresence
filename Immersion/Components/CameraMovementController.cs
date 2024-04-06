@@ -2,9 +2,9 @@
 
 namespace Immersion.Components;
 
-public class MovementController : MonoBehaviour
+public class CameraMovementController : MonoBehaviour
 {
-    public static MovementController Instance { get; private set; }
+    public static CameraMovementController Instance { get; private set; }
     public GameObject CameraRoot { get; private set; }
     public GameObject ToolRoot { get; private set; }
     public GameObject ProbeLauncherRoot { get; private set; }
