@@ -109,10 +109,10 @@ public class CameraMovementController : MonoBehaviour
         float bobX = Mathf.Sin(_viewBobTime * 6.28318f) * _viewBobIntensity;
         float bobY = Mathf.Cos(_viewBobTime * 12.5664f) * _viewBobIntensity;
         // scale camera bob if Smol Hatchling is installed
-        if (Main.Instance.SmolHatchlingAPI != null)
+        if (ModMain.Instance.SmolHatchlingAPI != null)
         {
-            bobX *= Main.Instance.SmolHatchlingAPI.GetCurrentScale().x;
-            bobY *= Main.Instance.SmolHatchlingAPI.GetCurrentScale().y;
+            bobX *= ModMain.Instance.SmolHatchlingAPI.GetTargetScale().x;
+            bobY *= ModMain.Instance.SmolHatchlingAPI.GetTargetScale().y;
         }
         CameraRoot.transform.localPosition = new Vector3(bobX * Config.ViewBobXAmount, bobY * Config.ViewBobYAmount, 0f);
         CameraRoot.transform.localRotation = Quaternion.Euler(new Vector3(bobY * 5f * Config.ViewBobPitchAmount, 0f, bobX * 5f * Config.ViewBobRollAmount));

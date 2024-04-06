@@ -12,7 +12,7 @@ public static class Patches
     private static void OnCameraAwake(PlayerCameraController __instance)
     {
         __instance.gameObject.AddComponent<CameraMovementController>();
-        Main.Instance.WriteLine($"{nameof(CameraMovementController)} added to {__instance.name}", OWML.Common.MessageType.Debug);
+        ModMain.Instance.WriteLine($"{nameof(CameraMovementController)} added to {__instance.name}", OWML.Common.MessageType.Debug);
     }
 
     [HarmonyPostfix]

@@ -10,12 +10,12 @@ public static class ViewmodelArmHandler
     {
         if (parent == null)
         {
-            Main.Instance.WriteLine($"Can't create viewmodel arm; parent is null", OWML.Common.MessageType.Debug);
+            ModMain.Instance.WriteLine($"Can't create viewmodel arm; parent is null", OWML.Common.MessageType.Debug);
             return null;
         }
         if (parent.GetComponent<ViewmodelArm>() != null)
         {
-            Main.Instance.WriteLine($"{parent.name} already has a viewmodel arm. Replacing it.", OWML.Common.MessageType.Debug);
+            ModMain.Instance.WriteLine($"{parent.name} already has a viewmodel arm. Replacing it.", OWML.Common.MessageType.Debug);
             GameObject.Destroy(parent.GetComponent<ViewmodelArm>().gameObject);
         }
 

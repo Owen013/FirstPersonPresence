@@ -6,9 +6,9 @@ using System.Reflection;
 
 namespace Immersion;
 
-public class Main : ModBehaviour
+public class ModMain : ModBehaviour
 {
-    public static Main Instance { get; private set; }
+    public static ModMain Instance { get; private set; }
     public ISmolHatchling SmolHatchlingAPI { get; private set; }
     public bool IsHikersModInstalled { get; private set; }
 

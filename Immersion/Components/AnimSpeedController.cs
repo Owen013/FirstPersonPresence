@@ -29,7 +29,7 @@ public class AnimSpeedController : MonoBehaviour
         }
 
         // yield to hikers mod if installed, let it do the anim speed
-        if (!Main.Instance.IsHikersModInstalled)
+        if (!ModMain.Instance.IsHikersModInstalled)
         {
             _animator.speed = AnimSpeed;
         }
