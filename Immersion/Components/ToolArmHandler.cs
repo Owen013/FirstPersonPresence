@@ -4,7 +4,7 @@ namespace Immersion.Components;
 
 public class ToolArmHandler
 {
-    public static GameObject NewArmPrefab(Transform parent, Vector3 localPos, Quaternion localRot, Vector3 scale, bool useDefaultShader = false)
+    public static ToolArm NewToolArm(Transform parent, Vector3 localPos, Quaternion localRot, Vector3 scale, bool useDefaultShader = false)
     {
         if (parent == null)
         {
@@ -17,7 +17,7 @@ public class ToolArmHandler
             GameObject.Destroy(parent.GetComponent<ToolArm>().gameObject);
         }
 
-        GameObject arm = new("ViewmodelArm");
+        GameObject arm = new GameObject("ViewmodelArm");
         arm.transform.parent = parent;
         arm.transform.localPosition = localPos;
         arm.transform.localRotation = localRot;
@@ -54,6 +54,6 @@ public class ToolArmHandler
         suitMeshRenderer.material.renderQueue = noSuitMeshRenderer.material.renderQueue;
         suitMeshRenderer.material.shader = noSuitMeshRenderer.material.shader;
 
-        return arm;
+        return arm.AddComponent<ToolArm>();
     }
 }

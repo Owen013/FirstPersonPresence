@@ -2,9 +2,9 @@
 
 namespace Immersion.Components;
 
-public class CameraMovementController : MonoBehaviour
+public class MovementController : MonoBehaviour
 {
-    public static CameraMovementController Instance { get; private set; }
+    public static MovementController Instance { get; private set; }
     public GameObject CameraRoot { get; private set; }
     public GameObject ToolRoot { get; private set; }
     public GameObject ProbeLauncherRoot { get; private set; }
@@ -35,16 +35,14 @@ public class CameraMovementController : MonoBehaviour
         _characterController = Locator.GetPlayerController();
 
         // create view bob root and parent camera to it
-        CameraRoot = new();
-        CameraRoot.name = "CameraRoot";
+        CameraRoot = new GameObject("CameraRoot");
         CameraRoot.transform.parent = _cameraController._playerCamera.mainCamera.transform.parent;
         CameraRoot.transform.localPosition = Vector3.zero;
         CameraRoot.transform.localRotation = Quaternion.identity;
         _cameraController._playerCamera.mainCamera.transform.parent = CameraRoot.transform;
 
         // create tool root and parent tools to it
-        ToolRoot = new();
-        ToolRoot.name = "ToolRoot";
+        ToolRoot = new GameObject("ToolRoot");
         ToolRoot.transform.parent = _cameraController._playerCamera.mainCamera.transform;
         ToolRoot.transform.localPosition = Vector3.zero;
         ToolRoot.transform.localRotation = Quaternion.identity;
@@ -52,16 +50,14 @@ public class CameraMovementController : MonoBehaviour
         _cameraController._playerCamera.mainCamera.transform.Find("Signalscope").transform.parent = ToolRoot.transform;
 
         // create a separate root for the scout launcher since it's a lot bigger and farther from the camera
-        ProbeLauncherRoot = new();
-        ProbeLauncherRoot.name = "ProbeLauncherRoot";
+        ProbeLauncherRoot = new GameObject("ProbeLauncherRoot");
         ProbeLauncherRoot.transform.parent = _cameraController._playerCamera.mainCamera.transform;
         ProbeLauncherRoot.transform.localPosition = Vector3.zero;
         ProbeLauncherRoot.transform.localRotation = Quaternion.identity;
         _cameraController._playerCamera.mainCamera.transform.Find("ProbeLauncher").transform.parent = ProbeLauncherRoot.transform;
 
         // create a separate root for the translator tool since it doesn't bob forward and backward
-        TranslatorRoot = new();
-        TranslatorRoot.name = "TranslatorRoot";
+        TranslatorRoot = new GameObject("TranslatorRoot");
         TranslatorRoot.transform.parent = _cameraController._playerCamera.mainCamera.transform;
         TranslatorRoot.transform.localPosition = Vector3.zero;
         TranslatorRoot.transform.localRotation = Quaternion.identity;
@@ -206,7 +202,7 @@ public class CameraMovementController : MonoBehaviour
         float dampTime = targetRecoil > _scoutRecoil ? 0.05f : 0.1f;
         _scoutRecoil = Mathf.SmoothDamp(_scoutRecoil, targetRecoil, ref _scoutRecoilVelocity, dampTime);
         CameraRoot.transform.localPosition += new Vector3(0f, 0f, 0.15f) * _scoutRecoil;
-        CameraRoot.transform.localRotation *= Quaternion.Euler(new Vector3(-10f, (Config.IsLeftyModeEnabled ? -1f : 1f), -5f * (Config.IsLeftyModeEnabled ? -1f : 1f)) * _scoutRecoil);
+        CameraRoot.transform.localRotation *= Quaternion.Euler(new Vector3(-10f, Config.IsLeftyModeEnabled ? -1f : 1f, -5f * (Config.IsLeftyModeEnabled ? -1f : 1f)) * _scoutRecoil);
         ProbeLauncherRoot.transform.localPosition += new Vector3(0.5f * (Config.IsLeftyModeEnabled ? -1f : 1f), 0.25f, -0.5f) * _scoutRecoil;
         ProbeLauncherRoot.transform.localRotation *= Quaternion.Euler(new Vector3(-10f, 0f, -20f * (Config.IsLeftyModeEnabled ? -1f : 1f)) * _scoutRecoil);
     }

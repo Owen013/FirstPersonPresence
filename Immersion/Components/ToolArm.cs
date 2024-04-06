@@ -4,15 +4,25 @@ namespace Immersion.Components;
 
 public class ToolArm : MonoBehaviour
 {
-    protected GameObject _noSuitArm;
-    protected GameObject _suitArm;
-    protected GameObject _realNoSuitRightArm;
-    protected GameObject _realSuitRightArm;
-    protected GameObject _realNoSuitLeftArm;
-    protected GameObject _realSuitLeftArm;
+    private bool _isItemToolArm;
+    private GameObject _noSuitArm;
+    private GameObject _suitArm;
+    private GameObject _realNoSuitRightArm;
+    private GameObject _realSuitRightArm;
+    private GameObject _realNoSuitLeftArm;
+    private GameObject _realSuitLeftArm;
 
-    protected virtual void Start()
+    private void Start()
     {
+        if (gameObject.GetComponentInParent<OWItem>() != null)
+        {
+            _isItemToolArm = true;
+        }
+        else
+        {
+            _isItemToolArm = false;
+        }
+
         _noSuitArm = gameObject.transform.Find("NoSuit").gameObject;
         _suitArm = gameObject.transform.Find("Suit").gameObject;
         PlayerAnimController _playerVisuals = Locator.GetPlayerController().GetComponentInChildren<PlayerAnimController>();
@@ -22,7 +32,7 @@ public class ToolArm : MonoBehaviour
         _realSuitLeftArm = _playerVisuals.transform.Find("Traveller_Mesh_v01:Traveller_Geo/Traveller_Mesh_v01:PlayerSuit_LeftArm").gameObject;
     }
 
-    protected virtual void Update()
+    private void Update()
     {
         if (!Config.IsViewModelHandsEnabled)
         {
@@ -40,6 +50,12 @@ public class ToolArm : MonoBehaviour
         {
             _noSuitArm.SetActive(_realNoSuitRightArm.activeInHierarchy);
             _suitArm.SetActive(_realSuitRightArm.activeInHierarchy);
+        }
+
+        if (_isItemToolArm && !GetComponentInParent<ItemTool>())
+        {
+            _noSuitArm.SetActive(false);
+            _suitArm.SetActive(false);
         }
     }
 }

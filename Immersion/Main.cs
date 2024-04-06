@@ -1,5 +1,5 @@
 ﻿using HarmonyLib;
-using Immersion.APIs;
+using Immersion.Interfaces;
 using OWML.Common;
 using OWML.ModHelper;
 using System.Reflection;

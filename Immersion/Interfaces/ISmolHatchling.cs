@@ -1,6 +1,6 @@
 ﻿using UnityEngine;
 
-namespace Immersion.APIs
+namespace Immersion.Interfaces
 {
     public interface ISmolHatchling
     {
