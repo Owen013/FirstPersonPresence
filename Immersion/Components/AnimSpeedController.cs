@@ -5,9 +5,11 @@ namespace Immersion.Components;
 public class AnimSpeedController : MonoBehaviour
 {
     public static AnimSpeedController Instance { get; private set; }
+
     public float AnimSpeed {  get; private set; }
 
     private Animator _animator;
+
     private PlayerCharacterController _characterController;
 
     private void Awake()

@@ -5,22 +5,37 @@ namespace Immersion.Components;
 public class CameraMovementController : MonoBehaviour
 {
     public static CameraMovementController Instance { get; private set; }
+
     public GameObject CameraRoot { get; private set; }
+
     public GameObject ToolRoot { get; private set; }
+
     public GameObject ProbeLauncherRoot { get; private set; }
+
     public GameObject TranslatorRoot { get; private set; }
 
     private PlayerCameraController _cameraController;
+
     private PlayerAnimController _animController;
+
     private PlayerCharacterController _characterController;
+
     private float _viewBobTime;
+
     private float _viewBobIntensity;
+
     private float _viewBobVelocity;
+
     private float _lastLandedTime;
+
     private float _lastScoutLaunchTime;
+
     private float _scoutRecoil;
+
     private float _scoutRecoilVelocity;
+
     private Vector3 _toolSway;
+
     private Vector3 _toolSwayVelocity;
 
     private void Awake()
@@ -114,6 +129,7 @@ public class CameraMovementController : MonoBehaviour
             bobX *= ModMain.Instance.SmolHatchlingAPI.GetTargetScale().x;
             bobY *= ModMain.Instance.SmolHatchlingAPI.GetTargetScale().y;
         }
+
         CameraRoot.transform.localPosition = new Vector3(bobX * Config.ViewBobXAmount, bobY * Config.ViewBobYAmount, 0f);
 
         // tool bob
@@ -126,9 +142,13 @@ public class CameraMovementController : MonoBehaviour
         float playerScale = 1f;
         if (ModMain.Instance.SmolHatchlingAPI != null)
         {
-            playerScale = ModMain.Instance.SmolHatchlingAPI.GetTargetScale().z;
-            if (playerScale == 0f) playerScale = 1f;
+            playerScale = ModMain.Instance.SmolHatchlingAPI.GetTargetScale().x;
+            if (playerScale == 0f)
+            {
+                playerScale = 1f;
+            }
         }
+
         CameraRoot.transform.localRotation = Quaternion.Euler(new Vector3(bobY * 5f * Config.ViewBobPitchAmount, 0f, bobX * 5f * Config.ViewBobRollAmount) / playerScale);
         ToolRoot.transform.localRotation = Quaternion.Euler(new Vector3(bobY * 25f * Config.ToolBobPitchAmount, 0f, bobX * 25f * Config.ToolBobRollAmount) / playerScale);
 
@@ -136,6 +156,7 @@ public class CameraMovementController : MonoBehaviour
         {
             UpdateToolSway();
         }
+
         if (Config.ToolHeightYAmount != 0f || Config.ToolHeightZAmount != 0f)
         {
             UpdateDynamicToolHeight();
@@ -168,6 +189,7 @@ public class CameraMovementController : MonoBehaviour
             bool isAlarming = Locator.GetAlarmSequenceController() != null && Locator.GetAlarmSequenceController().IsAlarmWakingPlayer();
             lookDelta *= (_characterController._signalscopeZoom || isAlarming) ? (PlayerCameraController.LOOK_RATE * PlayerCameraController.ZOOM_SCALAR) : PlayerCameraController.LOOK_RATE;
         }
+
         float degreesY = _cameraController.GetDegreesY();
         // decrease horizontal sway the further up or down the player is looking
         lookDelta.x *= (Mathf.Cos(degreesY * 0.03490f) + 1f) * 0.5f;
@@ -203,12 +225,13 @@ public class CameraMovementController : MonoBehaviour
         ToolRoot.transform.localPosition += dynamicToolHeight;
     }
 
+    // plays a recoil animation for 0.5 seconds after scout launch
     private void UpdateScoutAnim()
     {
-        // plays a recoil animation for 0.5 seconds after scout launch
         float targetRecoil = Mathf.Max(_lastScoutLaunchTime + 0.5f - Time.time, 0f) * 2f;
         float dampTime = targetRecoil > _scoutRecoil ? 0.05f : 0.1f;
         _scoutRecoil = Mathf.SmoothDamp(_scoutRecoil, targetRecoil, ref _scoutRecoilVelocity, dampTime);
+
         CameraRoot.transform.localPosition += new Vector3(0f, 0f, 0.15f) * _scoutRecoil;
         CameraRoot.transform.localRotation *= Quaternion.Euler(new Vector3(-10f, Config.IsLeftyModeEnabled ? -1f : 1f, -5f * (Config.IsLeftyModeEnabled ? -1f : 1f)) * _scoutRecoil);
         ProbeLauncherRoot.transform.localPosition += new Vector3(0.5f * (Config.IsLeftyModeEnabled ? -1f : 1f), 0.25f, -0.5f) * _scoutRecoil;

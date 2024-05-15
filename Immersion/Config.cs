@@ -5,28 +5,49 @@ namespace Immersion;
 public static class Config
 {
     public static bool IsViewModelHandsEnabled { get; private set; }
+
     public static float ViewBobXAmount { get; private set; }
+
     public static float ViewBobRollAmount { get; private set; }
+
     public static float ViewBobPitchAmount { get; private set; }
+
     public static float ViewBobYAmount { get; private set; }
+
     public static float ToolBobXAmount { get; private set; }
+
     public static float ToolBobYAmount { get; private set; }
+
     public static float ToolBobZAmount { get; private set; }
+
     public static float ToolBobRollAmount { get; private set; }
+
     public static float ToolBobPitchAmount { get; private set; }
+
     public static float ToolSwaySensitivity { get; private set; }
+
     public static float ToolSwaySmoothing { get; private set; }
+
     public static string ToolHeightBehavior { get; private set; }
+
     public static float ToolHeightYAmount { get; private set; }
+
     public static float ToolHeightZAmount { get; private set; }
+
     public static bool IsJumpAnimEnabled { get; private set; }
+
     public static bool IsFallAnimEnabled { get; private set; }
+
     public static bool IsLandingAnimEnabled { get; private set; }
+
     public static bool IsScoutAnimEnabled { get; private set; }
+
     public static bool IsHideStowedItemsEnabled { get; private set; }
+
     public static bool IsLeftyModeEnabled { get; private set; }
 
     public delegate void ConfigureEvent();
+
     public static event ConfigureEvent OnConfigure;
 
     public static void UpdateConfig(IModConfig config)

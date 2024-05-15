@@ -16,7 +16,7 @@ public static class ViewmodelArmHandler
         if (parent.GetComponent<ViewmodelArm>() != null)
         {
             ModMain.Instance.WriteLine($"{parent.name} already has a viewmodel arm. Replacing it.", OWML.Common.MessageType.Debug);
-            GameObject.Destroy(parent.GetComponent<ViewmodelArm>().gameObject);
+            Object.Destroy(parent.GetComponent<ViewmodelArm>().gameObject);
         }
 
         GameObject arm = new GameObject("ViewmodelArm");
@@ -25,7 +25,7 @@ public static class ViewmodelArmHandler
         arm.transform.localRotation = localRot;
         arm.transform.localScale = scale;
 
-        GameObject noSuit = GameObject.Instantiate(GameObject.Find("Player_Body/RoastingSystem/Stick_Root/Stick_Pivot/Stick_Tip/Props_HEA_RoastingStick/RoastingStick_Arm_NoSuit"));
+        GameObject noSuit = Object.Instantiate(GameObject.Find("Player_Body/RoastingSystem/Stick_Root/Stick_Pivot/Stick_Tip/Props_HEA_RoastingStick/RoastingStick_Arm_NoSuit"));
         noSuit.name = "Arm_NoSuit";
         noSuit.transform.parent = arm.transform;
         noSuit.layer = 27;
@@ -33,7 +33,7 @@ public static class ViewmodelArmHandler
         noSuit.transform.localRotation = Quaternion.Euler(330f, 0f, 300f);
         noSuit.transform.localScale = Vector3.one;
 
-        GameObject suit = GameObject.Instantiate(GameObject.Find("Player_Body/RoastingSystem/Stick_Root/Stick_Pivot/Stick_Tip/Props_HEA_RoastingStick/RoastingStick_Arm"));
+        GameObject suit = Object.Instantiate(GameObject.Find("Player_Body/RoastingSystem/Stick_Root/Stick_Pivot/Stick_Tip/Props_HEA_RoastingStick/RoastingStick_Arm"));
         suit.name = "Arm_Suit";
         suit.transform.parent = arm.transform;
         suit.layer = 27;
