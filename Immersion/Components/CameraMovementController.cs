@@ -121,36 +121,18 @@ public class CameraMovementController : MonoBehaviour
         }
 
         // camera bob
-        float bobX = Mathf.Sin(_viewBobTime * 6.28318f) * _viewBobIntensity;
-        float bobY = Mathf.Cos(_viewBobTime * 12.5664f) * _viewBobIntensity;
-        // scale camera bob if Smol Hatchling is installed
-        if (ModMain.Instance.SmolHatchlingAPI != null)
-        {
-            bobX *= ModMain.Instance.SmolHatchlingAPI.GetTargetScale().x;
-            bobY *= ModMain.Instance.SmolHatchlingAPI.GetTargetScale().y;
-        }
-
+        Vector3 playerScale = ModMain.Instance.SmolHatchlingAPI != null ? ModMain.Instance.SmolHatchlingAPI.GetTargetScale() : Vector3.one;
+        float bobX = Mathf.Sin(_viewBobTime * 6.28318f) * _viewBobIntensity * playerScale.x;
+        float bobY = Mathf.Cos(_viewBobTime * 12.5664f) * _viewBobIntensity * playerScale.y;
         CameraRoot.transform.localPosition = new Vector3(bobX * Config.ViewBobXAmount, bobY * Config.ViewBobYAmount, 0f);
+        CameraRoot.transform.localRotation = Quaternion.Euler(new Vector3(bobY * 5f * Config.ViewBobPitchAmount, 0f, bobX * 5f * Config.ViewBobRollAmount) / playerScale.x);
 
         // tool bob
         float toolBobX = Mathf.Sin(_viewBobTime * 6.28318f) * _viewBobIntensity * Config.ToolBobXAmount * 0.25f;
         float toolBobY = Mathf.Cos(_viewBobTime * 12.5664f) * _viewBobIntensity * Config.ToolBobYAmount * 0.25f;
         float toolBobZ = -Mathf.Sin(_viewBobTime * 6.28318f) * _viewBobIntensity * Config.ToolBobZAmount * 0.25f * (Config.IsLeftyModeEnabled ? -1f : 1f);
         ToolRoot.transform.localPosition = new Vector3(toolBobX, toolBobY, toolBobZ);
-
-        // rotation bob
-        float playerScale = 1f;
-        if (ModMain.Instance.SmolHatchlingAPI != null)
-        {
-            playerScale = ModMain.Instance.SmolHatchlingAPI.GetTargetScale().x;
-            if (playerScale == 0f)
-            {
-                playerScale = 1f;
-            }
-        }
-
-        CameraRoot.transform.localRotation = Quaternion.Euler(new Vector3(bobY * 5f * Config.ViewBobPitchAmount, 0f, bobX * 5f * Config.ViewBobRollAmount) / playerScale);
-        ToolRoot.transform.localRotation = Quaternion.Euler(new Vector3(bobY * 25f * Config.ToolBobPitchAmount, 0f, bobX * 25f * Config.ToolBobRollAmount) / playerScale);
+        ToolRoot.transform.localRotation = Quaternion.Euler(new Vector3(toolBobY * 100f * Config.ToolBobPitchAmount, 0f, toolBobX * 100f * Config.ToolBobRollAmount) / playerScale.x);
 
         if (Config.ToolSwaySensitivity != 0f || _toolSway != Vector3.zero)
         {
@@ -222,6 +204,7 @@ public class CameraMovementController : MonoBehaviour
             // new behavior moves tool closer when looking up and further when looking down
             dynamicToolHeight = new Vector3(0f, -degreesY * 0.02222f * Config.ToolHeightYAmount, -degreesY * 0.01111f * Config.ToolHeightZAmount) * 0.04f;
         }
+
         ToolRoot.transform.localPosition += dynamicToolHeight;
     }
 
@@ -231,7 +214,6 @@ public class CameraMovementController : MonoBehaviour
         float targetRecoil = Mathf.Max(_lastScoutLaunchTime + 0.5f - Time.time, 0f) * 2f;
         float dampTime = targetRecoil > _scoutRecoil ? 0.05f : 0.1f;
         _scoutRecoil = Mathf.SmoothDamp(_scoutRecoil, targetRecoil, ref _scoutRecoilVelocity, dampTime);
-
         CameraRoot.transform.localPosition += new Vector3(0f, 0f, 0.15f) * _scoutRecoil;
         CameraRoot.transform.localRotation *= Quaternion.Euler(new Vector3(-10f, Config.IsLeftyModeEnabled ? -1f : 1f, -5f * (Config.IsLeftyModeEnabled ? -1f : 1f)) * _scoutRecoil);
         ProbeLauncherRoot.transform.localPosition += new Vector3(0.5f * (Config.IsLeftyModeEnabled ? -1f : 1f), 0.25f, -0.5f) * _scoutRecoil;

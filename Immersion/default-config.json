@@ -127,7 +127,7 @@
     },
     "ToolSwaySensitivity": {
       "title": "Tool Sway Sensitivity",
-      "tooltip": "How much tool sway there is for a given mouse input. Set to 0 to disable tool swaying. Recommended: 1",
+      "tooltip": "How much tool sway there is for a given mouse input. Recommended: 1",
       "type": "slider",
       "min": 0,
       "max": 2,
@@ -203,7 +203,7 @@
       "value": true
     },
     "UseLeftyMode": {
-      "title": "Lefty Mode",
+      "title": "Enable Lefty Mode",
       "tooltip": "Makes you left handed!",
       "type": "toggle",
       "value": false

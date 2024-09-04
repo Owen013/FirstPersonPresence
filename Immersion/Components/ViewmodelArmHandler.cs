@@ -13,6 +13,7 @@ public static class ViewmodelArmHandler
             ModMain.Instance.WriteLine($"Can't create viewmodel arm; parent is null", OWML.Common.MessageType.Debug);
             return null;
         }
+
         if (parent.GetComponent<ViewmodelArm>() != null)
         {
             ModMain.Instance.WriteLine($"{parent.name} already has a viewmodel arm. Replacing it.", OWML.Common.MessageType.Debug);
@@ -53,6 +54,7 @@ public static class ViewmodelArmHandler
                 material.shader = parent.GetComponent<MeshRenderer>().material.shader;
             }
         }
+
         suitMeshRenderer.material.renderQueue = noSuitMeshRenderer.material.renderQueue;
         suitMeshRenderer.material.shader = noSuitMeshRenderer.material.shader;
 
