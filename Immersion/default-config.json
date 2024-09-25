@@ -21,12 +21,6 @@
       "type": "toggle",
       "value": true
     },
-    "FlipViewBob": {
-      "title": "Flip View Bob",
-      "tooltip": "Flips the vertical component of the camera movement; if this is enabled, the camera will move in a 'u' shape instead of a 'n' shape.",
-      "type": "toggle",
-      "value": false
-    },
     "ViewBobX": {
       "title": "View Bob X Amount",
       "tooltip": "How much the camera bobs from side to side. Recommended: 1",
@@ -68,12 +62,6 @@
       "tooltip": "Enable the bobbing of the held item while moving.",
       "type": "toggle",
       "value": true
-    },
-    "FlipToolBob": {
-      "title": "Flip Tool Bob",
-      "tooltip": "Flips the vertical component of the held item's movement; if this is enabled, the tool will move in a 'u' shape instead of a 'n' shape.",
-      "type": "toggle",
-      "value": false
     },
     "ToolBobX": {
       "title": "Tool Bob X Amount",

@@ -11,8 +11,8 @@ public static class Patches
     [HarmonyPatch(typeof(PlayerCameraController), nameof(PlayerCameraController.Start))]
     private static void OnCameraAwake(PlayerCameraController __instance)
     {
-        __instance.gameObject.AddComponent<CameraMovementController>();
-        ModMain.Instance.WriteLine($"{nameof(CameraMovementController)} added to {__instance.name}", OWML.Common.MessageType.Debug);
+        __instance.gameObject.AddComponent<ViewBobController>();
+        ModMain.Instance.WriteLine($"{nameof(ViewBobController)} added to {__instance.name}", OWML.Common.MessageType.Debug);
     }
 
     [HarmonyPostfix]
