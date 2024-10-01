@@ -1,7 +1,9 @@
-﻿using UnityEngine;
+﻿using HarmonyLib;
+using UnityEngine;
 
 namespace Immersion.Components;
 
+[HarmonyPatch]
 public class ViewBobController : MonoBehaviour
 {
     public static ViewBobController Instance { get; private set; }
@@ -267,6 +269,26 @@ public class ViewBobController : MonoBehaviour
         {
             ToolRoot.transform.localScale = Vector3.one;
             ProbeLauncherRoot.transform.localScale = Vector3.one;
+        }
+    }
+
+    [HarmonyPostfix]
+    [HarmonyPatch(typeof(PlayerCameraController), nameof(PlayerCameraController.Start))]
+    private static void AddToPlayerCamera(PlayerCameraController __instance)
+    {
+        __instance.gameObject.AddComponent<ViewBobController>();
+        ModMain.Instance.WriteLine($"{nameof(ViewBobController)} added to {__instance.name}", OWML.Common.MessageType.Debug);
+    }
+
+    [HarmonyPostfix]
+    [HarmonyPatch(typeof(PlayerTool), nameof(PlayerTool.Update))]
+    private static void OnItemToolUpdate(PlayerTool __instance)
+    {
+        if (__instance is not ItemTool) return;
+
+        if (Config.IsHideStowedItemsEnabled && !__instance.IsEquipped() && !__instance.IsPuttingAway())
+        {
+            __instance.transform.localRotation = Quaternion.Euler(90f, 90f, 0f);
         }
     }
 }
