@@ -107,11 +107,12 @@
     "Tool Sway": {
       "type": "separator"
     },
-    "EnableToolSway": {
-      "title": "Enable Tool Sway",
+    "ToolSwayBehavior": {
+      "title": "Tool Sway Behavior",
       "tooltip": "When enabled, your held item will lag behind the camera a bit as you look around.",
-      "type": "toggle",
-      "value": true
+      "type": "selector",
+      "value": "Default",
+      "options": [ "Disabled", "Default", "Legacy" ]
     },
     "ToolSwaySensitivity": {
       "title": "Tool Sway Sensitivity",

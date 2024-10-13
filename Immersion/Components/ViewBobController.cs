@@ -36,9 +36,9 @@ public class ViewBobController : MonoBehaviour
 
     private float _scoutRecoilVelocity;
 
-    private Vector3 _toolSway;
+    private Vector2 _toolSway;
 
-    private Vector3 _toolSwayVelocity;
+    private Vector2 _toolSwayVelocity;
 
     private void Awake()
     {
@@ -83,7 +83,7 @@ public class ViewBobController : MonoBehaviour
         _cameraController._playerCamera.mainCamera.transform.Find("NomaiTranslatorProp").transform.parent = TranslatorRoot.transform;
 
         // subscribe to events
-        Config.OnConfigure += SetLeftyMode;
+        Config.OnConfigure += CheckAndSetLeftyMode;
         _characterController.OnBecomeGrounded += () =>
         {
             _lastLandedTime = Time.time;
@@ -96,12 +96,12 @@ public class ViewBobController : MonoBehaviour
             }
         };
 
-        SetLeftyMode();
+        CheckAndSetLeftyMode();
     }
 
     private void OnDestroy()
     {
-        Config.OnConfigure -= SetLeftyMode;
+        Config.OnConfigure -= CheckAndSetLeftyMode;
     }
 
     private void Update()
@@ -167,9 +167,9 @@ public class ViewBobController : MonoBehaviour
             }
         }
 
-        if (Config.IsToolSwayEnabled)
+        if (Config.ToolSwayBehavior != "Disabled")
         {
-            UpdateToolSway();
+            ApplyToolSway();
         }
         else
         {
@@ -179,7 +179,7 @@ public class ViewBobController : MonoBehaviour
 
         if (Config.ToolHeightBehavior != "Disabled")
         {
-            UpdateDynamicToolHeight();
+            ApplyDynamicToolHeight();
         }
 
         // big tool root position offset needs to be 3x bigger because the tools in it are further away and appear to move less
@@ -191,63 +191,95 @@ public class ViewBobController : MonoBehaviour
         // do this after setting the big tool position as it only applyies to big tool root
         if (Config.IsScoutAnimEnabled)
         {
-            UpdateScoutAnim();
+            ApplyScoutAnim();
         }
     }
 
-    private void UpdateToolSway()
+    private void ApplyToolSway()
     {
-        // get look input only if player is in normal movement mode
-        Vector2 lookDelta;
-        if (!OWInput.IsInputMode(InputMode.Character) || (PlayerState.InZeroG() && PlayerState.IsWearingSuit()) || Time.timeScale == 0f)
+        if (Config.ToolSwayBehavior == "Legacy")
         {
-            lookDelta = Vector2.zero;
+            // get look input only if player is in normal movement mode
+            Vector2 lookDelta;
+            if (!OWInput.IsInputMode(InputMode.Character) || (PlayerState.InZeroG() && PlayerState.IsWearingSuit()) || Time.timeScale == 0f)
+            {
+                lookDelta = Vector2.zero;
+            }
+            else
+            {
+                lookDelta = OWInput.GetAxisValue(InputLibrary.look) * _characterController._playerCam.fieldOfView / _characterController._initFOV * 0.002f * Time.deltaTime / Time.timeScale * Config.ToolSwaySensitivity;
+                bool isAlarming = Locator.GetAlarmSequenceController() != null && Locator.GetAlarmSequenceController().IsAlarmWakingPlayer();
+                lookDelta *= (_characterController._signalscopeZoom || isAlarming) ? (PlayerCameraController.LOOK_RATE * PlayerCameraController.ZOOM_SCALAR) : PlayerCameraController.LOOK_RATE;
+            }
+
+            float degreesY = _cameraController.GetDegreesY();
+            // decrease horizontal sway the further up or down the player is looking
+            lookDelta.x *= (Mathf.Cos(degreesY * 0.03490f) + 1f) * 0.5f;
+            // cancel out vertical sway if the player can't turn anymore in that direction
+            if ((lookDelta.y > 0f && degreesY >= PlayerCameraController._maxDegreesYNormal) || (lookDelta.y < 0f && degreesY <= PlayerCameraController._minDegreesYNormal))
+            {
+                lookDelta.y = 0f;
+            }
+
+            // decay already existing tool sway and then add new tool sway
+            float maxSwayMagnitude = 0.2f;
+            _toolSway = Vector2.ClampMagnitude(Vector2.SmoothDamp(_toolSway, Vector2.zero, ref _toolSwayVelocity, 0.2f * Config.ToolSwaySmoothing, 1f) + (-lookDelta * (maxSwayMagnitude - _toolSway.magnitude) / maxSwayMagnitude), maxSwayMagnitude);
+            // move tool backward the further it is from the default position to make tool sway move in a circular motion
+
+            ToolRoot.transform.localPosition += new Vector3(_toolSway.x, _toolSway.y, Mathf.Cos(_toolSway.magnitude * 2f) - 1f);
         }
         else
         {
-            lookDelta = OWInput.GetAxisValue(InputLibrary.look) * _characterController._playerCam.fieldOfView / _characterController._initFOV * 0.002f * Time.deltaTime / Time.timeScale * Config.ToolSwaySensitivity;
-            bool isAlarming = Locator.GetAlarmSequenceController() != null && Locator.GetAlarmSequenceController().IsAlarmWakingPlayer();
-            lookDelta *= (_characterController._signalscopeZoom || isAlarming) ? (PlayerCameraController.LOOK_RATE * PlayerCameraController.ZOOM_SCALAR) : PlayerCameraController.LOOK_RATE;
+            // get look input only if player is in normal movement mode
+            Vector2 lookDelta;
+            if (!OWInput.IsInputMode(InputMode.Character) || (PlayerState.InZeroG() && PlayerState.IsWearingSuit()) || Time.timeScale == 0f)
+            {
+                lookDelta = Vector2.zero;
+            }
+            else
+            {
+                lookDelta = OWInput.GetAxisValue(InputLibrary.look) * _characterController._playerCam.fieldOfView / _characterController._initFOV * 0.4f * Time.deltaTime / Time.timeScale * Config.ToolSwaySensitivity;
+                bool isAlarming = Locator.GetAlarmSequenceController() != null && Locator.GetAlarmSequenceController().IsAlarmWakingPlayer();
+                lookDelta *= (_characterController._signalscopeZoom || isAlarming) ? (PlayerCameraController.LOOK_RATE * PlayerCameraController.ZOOM_SCALAR) : PlayerCameraController.LOOK_RATE;
+            }
+
+            float degreesY = _cameraController.GetDegreesY();
+            // cancel out vertical sway if the player can't turn anymore in that direction
+            if ((lookDelta.y > 0f && degreesY >= PlayerCameraController._maxDegreesYNormal) || (lookDelta.y < 0f && degreesY <= PlayerCameraController._minDegreesYNormal))
+            {
+                lookDelta.y = 0f;
+            }
+
+            // decay already existing tool sway and then add new tool sway
+            float maxSwayDegrees = 30f;
+            _toolSway = Vector2.ClampMagnitude(Vector2.SmoothDamp(_toolSway, Vector2.zero, ref _toolSwayVelocity, 0.15f * Config.ToolSwaySmoothing) + (-lookDelta * (maxSwayDegrees - _toolSway.magnitude) / maxSwayDegrees), maxSwayDegrees);
+            // move tool backward the further it is from the default position to make tool sway move in a circular motion
+
+            ToolRoot.transform.localRotation *= Quaternion.Euler(-_toolSway.y, 0, 0);
+            ToolRoot.transform.RotateAround(_characterController.transform.position, _characterController._owRigidbody.GetLocalUpDirection(), _toolSway.x);
         }
-
-        float degreesY = _cameraController.GetDegreesY();
-        // decrease horizontal sway the further up or down the player is looking
-        lookDelta.x *= (Mathf.Cos(degreesY * 0.03490f) + 1f) * 0.5f;
-        // cancel out vertical sway if the player can't turn anymore in that direction
-        if ((lookDelta.y > 0f && degreesY >= PlayerCameraController._maxDegreesYNormal) || (lookDelta.y < 0f && degreesY <= PlayerCameraController._minDegreesYNormal))
-        {
-            lookDelta.y = 0f;
-        }
-
-        // decay already existing tool sway and then add new tool sway
-        float maxSwayMagnitude = 0.2f;
-        _toolSway = Vector3.ClampMagnitude(Vector3.SmoothDamp(_toolSway, Vector3.zero, ref _toolSwayVelocity, 0.2f * Config.ToolSwaySmoothing, 1f) + (new Vector3(-lookDelta.x, -lookDelta.y, 0f) * (maxSwayMagnitude - _toolSway.magnitude) / maxSwayMagnitude), maxSwayMagnitude);
-        // move tool backward the further it is from the default position to make tool sway move in a circular motion
-        _toolSway.z = Mathf.Cos(_toolSway.magnitude * 2f) - 1f;
-
-        ToolRoot.transform.localPosition += _toolSway;
     }
 
-    private void UpdateDynamicToolHeight()
+    private void ApplyDynamicToolHeight()
     {
         float degreesY = _cameraController.GetDegreesY();
         Vector3 dynamicToolHeight;
         if (Config.ToolHeightBehavior == "Legacy")
         {
-            // legacy behavior moves tool closer to camera the more you are looking up/down
-            dynamicToolHeight = new Vector3(0f, -degreesY * 0.02222f * Config.ToolHeightYAmount, (Mathf.Cos(degreesY * 0.03490f) - 1) * 0.3f * Config.ToolHeightZAmount) * 0.04f;
+            // new behavior moves tool closer to camera the more you are looking up/down
+            dynamicToolHeight = new Vector3(0f, -degreesY * 0.02222f * Config.ToolHeightYAmount, -degreesY * 0.01111f * Config.ToolHeightZAmount) * 0.04f;
         }
         else
         {
-            // new behavior moves tool closer when looking up and further when looking down
-            dynamicToolHeight = new Vector3(0f, -degreesY * 0.02222f * Config.ToolHeightYAmount, -degreesY * 0.01111f * Config.ToolHeightZAmount) * 0.04f;
+            // legacy behavior moves tool closer when looking up and further when looking down
+            dynamicToolHeight = new Vector3(0f, -degreesY * 0.02222f * Config.ToolHeightYAmount, (Mathf.Cos(degreesY * 0.03490f) - 1) * 0.3f * Config.ToolHeightZAmount) * 0.04f;
         }
 
         ToolRoot.transform.localPosition += dynamicToolHeight;
     }
 
     // plays a recoil animation for 0.5 seconds after scout launch
-    private void UpdateScoutAnim()
+    private void ApplyScoutAnim()
     {
         float targetRecoil = Mathf.Max(_lastScoutLaunchTime + 0.5f - Time.time, 0f) * 2f;
         float dampTime = targetRecoil > _scoutRecoil ? 0.05f : 0.1f;
@@ -258,7 +290,7 @@ public class ViewBobController : MonoBehaviour
         ProbeLauncherRoot.transform.localRotation *= Quaternion.Euler(new Vector3(-10f, 0f, -20f * (Config.IsLeftyModeEnabled ? -1f : 1f)) * _scoutRecoil);
     }
 
-    private void SetLeftyMode()
+    private void CheckAndSetLeftyMode()
     {
         if (Config.IsLeftyModeEnabled)
         {
