@@ -107,16 +107,23 @@
     "Tool Sway": {
       "type": "separator"
     },
-    "ToolSwayBehavior": {
+    "EnableToolSway": {
       "title": "Tool Sway Behavior",
       "tooltip": "When enabled, your held item will lag behind the camera a bit as you look around.",
-      "type": "selector",
-      "value": "Default",
-      "options": [ "Disabled", "Default", "Legacy" ]
+      "type": "toggle",
+      "value": true
     },
-    "ToolSwaySensitivity": {
-      "title": "Tool Sway Sensitivity",
-      "tooltip": "How much tool sway there is for a given mouse input. Recommended: 1",
+    "ToolSwayTranslateAmount": {
+      "title": "Tool Sway Translational Amount",
+      "tooltip": "How much the tool moves for a given mouse input. Recommended: 1",
+      "type": "slider",
+      "min": 0,
+      "max": 2,
+      "value": 1
+    },
+    "ToolSwayRotateAmount": {
+      "title": "Tool Sway Rotational Amount",
+      "tooltip": "How much the tool rotates for a given mouse input. Recommended: 0",
       "type": "slider",
       "min": 0,
       "max": 2,

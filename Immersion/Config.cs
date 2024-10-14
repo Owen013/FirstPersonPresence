@@ -28,9 +28,11 @@ public static class Config
 
     public static float ToolBobPitchAmount { get; private set; }
 
-    public static string ToolSwayBehavior { get; private set; }
+    public static bool IsToolSwayEnabled { get; private set; }
 
-    public static float ToolSwaySensitivity { get; private set; }
+    public static float ToolSwayTranslateAmount { get; private set; }
+
+    public static float ToolSwayRotateAmount { get; private set; }
 
     public static float ToolSwaySmoothing { get; private set; }
 
@@ -73,8 +75,9 @@ public static class Config
         ToolBobRollAmount = config.GetSettingsValue<float>("ToolBobRoll");
         ToolBobPitchAmount = config.GetSettingsValue<float>("ToolBobPitch");
 
-        ToolSwayBehavior = config.GetSettingsValue<string>("ToolSwayBehavior");
-        ToolSwaySensitivity = config.GetSettingsValue<float>("ToolSwaySensitivity");
+        IsToolSwayEnabled = config.GetSettingsValue<bool>("EnableToolSway");
+        ToolSwayTranslateAmount = config.GetSettingsValue<float>("ToolSwayTranslateAmount");
+        ToolSwayRotateAmount = config.GetSettingsValue<float>("ToolSwayRotateAmount");
         ToolSwaySmoothing = config.GetSettingsValue<float>("ToolSwaySmoothing");
 
         ToolHeightBehavior = config.GetSettingsValue<string>("ToolHeightBehavior");
