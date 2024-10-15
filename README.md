@@ -3,7 +3,7 @@
 ![immersion](https://github.com/user-attachments/assets/38cca56e-ebad-4a33-bb5c-e4abf54e9321)
 
 #### View Bobbing
-![bob](https://github.com/user-attachments/assets/ebe0a84f-e6ad-4c10-945c-c0b9bb60a4e0)
+![bob](https://github.com/user-attachments/assets/0dd330f2-9363-45c7-ae16-d896516700a4)
 
 #### Tool Sway
 ![sway](https://github.com/user-attachments/assets/699ea2c1-ee42-441c-a3bc-18c3efc5c551)
