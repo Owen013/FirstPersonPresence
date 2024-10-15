@@ -6,7 +6,7 @@
 ![bob](https://github.com/user-attachments/assets/0dd330f2-9363-45c7-ae16-d896516700a4)
 
 #### Tool Sway
-![sway](https://github.com/user-attachments/assets/699ea2c1-ee42-441c-a3bc-18c3efc5c551)
+![sway](https://github.com/user-attachments/assets/bf8e151f-506e-41cd-bd53-0598023def3a)
 
 #### Dynamic Tool Position
 ![toolpos](https://github.com/user-attachments/assets/92eec207-260f-41af-9844-e447ab6bb63c)
