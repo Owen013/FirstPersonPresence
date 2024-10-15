@@ -36,11 +36,11 @@ public static class Config
 
     public static float ToolSwaySmoothing { get; private set; }
 
-    public static string ToolHeightBehavior { get; private set; }
+    public static string DynamicToolPosBehavior { get; private set; }
 
-    public static float ToolHeightYAmount { get; private set; }
+    public static float DynamicToolPosYAmount { get; private set; }
 
-    public static float ToolHeightZAmount { get; private set; }
+    public static float DynamicToolPosZAmount { get; private set; }
 
     public static bool IsJumpAnimEnabled { get; private set; }
 
@@ -63,26 +63,26 @@ public static class Config
         IsViewModelHandsEnabled = config.GetSettingsValue<bool>("EnableViewmodelHands");
 
         IsViewBobEnabled = config.GetSettingsValue<bool>("EnableViewBob");
-        ViewBobXAmount = config.GetSettingsValue<float>("ViewBobX");
-        ViewBobYAmount = config.GetSettingsValue<float>("ViewBobY");
-        ViewBobRollAmount = config.GetSettingsValue<float>("ViewBobRoll");
-        ViewBobPitchAmount = config.GetSettingsValue<float>("ViewBobPitch");
+        ViewBobXAmount = config.GetSettingsValue<float>("ViewBobXAmount");
+        ViewBobYAmount = config.GetSettingsValue<float>("ViewBobYAmount");
+        ViewBobRollAmount = config.GetSettingsValue<float>("ViewBobRollAmount");
+        ViewBobPitchAmount = config.GetSettingsValue<float>("ViewBobPitchAmount");
 
         IsToolBobEnabled = config.GetSettingsValue<bool>("EnableToolBob");
-        ToolBobXAmount = config.GetSettingsValue<float>("ToolBobX");
-        ToolBobYAmount = config.GetSettingsValue<float>("ToolBobY");
-        ToolBobZAmount = config.GetSettingsValue<float>("ToolBobZ");
-        ToolBobRollAmount = config.GetSettingsValue<float>("ToolBobRoll");
-        ToolBobPitchAmount = config.GetSettingsValue<float>("ToolBobPitch");
+        ToolBobXAmount = config.GetSettingsValue<float>("ToolBobXAmount");
+        ToolBobYAmount = config.GetSettingsValue<float>("ToolBobYAmount");
+        ToolBobZAmount = config.GetSettingsValue<float>("ToolBobZAmount");
+        ToolBobRollAmount = config.GetSettingsValue<float>("ToolBobRollAmount");
+        ToolBobPitchAmount = config.GetSettingsValue<float>("ToolBobPitchAmount");
 
         IsToolSwayEnabled = config.GetSettingsValue<bool>("EnableToolSway");
         ToolSwayTranslateAmount = config.GetSettingsValue<float>("ToolSwayTranslateAmount");
         ToolSwayRotateAmount = config.GetSettingsValue<float>("ToolSwayRotateAmount");
         ToolSwaySmoothing = config.GetSettingsValue<float>("ToolSwaySmoothing");
 
-        ToolHeightBehavior = config.GetSettingsValue<string>("ToolHeightBehavior");
-        ToolHeightYAmount = config.GetSettingsValue<float>("ToolHeightY");
-        ToolHeightZAmount = config.GetSettingsValue<float>("ToolHeightZ");
+        DynamicToolPosBehavior = config.GetSettingsValue<string>("DynamicToolPosBehavior");
+        DynamicToolPosYAmount = config.GetSettingsValue<float>("DynamicToolPosYAmount");
+        DynamicToolPosZAmount = config.GetSettingsValue<float>("DynamicToolPosZAmount");
 
         IsJumpAnimEnabled = config.GetSettingsValue<bool>("UseJumpAnim");
         IsFallAnimEnabled = config.GetSettingsValue<bool>("UseFallAnim");

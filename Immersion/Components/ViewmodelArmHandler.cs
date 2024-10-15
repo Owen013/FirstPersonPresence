@@ -73,7 +73,7 @@ public static class ViewmodelArmHandler
     private static void OnProbeLauncherAwake(ProbeLauncher __instance)
     {
         if (!__instance.GetComponentInParent<PlayerBody>()) return;
-        NewViewmodelArm(__instance.transform.Find("Props_HEA_ProbeLauncher/ProbeLauncherChassis"), new Vector3(0.0556f, -0.5777f, 0.0957f), Quaternion.Euler(24.6841f, 0f, 0f), new Vector3(0.9f, 0.9f, 0.9f));
+        NewViewmodelArm(__instance.transform.Find("Props_HEA_ProbeLauncher/ProbeLauncherChassis"), new Vector3(0.0556f, -0.5962f, 0.0299f), Quaternion.Euler(24.6841f, 0f, 0f), new Vector3(0.9f, 0.9f, 0.9f));
     }
 
     [HarmonyPostfix]

@@ -178,7 +178,7 @@ public class ViewBobController : MonoBehaviour
             _toolSwayVelocity = Vector3.zero;
         }
 
-        if (Config.ToolHeightBehavior != "Disabled")
+        if (Config.DynamicToolPosBehavior != "Disabled")
         {
             ApplyDynamicToolHeight();
         }
@@ -188,8 +188,6 @@ public class ViewBobController : MonoBehaviour
         ProbeLauncherRoot.transform.localRotation = ToolRoot.transform.localRotation;
         TranslatorRoot.transform.localPosition = new Vector3(1.41f * ToolRoot.transform.localPosition.x, ToolRoot.transform.localPosition.y, ToolRoot.transform.localPosition.z - toolBobZ) * 3f;
         TranslatorRoot.transform.localRotation = ToolRoot.transform.localRotation;
-
-        // do this after setting the big tool position as it only applyies to big tool root
         if (Config.IsScoutAnimEnabled)
         {
             ApplyScoutAnim();
@@ -224,23 +222,23 @@ public class ViewBobController : MonoBehaviour
         _toolSway = Vector2.ClampMagnitude(Vector2.SmoothDamp(_toolSway, Vector2.zero, ref _toolSwayVelocity, 0.2f * Config.ToolSwaySmoothing, 5f) + -lookDelta * (1 - _toolSway.magnitude), 1);
         ToolRoot.transform.localPosition += 0.15f * Config.ToolSwayTranslateAmount * new Vector3(_toolSway.x * xSwayMultiplier, _toolSway.y, 0.25f * (Mathf.Cos(Mathf.PI * 0.5f * Mathf.Abs(_toolSway.y) * 2f) - 1f));
         ToolRoot.transform.Translate(0.15f * Config.ToolSwayTranslateAmount * new Vector3(0, 0, 0.25f * (Mathf.Cos(Mathf.PI * 0.5f * Mathf.Abs(_toolSway.x * xSwayMultiplier) * 2f) - 1f)), _characterController.transform);
-        ToolRoot.transform.localRotation *= Quaternion.Euler(-45 * Config.ToolSwayRotateAmount * new Vector3(_toolSway.y, 0, 0));
-        ToolRoot.transform.RotateAround(_characterController.transform.position, _characterController._owRigidbody.GetLocalUpDirection(), 45 * Config.ToolSwayRotateAmount * _toolSway.x);
+        ToolRoot.transform.localRotation *= Quaternion.Euler(-30 * Config.ToolSwayRotateAmount * new Vector3(_toolSway.y, 0, 0));
+        ToolRoot.transform.RotateAround(_characterController.transform.position, _characterController._owRigidbody.GetLocalUpDirection(), 30 * Config.ToolSwayRotateAmount * _toolSway.x);
     }
 
     private void ApplyDynamicToolHeight()
     {
         float degreesY = _cameraController.GetDegreesY();
         Vector3 dynamicToolHeight;
-        if (Config.ToolHeightBehavior == "Legacy")
+        if (Config.DynamicToolPosBehavior == "Legacy")
         {
             // new behavior moves tool closer to camera the more you are looking up/down
-            dynamicToolHeight = new Vector3(0f, -degreesY * 0.02222f * Config.ToolHeightYAmount, -degreesY * 0.01111f * Config.ToolHeightZAmount) * 0.04f;
+            dynamicToolHeight = new Vector3(0f, -degreesY * 0.02222f * Config.DynamicToolPosYAmount, -degreesY * 0.01111f * Config.DynamicToolPosZAmount) * 0.04f;
         }
         else
         {
             // legacy behavior moves tool closer when looking up and further when looking down
-            dynamicToolHeight = new Vector3(0f, -degreesY * 0.02222f * Config.ToolHeightYAmount, (Mathf.Cos(degreesY * 0.03490f) - 1) * 0.3f * Config.ToolHeightZAmount) * 0.04f;
+            dynamicToolHeight = new Vector3(0f, -degreesY * 0.02222f * Config.DynamicToolPosYAmount, (Mathf.Cos(degreesY * 0.03490f) - 1) * 0.3f * Config.DynamicToolPosZAmount) * 0.04f;
         }
 
         ToolRoot.transform.localPosition += dynamicToolHeight;
@@ -277,7 +275,6 @@ public class ViewBobController : MonoBehaviour
     private static void AddToPlayerCamera(PlayerCameraController __instance)
     {
         __instance.gameObject.AddComponent<ViewBobController>();
-        ModMain.Instance.WriteLine($"{nameof(ViewBobController)} added to {__instance.name}", OWML.Common.MessageType.Debug);
     }
 
     [HarmonyPostfix]
