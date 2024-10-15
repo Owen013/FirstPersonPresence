@@ -5,9 +5,9 @@ using UnityEngine;
 namespace Immersion.Components;
 
 [HarmonyPatch]
-public class ViewBobController : MonoBehaviour
+public class ImmersionController : MonoBehaviour
 {
-    public static ViewBobController Instance { get; private set; }
+    public static ImmersionController Instance { get; private set; }
 
     public GameObject CameraRoot { get; private set; }
 
@@ -107,8 +107,7 @@ public class ViewBobController : MonoBehaviour
 
     private void Update()
     {
-        float toolBobZ = 0f;
-
+        Vector3 toolBob = Vector3.zero;
         if (!Config.IsViewBobEnabled && !Config.IsToolBobEnabled)
         {
             CameraRoot.transform.localPosition = Vector3.zero;
@@ -155,11 +154,12 @@ public class ViewBobController : MonoBehaviour
             // tool bob
             if (Config.IsToolBobEnabled)
             {
-                float toolBobX = Mathf.Sin(_viewBobTime * 6.28318f) * _viewBobIntensity * 0.25f;
-                float toolBobY = Mathf.Cos(_viewBobTime * 12.5664f) * _viewBobIntensity * 0.25f;
-                toolBobZ = -Mathf.Sin(_viewBobTime * 6.28318f) * _viewBobIntensity * 0.25f * (Config.IsLeftyModeEnabled ? -1f : 1f);
-                ToolRoot.transform.localPosition = new Vector3(toolBobX * Config.ToolBobXAmount, toolBobY * Config.ToolBobYAmount, toolBobZ * Config.ToolBobZAmount);
-                ToolRoot.transform.localRotation = Quaternion.Euler(new Vector3(toolBobY * 100f * Config.ToolBobPitchAmount, 0f, -toolBobX * 100f * Config.ToolBobRollAmount));
+                toolBob.x = Mathf.Sin(_viewBobTime * 6.28318f) * _viewBobIntensity * 0.25f;
+                toolBob.y = Mathf.Cos(_viewBobTime * 12.5664f) * _viewBobIntensity * 0.25f;
+                toolBob.z = -toolBob.x * (Config.IsLeftyModeEnabled ? -1f : 1f);
+                ToolRoot.transform.localPosition = new Vector3(0, toolBob.y * Config.ToolBobYAmount);
+                ToolRoot.transform.Translate(new Vector3(toolBob.x * Config.ToolBobXAmount, 0, toolBob.z * Config.ToolBobZAmount), _characterController.transform);
+                ToolRoot.transform.localRotation = Quaternion.Euler(new Vector3(toolBob.y * 100f * Config.ToolBobPitchAmount, 0f, -toolBob.x * 100f * Config.ToolBobRollAmount));
             }
             else
             {
@@ -170,7 +170,7 @@ public class ViewBobController : MonoBehaviour
 
         if (Config.IsToolSwayEnabled)
         {
-            ApplyToolSway();
+            UpdateToolSway();
         }
         else
         {
@@ -180,36 +180,34 @@ public class ViewBobController : MonoBehaviour
 
         if (Config.DynamicToolPosBehavior != "Disabled")
         {
-            ApplyDynamicToolHeight();
+            ToolRoot.transform.localPosition += GetDynamicToolPos();
         }
 
-        // big tool root position offset needs to be 3x bigger because the tools in it are further away and appear to move less
-        ProbeLauncherRoot.transform.localPosition = ToolRoot.transform.localPosition * 3f;
+        // Probe Launcher position offset needs to be 3x bigger because the tools in it are further away and appear to move less
+        ProbeLauncherRoot.transform.localPosition = 3 * ToolRoot.transform.localPosition;
         ProbeLauncherRoot.transform.localRotation = ToolRoot.transform.localRotation;
-        TranslatorRoot.transform.localPosition = new Vector3(1.41f * ToolRoot.transform.localPosition.x, ToolRoot.transform.localPosition.y, ToolRoot.transform.localPosition.z - toolBobZ) * 3f;
-        TranslatorRoot.transform.localRotation = ToolRoot.transform.localRotation;
         if (Config.IsScoutAnimEnabled)
         {
             ApplyScoutAnim();
         }
+
+        // Translator offset needs to be 3x bigger, also needs to bob more in the x direction and not at all in the z direction
+        TranslatorRoot.transform.localPosition = 3 * ToolRoot.transform.localPosition;
+        TranslatorRoot.transform.Translate(new Vector3(toolBob.x, 0, -3 * toolBob.z), _characterController.transform);
+        TranslatorRoot.transform.localRotation = ToolRoot.transform.localRotation;
     }
 
-    private void ApplyToolSway()
+    private void UpdateToolSway()
     {
-        // get look input only if player is in normal movement mode
-        Vector2 lookDelta;
-        if (!OWInput.IsInputMode(InputMode.Character) || (PlayerState.InZeroG() && PlayerState.IsWearingSuit()) || Time.timeScale == 0f)
+        // get look input if player is in normal movement mode
+        Vector2 lookDelta = Vector2.zero;
+        if (OWInput.IsInputMode(InputMode.Character) && !(PlayerState.InZeroG() && PlayerState.IsWearingSuit()) && Time.timeScale != 0f)
         {
-            lookDelta = Vector2.zero;
-        }
-        else
-        {
-            lookDelta = OWInput.GetAxisValue(InputLibrary.look) * _characterController._playerCam.fieldOfView / _characterController._initFOV * 0.002f * Time.deltaTime / Time.timeScale;
+            lookDelta = OWInput.GetAxisValue(InputLibrary.look) * _characterController._playerCam.fieldOfView / _characterController._initFOV * 0.01f * Time.deltaTime / Time.timeScale;
             bool isAlarming = Locator.GetAlarmSequenceController() != null && Locator.GetAlarmSequenceController().IsAlarmWakingPlayer();
             lookDelta *= (_characterController._signalscopeZoom || isAlarming) ? (PlayerCameraController.LOOK_RATE * PlayerCameraController.ZOOM_SCALAR) : PlayerCameraController.LOOK_RATE;
         }
 
-        lookDelta *= 5;
         float degreesY = _cameraController.GetDegreesY();
         float xSwayMultiplier = (Mathf.Cos(degreesY * 0.03490f) + 1f) * 0.5f;
         // cancel out vertical sway if the player can't turn anymore in that direction
@@ -219,29 +217,33 @@ public class ViewBobController : MonoBehaviour
         }
 
         // decay already existing tool sway and then add new tool sway
-        _toolSway = Vector2.ClampMagnitude(Vector2.SmoothDamp(_toolSway, Vector2.zero, ref _toolSwayVelocity, 0.2f * Config.ToolSwaySmoothing, 5f) + -lookDelta * (1 - _toolSway.magnitude), 1);
-        ToolRoot.transform.localPosition += 0.15f * Config.ToolSwayTranslateAmount * new Vector3(_toolSway.x * xSwayMultiplier, _toolSway.y, 0.25f * (Mathf.Cos(Mathf.PI * 0.5f * Mathf.Abs(_toolSway.y) * 2f) - 1f));
-        ToolRoot.transform.Translate(0.15f * Config.ToolSwayTranslateAmount * new Vector3(0, 0, 0.25f * (Mathf.Cos(Mathf.PI * 0.5f * Mathf.Abs(_toolSway.x * xSwayMultiplier) * 2f) - 1f)), _characterController.transform);
+        _toolSway = Vector2.SmoothDamp(_toolSway, Vector2.zero, ref _toolSwayVelocity, 0.2f * Config.ToolSwaySmoothing, 5f);
+        _toolSway = Vector2.ClampMagnitude(_toolSway - lookDelta * (1 - _toolSway.magnitude), 1);
+        
+        float localZOffset = Mathf.Cos(Mathf.PI * 0.5f * Mathf.Abs(_toolSway.y) * 2f) - 1f;
+        float globalZOffset = Mathf.Cos(Mathf.PI * 0.5f * Mathf.Abs(_toolSway.x) * 2f) - 1f;
+        ToolRoot.transform.localPosition += 0.15f * Config.ToolSwayTranslateAmount * new Vector3(0, _toolSway.y, 0.25f * localZOffset);
+        ToolRoot.transform.Translate(0.15f * Config.ToolSwayTranslateAmount * new Vector3(_toolSway.x * xSwayMultiplier, 0, 0.25f * globalZOffset), _characterController.transform);
         ToolRoot.transform.localRotation *= Quaternion.Euler(-30 * Config.ToolSwayRotateAmount * new Vector3(_toolSway.y, 0, 0));
         ToolRoot.transform.RotateAround(_characterController.transform.position, _characterController._owRigidbody.GetLocalUpDirection(), 30 * Config.ToolSwayRotateAmount * _toolSway.x);
     }
 
-    private void ApplyDynamicToolHeight()
+    private Vector3 GetDynamicToolPos()
     {
         float degreesY = _cameraController.GetDegreesY();
-        Vector3 dynamicToolHeight;
+        Vector3 dynamicToolPos;
         if (Config.DynamicToolPosBehavior == "Legacy")
         {
             // new behavior moves tool closer to camera the more you are looking up/down
-            dynamicToolHeight = new Vector3(0f, -degreesY * 0.02222f * Config.DynamicToolPosYAmount, -degreesY * 0.01111f * Config.DynamicToolPosZAmount) * 0.04f;
+            dynamicToolPos = new Vector3(0f, -degreesY * 0.02222f * Config.DynamicToolPosYAmount, -degreesY * 0.01111f * Config.DynamicToolPosZAmount) * 0.04f;
         }
         else
         {
             // legacy behavior moves tool closer when looking up and further when looking down
-            dynamicToolHeight = new Vector3(0f, -degreesY * 0.02222f * Config.DynamicToolPosYAmount, (Mathf.Cos(degreesY * 0.03490f) - 1) * 0.3f * Config.DynamicToolPosZAmount) * 0.04f;
+            dynamicToolPos = new Vector3(0f, -degreesY * 0.02222f * Config.DynamicToolPosYAmount, (Mathf.Cos(degreesY * 0.03490f) - 1) * 0.3f * Config.DynamicToolPosZAmount) * 0.04f;
         }
 
-        ToolRoot.transform.localPosition += dynamicToolHeight;
+        return dynamicToolPos;
     }
 
     // plays a recoil animation for 0.5 seconds after scout launch
@@ -274,7 +276,7 @@ public class ViewBobController : MonoBehaviour
     [HarmonyPatch(typeof(PlayerCameraController), nameof(PlayerCameraController.Start))]
     private static void AddToPlayerCamera(PlayerCameraController __instance)
     {
-        __instance.gameObject.AddComponent<ViewBobController>();
+        __instance.gameObject.AddComponent<ImmersionController>();
     }
 
     [HarmonyPostfix]
