@@ -23,13 +23,11 @@ public class ImmersionController : MonoBehaviour
 
     private PlayerCharacterController _characterController;
 
-    private float _viewBobTime;
+    private float _bobTime;
 
     private float _viewBobIntensity;
 
     private float _viewBobVelocity;
-
-    private float _lastLandedTime;
 
     private float _lastScoutLaunchTime;
 
@@ -85,10 +83,7 @@ public class ImmersionController : MonoBehaviour
 
         // subscribe to events
         Config.OnConfigure += CheckAndSetLeftyMode;
-        _characterController.OnBecomeGrounded += () =>
-        {
-            _lastLandedTime = Time.time;
-        };
+
         _characterController.GetComponentInChildren<PlayerProbeLauncher>().OnLaunchProbe += (probe) =>
         {
             if (Config.IsScoutAnimEnabled)
@@ -108,42 +103,33 @@ public class ImmersionController : MonoBehaviour
     private void Update()
     {
         Vector3 toolBob = Vector3.zero;
-        if (!Config.IsViewBobEnabled && !Config.IsToolBobEnabled)
+        CameraRoot.transform.localPosition = Vector3.zero;
+        CameraRoot.transform.localRotation = Quaternion.identity;
+        ToolRoot.transform.localPosition = Vector3.zero;
+        ToolRoot.transform.localRotation = Quaternion.identity;
+
+        if (Config.IsCameraBobEnabled || Config.IsToolBobEnabled)
         {
-            CameraRoot.transform.localPosition = Vector3.zero;
-            CameraRoot.transform.localRotation = Quaternion.identity;
-            ToolRoot.transform.localPosition = Vector3.zero;
-            ToolRoot.transform.localRotation = Quaternion.identity;
-        }
-        else
-        {
-            float predictedViewBobTime = _viewBobTime + _animController._animator.speed * Time.deltaTime;
+            float predictedViewBobTime = _bobTime + _animController._animator.speed * 1.03f * Time.deltaTime;
             float animatorTime = _animController._animator.GetCurrentAnimatorStateInfo(0).normalizedTime + 0.25f;
 
-            _viewBobTime = Mathf.Floor(animatorTime) + Mathf.Repeat(Mathf.Clamp(animatorTime, predictedViewBobTime - 0.005f, predictedViewBobTime + 0.005f), 1f);
+            _bobTime = Mathf.Floor(animatorTime) + Mathf.Repeat(Mathf.Clamp(animatorTime, predictedViewBobTime - 0.005f, predictedViewBobTime + 0.005f), 1f);
 
-            if (!_characterController.IsGrounded() && !_characterController._isMovementLocked)
+            float _targetBobIntensity = 0;
+            if (_characterController.IsGrounded())
             {
-                // if in midair, use falling and/or jumping animation
-                float fallFraction = Config.IsFallAnimEnabled ? _animController._animator.GetFloat("FreefallSpeed") : 0f;
-                float jumpFraction = Config.IsJumpAnimEnabled ? Mathf.Max((_characterController._lastJumpTime + 0.5f - Time.time) * 2f, 0f) : 0f;
-                _viewBobIntensity = Mathf.SmoothDamp(_viewBobIntensity, Mathf.Min(fallFraction + jumpFraction, 1f) * 0.075f, ref _viewBobVelocity, 0.075f);
+                _targetBobIntensity = new Vector2(_animController._animator.GetFloat("RunSpeedX"), _animController._animator.GetFloat("RunSpeedY")).magnitude;
             }
-            else
-            {
-                // if on ground, use walking and/or landing animation
-                float walkFraction = Mathf.Sqrt(Mathf.Pow(_animController._animator.GetFloat("RunSpeedX"), 2f) + Mathf.Pow(_animController._animator.GetFloat("RunSpeedY"), 2f));
-                float landingFraction = Config.IsLandingAnimEnabled && Time.timeSinceLevelLoad > 1f ? Mathf.Max((_lastLandedTime + 0.25f - Time.time) * 6f, 0f) : 0f;
-                _viewBobIntensity = Mathf.SmoothDamp(_viewBobIntensity, Mathf.Min(walkFraction + landingFraction, 5f) * 0.02f, ref _viewBobVelocity, 0.075f);
-            }
+
+            _viewBobIntensity = Mathf.SmoothDamp(_viewBobIntensity, Mathf.Min(_targetBobIntensity, 5f) * 0.02f, ref _viewBobVelocity, 0.075f);
 
             // camera bob
-            if (Config.IsViewBobEnabled)
+            if (Config.IsCameraBobEnabled)
             {
-                float bobX = Mathf.Sin(_viewBobTime * 6.28318f) * _viewBobIntensity;
-                float bobY = Mathf.Cos(_viewBobTime * 12.5664f) * _viewBobIntensity;
-                CameraRoot.transform.localPosition = new Vector3(bobX * Config.ViewBobXAmount, bobY * Config.ViewBobYAmount, 0f);
-                CameraRoot.transform.localRotation = Quaternion.Euler(new Vector3(bobY * 5f * Config.ViewBobPitchAmount, 0f, -bobX * 5f * Config.ViewBobRollAmount));
+                float bobX = Mathf.Sin(_bobTime * 6.28318f) * _viewBobIntensity;
+                float bobY = Mathf.Cos(_bobTime * 12.5664f) * _viewBobIntensity;
+                CameraRoot.transform.localPosition = new Vector3(bobX * Config.CameraBobXAmount, bobY * Config.CameraBobYAmount, 0f);
+                CameraRoot.transform.localRotation = Quaternion.Euler(new Vector3(bobY * 5f * Config.CameraBobPitchAmount, 0f, -bobX * 5f * Config.CameraBobRollAmount));
             }
             else
             {
@@ -154,8 +140,8 @@ public class ImmersionController : MonoBehaviour
             // tool bob
             if (Config.IsToolBobEnabled)
             {
-                toolBob.x = Mathf.Sin(_viewBobTime * 6.28318f) * _viewBobIntensity * 0.25f;
-                toolBob.y = Mathf.Cos(_viewBobTime * 12.5664f) * _viewBobIntensity * 0.25f;
+                toolBob.x = Mathf.Sin(_bobTime * 6.28318f) * _viewBobIntensity * 0.25f;
+                toolBob.y = Mathf.Cos(_bobTime * 12.5664f) * _viewBobIntensity * 0.25f;
                 toolBob.z = -toolBob.x * (Config.IsLeftyModeEnabled ? -1f : 1f);
                 ToolRoot.transform.localPosition = new Vector3(0, toolBob.y * Config.ToolBobYAmount);
                 ToolRoot.transform.Translate(new Vector3(toolBob.x * Config.ToolBobXAmount, 0, toolBob.z * Config.ToolBobZAmount), _characterController.transform);
@@ -209,7 +195,6 @@ public class ImmersionController : MonoBehaviour
         }
 
         float degreesY = _cameraController.GetDegreesY();
-        float xSwayMultiplier = (Mathf.Cos(degreesY * 0.03490f) + 1f) * 0.5f;
         // cancel out vertical sway if the player can't turn anymore in that direction
         if ((lookDelta.y > 0f && degreesY >= PlayerCameraController._maxDegreesYNormal) || (lookDelta.y < 0f && degreesY <= PlayerCameraController._minDegreesYNormal))
         {
@@ -222,8 +207,9 @@ public class ImmersionController : MonoBehaviour
         
         float localZOffset = Mathf.Cos(Mathf.PI * 0.5f * Mathf.Abs(_toolSway.y) * 2f) - 1f;
         float globalZOffset = Mathf.Cos(Mathf.PI * 0.5f * Mathf.Abs(_toolSway.x) * 2f) - 1f;
+        float xSwayMultiplier = (Mathf.Cos(degreesY * 0.03490f) + 1f) * 0.5f;
         ToolRoot.transform.localPosition += 0.15f * Config.ToolSwayTranslateAmount * new Vector3(0, _toolSway.y, 0.25f * localZOffset);
-        ToolRoot.transform.Translate(0.15f * Config.ToolSwayTranslateAmount * new Vector3(_toolSway.x * xSwayMultiplier, 0, 0.25f * globalZOffset), _characterController.transform);
+        ToolRoot.transform.Translate(0.15f * xSwayMultiplier * Config.ToolSwayTranslateAmount * new Vector3(_toolSway.x, 0, 0.25f * globalZOffset), _characterController.transform);
         ToolRoot.transform.localRotation *= Quaternion.Euler(-30 * Config.ToolSwayRotateAmount * new Vector3(_toolSway.y, 0, 0));
         ToolRoot.transform.RotateAround(_characterController.transform.position, _characterController._owRigidbody.GetLocalUpDirection(), 30 * Config.ToolSwayRotateAmount * _toolSway.x);
     }
