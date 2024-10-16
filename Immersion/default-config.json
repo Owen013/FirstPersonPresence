@@ -7,7 +7,7 @@
     },
     "EnableViewmodelHands": {
       "title": "Enable Viewmodel Hands",
-      "tooltip": "Adds a hand to every item and tool so that they aren't just floating in front of the camera! Recommended: Enabled",
+      "tooltip": "Adds a hand model to every item and tool when you hold them! Recommended: Enabled",
       "type": "toggle",
       "value": true
     },
@@ -17,7 +17,7 @@
     },
     "EnableViewBob": {
       "title": "Enable View Bobbing",
-      "tooltip": "Enable the bobbing of the camera while moving.",
+      "tooltip": "Makes the camera bob while you're moving.",
       "type": "toggle",
       "value": true
     },
@@ -51,7 +51,7 @@
     },
     "EnableToolBob": {
       "title": "Enable Tool Bobbing",
-      "tooltip": "Enable the bobbing of the held item while moving.",
+      "tooltip": "Makes the item you're holding bob while you're moving.",
       "type": "toggle",
       "value": true
     },
@@ -91,25 +91,25 @@
     },
     "EnableToolSway": {
       "title": "Enable Tool Sway",
-      "tooltip": "When enabled, your held item will lag behind the camera a bit as you look around.",
+      "tooltip": "When enabled, your held item will lag behind the camera as you look around.",
       "type": "toggle",
       "value": true
     },
     "ToolSwayTranslateAmount": {
       "title": "Translational Intensity",
-      "tooltip": "How much the tool moves for a given mouse input. Recommended: 1",
+      "tooltip": "How much the tool moves as you look around. Recommended: 1",
       "type": "number",
       "value": 1
     },
     "ToolSwayRotateAmount": {
       "title": "Rotational Intensity",
-      "tooltip": "How much the tool rotates for a given mouse input. Recommended: 0",
+      "tooltip": "How much the tool rotates as you look around. Recommended: 1",
       "type": "number",
       "value": 1
     },
     "ToolSwaySmoothing": {
       "title": "Smoothing Amount",
-      "tooltip": "How smoothly the held item moves back to its normal position. Recommended: 1",
+      "tooltip": "How smoothly the held item sways back to its normal position. Recommended: 1",
       "type": "number",
       "value": 1
     },
@@ -119,7 +119,7 @@
     },
     "DynamicToolPosBehavior": {
       "title": "Dynamic Tool Position Behavior",
-      "tooltip": "When enabled, the tool will be held in a different position depending on how far up/down you are looking. Recommended: Default",
+      "tooltip": "When enabled, you will hold items in a different position depending on how far up/down you are looking. Recommended: Default",
       "type": "selector",
       "value": "Default",
       "options": [ "Disabled", "Default", "Legacy" ]
@@ -166,13 +166,13 @@
     },
     "HideStowedItems": {
       "title": "Hide Stowed Items",
-      "tooltip": "Makes held items disappear when they go into the stowed position (i.e. if you start using another tool or roasting a marshmallow while holding an item).",
+      "tooltip": "Makes the item you're holding move fully offscreen when it goes into the stowed position (i.e. if you start using another tool or roasting a marshmallow while holding an item). Recommended: Enabled",
       "type": "toggle",
       "value": true
     },
     "UseLeftyMode": {
       "title": "Enable Lefty Mode",
-      "tooltip": "Makes you left handed!",
+      "tooltip": "Makes you hold items/tools in your left hand!",
       "type": "toggle",
       "value": false
     }
