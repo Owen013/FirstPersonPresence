@@ -117,7 +117,7 @@ public class ImmersionController : MonoBehaviour
         }
         else
         {
-            float predictedViewBobTime = _viewBobTime + _animController._animator.speed * Time.deltaTime;
+            float predictedViewBobTime = _viewBobTime + 1.033333f * _animController._animator.speed * 1.03f * Time.deltaTime;
             float animatorTime = _animController._animator.GetCurrentAnimatorStateInfo(0).normalizedTime + 0.25f;
 
             _viewBobTime = Mathf.Floor(animatorTime) + Mathf.Repeat(Mathf.Clamp(animatorTime, predictedViewBobTime - 0.005f, predictedViewBobTime + 0.005f), 1f);
