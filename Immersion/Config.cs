@@ -6,15 +6,15 @@ public static class Config
 {
     public static bool IsViewModelHandsEnabled { get; private set; }
 
-    public static bool IsCameraBobEnabled { get; private set; }
+    public static bool IsViewBobEnabled { get; private set; }
 
-    public static float CameraBobXAmount { get; private set; }
+    public static float ViewBobXAmount { get; private set; }
 
-    public static float CameraBobRollAmount { get; private set; }
+    public static float ViewBobRollAmount { get; private set; }
 
-    public static float CameraBobPitchAmount { get; private set; }
+    public static float ViewBobPitchAmount { get; private set; }
 
-    public static float CameraBobYAmount { get; private set; }
+    public static float ViewBobYAmount { get; private set; }
 
     public static bool IsToolBobEnabled { get; private set; }
 
@@ -42,6 +42,12 @@ public static class Config
 
     public static float DynamicToolPosZAmount { get; private set; }
 
+    public static bool IsJumpAnimEnabled { get; private set; }
+
+    public static bool IsFallAnimEnabled { get; private set; }
+
+    public static bool IsLandingAnimEnabled { get; private set; }
+
     public static bool IsScoutAnimEnabled { get; private set; }
 
     public static bool IsHideStowedItemsEnabled { get; private set; }
@@ -56,11 +62,11 @@ public static class Config
     {
         IsViewModelHandsEnabled = config.GetSettingsValue<bool>("EnableViewmodelHands");
 
-        IsCameraBobEnabled = config.GetSettingsValue<bool>("EnableViewBob");
-        CameraBobXAmount = config.GetSettingsValue<float>("ViewBobXAmount");
-        CameraBobYAmount = config.GetSettingsValue<float>("ViewBobYAmount");
-        CameraBobRollAmount = config.GetSettingsValue<float>("ViewBobRollAmount");
-        CameraBobPitchAmount = config.GetSettingsValue<float>("ViewBobPitchAmount");
+        IsViewBobEnabled = config.GetSettingsValue<bool>("EnableViewBob");
+        ViewBobXAmount = config.GetSettingsValue<float>("ViewBobXAmount");
+        ViewBobYAmount = config.GetSettingsValue<float>("ViewBobYAmount");
+        ViewBobRollAmount = config.GetSettingsValue<float>("ViewBobRollAmount");
+        ViewBobPitchAmount = config.GetSettingsValue<float>("ViewBobPitchAmount");
 
         IsToolBobEnabled = config.GetSettingsValue<bool>("EnableToolBob");
         ToolBobXAmount = config.GetSettingsValue<float>("ToolBobXAmount");
@@ -78,6 +84,9 @@ public static class Config
         DynamicToolPosYAmount = config.GetSettingsValue<float>("DynamicToolPosYAmount");
         DynamicToolPosZAmount = config.GetSettingsValue<float>("DynamicToolPosZAmount");
 
+        IsJumpAnimEnabled = config.GetSettingsValue<bool>("UseJumpAnim");
+        IsFallAnimEnabled = config.GetSettingsValue<bool>("UseFallAnim");
+        IsLandingAnimEnabled = config.GetSettingsValue<bool>("UseLandingAnim");
         IsScoutAnimEnabled = config.GetSettingsValue<bool>("UseScoutAnim");
         IsHideStowedItemsEnabled = config.GetSettingsValue<bool>("HideStowedItems");
         IsLeftyModeEnabled = config.GetSettingsValue<bool>("UseLeftyMode");
