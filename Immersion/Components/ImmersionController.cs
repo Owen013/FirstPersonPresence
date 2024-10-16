@@ -102,7 +102,7 @@ public class ImmersionController : MonoBehaviour
         Config.OnConfigure -= CheckAndSetLeftyMode;
     }
 
-    private void Update()
+    private void LateUpdate()
     {
         if (Time.timeScale == 0) return;
 
@@ -115,10 +115,10 @@ public class ImmersionController : MonoBehaviour
         Vector3 toolBob = Vector3.zero;
         if (Config.IsViewBobEnabled || Config.IsToolBobEnabled)
         {
-            float predictedViewBobTime = _viewBobTime + 1.033333f * _animController._animator.speed * 1.03f * Time.deltaTime;
+            float predictedViewBobTime = _viewBobTime + 1.033333f * _animController._animator.speed * Time.deltaTime;
             float animatorTime = _animController._animator.GetCurrentAnimatorStateInfo(0).normalizedTime + 0.25f;
 
-            _viewBobTime = Mathf.Floor(animatorTime) + Mathf.Repeat(Mathf.Clamp(animatorTime, predictedViewBobTime - 0.005f, predictedViewBobTime + 0.005f), 1f);
+            _viewBobTime = Mathf.Floor(animatorTime) + Mathf.Repeat(Mathf.Clamp(animatorTime, predictedViewBobTime - 0.3f * Time.deltaTime, predictedViewBobTime + 0.3f * Time.deltaTime), 1f);
 
             if (!_characterController.IsGrounded() && !_characterController._isMovementLocked)
             {

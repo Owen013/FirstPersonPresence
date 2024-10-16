@@ -12,7 +12,7 @@ public class ModMain : ModBehaviour
 
     public static ISmolHatchling SmolHatchlingAPI { get; private set; }
 
-    public bool IsHikersModInstalled { get; private set; }
+    public static bool IsHikersModInstalled { get; private set; }
 
     public static void Print(string text, MessageType messageType = MessageType.Message)
     {

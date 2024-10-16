@@ -10,11 +10,11 @@ public class AnimSpeedController : MonoBehaviour
 
     public float AnimSpeed {  get; private set; }
 
-    private static GameObject[] s_leftArmObjects;
-
     private Animator _animator;
 
     private PlayerCharacterController _characterController;
+
+    private GameObject[] _leftArmObjects;
 
     private void Awake()
     {
@@ -35,7 +35,7 @@ public class AnimSpeedController : MonoBehaviour
         }
 
         // yield to hikers mod if installed, let it do the anim speed
-        if (!ModMain.Instance.IsHikersModInstalled)
+        if (!ModMain.IsHikersModInstalled)
         {
             if (ModMain.SmolHatchlingAPI != null)
             {
@@ -56,7 +56,7 @@ public class AnimSpeedController : MonoBehaviour
     [HarmonyPatch(typeof(PlayerAnimController), nameof(PlayerAnimController.LateUpdate))]
     private static void OnAnimControllerLateUpdate(PlayerAnimController __instance)
     {
-        s_leftArmObjects ??=
+        Instance._leftArmObjects ??=
         [
             __instance.transform.Find("player_mesh_noSuit:Traveller_HEA_Player/player_mesh_noSuit:Player_LeftArm").gameObject,
             __instance.transform.Find("Traveller_Mesh_v01:Traveller_Geo/Traveller_Mesh_v01:PlayerSuit_LeftArm").gameObject
@@ -67,9 +67,9 @@ public class AnimSpeedController : MonoBehaviour
             __instance._rightArmObjects[i].layer = __instance._defaultLayer;
         }
 
-        for (int i = 0; i < s_leftArmObjects.Length; i++)
+        for (int i = 0; i < Instance._leftArmObjects.Length; i++)
         {
-            s_leftArmObjects[i].layer = __instance._defaultLayer;
+            Instance._leftArmObjects[i].layer = __instance._defaultLayer;
         }
 
         ToolMode toolMode = Locator.GetToolModeSwapper().GetToolMode();
@@ -78,7 +78,7 @@ public class AnimSpeedController : MonoBehaviour
         {
             for (int i = 0; i < __instance._rightArmObjects.Length; i++)
             {
-                s_leftArmObjects[i].layer = __instance._rightArmHidden ? __instance._probeOnlyLayer : __instance._defaultLayer;
+                Instance._leftArmObjects[i].layer = __instance._rightArmHidden ? __instance._probeOnlyLayer : __instance._defaultLayer;
             }
         }
         else
