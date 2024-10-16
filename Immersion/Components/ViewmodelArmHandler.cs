@@ -10,13 +10,13 @@ public static class ViewmodelArmHandler
     {
         if (parent == null)
         {
-            ModMain.Instance.WriteLine($"Can't create viewmodel arm; parent is null", OWML.Common.MessageType.Debug);
+            ModMain.Print($"Can't create viewmodel arm; parent is null", OWML.Common.MessageType.Debug);
             return null;
         }
 
         if (parent.GetComponent<ViewmodelArm>() != null)
         {
-            ModMain.Instance.WriteLine($"{parent.name} already has a viewmodel arm. Replacing it.", OWML.Common.MessageType.Debug);
+            ModMain.Print($"{parent.name} already has a viewmodel arm. Replacing it.", OWML.Common.MessageType.Debug);
             Object.Destroy(parent.GetComponent<ViewmodelArm>().gameObject);
         }
 
@@ -157,7 +157,7 @@ public static class ViewmodelArmHandler
     [HarmonyPatch(typeof(DreamLanternItem), nameof(DreamLanternItem.Start))]
     private static void OnDreamLanternAwake(DreamLanternItem __instance)
     {
-        ViewmodelArm arm = NewViewmodelArm(__instance.transform.Find("Props_IP_Artifact_ViewModel/artifact_geo"), new Vector3(0.1389f, 0.3851f, -0.144f), Quaternion.Euler(0f, 0f, 90f), new Vector3(1.2f, 1.2f, 1.2f));
+        ViewmodelArm arm = NewViewmodelArm(__instance.transform.Find("Props_IP_Artifact_ViewModel/artifact_geo"), new Vector3(0.15f, 0.3f, -0.16f), Quaternion.Euler(330, 0, 90), new Vector3(1.2f, 1.2f, 1.2f));
         if (arm == null)
         {
             arm = NewViewmodelArm(__instance.transform.Find("ViewModel/Props_IP_DreamLanternItem_Malfunctioning (1)/PrototypeArtifact_2"), new Vector3(0.1389f, 0.836f, -0.144f), Quaternion.Euler(0f, 0f, 90f), new Vector3(1.2f, 1.2f, 1.2f));

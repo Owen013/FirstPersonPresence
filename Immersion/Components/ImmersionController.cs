@@ -107,6 +107,8 @@ public class ImmersionController : MonoBehaviour
 
     private void Update()
     {
+        if (Time.timeScale == 0) return;
+
         Vector3 toolBob = Vector3.zero;
         if (!Config.IsViewBobEnabled && !Config.IsToolBobEnabled)
         {
@@ -193,8 +195,17 @@ public class ImmersionController : MonoBehaviour
 
         // Translator offset needs to be 3x bigger, also needs to bob more in the x direction and not at all in the z direction
         TranslatorRoot.transform.localPosition = 3 * ToolRoot.transform.localPosition;
-        TranslatorRoot.transform.Translate(new Vector3(toolBob.x, 0, -3 * toolBob.z), _characterController.transform);
+        TranslatorRoot.transform.Translate(new Vector3(1.82f * toolBob.x, 0, -3 * toolBob.z), _characterController.transform);
         TranslatorRoot.transform.localRotation = ToolRoot.transform.localRotation;
+
+        if (Config.IsHideStowedItemsEnabled)
+        {
+            ItemTool itemTool = Locator.GetToolModeSwapper()._itemCarryTool;
+            if (!itemTool.IsEquipped() && !itemTool.IsPuttingAway())
+            {
+                itemTool.transform.localRotation = Quaternion.RotateTowards(itemTool.transform.localRotation, Quaternion.Euler(180, 0, 0), 180 * Time.deltaTime);
+            }
+        }
     }
 
     private void UpdateToolSway()
@@ -277,17 +288,5 @@ public class ImmersionController : MonoBehaviour
     private static void AddToPlayerCamera(PlayerCameraController __instance)
     {
         __instance.gameObject.AddComponent<ImmersionController>();
-    }
-
-    [HarmonyPostfix]
-    [HarmonyPatch(typeof(PlayerTool), nameof(PlayerTool.Update))]
-    private static void OnItemToolUpdate(PlayerTool __instance)
-    {
-        if (__instance is not ItemTool) return;
-
-        if (Config.IsHideStowedItemsEnabled && !__instance.IsEquipped() && !__instance.IsPuttingAway())
-        {
-            __instance.transform.localRotation = Quaternion.Euler(90f, 90f, 0f);
-        }
     }
 }
