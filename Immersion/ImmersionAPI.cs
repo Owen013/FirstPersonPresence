@@ -12,6 +12,6 @@ public class ImmersionAPI
 
     public GameObject NewViewmodelArm(Transform parent, Vector3 localPos, Quaternion localRot, Vector3 scale, bool useDefaultShader = false)
     {
-        return ViewmodelArmHandler.NewViewmodelArm(parent, localPos, localRot, scale, useDefaultShader).gameObject;
+        return ViewmodelArm.Create(parent, localPos, localRot, scale, useDefaultShader).gameObject;
     }
 }
