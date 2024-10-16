@@ -108,16 +108,13 @@ public class ImmersionController : MonoBehaviour
     private void Update()
     {
         if (Time.timeScale == 0) return;
+        CameraRoot.transform.localPosition = Vector3.zero;
+        CameraRoot.transform.localRotation = Quaternion.identity;
+        ToolRoot.transform.localPosition = Vector3.zero;
+        ToolRoot.transform.localRotation = Quaternion.identity;
 
         Vector3 toolBob = Vector3.zero;
-        if (!Config.IsViewBobEnabled && !Config.IsToolBobEnabled)
-        {
-            CameraRoot.transform.localPosition = Vector3.zero;
-            CameraRoot.transform.localRotation = Quaternion.identity;
-            ToolRoot.transform.localPosition = Vector3.zero;
-            ToolRoot.transform.localRotation = Quaternion.identity;
-        }
-        else
+        if (Config.IsViewBobEnabled || Config.IsToolBobEnabled)
         {
             float predictedViewBobTime = _viewBobTime + 1.033333f * _animController._animator.speed * 1.03f * Time.deltaTime;
             float animatorTime = _animController._animator.GetCurrentAnimatorStateInfo(0).normalizedTime + 0.25f;
@@ -142,15 +139,9 @@ public class ImmersionController : MonoBehaviour
             // camera bob
             if (Config.IsViewBobEnabled)
             {
-                float bobX = Mathf.Sin(_viewBobTime * 6.28318f) * _viewBobIntensity;
-                float bobY = Mathf.Cos(_viewBobTime * 12.5664f) * _viewBobIntensity;
-                CameraRoot.transform.localPosition = new Vector3(bobX * Config.ViewBobXAmount, bobY * Config.ViewBobYAmount, 0f);
-                CameraRoot.transform.localRotation = Quaternion.Euler(new Vector3(bobY * 5f * Config.ViewBobPitchAmount, 0f, -bobX * 5f * Config.ViewBobRollAmount));
-            }
-            else
-            {
-                CameraRoot.transform.localPosition = Vector3.zero;
-                CameraRoot.transform.localRotation = Quaternion.identity;
+                Vector2 cameraBob = new Vector2(Mathf.Sin(_viewBobTime * 6.28318f) * _viewBobIntensity, Mathf.Cos(_viewBobTime * 12.5664f) * _viewBobIntensity);
+                CameraRoot.transform.Translate(new Vector3(cameraBob.x * Config.ViewBobXAmount, cameraBob.y * Config.ViewBobYAmount));
+                RotateCamera(new Vector3(-cameraBob.y * 5f * Config.ViewBobPitchAmount, 0f, -cameraBob.x * 5f * Config.ViewBobRollAmount));
             }
 
             // tool bob
@@ -162,11 +153,6 @@ public class ImmersionController : MonoBehaviour
                 ToolRoot.transform.localPosition = new Vector3(0, toolBob.y * Config.ToolBobYAmount);
                 ToolRoot.transform.Translate(new Vector3(toolBob.x * Config.ToolBobXAmount, 0, toolBob.z * Config.ToolBobZAmount), _characterController.transform);
                 ToolRoot.transform.localRotation = Quaternion.Euler(new Vector3(toolBob.y * 100f * Config.ToolBobPitchAmount, 0f, -toolBob.x * 100f * Config.ToolBobRollAmount));
-            }
-            else
-            {
-                ToolRoot.transform.localPosition = Vector3.zero;
-                ToolRoot.transform.localRotation = Quaternion.identity;
             }
         }
 
@@ -208,6 +194,13 @@ public class ImmersionController : MonoBehaviour
         }
     }
 
+    private void RotateCamera(Vector3 eulers)
+    {
+        CameraRoot.transform.RotateAround(_cameraController.transform.position, _cameraController.transform.TransformDirection(Vector3.right), eulers.x);
+        CameraRoot.transform.RotateAround(_cameraController.transform.position, _cameraController.transform.TransformDirection(Vector3.up), eulers.y);
+        CameraRoot.transform.RotateAround(_cameraController.transform.position, _cameraController.transform.TransformDirection(Vector3.forward), eulers.z);
+    }
+
     private void UpdateToolSway()
     {
         // get look input if player is in normal movement mode
@@ -216,7 +209,7 @@ public class ImmersionController : MonoBehaviour
         {
             lookDelta = OWInput.GetAxisValue(InputLibrary.look) * _characterController._playerCam.fieldOfView / _characterController._initFOV * 0.01f * Time.deltaTime / Time.timeScale;
             bool isAlarming = Locator.GetAlarmSequenceController() != null && Locator.GetAlarmSequenceController().IsAlarmWakingPlayer();
-            lookDelta *= (_characterController._signalscopeZoom || isAlarming) ? (PlayerCameraController.LOOK_RATE * PlayerCameraController.ZOOM_SCALAR) : PlayerCameraController.LOOK_RATE;
+            lookDelta *= _characterController._signalscopeZoom || isAlarming ? PlayerCameraController.LOOK_RATE * PlayerCameraController.ZOOM_SCALAR : PlayerCameraController.LOOK_RATE;
         }
 
         float degreesY = _cameraController.GetDegreesY();
@@ -263,7 +256,6 @@ public class ImmersionController : MonoBehaviour
         float targetRecoil = Mathf.Max(_lastScoutLaunchTime + 0.5f - Time.time, 0f) * 2f;
         float dampTime = targetRecoil > _scoutRecoil ? 0.05f : 0.1f;
         _scoutRecoil = Mathf.SmoothDamp(_scoutRecoil, targetRecoil, ref _scoutRecoilVelocity, dampTime);
-        CameraRoot.transform.localPosition += new Vector3(0f, 0f, 0.15f) * _scoutRecoil;
         CameraRoot.transform.localRotation *= Quaternion.Euler(new Vector3(-10f, Config.IsLeftyModeEnabled ? -1f : 1f, -5f * (Config.IsLeftyModeEnabled ? -1f : 1f)) * _scoutRecoil);
         ProbeLauncherRoot.transform.localPosition += new Vector3(0.5f * (Config.IsLeftyModeEnabled ? -1f : 1f), 0.25f, -0.5f) * _scoutRecoil;
         ProbeLauncherRoot.transform.localRotation *= Quaternion.Euler(new Vector3(-10f, 0f, -20f * (Config.IsLeftyModeEnabled ? -1f : 1f)) * _scoutRecoil);
