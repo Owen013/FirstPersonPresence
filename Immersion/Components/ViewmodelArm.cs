@@ -85,12 +85,12 @@ public class ViewmodelArm : MonoBehaviour
 
     private void LateUpdate()
     {
-        if (!Config.IsViewModelHandsEnabled || (_isItem && !GetComponentInParent<ItemTool>()))
+        if (!ModMain.IsViewModelHandsEnabled || (_isItem && !GetComponentInParent<ItemTool>()))
         {
             _unsuitedModel.SetActive(false);
             _suitedModel.SetActive(false);
         }
-        else if (Config.IsLeftyModeEnabled && Locator.GetToolModeSwapper()._currentToolMode != ToolMode.Translator)
+        else if (ModMain.IsLeftyModeEnabled && Locator.GetToolModeSwapper()._currentToolMode != ToolMode.Translator)
         {
             _unsuitedModel.SetActive(playerModelUnsuitedLeftArm.activeInHierarchy);
             _suitedModel.SetActive(playerModelSuitedLeftArm.activeInHierarchy);

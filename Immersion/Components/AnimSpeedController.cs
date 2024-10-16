@@ -74,7 +74,7 @@ public class AnimSpeedController : MonoBehaviour
 
         ToolMode toolMode = Locator.GetToolModeSwapper().GetToolMode();
         __instance._rightArmHidden = toolMode > ToolMode.None;
-        if (Config.IsLeftyModeEnabled && toolMode != ToolMode.Translator)
+        if (ModMain.IsLeftyModeEnabled && toolMode != ToolMode.Translator)
         {
             for (int i = 0; i < __instance._rightArmObjects.Length; i++)
             {
