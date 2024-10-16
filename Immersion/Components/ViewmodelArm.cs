@@ -1,4 +1,5 @@
 ﻿using HarmonyLib;
+using System.ComponentModel;
 using UnityEngine;
 
 namespace Immersion.Components;
@@ -6,13 +7,13 @@ namespace Immersion.Components;
 [HarmonyPatch]
 public class ViewmodelArm : MonoBehaviour
 {
-    private static GameObject s_playerModelUnsuitedRightArm;
+    private GameObject playerModelUnsuitedRightArm;
 
-    private static GameObject s_playerModelSuitedRightArm;
+    private GameObject playerModelSuitedRightArm;
 
-    private static GameObject s_playerModelUnsuitedLeftArm;
+    private GameObject playerModelUnsuitedLeftArm;
 
-    private static GameObject s_playerModelSuitedLeftArm;
+    private GameObject playerModelSuitedLeftArm;
 
     private bool _isItem;
 
@@ -75,22 +76,14 @@ public class ViewmodelArm : MonoBehaviour
 
     private void Start()
     {
-        if (gameObject.GetComponentInParent<OWItem>() != null)
-        {
-            _isItem = true;
-        }
-        else
-        {
-            _isItem = false;
-        }
-
-        s_playerModelUnsuitedRightArm ??= Locator.GetPlayerController().transform.Find("Traveller_HEA_Player_v2/player_mesh_noSuit:Traveller_HEA_Player/player_mesh_noSuit:Player_RightArm").gameObject;
-        s_playerModelSuitedRightArm ??= Locator.GetPlayerController().transform.Find("Traveller_HEA_Player_v2/Traveller_Mesh_v01:Traveller_Geo/Traveller_Mesh_v01:PlayerSuit_RightArm").gameObject;
-        s_playerModelUnsuitedLeftArm ??= Locator.GetPlayerController().transform.Find("Traveller_HEA_Player_v2/player_mesh_noSuit:Traveller_HEA_Player/player_mesh_noSuit:Player_LeftArm").gameObject;
-        s_playerModelSuitedLeftArm ??= Locator.GetPlayerController().transform.Find("Traveller_HEA_Player_v2/Traveller_Mesh_v01:Traveller_Geo/Traveller_Mesh_v01:PlayerSuit_LeftArm").gameObject;
+        _isItem = gameObject.GetComponentInParent<OWItem>() != null;
+        playerModelUnsuitedRightArm = Locator.GetPlayerController().transform.Find("Traveller_HEA_Player_v2/player_mesh_noSuit:Traveller_HEA_Player/player_mesh_noSuit:Player_RightArm").gameObject;
+        playerModelSuitedRightArm = Locator.GetPlayerController().transform.Find("Traveller_HEA_Player_v2/Traveller_Mesh_v01:Traveller_Geo/Traveller_Mesh_v01:PlayerSuit_RightArm").gameObject;
+        playerModelUnsuitedLeftArm = Locator.GetPlayerController().transform.Find("Traveller_HEA_Player_v2/player_mesh_noSuit:Traveller_HEA_Player/player_mesh_noSuit:Player_LeftArm").gameObject;
+        playerModelSuitedLeftArm = Locator.GetPlayerController().transform.Find("Traveller_HEA_Player_v2/Traveller_Mesh_v01:Traveller_Geo/Traveller_Mesh_v01:PlayerSuit_LeftArm").gameObject;
     }
 
-    private void Update()
+    private void LateUpdate()
     {
         if (!Config.IsViewModelHandsEnabled || (_isItem && !GetComponentInParent<ItemTool>()))
         {
@@ -99,13 +92,13 @@ public class ViewmodelArm : MonoBehaviour
         }
         else if (Config.IsLeftyModeEnabled && Locator.GetToolModeSwapper()._currentToolMode != ToolMode.Translator)
         {
-            _unsuitedModel.SetActive(s_playerModelUnsuitedLeftArm.activeInHierarchy);
-            _suitedModel.SetActive(s_playerModelSuitedLeftArm.activeInHierarchy);
+            _unsuitedModel.SetActive(playerModelUnsuitedLeftArm.activeInHierarchy);
+            _suitedModel.SetActive(playerModelSuitedLeftArm.activeInHierarchy);
         }
         else
         {
-            _unsuitedModel.SetActive(s_playerModelUnsuitedRightArm.activeInHierarchy);
-            _suitedModel.SetActive(s_playerModelSuitedRightArm.activeInHierarchy);
+            _unsuitedModel.SetActive(playerModelUnsuitedRightArm.activeInHierarchy);
+            _suitedModel.SetActive(playerModelSuitedRightArm.activeInHierarchy);
         }
     }
 
