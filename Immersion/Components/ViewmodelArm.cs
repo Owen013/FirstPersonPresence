@@ -6,19 +6,19 @@ namespace Immersion.Components;
 [HarmonyPatch]
 public class ViewmodelArm : MonoBehaviour
 {
+    private static GameObject s_playerModelUnsuitedRightArm;
+
+    private static GameObject s_playerModelSuitedRightArm;
+
+    private static GameObject s_playerModelUnsuitedLeftArm;
+
+    private static GameObject s_playerModelSuitedLeftArm;
+
     private bool _isItem;
 
-    private GameObject _noSuitArm;
+    private GameObject _unsuitedModel;
 
-    private GameObject _suitArm;
-
-    private GameObject _realNoSuitRightArm;
-
-    private GameObject _realSuitRightArm;
-
-    private GameObject _realNoSuitLeftArm;
-
-    private GameObject _realSuitLeftArm;
+    private GameObject _suitedModel;
 
     public static ViewmodelArm Create(Transform parent, Vector3 localPos, Quaternion localRot, Vector3 scale, bool useDefaultShader = false)
     {
@@ -34,32 +34,21 @@ public class ViewmodelArm : MonoBehaviour
             Destroy(parent.GetComponent<ViewmodelArm>().gameObject);
         }
 
-        GameObject arm = new GameObject("ViewmodelArm");
-        arm.transform.parent = parent;
-        arm.transform.localPosition = localPos;
-        arm.transform.localRotation = localRot;
-        arm.transform.localScale = scale;
+        ViewmodelArm viewmodelArm = new GameObject("ViewmodelArm").AddComponent<ViewmodelArm>();
+        viewmodelArm.transform.parent = parent;
+        viewmodelArm.transform.localPosition = localPos;
+        viewmodelArm.transform.localRotation = localRot;
+        viewmodelArm.transform.localScale = scale;
 
-        GameObject noSuit = Instantiate(GameObject.Find("Player_Body/RoastingSystem/Stick_Root/Stick_Pivot/Stick_Tip/Props_HEA_RoastingStick/RoastingStick_Arm_NoSuit"));
-        noSuit.name = "Arm_NoSuit";
-        noSuit.transform.parent = arm.transform;
-        noSuit.layer = 27;
-        noSuit.transform.localPosition = Vector3.zero;
-        noSuit.transform.localRotation = Quaternion.Euler(330, 0, 300);
-        noSuit.transform.localScale = Vector3.one;
-
-        GameObject suit = Instantiate(GameObject.Find("Player_Body/RoastingSystem/Stick_Root/Stick_Pivot/Stick_Tip/Props_HEA_RoastingStick/RoastingStick_Arm"));
-        suit.name = "Arm_Suit";
-        suit.transform.parent = arm.transform;
-        suit.layer = 27;
-        suit.transform.localPosition = new Vector3(-0.02f, 0.03f, 0.02f);
-        suit.transform.localRotation = Quaternion.Euler(330, 0, 300);
-        suit.transform.localScale = Vector3.one;
-
-        MeshRenderer noSuitMeshRenderer = noSuit.GetComponent<MeshRenderer>();
-        MeshRenderer suitMeshRenderer = suit.GetComponent<MeshRenderer>();
+        viewmodelArm._unsuitedModel = Instantiate(GameObject.Find("Player_Body/RoastingSystem/Stick_Root/Stick_Pivot/Stick_Tip/Props_HEA_RoastingStick/RoastingStick_Arm_NoSuit"));
+        viewmodelArm._unsuitedModel.name = "Arm_NoSuit";
+        viewmodelArm._unsuitedModel.transform.parent = viewmodelArm.transform;
+        viewmodelArm._unsuitedModel.layer = 27;
+        viewmodelArm._unsuitedModel.transform.localPosition = Vector3.zero;
+        viewmodelArm._unsuitedModel.transform.localRotation = Quaternion.Euler(330, 0, 300);
+        viewmodelArm._unsuitedModel.transform.localScale = Vector3.one;
+        MeshRenderer noSuitMeshRenderer = viewmodelArm._unsuitedModel.GetComponent<MeshRenderer>();
         noSuitMeshRenderer.shadowCastingMode = UnityEngine.Rendering.ShadowCastingMode.Off;
-        suitMeshRenderer.shadowCastingMode = UnityEngine.Rendering.ShadowCastingMode.Off;
         foreach (Material material in noSuitMeshRenderer.materials)
         {
             material.renderQueue = parent.GetComponent<MeshRenderer>().material.renderQueue;
@@ -69,10 +58,19 @@ public class ViewmodelArm : MonoBehaviour
             }
         }
 
+        viewmodelArm._suitedModel = Instantiate(GameObject.Find("Player_Body/RoastingSystem/Stick_Root/Stick_Pivot/Stick_Tip/Props_HEA_RoastingStick/RoastingStick_Arm"));
+        viewmodelArm._suitedModel.name = "Arm_Suit";
+        viewmodelArm._suitedModel.transform.parent = viewmodelArm.transform;
+        viewmodelArm._suitedModel.layer = 27;
+        viewmodelArm._suitedModel.transform.localPosition = new Vector3(-0.02f, 0.03f, 0.02f);
+        viewmodelArm._suitedModel.transform.localRotation = Quaternion.Euler(330, 0, 300);
+        viewmodelArm._suitedModel.transform.localScale = Vector3.one;
+        MeshRenderer suitMeshRenderer = viewmodelArm._suitedModel.GetComponent<MeshRenderer>();
+        suitMeshRenderer.shadowCastingMode = UnityEngine.Rendering.ShadowCastingMode.Off;
         suitMeshRenderer.material.renderQueue = noSuitMeshRenderer.material.renderQueue;
         suitMeshRenderer.material.shader = noSuitMeshRenderer.material.shader;
 
-        return arm.AddComponent<ViewmodelArm>();
+        return viewmodelArm;
     }
 
     private void Start()
@@ -86,32 +84,28 @@ public class ViewmodelArm : MonoBehaviour
             _isItem = false;
         }
 
-        _noSuitArm = gameObject.transform.Find("Arm_NoSuit").gameObject;
-        _suitArm = gameObject.transform.Find("Arm_Suit").gameObject;
-
-        PlayerAnimController _playerVisuals = Locator.GetPlayerController().GetComponentInChildren<PlayerAnimController>();
-        _realNoSuitRightArm = _playerVisuals.transform.Find("player_mesh_noSuit:Traveller_HEA_Player/player_mesh_noSuit:Player_RightArm").gameObject;
-        _realSuitRightArm = _playerVisuals.transform.Find("Traveller_Mesh_v01:Traveller_Geo/Traveller_Mesh_v01:PlayerSuit_RightArm").gameObject;
-        _realNoSuitLeftArm = _playerVisuals.transform.Find("player_mesh_noSuit:Traveller_HEA_Player/player_mesh_noSuit:Player_LeftArm").gameObject;
-        _realSuitLeftArm = _playerVisuals.transform.Find("Traveller_Mesh_v01:Traveller_Geo/Traveller_Mesh_v01:PlayerSuit_LeftArm").gameObject;
+        s_playerModelUnsuitedRightArm ??= Locator.GetPlayerController().transform.Find("Traveller_HEA_Player_v2/player_mesh_noSuit:Traveller_HEA_Player/player_mesh_noSuit:Player_RightArm").gameObject;
+        s_playerModelSuitedRightArm ??= Locator.GetPlayerController().transform.Find("Traveller_HEA_Player_v2/Traveller_Mesh_v01:Traveller_Geo/Traveller_Mesh_v01:PlayerSuit_RightArm").gameObject;
+        s_playerModelUnsuitedLeftArm ??= Locator.GetPlayerController().transform.Find("Traveller_HEA_Player_v2/player_mesh_noSuit:Traveller_HEA_Player/player_mesh_noSuit:Player_LeftArm").gameObject;
+        s_playerModelSuitedLeftArm ??= Locator.GetPlayerController().transform.Find("Traveller_HEA_Player_v2/Traveller_Mesh_v01:Traveller_Geo/Traveller_Mesh_v01:PlayerSuit_LeftArm").gameObject;
     }
 
     private void Update()
     {
         if (!Config.IsViewModelHandsEnabled || (_isItem && !GetComponentInParent<ItemTool>()))
         {
-            _noSuitArm.SetActive(false);
-            _suitArm.SetActive(false);
+            _unsuitedModel.SetActive(false);
+            _suitedModel.SetActive(false);
         }
         else if (Config.IsLeftyModeEnabled && Locator.GetToolModeSwapper()._currentToolMode != ToolMode.Translator)
         {
-            _noSuitArm.SetActive(_realNoSuitLeftArm.activeInHierarchy);
-            _suitArm.SetActive(_realSuitLeftArm.activeInHierarchy);
+            _unsuitedModel.SetActive(s_playerModelUnsuitedLeftArm.activeInHierarchy);
+            _suitedModel.SetActive(s_playerModelSuitedLeftArm.activeInHierarchy);
         }
         else
         {
-            _noSuitArm.SetActive(_realNoSuitRightArm.activeInHierarchy);
-            _suitArm.SetActive(_realSuitRightArm.activeInHierarchy);
+            _unsuitedModel.SetActive(s_playerModelUnsuitedRightArm.activeInHierarchy);
+            _suitedModel.SetActive(s_playerModelSuitedRightArm.activeInHierarchy);
         }
     }
 
