@@ -177,10 +177,10 @@ public class CameraViewmodelManager : MonoBehaviour
             ApplyScoutAnim();
         }
 
-        // Translator offset needs to be 3x bigger, also needs to bob more in the x direction and not at all in the z direction
+        // Translator offset needs to be 3x bigger, also needs to convert forward bob into additional sideways bob
         _translatorRoot.transform.localPosition = 3 * _mainToolRoot.transform.localPosition;
         _translatorRoot.transform.localRotation = _mainToolRoot.transform.localRotation;
-        _translatorRoot.transform.Translate(new Vector3(1.82f * toolBob.x, 0, -3 * toolBob.z), _characterController.transform);
+        _translatorRoot.transform.Translate(3 * new Vector3(new Vector2(ModMain.ToolBobXAmount, ModMain.ToolBobZAmount).magnitude * toolBob.x, 0, ModMain.ToolBobZAmount * -toolBob.z), _characterController.transform);
 
         if (ModMain.IsHideStowedItemsEnabled)
         {
