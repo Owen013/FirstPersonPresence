@@ -256,9 +256,9 @@ public class CameraViewmodelManager : MonoBehaviour
         float dampTime = targetRecoil > _scoutRecoil ? 0.05f : 0.1f;
         _scoutRecoil = Mathf.SmoothDamp(_scoutRecoil, targetRecoil, ref _scoutRecoilVelocity, dampTime);
 
-        RotateCamera(new Vector3(-10f, ModMain.IsLeftyModeEnabled ? -1f : 1f, -5f * (ModMain.IsLeftyModeEnabled ? -1f : 1f)) * _scoutRecoil);
-        _probeLauncherRoot.transform.localPosition += new Vector3(0.5f * (ModMain.IsLeftyModeEnabled ? -1f : 1f), 0.25f, -0.5f) * _scoutRecoil;
-        _probeLauncherRoot.transform.localRotation *= Quaternion.Euler(new Vector3(-10f, 0f, -20f * (ModMain.IsLeftyModeEnabled ? -1f : 1f)) * _scoutRecoil);
+        RotateCamera(new Vector3(-5, 0, ModMain.IsLeftyModeEnabled ? 5 : -5) * _scoutRecoil);
+        _probeLauncherRoot.transform.localPosition += new Vector3(ModMain.IsLeftyModeEnabled ? -0.25f : 0.25f, -0.25f, -0.5f) * _scoutRecoil;
+        _probeLauncherRoot.transform.localRotation *= Quaternion.Euler(new Vector3(-15, 0, ModMain.IsLeftyModeEnabled ? 15 : -15) * _scoutRecoil);
     }
 
     [HarmonyPostfix]
