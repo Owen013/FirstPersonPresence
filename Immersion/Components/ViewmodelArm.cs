@@ -114,7 +114,7 @@ public class ViewmodelArm : MonoBehaviour
     private static void OnProbeLauncherAwake(ProbeLauncher __instance)
     {
         if (!__instance.GetComponentInParent<PlayerBody>()) return;
-        Create(__instance.transform.Find("Props_HEA_ProbeLauncher/ProbeLauncherChassis"), new Vector3(0.0556f, -0.5962f, 0.0299f), Quaternion.Euler(24.6841f, 0f, 0f), new Vector3(0.9f, 0.9f, 0.9f));
+        Create(__instance.transform.Find("Props_HEA_ProbeLauncher/ProbeLauncherChassis"), new Vector3(0.0556f, -0.5962f, 0.0299f), Quaternion.Euler(24.6841f, 0, 0), new Vector3(0.9f, 0.9f, 0.9f));
     }
 
     [HarmonyPostfix]
@@ -128,7 +128,7 @@ public class ViewmodelArm : MonoBehaviour
     [HarmonyPatch(typeof(SharedStone), nameof(SharedStone.Awake))]
     private static void OnSharedStoneAwake(SharedStone __instance)
     {
-        Create(__instance.transform.Find("AnimRoot/Props_NOM_SharedStone"), new Vector3(0.1865f, -0.0744f, -0.2171f), Quaternion.Euler(0f, 320f, 310f), new Vector3(0.9f, 0.9f, 0.9f), true);
+        Create(__instance.transform.Find("AnimRoot/Props_NOM_SharedStone"), new Vector3(0.1865f, -0.0744f, -0.2171f), Quaternion.Euler(0, 320, 310), new Vector3(0.9f, 0.9f, 0.9f), true);
     }
 
     [HarmonyPostfix]
@@ -147,7 +147,7 @@ public class ViewmodelArm : MonoBehaviour
         {
             if (renderer.name.Contains("_Back"))
             {
-                Create(renderer.transform, new Vector3(0.1748f, -0.1398f, -0.2008f), Quaternion.Euler(0f, 0f, 292.1743f), new Vector3(0.6f, 0.6f, 0.6f), true);
+                Create(renderer.transform, new Vector3(0.1748f, -0.1398f, -0.2008f), Quaternion.Euler(0, 0, 292.1743f), new Vector3(0.6f, 0.6f, 0.6f), true);
             }
         }
     }
@@ -174,10 +174,10 @@ public class ViewmodelArm : MonoBehaviour
     [HarmonyPatch(typeof(SimpleLanternItem), nameof(SimpleLanternItem.Start))]
     private static void OnSimpleLanternAwake(SimpleLanternItem __instance)
     {
-        ViewmodelArm arm = Create(__instance.transform.Find("Props_IP_Lantern/Lantern_geo"), new Vector3(-0.2524f, 0.2953f, -0.0524f), Quaternion.Euler(330f, 140f, 90f), new Vector3(1.2f, 1.2f, 1.2f), true);
+        ViewmodelArm arm = Create(__instance.transform.Find("Props_IP_Lantern/Lantern_geo"), new Vector3(-0.2524f, 0.2953f, -0.0524f), Quaternion.Euler(330, 140, 90), new Vector3(1.2f, 1.2f, 1.2f), true);
         if (arm == null)
         {
-            arm = Create(__instance.transform.Find("Props_IP_Lantern_Crack/Lantern_geo"), new Vector3(0.2494f, 0.6859f, 0.0476f), Quaternion.Euler(330f, 320f, 90f), new Vector3(1.2f, 1.2f, 1.2f), true);
+            arm = Create(__instance.transform.Find("Props_IP_Lantern_Crack/Lantern_geo"), new Vector3(0.2494f, 0.6859f, 0.0476f), Quaternion.Euler(330, 320, 90), new Vector3(1.2f, 1.2f, 1.2f), true);
         }
     }
 
