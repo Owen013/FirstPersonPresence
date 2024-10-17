@@ -4,13 +4,13 @@ using UnityEngine;
 namespace Immersion.Components;
 
 [HarmonyPatch]
-public class ImmersionController : MonoBehaviour
+public class CameraAnimController : MonoBehaviour
 {
-    public static ImmersionController Instance { get; private set; }
+    public static CameraAnimController Instance { get; private set; }
 
     public GameObject CameraRoot { get; private set; }
 
-    public GameObject ToolRoot { get; private set; }
+    public GameObject MainToolRoot { get; private set; }
 
     public GameObject ProbeLauncherRoot { get; private set; }
 
@@ -51,33 +51,31 @@ public class ImmersionController : MonoBehaviour
         _animController = Locator.GetPlayerBody().GetComponentInChildren<PlayerAnimController>();
         _characterController = Locator.GetPlayerController();
 
+        static GameObject CreateRoot(string name, Transform parent)
+        {
+            GameObject root = new GameObject(name);
+            root.transform.parent = parent;
+            root.transform.localPosition = Vector3.zero;
+            root.transform.localRotation = Quaternion.identity;
+            root.transform.localScale = Vector3.one;
+            return root;
+        }
+
         // create view bob root and parent camera to it
-        CameraRoot = new GameObject("CameraRoot");
-        CameraRoot.transform.parent = _cameraController._playerCamera.mainCamera.transform.parent;
-        CameraRoot.transform.localPosition = Vector3.zero;
-        CameraRoot.transform.localRotation = Quaternion.identity;
+        CameraRoot = CreateRoot("CameraRoot", _cameraController._playerCamera.mainCamera.transform.parent);
         _cameraController._playerCamera.mainCamera.transform.parent = CameraRoot.transform;
 
         // create tool root and parent tools to it
-        ToolRoot = new GameObject("ToolRoot");
-        ToolRoot.transform.parent = _cameraController._playerCamera.mainCamera.transform;
-        ToolRoot.transform.localPosition = Vector3.zero;
-        ToolRoot.transform.localRotation = Quaternion.identity;
-        _cameraController._playerCamera.mainCamera.transform.Find("ItemCarryTool").transform.parent = ToolRoot.transform;
-        _cameraController._playerCamera.mainCamera.transform.Find("Signalscope").transform.parent = ToolRoot.transform;
+        MainToolRoot = CreateRoot("MainToolRoot", _cameraController._playerCamera.mainCamera.transform);
+        _cameraController._playerCamera.mainCamera.transform.Find("ItemCarryTool").transform.parent = MainToolRoot.transform;
+        _cameraController._playerCamera.mainCamera.transform.Find("Signalscope").transform.parent = MainToolRoot.transform;
 
         // create a separate root for the scout launcher since it's a lot bigger and farther from the camera
-        ProbeLauncherRoot = new GameObject("ProbeLauncherRoot");
-        ProbeLauncherRoot.transform.parent = _cameraController._playerCamera.mainCamera.transform;
-        ProbeLauncherRoot.transform.localPosition = Vector3.zero;
-        ProbeLauncherRoot.transform.localRotation = Quaternion.identity;
+        ProbeLauncherRoot = CreateRoot("ProbeLauncherRoot", _cameraController._playerCamera.mainCamera.transform);
         _cameraController._playerCamera.mainCamera.transform.Find("ProbeLauncher").transform.parent = ProbeLauncherRoot.transform;
 
         // create a separate root for the translator tool since it doesn't bob forward and backward
-        TranslatorRoot = new GameObject("TranslatorRoot");
-        TranslatorRoot.transform.parent = _cameraController._playerCamera.mainCamera.transform;
-        TranslatorRoot.transform.localPosition = Vector3.zero;
-        TranslatorRoot.transform.localRotation = Quaternion.identity;
+        TranslatorRoot = CreateRoot("TranslatorRoot", _cameraController._playerCamera.mainCamera.transform);
         _cameraController._playerCamera.mainCamera.transform.Find("NomaiTranslatorProp").transform.parent = TranslatorRoot.transform;
 
         // subscribe to events
@@ -109,8 +107,8 @@ public class ImmersionController : MonoBehaviour
         // reset everything
         CameraRoot.transform.localPosition = Vector3.zero;
         CameraRoot.transform.localRotation = Quaternion.identity;
-        ToolRoot.transform.localPosition = Vector3.zero;
-        ToolRoot.transform.localRotation = Quaternion.identity;
+        MainToolRoot.transform.localPosition = Vector3.zero;
+        MainToolRoot.transform.localRotation = Quaternion.identity;
 
         Vector3 toolBob = Vector3.zero;
         if (ModMain.IsViewBobEnabled || ModMain.IsToolBobEnabled)
@@ -148,9 +146,9 @@ public class ImmersionController : MonoBehaviour
             {
                 toolBob = new Vector3(Mathf.Sin(_viewBobTime * 6.28318f) * _viewBobIntensity * 0.25f, Mathf.Cos(_viewBobTime * 12.5664f) * _viewBobIntensity * 0.25f);
                 toolBob.z = -toolBob.x * (ModMain.IsLeftyModeEnabled ? -1f : 1f);
-                ToolRoot.transform.localPosition = new Vector3(0, toolBob.y * ModMain.ToolBobYAmount);
-                ToolRoot.transform.localRotation = Quaternion.Euler(new Vector3(toolBob.y * 100f * ModMain.ToolBobPitchAmount, 0f, -toolBob.x * 100f * ModMain.ToolBobRollAmount));
-                ToolRoot.transform.Translate(new Vector3(toolBob.x * ModMain.ToolBobXAmount, 0, toolBob.z * ModMain.ToolBobZAmount), _characterController.transform);
+                MainToolRoot.transform.localPosition = new Vector3(0, toolBob.y * ModMain.ToolBobYAmount);
+                MainToolRoot.transform.localRotation = Quaternion.Euler(new Vector3(toolBob.y * 100f * ModMain.ToolBobPitchAmount, 0f, -toolBob.x * 100f * ModMain.ToolBobRollAmount));
+                MainToolRoot.transform.Translate(new Vector3(toolBob.x * ModMain.ToolBobXAmount, 0, toolBob.z * ModMain.ToolBobZAmount), _characterController.transform);
             }
         }
 
@@ -166,20 +164,20 @@ public class ImmersionController : MonoBehaviour
 
         if (ModMain.DynamicToolPosBehavior != "Disabled")
         {
-            ToolRoot.transform.localPosition += GetDynamicToolPos();
+            MainToolRoot.transform.localPosition += GetDynamicToolPos();
         }
 
         // Probe Launcher position offset needs to be 3x bigger because the tools in it are further away and appear to move less
-        ProbeLauncherRoot.transform.localPosition = 3 * ToolRoot.transform.localPosition;
-        ProbeLauncherRoot.transform.localRotation = ToolRoot.transform.localRotation;
+        ProbeLauncherRoot.transform.localPosition = 3 * MainToolRoot.transform.localPosition;
+        ProbeLauncherRoot.transform.localRotation = MainToolRoot.transform.localRotation;
         if (ModMain.IsScoutAnimEnabled)
         {
             ApplyScoutAnim();
         }
 
         // Translator offset needs to be 3x bigger, also needs to bob more in the x direction and not at all in the z direction
-        TranslatorRoot.transform.localPosition = 3 * ToolRoot.transform.localPosition;
-        TranslatorRoot.transform.localRotation = ToolRoot.transform.localRotation;
+        TranslatorRoot.transform.localPosition = 3 * MainToolRoot.transform.localPosition;
+        TranslatorRoot.transform.localRotation = MainToolRoot.transform.localRotation;
         TranslatorRoot.transform.Translate(new Vector3(1.82f * toolBob.x, 0, -3 * toolBob.z), _characterController.transform);
 
         if (ModMain.IsHideStowedItemsEnabled)
@@ -221,14 +219,14 @@ public class ImmersionController : MonoBehaviour
         // decay already existing tool sway and then add new tool sway
         _toolSway = Vector2.SmoothDamp(_toolSway, Vector2.zero, ref _toolSwayVelocity, 0.2f * ModMain.ToolSwaySmoothing, 5f);
         _toolSway = Vector2.ClampMagnitude(_toolSway - lookDelta * (1 - _toolSway.magnitude), 1);
-        float localZOffset = Mathf.Cos(Mathf.PI * 0.5f * Mathf.Abs(_toolSway.y) * 2f) - 1f;
-        float globalZOffset = Mathf.Cos(Mathf.PI * 0.5f * Mathf.Abs(_toolSway.x) * 2f) - 1f;
-        float xSwayMultiplier = (Mathf.Cos(degreesY * 0.03490f) + 1f) * 0.5f;
+        float localZOffset = 0.15f * (Mathf.Cos(Mathf.PI * _toolSway.y) - 1);
+        float globalZOffset = 0.15f * (Mathf.Cos(Mathf.PI * _toolSway.x) - 1);
+        float xSwayMultiplier = (Mathf.Cos(degreesY * 0.03490f) + 1) * 0.5f;
 
-        ToolRoot.transform.localPosition += 0.15f * ModMain.ToolSwayTranslateAmount * new Vector3(0, _toolSway.y, 0.25f * localZOffset);
-        ToolRoot.transform.localRotation *= Quaternion.Euler(-30 * ModMain.ToolSwayRotateAmount * new Vector3(_toolSway.y, 0, 0));
-        ToolRoot.transform.Translate(0.15f * xSwayMultiplier * ModMain.ToolSwayTranslateAmount * new Vector3(_toolSway.x, 0, 0.25f * globalZOffset), _characterController.transform);
-        ToolRoot.transform.RotateAround(_characterController.transform.position, _characterController._owRigidbody.GetLocalUpDirection(), 30 * ModMain.ToolSwayRotateAmount * _toolSway.x);
+        MainToolRoot.transform.localPosition += 0.15f * ModMain.ToolSwayTranslateAmount * new Vector3(0, _toolSway.y, localZOffset);
+        MainToolRoot.transform.localRotation *= Quaternion.Euler(-20 * ModMain.ToolSwayRotateAmount * new Vector3(_toolSway.y, 0, 0));
+        MainToolRoot.transform.Translate(0.15f * xSwayMultiplier * ModMain.ToolSwayTranslateAmount * new Vector3(_toolSway.x, 0, globalZOffset), _characterController.transform);
+        MainToolRoot.transform.RotateAround(_characterController.transform.position, _characterController._owRigidbody.GetLocalUpDirection(), 20 * ModMain.ToolSwayRotateAmount * _toolSway.x);
     }
 
     private Vector3 GetDynamicToolPos()
@@ -265,12 +263,12 @@ public class ImmersionController : MonoBehaviour
     {
         if (ModMain.IsLeftyModeEnabled)
         {
-            ToolRoot.transform.localScale = new Vector3(-1f, 1f, 1f);
+            MainToolRoot.transform.localScale = new Vector3(-1f, 1f, 1f);
             ProbeLauncherRoot.transform.localScale = new Vector3(-1f, 1f, 1f);
         }
         else
         {
-            ToolRoot.transform.localScale = Vector3.one;
+            MainToolRoot.transform.localScale = Vector3.one;
             ProbeLauncherRoot.transform.localScale = Vector3.one;
         }
     }
@@ -279,6 +277,6 @@ public class ImmersionController : MonoBehaviour
     [HarmonyPatch(typeof(PlayerCameraController), nameof(PlayerCameraController.Start))]
     private static void AddToPlayerCamera(PlayerCameraController __instance)
     {
-        __instance.gameObject.AddComponent<ImmersionController>();
+        __instance.gameObject.AddComponent<CameraAnimController>();
     }
 }
