@@ -66,7 +66,7 @@ public class ModMain : ModBehaviour
 
     public delegate void ConfigureEvent();
 
-    public static event ConfigureEvent OnConfigure;
+    public event ConfigureEvent OnConfigure;
 
     public static void Print(string text, MessageType messageType = MessageType.Message)
     {
@@ -81,30 +81,27 @@ public class ModMain : ModBehaviour
 
     public override void Configure(IModConfig config)
     {
-        IsViewModelHandsEnabled = config.GetSettingsValue<bool>("EnableViewmodelHands");
+        base.Configure(config);
 
+        IsViewModelHandsEnabled = config.GetSettingsValue<bool>("EnableViewmodelHands");
         IsViewBobEnabled = config.GetSettingsValue<bool>("EnableViewBob");
         ViewBobXAmount = config.GetSettingsValue<float>("ViewBobXAmount");
         ViewBobYAmount = config.GetSettingsValue<float>("ViewBobYAmount");
         ViewBobRollAmount = config.GetSettingsValue<float>("ViewBobRollAmount");
         ViewBobPitchAmount = config.GetSettingsValue<float>("ViewBobPitchAmount");
-
         IsToolBobEnabled = config.GetSettingsValue<bool>("EnableToolBob");
         ToolBobXAmount = config.GetSettingsValue<float>("ToolBobXAmount");
         ToolBobYAmount = config.GetSettingsValue<float>("ToolBobYAmount");
         ToolBobZAmount = config.GetSettingsValue<float>("ToolBobZAmount");
         ToolBobRollAmount = config.GetSettingsValue<float>("ToolBobRollAmount");
         ToolBobPitchAmount = config.GetSettingsValue<float>("ToolBobPitchAmount");
-
         IsToolSwayEnabled = config.GetSettingsValue<bool>("EnableToolSway");
         ToolSwayTranslateAmount = config.GetSettingsValue<float>("ToolSwayTranslateAmount");
         ToolSwayRotateAmount = config.GetSettingsValue<float>("ToolSwayRotateAmount");
         ToolSwaySmoothing = config.GetSettingsValue<float>("ToolSwaySmoothing");
-
         DynamicToolPosBehavior = config.GetSettingsValue<string>("DynamicToolPosBehavior");
         DynamicToolPosYAmount = config.GetSettingsValue<float>("DynamicToolPosYAmount");
         DynamicToolPosZAmount = config.GetSettingsValue<float>("DynamicToolPosZAmount");
-
         IsJumpAnimEnabled = config.GetSettingsValue<bool>("UseJumpAnim");
         IsFallAnimEnabled = config.GetSettingsValue<bool>("UseFallAnim");
         IsLandingAnimEnabled = config.GetSettingsValue<bool>("UseLandingAnim");

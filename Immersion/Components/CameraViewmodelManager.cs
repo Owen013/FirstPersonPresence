@@ -4,23 +4,21 @@ using UnityEngine;
 namespace Immersion.Components;
 
 [HarmonyPatch]
-public class CameraAnimController : MonoBehaviour
+public class CameraViewmodelManager : MonoBehaviour
 {
-    public static CameraAnimController Instance { get; private set; }
-
-    public GameObject CameraRoot { get; private set; }
-
-    public GameObject MainToolRoot { get; private set; }
-
-    public GameObject ProbeLauncherRoot { get; private set; }
-
-    public GameObject TranslatorRoot { get; private set; }
-
     private PlayerCameraController _cameraController;
 
     private PlayerAnimController _animController;
 
     private PlayerCharacterController _characterController;
+
+    private GameObject _cameraRoot;
+
+    private GameObject _mainToolRoot;
+
+    private GameObject _probeLauncherRoot;
+
+    private GameObject _translatorRoot;
 
     private float _viewBobTime;
 
@@ -40,11 +38,6 @@ public class CameraAnimController : MonoBehaviour
 
     private Vector2 _toolSwayVelocity;
 
-    private void Awake()
-    {
-        Instance = this;
-    }
-
     private void Start()
     {
         _cameraController = GetComponent<PlayerCameraController>();
@@ -62,24 +55,23 @@ public class CameraAnimController : MonoBehaviour
         }
 
         // create view bob root and parent camera to it
-        CameraRoot = CreateRoot("CameraRoot", _cameraController._playerCamera.mainCamera.transform.parent);
-        _cameraController._playerCamera.mainCamera.transform.parent = CameraRoot.transform;
+        _cameraRoot = CreateRoot("CameraRoot", _cameraController._playerCamera.mainCamera.transform.parent);
+        _cameraController._playerCamera.mainCamera.transform.parent = _cameraRoot.transform;
 
         // create tool root and parent tools to it
-        MainToolRoot = CreateRoot("MainToolRoot", _cameraController._playerCamera.mainCamera.transform);
-        _cameraController._playerCamera.mainCamera.transform.Find("ItemCarryTool").transform.parent = MainToolRoot.transform;
-        _cameraController._playerCamera.mainCamera.transform.Find("Signalscope").transform.parent = MainToolRoot.transform;
+        _mainToolRoot = CreateRoot("MainToolRoot", _cameraController._playerCamera.mainCamera.transform);
+        _cameraController._playerCamera.mainCamera.transform.Find("ItemCarryTool").transform.parent = _mainToolRoot.transform;
+        _cameraController._playerCamera.mainCamera.transform.Find("Signalscope").transform.parent = _mainToolRoot.transform;
 
         // create a separate root for the scout launcher since it's a lot bigger and farther from the camera
-        ProbeLauncherRoot = CreateRoot("ProbeLauncherRoot", _cameraController._playerCamera.mainCamera.transform);
-        _cameraController._playerCamera.mainCamera.transform.Find("ProbeLauncher").transform.parent = ProbeLauncherRoot.transform;
+        _probeLauncherRoot = CreateRoot("ProbeLauncherRoot", _cameraController._playerCamera.mainCamera.transform);
+        _cameraController._playerCamera.mainCamera.transform.Find("ProbeLauncher").transform.parent = _probeLauncherRoot.transform;
 
         // create a separate root for the translator tool since it doesn't bob forward and backward
-        TranslatorRoot = CreateRoot("TranslatorRoot", _cameraController._playerCamera.mainCamera.transform);
-        _cameraController._playerCamera.mainCamera.transform.Find("NomaiTranslatorProp").transform.parent = TranslatorRoot.transform;
+        _translatorRoot = CreateRoot("TranslatorRoot", _cameraController._playerCamera.mainCamera.transform);
+        _cameraController._playerCamera.mainCamera.transform.Find("NomaiTranslatorProp").transform.parent = _translatorRoot.transform;
 
         // subscribe to events
-        ModMain.OnConfigure += CheckAndSetLeftyMode;
         _characterController.OnBecomeGrounded += () =>
         {
             _lastLandedTime = Time.time;
@@ -91,24 +83,34 @@ public class CameraAnimController : MonoBehaviour
                 _lastScoutLaunchTime = Time.time;
             }
         };
+        ModMain.Instance.OnConfigure += () =>
+        {
+            if (ModMain.IsLeftyModeEnabled)
+            {
+                _mainToolRoot.transform.localScale = new Vector3(-1f, 1f, 1f);
+                _probeLauncherRoot.transform.localScale = new Vector3(-1f, 1f, 1f);
+            }
+            else
+            {
+                _mainToolRoot.transform.localScale = Vector3.one;
+                _probeLauncherRoot.transform.localScale = Vector3.one;
+            }
+        };
 
-        CheckAndSetLeftyMode();
-    }
-
-    private void OnDestroy()
-    {
-        ModMain.OnConfigure -= CheckAndSetLeftyMode;
+        if (ModMain.IsLeftyModeEnabled)
+        {
+            _mainToolRoot.transform.localScale = new Vector3(-1f, 1f, 1f);
+            _probeLauncherRoot.transform.localScale = new Vector3(-1f, 1f, 1f);
+        }
     }
 
     private void LateUpdate()
     {
-        if (Time.timeScale == 0) return;
-
         // reset everything
-        CameraRoot.transform.localPosition = Vector3.zero;
-        CameraRoot.transform.localRotation = Quaternion.identity;
-        MainToolRoot.transform.localPosition = Vector3.zero;
-        MainToolRoot.transform.localRotation = Quaternion.identity;
+        _cameraRoot.transform.localPosition = Vector3.zero;
+        _cameraRoot.transform.localRotation = Quaternion.identity;
+        _mainToolRoot.transform.localPosition = Vector3.zero;
+        _mainToolRoot.transform.localRotation = Quaternion.identity;
 
         Vector3 toolBob = Vector3.zero;
         if (ModMain.IsViewBobEnabled || ModMain.IsToolBobEnabled)
@@ -137,7 +139,7 @@ public class CameraAnimController : MonoBehaviour
             if (ModMain.IsViewBobEnabled)
             {
                 Vector2 cameraBob = new Vector2(Mathf.Sin(_viewBobTime * 6.28318f) * _viewBobIntensity, Mathf.Cos(_viewBobTime * 12.5664f) * _viewBobIntensity);
-                CameraRoot.transform.Translate(new Vector3(cameraBob.x * ModMain.ViewBobXAmount, cameraBob.y * ModMain.ViewBobYAmount));
+                _cameraRoot.transform.Translate(new Vector3(cameraBob.x * ModMain.ViewBobXAmount, cameraBob.y * ModMain.ViewBobYAmount));
                 RotateCamera(new Vector3(-cameraBob.y * 5f * ModMain.ViewBobPitchAmount, 0f, -cameraBob.x * 5f * ModMain.ViewBobRollAmount));
             }
 
@@ -146,9 +148,9 @@ public class CameraAnimController : MonoBehaviour
             {
                 toolBob = new Vector3(Mathf.Sin(_viewBobTime * 6.28318f) * _viewBobIntensity * 0.25f, Mathf.Cos(_viewBobTime * 12.5664f) * _viewBobIntensity * 0.25f);
                 toolBob.z = -toolBob.x * (ModMain.IsLeftyModeEnabled ? -1f : 1f);
-                MainToolRoot.transform.localPosition = new Vector3(0, toolBob.y * ModMain.ToolBobYAmount);
-                MainToolRoot.transform.localRotation = Quaternion.Euler(new Vector3(toolBob.y * 100f * ModMain.ToolBobPitchAmount, 0f, -toolBob.x * 100f * ModMain.ToolBobRollAmount));
-                MainToolRoot.transform.Translate(new Vector3(toolBob.x * ModMain.ToolBobXAmount, 0, toolBob.z * ModMain.ToolBobZAmount), _characterController.transform);
+                _mainToolRoot.transform.localPosition = new Vector3(0, toolBob.y * ModMain.ToolBobYAmount);
+                _mainToolRoot.transform.localRotation = Quaternion.Euler(new Vector3(toolBob.y * 100f * ModMain.ToolBobPitchAmount, 0f, -toolBob.x * 100f * ModMain.ToolBobRollAmount));
+                _mainToolRoot.transform.Translate(new Vector3(toolBob.x * ModMain.ToolBobXAmount, 0, toolBob.z * ModMain.ToolBobZAmount), _characterController.transform);
             }
         }
 
@@ -164,21 +166,21 @@ public class CameraAnimController : MonoBehaviour
 
         if (ModMain.DynamicToolPosBehavior != "Disabled")
         {
-            MainToolRoot.transform.localPosition += GetDynamicToolPos();
+            _mainToolRoot.transform.localPosition += GetDynamicToolPos();
         }
 
         // Probe Launcher position offset needs to be 3x bigger because the tools in it are further away and appear to move less
-        ProbeLauncherRoot.transform.localPosition = 3 * MainToolRoot.transform.localPosition;
-        ProbeLauncherRoot.transform.localRotation = MainToolRoot.transform.localRotation;
+        _probeLauncherRoot.transform.localPosition = 3 * _mainToolRoot.transform.localPosition;
+        _probeLauncherRoot.transform.localRotation = _mainToolRoot.transform.localRotation;
         if (ModMain.IsScoutAnimEnabled)
         {
             ApplyScoutAnim();
         }
 
         // Translator offset needs to be 3x bigger, also needs to bob more in the x direction and not at all in the z direction
-        TranslatorRoot.transform.localPosition = 3 * MainToolRoot.transform.localPosition;
-        TranslatorRoot.transform.localRotation = MainToolRoot.transform.localRotation;
-        TranslatorRoot.transform.Translate(new Vector3(1.82f * toolBob.x, 0, -3 * toolBob.z), _characterController.transform);
+        _translatorRoot.transform.localPosition = 3 * _mainToolRoot.transform.localPosition;
+        _translatorRoot.transform.localRotation = _mainToolRoot.transform.localRotation;
+        _translatorRoot.transform.Translate(new Vector3(1.82f * toolBob.x, 0, -3 * toolBob.z), _characterController.transform);
 
         if (ModMain.IsHideStowedItemsEnabled)
         {
@@ -192,9 +194,9 @@ public class CameraAnimController : MonoBehaviour
 
     private void RotateCamera(Vector3 eulers)
     {
-        CameraRoot.transform.RotateAround(_cameraController.transform.position, _cameraController.transform.TransformDirection(Vector3.right), eulers.x);
-        CameraRoot.transform.RotateAround(_cameraController.transform.position, _cameraController.transform.TransformDirection(Vector3.up), eulers.y);
-        CameraRoot.transform.RotateAround(_cameraController.transform.position, _cameraController.transform.TransformDirection(Vector3.forward), eulers.z);
+        _cameraRoot.transform.RotateAround(_cameraController.transform.position, _cameraController.transform.TransformDirection(Vector3.right), eulers.x);
+        _cameraRoot.transform.RotateAround(_cameraController.transform.position, _cameraController.transform.TransformDirection(Vector3.up), eulers.y);
+        _cameraRoot.transform.RotateAround(_cameraController.transform.position, _cameraController.transform.TransformDirection(Vector3.forward), eulers.z);
     }
 
     private void UpdateToolSway()
@@ -223,10 +225,10 @@ public class CameraAnimController : MonoBehaviour
         float globalZOffset = 0.15f * (Mathf.Cos(Mathf.PI * _toolSway.x) - 1);
         float xSwayMultiplier = (Mathf.Cos(degreesY * 0.03490f) + 1) * 0.5f;
 
-        MainToolRoot.transform.localPosition += 0.15f * ModMain.ToolSwayTranslateAmount * new Vector3(0, _toolSway.y, localZOffset);
-        MainToolRoot.transform.localRotation *= Quaternion.Euler(-20 * ModMain.ToolSwayRotateAmount * new Vector3(_toolSway.y, 0, 0));
-        MainToolRoot.transform.Translate(0.15f * xSwayMultiplier * ModMain.ToolSwayTranslateAmount * new Vector3(_toolSway.x, 0, globalZOffset), _characterController.transform);
-        MainToolRoot.transform.RotateAround(_characterController.transform.position, _characterController._owRigidbody.GetLocalUpDirection(), 20 * ModMain.ToolSwayRotateAmount * _toolSway.x);
+        _mainToolRoot.transform.localPosition += 0.15f * ModMain.ToolSwayTranslateAmount * new Vector3(0, _toolSway.y, localZOffset);
+        _mainToolRoot.transform.localRotation *= Quaternion.Euler(-20 * ModMain.ToolSwayRotateAmount * new Vector3(_toolSway.y, 0, 0));
+        _mainToolRoot.transform.Translate(0.15f * xSwayMultiplier * ModMain.ToolSwayTranslateAmount * new Vector3(_toolSway.x, 0, globalZOffset), _characterController.transform);
+        _mainToolRoot.transform.RotateAround(_characterController.transform.position, _characterController._owRigidbody.GetLocalUpDirection(), 20 * ModMain.ToolSwayRotateAmount * _toolSway.x);
     }
 
     private Vector3 GetDynamicToolPos()
@@ -255,28 +257,14 @@ public class CameraAnimController : MonoBehaviour
         _scoutRecoil = Mathf.SmoothDamp(_scoutRecoil, targetRecoil, ref _scoutRecoilVelocity, dampTime);
 
         RotateCamera(new Vector3(-10f, ModMain.IsLeftyModeEnabled ? -1f : 1f, -5f * (ModMain.IsLeftyModeEnabled ? -1f : 1f)) * _scoutRecoil);
-        ProbeLauncherRoot.transform.localPosition += new Vector3(0.5f * (ModMain.IsLeftyModeEnabled ? -1f : 1f), 0.25f, -0.5f) * _scoutRecoil;
-        ProbeLauncherRoot.transform.localRotation *= Quaternion.Euler(new Vector3(-10f, 0f, -20f * (ModMain.IsLeftyModeEnabled ? -1f : 1f)) * _scoutRecoil);
-    }
-
-    private void CheckAndSetLeftyMode()
-    {
-        if (ModMain.IsLeftyModeEnabled)
-        {
-            MainToolRoot.transform.localScale = new Vector3(-1f, 1f, 1f);
-            ProbeLauncherRoot.transform.localScale = new Vector3(-1f, 1f, 1f);
-        }
-        else
-        {
-            MainToolRoot.transform.localScale = Vector3.one;
-            ProbeLauncherRoot.transform.localScale = Vector3.one;
-        }
+        _probeLauncherRoot.transform.localPosition += new Vector3(0.5f * (ModMain.IsLeftyModeEnabled ? -1f : 1f), 0.25f, -0.5f) * _scoutRecoil;
+        _probeLauncherRoot.transform.localRotation *= Quaternion.Euler(new Vector3(-10f, 0f, -20f * (ModMain.IsLeftyModeEnabled ? -1f : 1f)) * _scoutRecoil);
     }
 
     [HarmonyPostfix]
     [HarmonyPatch(typeof(PlayerCameraController), nameof(PlayerCameraController.Start))]
     private static void AddToPlayerCamera(PlayerCameraController __instance)
     {
-        __instance.gameObject.AddComponent<CameraAnimController>();
+        __instance.gameObject.AddComponent<CameraViewmodelManager>();
     }
 }
