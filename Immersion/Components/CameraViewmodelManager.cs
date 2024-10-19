@@ -139,7 +139,7 @@ public class CameraViewmodelManager : MonoBehaviour
             if (ModMain.IsViewBobEnabled)
             {
                 Vector2 cameraBob = new Vector2(Mathf.Sin(_viewBobTime * 6.28318f) * _viewBobIntensity, Mathf.Cos(_viewBobTime * 12.5664f) * _viewBobIntensity);
-                _cameraRoot.transform.Translate(new Vector3(cameraBob.x * ModMain.ViewBobXAmount, cameraBob.y * ModMain.ViewBobYAmount));
+                _cameraRoot.transform.Translate((ModMain.SmolHatchlingAPI?.GetPlayerScale() ?? 1) * new Vector3(cameraBob.x * ModMain.ViewBobXAmount, cameraBob.y * ModMain.ViewBobYAmount));
                 RotateCamera(new Vector3(-cameraBob.y * 5 * ModMain.ViewBobPitchAmount, 0, -cameraBob.x * 5 * ModMain.ViewBobRollAmount));
             }
 
@@ -150,7 +150,7 @@ public class CameraViewmodelManager : MonoBehaviour
                 toolBob.z = -toolBob.x * (ModMain.IsLeftyModeEnabled ? -1 : 1);
                 _mainToolRoot.transform.localPosition = new Vector3(0, toolBob.y * ModMain.ToolBobYAmount);
                 _mainToolRoot.transform.localRotation = Quaternion.Euler(new Vector3(toolBob.y * 100 * ModMain.ToolBobPitchAmount, 0, -toolBob.x * 100 * ModMain.ToolBobRollAmount));
-                _mainToolRoot.transform.Translate(new Vector3(toolBob.x * ModMain.ToolBobXAmount, 0, toolBob.z * ModMain.ToolBobZAmount), _characterController.transform);
+                _mainToolRoot.transform.Translate((ModMain.SmolHatchlingAPI?.GetPlayerScale() ?? 1) * new Vector3(toolBob.x * ModMain.ToolBobXAmount, 0, toolBob.z * ModMain.ToolBobZAmount), _characterController.transform);
             }
         }
 
@@ -180,7 +180,7 @@ public class CameraViewmodelManager : MonoBehaviour
         // Translator offset needs to be 3x bigger, also needs to convert forward bob into additional sideways bob
         _translatorRoot.transform.localPosition = 3 * _mainToolRoot.transform.localPosition;
         _translatorRoot.transform.localRotation = _mainToolRoot.transform.localRotation;
-        _translatorRoot.transform.Translate(3 * new Vector3(toolBob.x * (new Vector2(ModMain.ToolBobXAmount, ModMain.ToolBobZAmount).magnitude - ModMain.ToolBobXAmount), 0, ModMain.ToolBobZAmount * -toolBob.z), _characterController.transform);
+        _translatorRoot.transform.Translate(3 * (ModMain.SmolHatchlingAPI?.GetPlayerScale() ?? 1) * new Vector3(toolBob.x * (new Vector2(ModMain.ToolBobXAmount, ModMain.ToolBobZAmount).magnitude - ModMain.ToolBobXAmount), 0, ModMain.ToolBobZAmount * -toolBob.z), _characterController.transform);
 
         if (ModMain.IsHideStowedItemsEnabled)
         {
@@ -227,7 +227,7 @@ public class CameraViewmodelManager : MonoBehaviour
 
         _mainToolRoot.transform.localPosition += 0.15f * ModMain.ToolSwayTranslateAmount * new Vector3(0, _toolSway.y, localZOffset);
         _mainToolRoot.transform.localRotation *= Quaternion.Euler(-20 * ModMain.ToolSwayRotateAmount * new Vector3(_toolSway.y, 0, 0));
-        _mainToolRoot.transform.Translate(0.15f * xSwayMultiplier * ModMain.ToolSwayTranslateAmount * new Vector3(_toolSway.x, 0, globalZOffset), _characterController.transform);
+        _mainToolRoot.transform.Translate(0.15f * xSwayMultiplier * ModMain.ToolSwayTranslateAmount * (ModMain.SmolHatchlingAPI?.GetPlayerScale() ?? 1) * new Vector3(_toolSway.x, 0, globalZOffset), _characterController.transform);
         _mainToolRoot.transform.RotateAround(_characterController.transform.position, _characterController._owRigidbody.GetLocalUpDirection(), 20 * ModMain.ToolSwayRotateAmount * _toolSway.x);
     }
 

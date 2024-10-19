@@ -39,7 +39,7 @@ public class AnimSpeedController : MonoBehaviour
         {
             if (ModMain.SmolHatchlingAPI != null)
             {
-                AnimSpeed *= ModMain.SmolHatchlingAPI.GetAnimSpeed();
+                AnimSpeed *= ModMain.SmolHatchlingAPI.GetPlayerAnimSpeed();
             }
             _animator.speed = AnimSpeed;
         }
