@@ -1,6 +1,6 @@
 # Outer Wilds: Immersion
 #### View Model Hands
-![immersion](https://github.com/user-attachments/assets/38cca56e-ebad-4a33-bb5c-e4abf54e9321)
+![immersion](https://github.com/user-attachments/assets/b61de9ac-069f-4c81-a258-4506a9717b06)
 
 #### View Bobbing
 ![bob](https://github.com/user-attachments/assets/0dd330f2-9363-45c7-ae16-d896516700a4)
