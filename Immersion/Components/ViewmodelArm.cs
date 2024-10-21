@@ -15,11 +15,11 @@ public class ViewmodelArm : MonoBehaviour
 
     private GameObject _playerModelSuitedLeftArm;
 
-    private bool _isItem;
-
     private GameObject _unsuitedModel;
 
     private GameObject _suitedModel;
+
+    private bool _isItemToolArm;
 
     public static ViewmodelArm Create(Transform parent, Vector3 localPos, Quaternion localRot, Vector3 scale, bool useDefaultShader = false)
     {
@@ -76,7 +76,7 @@ public class ViewmodelArm : MonoBehaviour
 
     private void Start()
     {
-        _isItem = gameObject.GetComponentInParent<OWItem>() != null;
+        _isItemToolArm = gameObject.GetComponentInParent<OWItem>() != null;
         _unsuitedModel = transform.Find("Arm_NoSuit").gameObject;
         _suitedModel = transform.Find("Arm_Suit").gameObject;
         _playerModelUnsuitedRightArm = Locator.GetPlayerController().transform.Find("Traveller_HEA_Player_v2/player_mesh_noSuit:Traveller_HEA_Player/player_mesh_noSuit:Player_RightArm").gameObject;
@@ -87,7 +87,7 @@ public class ViewmodelArm : MonoBehaviour
 
     private void LateUpdate()
     {
-        if (!ModMain.Instance.IsViewModelHandsEnabled || (_isItem && !GetComponentInParent<ItemTool>()))
+        if (!ModMain.Instance.IsViewModelHandsEnabled || (_isItemToolArm && !GetComponentInParent<ItemTool>()))
         {
             _unsuitedModel.SetActive(false);
             _suitedModel.SetActive(false);
