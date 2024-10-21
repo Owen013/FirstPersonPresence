@@ -35,11 +35,11 @@ public class AnimSpeedController : MonoBehaviour
         }
 
         // yield to hikers mod if installed, let it do the anim speed
-        if (!ModMain.IsHikersModInstalled)
+        if (!ModMain.Instance.IsHikersModInstalled)
         {
-            if (ModMain.SmolHatchlingAPI != null)
+            if (ModMain.Instance.SmolHatchlingAPI != null)
             {
-                AnimSpeed *= ModMain.SmolHatchlingAPI.GetPlayerAnimSpeed();
+                AnimSpeed *= ModMain.Instance.SmolHatchlingAPI.GetPlayerAnimSpeed();
             }
             _animator.speed = AnimSpeed;
         }
@@ -74,7 +74,7 @@ public class AnimSpeedController : MonoBehaviour
 
         ToolMode toolMode = Locator.GetToolModeSwapper().GetToolMode();
         __instance._rightArmHidden = toolMode > ToolMode.None;
-        if (ModMain.IsLeftyModeEnabled && toolMode != ToolMode.Translator)
+        if (ModMain.Instance.IsLeftyModeEnabled && toolMode != ToolMode.Translator)
         {
             for (int i = 0; i < __instance._rightArmObjects.Length; i++)
             {

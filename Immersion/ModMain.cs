@@ -10,68 +10,67 @@ public class ModMain : ModBehaviour
 {
     public static ModMain Instance { get; private set; }
 
-    public static ISmolHatchling SmolHatchlingAPI { get; private set; }
+    public ISmolHatchling SmolHatchlingAPI { get; private set; }
 
-    public static bool IsHikersModInstalled { get; private set; }
+    public bool IsHikersModInstalled { get; private set; }
 
-    public static bool IsViewModelHandsEnabled { get; private set; }
+    public bool IsViewModelHandsEnabled { get; private set; }
 
-    public static bool IsViewBobEnabled { get; private set; }
+    public bool IsViewBobEnabled { get; private set; }
 
-    public static float ViewBobXAmount { get; private set; }
+    public float ViewBobXAmount { get; private set; }
 
-    public static float ViewBobRollAmount { get; private set; }
+    public float ViewBobRollAmount { get; private set; }
 
-    public static float ViewBobPitchAmount { get; private set; }
+    public float ViewBobPitchAmount { get; private set; }
 
-    public static float ViewBobYAmount { get; private set; }
+    public float ViewBobYAmount { get; private set; }
 
-    public static bool IsToolBobEnabled { get; private set; }
+    public bool IsToolBobEnabled { get; private set; }
 
-    public static float ToolBobXAmount { get; private set; }
+    public float ToolBobXAmount { get; private set; }
 
-    public static float ToolBobYAmount { get; private set; }
+    public float ToolBobYAmount { get; private set; }
 
-    public static float ToolBobZAmount { get; private set; }
+    public float ToolBobZAmount { get; private set; }
 
-    public static float ToolBobRollAmount { get; private set; }
+    public float ToolBobRollAmount { get; private set; }
 
-    public static float ToolBobPitchAmount { get; private set; }
+    public float ToolBobPitchAmount { get; private set; }
 
-    public static bool IsToolSwayEnabled { get; private set; }
+    public bool IsToolSwayEnabled { get; private set; }
 
-    public static float ToolSwayTranslateAmount { get; private set; }
+    public float ToolSwayTranslateAmount { get; private set; }
 
-    public static float ToolSwayRotateAmount { get; private set; }
+    public float ToolSwayRotateAmount { get; private set; }
 
-    public static float ToolSwaySmoothing { get; private set; }
+    public float ToolSwaySmoothing { get; private set; }
 
-    public static string DynamicToolPosBehavior { get; private set; }
+    public string DynamicToolPosBehavior { get; private set; }
 
-    public static float DynamicToolPosYAmount { get; private set; }
+    public float DynamicToolPosYAmount { get; private set; }
 
-    public static float DynamicToolPosZAmount { get; private set; }
+    public float DynamicToolPosZAmount { get; private set; }
 
-    public static bool IsJumpAnimEnabled { get; private set; }
+    public bool IsJumpAnimEnabled { get; private set; }
 
-    public static bool IsFallAnimEnabled { get; private set; }
+    public bool IsFallAnimEnabled { get; private set; }
 
-    public static bool IsLandingAnimEnabled { get; private set; }
+    public bool IsLandingAnimEnabled { get; private set; }
 
-    public static bool IsScoutAnimEnabled { get; private set; }
+    public bool IsScoutAnimEnabled { get; private set; }
 
-    public static bool IsHideStowedItemsEnabled { get; private set; }
+    public bool IsHideStowedItemsEnabled { get; private set; }
 
-    public static bool IsLeftyModeEnabled { get; private set; }
+    public bool IsLeftyModeEnabled { get; private set; }
 
     public delegate void ConfigureEvent();
 
     public event ConfigureEvent OnConfigure;
 
-    public static void Print(string text, MessageType messageType = MessageType.Message)
+    public void Print(string text, MessageType messageType = MessageType.Message)
     {
-        if (Instance == null || Instance.ModHelper == null) return;
-        Instance.ModHelper.Console.WriteLine(text, messageType);
+        ModHelper.Console.WriteLine(text, messageType);
     }
 
     public override object GetApi()
