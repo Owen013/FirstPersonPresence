@@ -6,12 +6,12 @@
 ![bob](https://github.com/user-attachments/assets/0dd330f2-9363-45c7-ae16-d896516700a4)
 
 #### Tool Sway
-![sway](https://github.com/user-attachments/assets/bf8e151f-506e-41cd-bd53-0598023def3a)
+![toolsway](https://github.com/user-attachments/assets/3e12aedb-28e8-4df7-99e8-23761dbda338)
 
 #### Dynamic Tool Position
-![toolpos](https://github.com/user-attachments/assets/92eec207-260f-41af-9844-e447ab6bb63c)
+![dynamictoolpos](https://github.com/user-attachments/assets/65cbe265-edcc-4757-a825-868bcd048cce)
 
 #### Scout Launcher Animation
-![ezgif-7-ae7ca18a58](https://github.com/Owen013/FirstPersonPresence/assets/96493201/07e68b3f-4f48-41f2-a522-d15a08df484c)
+![scoutlaunchanim](https://github.com/user-attachments/assets/5478506f-6cbc-4961-a4ca-f0a099c87db7)
 
 All features are configurable and can be adjusted or disabled to your liking!
