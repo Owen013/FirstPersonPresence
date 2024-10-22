@@ -140,7 +140,7 @@ public class CameraViewmodelManager : MonoBehaviour
             {
                 Vector2 cameraBob = 0.04f * _viewBobIntensity * new Vector2(Mathf.Sin(_viewBobTime * 6.28318f), Mathf.Cos(_viewBobTime * 12.5664f));
                 _cameraRoot.transform.Translate((ModMain.Instance.SmolHatchlingAPI?.GetPlayerScale() ?? 1f) * new Vector3(cameraBob.x * ModMain.Instance.ViewBobXAmount, cameraBob.y * ModMain.Instance.ViewBobYAmount));
-                RotateCamera(5f * new Vector3(-cameraBob.y * ModMain.Instance.ViewBobPitchAmount, 0f, -cameraBob.x * ModMain.Instance.ViewBobRollAmount));
+                RotateCamera(5f * new Vector3(cameraBob.y * ModMain.Instance.ViewBobPitchAmount, 0f, -cameraBob.x * ModMain.Instance.ViewBobRollAmount));
             }
 
             // tool bob
