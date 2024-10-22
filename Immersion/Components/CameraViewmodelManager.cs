@@ -138,9 +138,9 @@ public class CameraViewmodelManager : MonoBehaviour
             // camera bob
             if (ModMain.Instance.IsViewBobEnabled)
             {
-                Vector2 cameraBob = new Vector2(Mathf.Sin(_viewBobTime * 6.28318f) * _viewBobIntensity, Mathf.Cos(_viewBobTime * 12.5664f) * _viewBobIntensity);
-                _cameraRoot.transform.Translate((ModMain.Instance.SmolHatchlingAPI?.GetPlayerScale() ?? 1) * new Vector3(cameraBob.x * ModMain.Instance.ViewBobXAmount, cameraBob.y * ModMain.Instance.ViewBobYAmount));
-                RotateCamera(new Vector3(-cameraBob.y * 5 * ModMain.Instance.ViewBobPitchAmount, 0, -cameraBob.x * 5 * ModMain.Instance.ViewBobRollAmount));
+                Vector2 cameraBob = 0.04f * _viewBobIntensity * new Vector2(Mathf.Sin(_viewBobTime * 6.28318f), Mathf.Cos(_viewBobTime * 12.5664f));
+                _cameraRoot.transform.Translate(new Vector3(cameraBob.x * ModMain.Instance.ViewBobXAmount, cameraBob.y * ModMain.Instance.ViewBobYAmount));
+                RotateCamera(5f * new Vector3(cameraBob.y * ModMain.Instance.ViewBobPitchAmount, 0f, -cameraBob.x * ModMain.Instance.ViewBobRollAmount));
             }
 
             // tool bob
@@ -202,20 +202,32 @@ public class CameraViewmodelManager : MonoBehaviour
     private void UpdateToolSway()
     {
         Vector2 lookDelta = Vector2.zero;
-        if (OWInput.IsInputMode(InputMode.Character) && !(PlayerState.InZeroG() && PlayerState.IsWearingSuit()))
-        {
-            // look input code lifted directly from the game. no touch!
-            lookDelta = OWInput.GetAxisValue(InputLibrary.look) * _characterController._playerCam.fieldOfView / _characterController._initFOV * 0.002f * Time.deltaTime / (Time.timeScale != 0 ? Time.timeScale : 1);
-            bool isAlarming = Locator.GetAlarmSequenceController() != null && Locator.GetAlarmSequenceController().IsAlarmWakingPlayer();
-            lookDelta *= _characterController._signalscopeZoom || isAlarming ? PlayerCameraController.LOOK_RATE * PlayerCameraController.ZOOM_SCALAR : PlayerCameraController.LOOK_RATE;
-        }
-
-        lookDelta *= 5;
         float degreesY = _cameraController.GetDegreesY();
-        // cancel out vertical sway if the player can't turn anymore in that direction
-        if ((lookDelta.y > 0 && degreesY >= PlayerCameraController._maxDegreesYNormal) || (lookDelta.y < 0 && degreesY <= PlayerCameraController._minDegreesYNormal))
+
+        // get look delta
+        if (OWInput.IsInputMode(InputMode.Character | InputMode.PatchingSuit) && !(PlayerState.InZeroG() && PlayerState.IsWearingSuit()))
         {
-            lookDelta.y = 0;
+            lookDelta = 0.01f * OWInput.GetAxisValue(InputLibrary.look) * (_characterController._playerCam.fieldOfView / _characterController._initFOV) * Time.deltaTime;
+
+            if (Time.timeScale != 0)
+            {
+                lookDelta /= Time.timeScale;
+            }
+
+            bool isAlarmWakingPlayer = Locator.GetAlarmSequenceController() != null && Locator.GetAlarmSequenceController().IsAlarmWakingPlayer();
+            lookDelta *= isAlarmWakingPlayer ? PlayerCameraController.LOOK_RATE * PlayerCameraController.ZOOM_SCALAR : PlayerCameraController.LOOK_RATE;
+
+            // cancel out horizontal sway if player is patching suit, as they can't turn left/right while doing so
+            if (OWInput.IsInputMode(InputMode.PatchingSuit))
+            {
+                lookDelta.x = 0f;
+            }
+
+            // cancel out vertical sway if the player can't turn anymore in that direction
+            if ((lookDelta.y > 0f && degreesY >= PlayerCameraController._maxDegreesYNormal) || (lookDelta.y < 0f && degreesY <= PlayerCameraController._minDegreesYNormal))
+            {
+                lookDelta.y = 0f;
+            }
         }
 
         // decay already existing tool sway and then add new tool sway
@@ -237,13 +249,13 @@ public class CameraViewmodelManager : MonoBehaviour
         Vector3 dynamicToolPos;
         if (ModMain.Instance.DynamicToolPosBehavior == "Legacy")
         {
-            // new behavior moves tool closer to camera the more you are looking up/down
+            // legacy behavior moves tool closer when looking up and further when looking down
             dynamicToolPos = new Vector3(0f, -degreesY * 0.02222f * ModMain.Instance.DynamicToolPosYAmount, -degreesY * 0.01111f * ModMain.Instance.DynamicToolPosZAmount) * 0.04f;
         }
         else
         {
-            // legacy behavior moves tool closer when looking up and further when looking down
-            dynamicToolPos = new Vector3(0f, -degreesY * 0.02222f * ModMain.Instance.DynamicToolPosYAmount, (Mathf.Cos(degreesY * 0.03490f) - 1) * 0.3f * ModMain.Instance.DynamicToolPosZAmount) * 0.04f;
+            // new behavior moves tool closer to camera the more you are looking up/down
+            dynamicToolPos = new Vector3(0f, -degreesY * 0.02222f * ModMain.Instance.DynamicToolPosYAmount, (Mathf.Cos(degreesY * 0.03490f) - 1f) * 0.3f * ModMain.Instance.DynamicToolPosZAmount) * 0.04f;
         }
 
         return dynamicToolPos;

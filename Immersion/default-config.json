@@ -43,7 +43,7 @@
       "title": "Pitch Intensity",
       "tooltip": "How much the camera should rotate up and down while moving. Recommended: 0",
       "type": "number",
-      "value": 0
+      "value": 1
     },
 
     "Tool Bobbing": {
