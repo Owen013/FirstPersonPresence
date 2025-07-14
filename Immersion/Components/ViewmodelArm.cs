@@ -82,21 +82,21 @@ public class ViewmodelArm : MonoBehaviour
 
     private OWItem _owItem;
 
-    public static ViewmodelArm NewViewmodelArm(Transform parent, (Vector3 position, Quaternion rotation, float scale) armTransform, ArmShader shader, OWItem owItem = null)
+    public static ViewmodelArm NewViewmodelArm(Transform armParent, (Vector3 position, Quaternion rotation, float scale) armTransform, ArmShader armShader, OWItem owItem = null)
     {
-        if (parent.Find("ViewmodelArm") is var existingArm && existingArm != null)
+        if (armParent.Find("ViewmodelArm") is var existingArm && existingArm != null)
         {
             ModMain.Instance.Log("{parent} already has a viewmodel arm. Replacing it", MessageType.Warning);
             GameObject.Destroy(existingArm); // replaces existing arm
         }
 
         var arm = new GameObject("ViewmodelArm").AddComponent<ViewmodelArm>();
-        arm.transform.parent = parent;
+        arm.transform.parent = armParent;
         arm.transform.localPosition = armTransform.position;
         arm.transform.localRotation = armTransform.rotation;
         arm.transform.localScale = armTransform.scale * Vector3.one;
         arm._owItem = owItem;
-        arm.SetShader(shader);
+        arm.SetShader(armShader);
 
         if (owItem != null)
         {
@@ -115,10 +115,10 @@ public class ViewmodelArm : MonoBehaviour
 
     public static void GetArmShaders()
     {
-        DefaultNoSuitShader ??= Resources.FindObjectsOfTypeAll<Shader>().Where(shader => shader.name == "Standard").FirstOrDefault();
-        DefaultSuitShader ??= Resources.FindObjectsOfTypeAll<Shader>().Where(shader => shader.name == "Outer Wilds/Environment/Foliage").FirstOrDefault();
-        ViewmodelShader ??= Resources.FindObjectsOfTypeAll<Shader>().Where(shader => shader.name == "Outer Wilds/Utility/View Model").FirstOrDefault();
-        ViewmodelCutoffShader ??= Resources.FindObjectsOfTypeAll<Shader>().Where(shader => shader.name == "Outer Wilds/Utility/View Model (Cutoff)").FirstOrDefault();
+        DefaultNoSuitShader ??= Shader.Find("Standard");
+        DefaultSuitShader ??= Shader.Find("Outer Wilds/Environment/Foliage");
+        ViewmodelShader ??= Shader.Find("Outer Wilds/Utility/View Model");
+        ViewmodelCutoffShader ??= Shader.Find("Outer Wilds/Utility/View Model (Cutoff)");
     }
 
     public void SetShader(ArmShader shader)
@@ -126,23 +126,23 @@ public class ViewmodelArm : MonoBehaviour
         GetArmShaders();
         MeshRenderer noSuitMesh = _noSuitModel.GetComponent<MeshRenderer>();
         MeshRenderer suitMesh = _suitModel.GetComponent<MeshRenderer>();
-        if (shader == ArmShader.Viewmodel)
+        switch (shader)
         {
-            noSuitMesh.materials[0].shader = ViewmodelShader;
-            noSuitMesh.materials[1].shader = ViewmodelShader;
-            suitMesh.material.shader = ViewmodelShader;
-        }
-        else if (shader == ArmShader.ViewmodelCutoff)
-        {
-            noSuitMesh.materials[0].shader = ViewmodelCutoffShader;
-            noSuitMesh.materials[1].shader = ViewmodelCutoffShader;
-            suitMesh.material.shader = ViewmodelCutoffShader;
-        }
-        else
-        {
-            noSuitMesh.materials[0].shader = DefaultNoSuitShader;
-            noSuitMesh.materials[1].shader = DefaultNoSuitShader;
-            suitMesh.material.shader = DefaultSuitShader;
+            case ArmShader.Viewmodel:
+                noSuitMesh.materials[0].shader = ViewmodelShader;
+                noSuitMesh.materials[1].shader = ViewmodelShader;
+                suitMesh.material.shader = ViewmodelShader;
+                break;
+            case ArmShader.ViewmodelCutoff:
+                noSuitMesh.materials[0].shader = ViewmodelCutoffShader;
+                noSuitMesh.materials[1].shader = ViewmodelCutoffShader;
+                suitMesh.material.shader = ViewmodelCutoffShader;
+                break;
+            default:
+                noSuitMesh.materials[0].shader = DefaultNoSuitShader;
+                noSuitMesh.materials[1].shader = DefaultNoSuitShader;
+                suitMesh.material.shader = DefaultSuitShader;
+                break;
         }
     }
 
