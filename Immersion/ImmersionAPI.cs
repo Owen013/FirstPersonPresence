@@ -17,8 +17,8 @@ public class ImmersionAPI
         return AnimSpeedController.Instance.AnimSpeed;
     }
 
-    public static ViewmodelArm NewViewmodelArm(Transform parent, (Vector3 position, Quaternion rotation, float scale) armTransform, ArmShader shader, OWItem owItem = null)
+    public static GameObject NewViewmodelArm(Transform parent, (Vector3 position, Quaternion rotation, float scale) armTransform, ArmShader shader, OWItem owItem = null)
     {
-        return ViewmodelArm.NewViewmodelArm(parent, armTransform, (ViewmodelArm.ArmShader)shader, owItem);
+        return ViewmodelArm.NewViewmodelArm(parent, armTransform, (ViewmodelArm.ArmShader)shader, owItem).gameObject;
     }
 }

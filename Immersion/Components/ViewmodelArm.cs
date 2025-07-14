@@ -1,4 +1,5 @@
 ﻿using HarmonyLib;
+using OWML.Common;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
@@ -85,6 +86,7 @@ public class ViewmodelArm : MonoBehaviour
     {
         if (parent.Find("ViewmodelArm") is var existingArm && existingArm != null)
         {
+            ModMain.Instance.Log("{parent} already has a viewmodel arm. Replacing it", MessageType.Warning);
             GameObject.Destroy(existingArm); // replaces existing arm
         }
 

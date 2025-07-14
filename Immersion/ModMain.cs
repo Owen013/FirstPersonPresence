@@ -68,9 +68,9 @@ public class ModMain : ModBehaviour
 
     public event ConfigureEvent OnConfigure;
 
-    public void Print(string text, MessageType messageType = MessageType.Message)
+    public void Log(string text, MessageType messageType = MessageType.Message)
     {
-        ModHelper.Console.WriteLine(text, messageType);
+        ModHelper?.Console.WriteLine(text, messageType);
     }
 
     public override object GetApi()
@@ -127,6 +127,6 @@ public class ModMain : ModBehaviour
         SmolHatchlingAPI = ModHelper.Interaction.TryGetModApi<ISmolHatchling>("Owen013.TeenyHatchling");
         IsHikersModInstalled = ModHelper.Interaction.ModExists("Owen013.MovementMod");
 
-        Print($"Immersion is ready to go!", MessageType.Success);
+        Log($"Immersion is ready to go!", MessageType.Success);
     }
 }
