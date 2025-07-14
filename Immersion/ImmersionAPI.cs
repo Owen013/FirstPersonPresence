@@ -10,12 +10,8 @@ public class ImmersionAPI
         return AnimSpeedController.Instance.AnimSpeed;
     }
 
-    public GameObject NewViewmodelArm(Transform parent, Vector3 localPos, Quaternion localRot, Vector3 scale, bool useDefaultShader = false)
+    public static ViewmodelArm NewViewmodelArm(Transform parent, (Vector3 position, Quaternion rotation, float scale) armTransform, ViewmodelArm.ArmShader shader, OWItem owItem = null, bool replace = false)
     {
-        var arm = parent.gameObject.AddComponent<ViewmodelArm>();
-        arm.transform.localPosition = localPos;
-        arm.transform.localRotation = localRot;
-        arm.transform.localScale = scale;
-        return arm.gameObject;
+        return ViewmodelArm.NewViewmodelArm(parent, armTransform, shader, owItem, replace);
     }
 }

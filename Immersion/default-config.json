@@ -35,15 +35,15 @@
     },
     "ViewBobRollAmount": {
       "title": "Roll Intensity",
-      "tooltip": "How much the camera should roll from side to side while moving. Recommended: 1",
+      "tooltip": "How much the camera should roll from side to side while moving. Recommended: 0",
       "type": "number",
-      "value": 1
+      "value": 0
     },
     "ViewBobPitchAmount": {
       "title": "Pitch Intensity",
       "tooltip": "How much the camera should rotate up and down while moving. Recommended: 0",
       "type": "number",
-      "value": 1
+      "value": 0
     },
 
     "Tool Bobbing": {
@@ -75,9 +75,9 @@
     },
     "ToolBobRollAmount": {
       "title": "Roll Intensity",
-      "tooltip": "How much your held item should roll from side to side while moving. Recommended: 1",
+      "tooltip": "How much your held item should roll from side to side while moving. Recommended: 0",
       "type": "number",
-      "value": 1
+      "value": 0
     },
     "ToolBobPitchAmount": {
       "title": "Pitch Intensity",
