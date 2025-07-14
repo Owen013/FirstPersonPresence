@@ -126,6 +126,7 @@ public class ModMain : ModBehaviour
     {
         SmolHatchlingAPI = ModHelper.Interaction.TryGetModApi<ISmolHatchling>("Owen013.TeenyHatchling");
         IsHikersModInstalled = ModHelper.Interaction.ModExists("Owen013.MovementMod");
+
         Print($"Immersion is ready to go!", MessageType.Success);
     }
 }

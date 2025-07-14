@@ -12,6 +12,10 @@ public class ImmersionAPI
 
     public GameObject NewViewmodelArm(Transform parent, Vector3 localPos, Quaternion localRot, Vector3 scale, bool useDefaultShader = false)
     {
-        return ViewmodelArm.Create(parent, localPos, localRot, scale, useDefaultShader).gameObject;
+        var arm = parent.gameObject.AddComponent<ViewmodelArm>();
+        arm.transform.localPosition = localPos;
+        arm.transform.localRotation = localRot;
+        arm.transform.localScale = scale;
+        return arm.gameObject;
     }
 }

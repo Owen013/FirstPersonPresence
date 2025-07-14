@@ -237,10 +237,10 @@ public class CameraViewmodelManager : MonoBehaviour
         float globalZOffset = 0.15f * (Mathf.Cos(Mathf.PI * _toolSway.x) - 1f);
         float xSwayMultiplier = (Mathf.Cos(degreesY * 0.03490f) + 1f) * 0.5f;
 
-        _mainToolRoot.transform.localPosition += 0.15f * ModMain.Instance.ToolSwayTranslateAmount * new Vector3(0, _toolSway.y, localZOffset);
-        _mainToolRoot.transform.localRotation *= Quaternion.Euler(-20f * ModMain.Instance.ToolSwayRotateAmount * new Vector3(_toolSway.y, 0f, 0f));
-        _mainToolRoot.transform.Translate(0.15f * xSwayMultiplier * ModMain.Instance.ToolSwayTranslateAmount * (ModMain.Instance.SmolHatchlingAPI?.GetPlayerScale() ?? 1f) * new Vector3(_toolSway.x, 0f, globalZOffset), _characterController.transform);
-        _mainToolRoot.transform.RotateAround(_characterController.transform.position, _characterController._owRigidbody.GetLocalUpDirection(), 20f * _toolSway.x * ModMain.Instance.ToolSwayRotateAmount);
+        _mainToolRoot.transform.localPosition += 0.1f * ModMain.Instance.ToolSwayTranslateAmount * new Vector3(0, _toolSway.y, localZOffset);
+        _mainToolRoot.transform.localRotation *= Quaternion.Euler(-15f * ModMain.Instance.ToolSwayRotateAmount * new Vector3(_toolSway.y, 0f, 0f));
+        _mainToolRoot.transform.Translate(0.1f * xSwayMultiplier * ModMain.Instance.ToolSwayTranslateAmount * (ModMain.Instance.SmolHatchlingAPI?.GetPlayerScale() ?? 1f) * new Vector3(_toolSway.x, 0f, globalZOffset), _characterController.transform);
+        _mainToolRoot.transform.RotateAround(_characterController.transform.position, _characterController._owRigidbody.GetLocalUpDirection(), 15f * _toolSway.x * ModMain.Instance.ToolSwayRotateAmount);
     }
 
     private Vector3 GetDynamicToolPos()
