@@ -4,7 +4,7 @@ using UnityEngine;
 namespace Immersion.Components;
 
 [HarmonyPatch]
-public class CameraViewmodelManager : MonoBehaviour
+public class ViewbobManager : MonoBehaviour
 {
     private PlayerCameraController _cameraController;
 
@@ -115,10 +115,10 @@ public class CameraViewmodelManager : MonoBehaviour
         Vector3 toolBob = Vector3.zero;
         if (ModMain.Instance.IsViewBobEnabled || ModMain.Instance.IsToolBobEnabled)
         {
-            float predictedViewBobTime = _viewBobTime + 1.033333f * _animController._animator.speed * Time.deltaTime;
-            float animatorTime = _animController._animator.GetCurrentAnimatorStateInfo(0).normalizedTime + 0.25f;
-
-            _viewBobTime = Mathf.Floor(animatorTime) + Mathf.Repeat(Mathf.Clamp(animatorTime, predictedViewBobTime - 0.3f * Time.deltaTime, predictedViewBobTime + 0.3f * Time.deltaTime), 1f);
+            //float predictedViewBobTime = _viewBobTime + 1.033333f * _animController._animator.speed * Time.deltaTime;
+            //float animatorTime = _animController._animator.GetCurrentAnimatorStateInfo(0).normalizedTime + 0.25f;
+            //_viewBobTime = Mathf.Floor(animatorTime) + Mathf.Repeat(Mathf.Clamp(animatorTime, predictedViewBobTime - 0.3f * Time.deltaTime, predictedViewBobTime + 0.3f * Time.deltaTime), 1f);
+            _viewBobTime += 1.033333f * _animController._animator.speed * Time.deltaTime;
 
             if (!_characterController.IsGrounded() && !_characterController._isMovementLocked)
             {
@@ -277,6 +277,6 @@ public class CameraViewmodelManager : MonoBehaviour
     [HarmonyPatch(typeof(PlayerCameraController), nameof(PlayerCameraController.Start))]
     private static void AddToPlayerCamera(PlayerCameraController __instance)
     {
-        __instance.gameObject.AddComponent<CameraViewmodelManager>();
+        __instance.gameObject.AddComponent<ViewbobManager>();
     }
 }
