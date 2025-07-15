@@ -1,7 +1,6 @@
 ﻿using HarmonyLib;
 using OWML.Common;
 using System.Collections.Generic;
-using System.Linq;
 using UnityEngine;
 
 namespace Immersion.Components;
@@ -37,14 +36,6 @@ public class ViewmodelArm : MonoBehaviour
         ViewmodelCutoff
     }
 
-    public static Shader DefaultNoSuitShader;
-
-    public static Shader DefaultSuitShader;
-
-    public static Shader ViewmodelShader;
-
-    public static Shader ViewmodelCutoffShader;
-
     private static readonly (Vector3 position, Quaternion rotation, float scale)[] s_armTransforms =
     {
         (new Vector3(-0.01f, -0.11f, -0.16f), Quaternion.identity, 0.3f), // Signalscope
@@ -66,6 +57,14 @@ public class ViewmodelArm : MonoBehaviour
         (new Vector3(0.0403f, 1.0224f, 0.141f), Quaternion.Euler(345.0329f, 184.0765f, 358.0521f), 1) // VisionTorch
     };
 
+    private static Shader s_defaultNoSuitShader;
+
+    private static Shader s_defaultSuitShader;
+
+    private static Shader s_viewmodelShader;
+
+    private static Shader s_viewmodelCutoffShader;
+
     private static List<OWItem> s_itemsWithArms;
 
     private GameObject _playerModelUnsuitedRightArm;
@@ -84,10 +83,11 @@ public class ViewmodelArm : MonoBehaviour
 
     public static ViewmodelArm NewViewmodelArm(Transform armParent, (Vector3 position, Quaternion rotation, float scale) armTransform, ArmShader armShader, OWItem owItem = null)
     {
+        // replace viewmodel arm if it already exists
         if (armParent.Find("ViewmodelArm") is var existingArm && existingArm != null)
         {
-            ModMain.Instance.Log("{parent} already has a viewmodel arm. Replacing it", MessageType.Warning);
-            GameObject.Destroy(existingArm); // replaces existing arm
+            ModMain.Instance.Log(armParent.name + " already has a viewmodel arm. Replacing it", MessageType.Warning);
+            GameObject.Destroy(existingArm);
         }
 
         var arm = new GameObject("ViewmodelArm").AddComponent<ViewmodelArm>();
@@ -100,9 +100,13 @@ public class ViewmodelArm : MonoBehaviour
 
         if (owItem != null)
         {
-            if (s_itemsWithArms == null) s_itemsWithArms = new List<OWItem>();
-            s_itemsWithArms.Add(owItem);
+            if (s_itemsWithArms == null)
+            {
+                // keep track of items that already have viewmodel arms to avoid replacing them over and over
+                s_itemsWithArms = new List<OWItem>();
+            }
 
+            s_itemsWithArms.Add(owItem);
             owItem.onPickedUp += (item) =>
             {
                 arm.gameObject.SetActive(true);
@@ -113,47 +117,48 @@ public class ViewmodelArm : MonoBehaviour
         return arm;
     }
 
-    public static void GetArmShaders()
-    {
-        DefaultNoSuitShader ??= Shader.Find("Standard");
-        DefaultSuitShader ??= Shader.Find("Outer Wilds/Environment/Foliage");
-        ViewmodelShader ??= Shader.Find("Outer Wilds/Utility/View Model");
-        ViewmodelCutoffShader ??= Shader.Find("Outer Wilds/Utility/View Model (Cutoff)");
-    }
-
     public void SetShader(ArmShader shader)
     {
-        GetArmShaders();
+        // get shaders if we don't have them
+        s_defaultNoSuitShader ??= Shader.Find("Standard");
+        s_defaultSuitShader ??= Shader.Find("Outer Wilds/Environment/Foliage");
+        s_viewmodelShader ??= Shader.Find("Outer Wilds/Utility/View Model");
+        s_viewmodelCutoffShader ??= Shader.Find("Outer Wilds/Utility/View Model (Cutoff)");
+
         MeshRenderer noSuitMesh = _noSuitModel.GetComponent<MeshRenderer>();
         MeshRenderer suitMesh = _suitModel.GetComponent<MeshRenderer>();
+
         switch (shader)
         {
             case ArmShader.Viewmodel:
-                noSuitMesh.materials[0].shader = ViewmodelShader;
-                noSuitMesh.materials[1].shader = ViewmodelShader;
-                suitMesh.material.shader = ViewmodelShader;
+                noSuitMesh.materials[0].shader = s_viewmodelShader;
+                noSuitMesh.materials[1].shader = s_viewmodelShader;
+                suitMesh.material.shader = s_viewmodelShader;
                 break;
             case ArmShader.ViewmodelCutoff:
-                noSuitMesh.materials[0].shader = ViewmodelCutoffShader;
-                noSuitMesh.materials[1].shader = ViewmodelCutoffShader;
-                suitMesh.material.shader = ViewmodelCutoffShader;
+                noSuitMesh.materials[0].shader = s_viewmodelCutoffShader;
+                noSuitMesh.materials[1].shader = s_viewmodelCutoffShader;
+                suitMesh.material.shader = s_viewmodelCutoffShader;
                 break;
             default:
-                noSuitMesh.materials[0].shader = DefaultNoSuitShader;
-                noSuitMesh.materials[1].shader = DefaultNoSuitShader;
-                suitMesh.material.shader = DefaultSuitShader;
+                // in default case, the nosuit mesh and the suit mesh use different shaders
+                noSuitMesh.materials[0].shader = s_defaultNoSuitShader;
+                noSuitMesh.materials[1].shader = s_defaultNoSuitShader;
+                suitMesh.material.shader = s_defaultSuitShader;
                 break;
         }
     }
 
     private void Awake()
     {
+        // grab references to the player's real arms
         Transform playerTransform = Locator.GetPlayerController().transform;
         _playerModelUnsuitedRightArm = playerTransform.Find("Traveller_HEA_Player_v2/player_mesh_noSuit:Traveller_HEA_Player/player_mesh_noSuit:Player_RightArm").gameObject;
         _playerModelSuitedRightArm = playerTransform.Find("Traveller_HEA_Player_v2/Traveller_Mesh_v01:Traveller_Geo/Traveller_Mesh_v01:PlayerSuit_RightArm").gameObject;
         _playerModelUnsuitedLeftArm = playerTransform.Find("Traveller_HEA_Player_v2/player_mesh_noSuit:Traveller_HEA_Player/player_mesh_noSuit:Player_LeftArm").gameObject;
         _playerModelSuitedLeftArm = playerTransform.Find("Traveller_HEA_Player_v2/Traveller_Mesh_v01:Traveller_Geo/Traveller_Mesh_v01:PlayerSuit_LeftArm").gameObject;
 
+        // copy nosuit arm from marshmallow stick
         _noSuitModel = Instantiate(GameObject.Find("Player_Body/RoastingSystem/Stick_Root/Stick_Pivot/Stick_Tip/Props_HEA_RoastingStick/RoastingStick_Arm_NoSuit"));
         _noSuitModel.transform.parent = transform;
         _noSuitModel.layer = 27;
@@ -164,6 +169,7 @@ public class ViewmodelArm : MonoBehaviour
         noSuitMesh.shadowCastingMode = UnityEngine.Rendering.ShadowCastingMode.Off;
         _noSuitModel.SetActive(false);
 
+        // copy suit arm from marshmallow stick
         _suitModel = Instantiate(GameObject.Find("Player_Body/RoastingSystem/Stick_Root/Stick_Pivot/Stick_Tip/Props_HEA_RoastingStick/RoastingStick_Arm"));
         _suitModel.transform.parent = transform;
         _suitModel.layer = 27;
@@ -178,22 +184,26 @@ public class ViewmodelArm : MonoBehaviour
 
     private void LateUpdate()
     {
+        // if this is an item and it isn't being held, disable the arm gameobject
         if (_owItem != null && Locator.GetToolModeSwapper()?._itemCarryTool._heldItem != _owItem)
         {
             gameObject.SetActive(false);
             return;
         }
 
+        // disable viewmodel arm if disabled in config
         if (!ModMain.Instance.IsViewModelHandsEnabled)
         {
             _noSuitModel.SetActive(false);
             _suitModel.SetActive(false);
         }
+        // if lefty mode, use the clothing of the left arm for the viewmodel arm
         else if (ModMain.Instance.IsLeftyModeEnabled && Locator.GetToolModeSwapper()._currentToolMode != ToolMode.Translator)
         {
             _noSuitModel.SetActive(_playerModelUnsuitedLeftArm.activeInHierarchy);
             _suitModel.SetActive(_playerModelSuitedLeftArm.activeInHierarchy);
         }
+        // otherwise, use right arm clothing (default)
         else
         {
             _noSuitModel.SetActive(_playerModelUnsuitedRightArm.activeInHierarchy);
@@ -213,6 +223,7 @@ public class ViewmodelArm : MonoBehaviour
     [HarmonyPatch(typeof(Signalscope), nameof(Signalscope.EquipTool))]
     private static void SignalscopeEquipped(Signalscope __instance)
     {
+        // don't create viewmodel arm if 1. it's disabled in config, 2. if there already one there, or 3. it's not a child of the player
         if (!ModMain.Instance.IsViewModelHandsEnabled || __instance.transform.Find("Props_HEA_Signalscope/ViewmodelArm") || !__instance.GetComponentInParent<PlayerBody>()) return;
         NewViewmodelArm(__instance.transform.Find("Props_HEA_Signalscope"), s_armTransforms[(int)ArmTransform.Signalscope], ArmShader.ViewmodelCutoff);
     }
@@ -229,6 +240,7 @@ public class ViewmodelArm : MonoBehaviour
     [HarmonyPatch(typeof(NomaiTranslatorProp), nameof(NomaiTranslatorProp.OnEquipTool))]
     private static void TranslatorEquipped(NomaiTranslatorProp __instance)
     {
+        // only the player has a translator, so don't need to check for that
         if (!ModMain.Instance.IsViewModelHandsEnabled || __instance.transform.Find("TranslatorGroup/Props_HEA_Translator/Props_HEA_Translator_Geo/ViewmodelArm")) return;
         NewViewmodelArm(__instance.transform.Find("TranslatorGroup/Props_HEA_Translator/Props_HEA_Translator_Geo"), s_armTransforms[(int)ArmTransform.Translator], ArmShader.ViewmodelCutoff);
     }
@@ -237,6 +249,7 @@ public class ViewmodelArm : MonoBehaviour
     [HarmonyPatch(typeof(OWItem), nameof(OWItem.PickUpItem))]
     private static void ItemPickedUp(OWItem __instance)
     {
+        // don't try to add viewmodel arm if disabled in config or if this item already has one
         if (!ModMain.Instance.IsViewModelHandsEnabled || s_itemsWithArms != null && s_itemsWithArms.Contains(__instance)) return;
 
         Transform armParent;
