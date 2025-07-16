@@ -205,17 +205,19 @@ public class ViewbobManager : MonoBehaviour
         float degreesY = _cameraController.GetDegreesY();
 
         // get look delta
-        if (OWInput.IsInputMode(InputMode.Character | InputMode.PatchingSuit) && !(PlayerState.InZeroG() && PlayerState.IsWearingSuit()))
+        if (!(PlayerState.InZeroG() && PlayerState.IsWearingSuit()) && OWInput.IsInputMode(InputMode.Character | InputMode.PatchingSuit))
         {
-            lookDelta = 0.01f * OWInput.GetAxisValue(InputLibrary.look) * (_characterController._playerCam.fieldOfView / _characterController._initFOV) * Time.deltaTime;
+            lookDelta = 0.01f * OWInput.GetAxisValue(InputLibrary.look) * (_characterController._playerCam.fieldOfView / _characterController._initFOV);
+            lookDelta *= InputUtil.IsMouseMoveAxis(InputLibrary.look.AxisID) ? 0.01666667f : Time.deltaTime;
 
-            if (Time.timeScale != 0)
+            AlarmSequenceController alarm = Locator.GetAlarmSequenceController();
+            bool isAlarmWakingPlayer = alarm != null && alarm.IsAlarmWakingPlayer();
+            lookDelta *= isAlarmWakingPlayer ? PlayerCameraController.LOOK_RATE * PlayerCameraController.ZOOM_SCALAR : PlayerCameraController.LOOK_RATE;
+
+            if (Time.timeScale > 1f)
             {
                 lookDelta /= Time.timeScale;
             }
-
-            bool isAlarmWakingPlayer = Locator.GetAlarmSequenceController() != null && Locator.GetAlarmSequenceController().IsAlarmWakingPlayer();
-            lookDelta *= isAlarmWakingPlayer ? PlayerCameraController.LOOK_RATE * PlayerCameraController.ZOOM_SCALAR : PlayerCameraController.LOOK_RATE;
 
             // cancel out horizontal sway if player is patching suit, as they can't turn left/right while doing so
             if (OWInput.IsInputMode(InputMode.PatchingSuit))

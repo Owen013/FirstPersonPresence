@@ -61,17 +61,17 @@ public class ViewmodelArm : MonoBehaviour
 
     private static List<OWItem> s_itemsWithArms;
 
-    private GameObject _playerModelUnsuitedRightArm;
+    private GameObject _playerModelRightArmNoSuit;
 
-    private GameObject _playerModelSuitedRightArm;
+    private GameObject _playerModelRightArmSuit;
 
-    private GameObject _playerModelUnsuitedLeftArm;
+    private GameObject _playerModelLeftArmNoSuit;
 
-    private GameObject _playerModelSuitedLeftArm;
+    private GameObject _playerModelLeftArmSuit;
 
-    private GameObject _noSuitModel;
+    private GameObject _viewmodelArmNoSuit;
 
-    private GameObject _suitModel;
+    private GameObject _viewmodelArmSuit;
 
     private OWItem _owItem;
 
@@ -81,34 +81,29 @@ public class ViewmodelArm : MonoBehaviour
         if (armParent.Find("ViewmodelArm") is var existingArm && existingArm != null)
         {
             ModMain.Instance.Log(armParent.name + " already has a viewmodel arm. Replacing it", MessageType.Warning);
-            GameObject.Destroy(existingArm);
+            GameObject.Destroy(existingArm.gameObject);
         }
 
-        var arm = new GameObject("ViewmodelArm").AddComponent<ViewmodelArm>();
-        arm.transform.parent = armParent;
-        arm.transform.localPosition = armTransform.position;
-        arm.transform.localRotation = armTransform.rotation;
-        arm.transform.localScale = armTransform.scale * Vector3.one;
-        arm._owItem = owItem;
-        arm.SetArmShader(armShader);
+        var viewmodelArm = new GameObject("ViewmodelArm").AddComponent<ViewmodelArm>();
+        viewmodelArm.transform.parent = armParent;
+        viewmodelArm.transform.localPosition = armTransform.position;
+        viewmodelArm.transform.localRotation = armTransform.rotation;
+        viewmodelArm.transform.localScale = armTransform.scale * Vector3.one;
+        viewmodelArm._owItem = owItem;
+        viewmodelArm.SetArmShader(armShader);
 
         if (owItem != null)
         {
-            if (s_itemsWithArms == null)
-            {
-                // keep track of items that already have viewmodel arms to avoid replacing them over and over
-                s_itemsWithArms = new List<OWItem>();
-            }
+            s_itemsWithArms ??= new List<OWItem>();
 
             s_itemsWithArms.Add(owItem);
             owItem.onPickedUp += (item) =>
             {
-                arm.gameObject.SetActive(true);
-                arm.enabled = true;
+                viewmodelArm.gameObject.SetActive(true);
             };
         }
 
-        return arm;
+        return viewmodelArm;
     }
 
     public void SetArmShader(ArmShader armShader)
@@ -121,43 +116,43 @@ public class ViewmodelArm : MonoBehaviour
             Shader.Find("Outer Wilds/Utility/View Model (Cutoff)")
         ];
 
-        MeshRenderer noSuitMesh = _noSuitModel.GetComponent<MeshRenderer>();
+        MeshRenderer noSuitMesh = _viewmodelArmNoSuit.GetComponent<MeshRenderer>();
         noSuitMesh.materials[0].shader = s_armShaders[(int)armShader];
         noSuitMesh.materials[1].shader = s_armShaders[(int)armShader];
-        _suitModel.GetComponent<MeshRenderer>().material.shader = s_armShaders[(int)armShader];
+        _viewmodelArmSuit.GetComponent<MeshRenderer>().material.shader = s_armShaders[(int)armShader];
     }
 
     private void Awake()
     {
         // grab references to the player's real arms
         Transform playerTransform = Locator.GetPlayerController().transform;
-        _playerModelUnsuitedRightArm = playerTransform.Find("Traveller_HEA_Player_v2/player_mesh_noSuit:Traveller_HEA_Player/player_mesh_noSuit:Player_RightArm").gameObject;
-        _playerModelSuitedRightArm = playerTransform.Find("Traveller_HEA_Player_v2/Traveller_Mesh_v01:Traveller_Geo/Traveller_Mesh_v01:PlayerSuit_RightArm").gameObject;
-        _playerModelUnsuitedLeftArm = playerTransform.Find("Traveller_HEA_Player_v2/player_mesh_noSuit:Traveller_HEA_Player/player_mesh_noSuit:Player_LeftArm").gameObject;
-        _playerModelSuitedLeftArm = playerTransform.Find("Traveller_HEA_Player_v2/Traveller_Mesh_v01:Traveller_Geo/Traveller_Mesh_v01:PlayerSuit_LeftArm").gameObject;
+        _playerModelRightArmNoSuit = playerTransform.Find("Traveller_HEA_Player_v2/player_mesh_noSuit:Traveller_HEA_Player/player_mesh_noSuit:Player_RightArm").gameObject;
+        _playerModelRightArmSuit = playerTransform.Find("Traveller_HEA_Player_v2/Traveller_Mesh_v01:Traveller_Geo/Traveller_Mesh_v01:PlayerSuit_RightArm").gameObject;
+        _playerModelLeftArmNoSuit = playerTransform.Find("Traveller_HEA_Player_v2/player_mesh_noSuit:Traveller_HEA_Player/player_mesh_noSuit:Player_LeftArm").gameObject;
+        _playerModelLeftArmSuit = playerTransform.Find("Traveller_HEA_Player_v2/Traveller_Mesh_v01:Traveller_Geo/Traveller_Mesh_v01:PlayerSuit_LeftArm").gameObject;
 
         // copy nosuit arm from marshmallow stick
-        _noSuitModel = Instantiate(GameObject.Find("Player_Body/RoastingSystem/Stick_Root/Stick_Pivot/Stick_Tip/Props_HEA_RoastingStick/RoastingStick_Arm_NoSuit"));
-        _noSuitModel.transform.parent = transform;
-        _noSuitModel.layer = 27;
-        _noSuitModel.transform.localPosition = Vector3.zero;
-        _noSuitModel.transform.localRotation = Quaternion.Euler(330, 0, 300);
-        _noSuitModel.transform.localScale = Vector3.one;
-        MeshRenderer noSuitMesh = _noSuitModel.GetComponent<MeshRenderer>();
+        _viewmodelArmNoSuit = Instantiate(GameObject.Find("Player_Body/RoastingSystem/Stick_Root/Stick_Pivot/Stick_Tip/Props_HEA_RoastingStick/RoastingStick_Arm_NoSuit"));
+        _viewmodelArmNoSuit.transform.parent = transform;
+        _viewmodelArmNoSuit.layer = 27;
+        _viewmodelArmNoSuit.transform.localPosition = Vector3.zero;
+        _viewmodelArmNoSuit.transform.localRotation = Quaternion.Euler(330, 0, 300);
+        _viewmodelArmNoSuit.transform.localScale = Vector3.one;
+        MeshRenderer noSuitMesh = _viewmodelArmNoSuit.GetComponent<MeshRenderer>();
         noSuitMesh.shadowCastingMode = UnityEngine.Rendering.ShadowCastingMode.Off;
-        _noSuitModel.SetActive(false);
+        _viewmodelArmNoSuit.SetActive(false);
 
         // copy suit arm from marshmallow stick
-        _suitModel = Instantiate(GameObject.Find("Player_Body/RoastingSystem/Stick_Root/Stick_Pivot/Stick_Tip/Props_HEA_RoastingStick/RoastingStick_Arm"));
-        _suitModel.transform.parent = transform;
-        _suitModel.layer = 27;
-        _suitModel.transform.localPosition = new Vector3(-0.02f, 0.03f, 0.02f);
-        _suitModel.transform.localRotation = Quaternion.Euler(330, 0, 300);
-        _suitModel.transform.localScale = Vector3.one;
-        MeshRenderer suitMesh = _suitModel.GetComponent<MeshRenderer>();
+        _viewmodelArmSuit = Instantiate(GameObject.Find("Player_Body/RoastingSystem/Stick_Root/Stick_Pivot/Stick_Tip/Props_HEA_RoastingStick/RoastingStick_Arm"));
+        _viewmodelArmSuit.transform.parent = transform;
+        _viewmodelArmSuit.layer = 27;
+        _viewmodelArmSuit.transform.localPosition = new Vector3(-0.02f, 0.03f, 0.02f);
+        _viewmodelArmSuit.transform.localRotation = Quaternion.Euler(330, 0, 300);
+        _viewmodelArmSuit.transform.localScale = Vector3.one;
+        MeshRenderer suitMesh = _viewmodelArmSuit.GetComponent<MeshRenderer>();
         suitMesh.shadowCastingMode = UnityEngine.Rendering.ShadowCastingMode.Off;
         suitMesh.material.renderQueue = noSuitMesh.material.renderQueue;
-        _suitModel.SetActive(false);
+        _viewmodelArmSuit.SetActive(false);
     }
 
     private void LateUpdate()
@@ -172,20 +167,20 @@ public class ViewmodelArm : MonoBehaviour
         // disable viewmodel arm if disabled in config
         if (!ModMain.Instance.IsViewModelHandsEnabled)
         {
-            _noSuitModel.SetActive(false);
-            _suitModel.SetActive(false);
+            _viewmodelArmNoSuit.SetActive(false);
+            _viewmodelArmSuit.SetActive(false);
         }
         // if lefty mode, use the clothing of the left arm for the viewmodel arm
         else if (ModMain.Instance.IsLeftyModeEnabled && Locator.GetToolModeSwapper()._currentToolMode != ToolMode.Translator)
         {
-            _noSuitModel.SetActive(_playerModelUnsuitedLeftArm.activeInHierarchy);
-            _suitModel.SetActive(_playerModelSuitedLeftArm.activeInHierarchy);
+            _viewmodelArmNoSuit.SetActive(_playerModelLeftArmNoSuit.activeInHierarchy);
+            _viewmodelArmSuit.SetActive(_playerModelLeftArmSuit.activeInHierarchy);
         }
         // otherwise, use right arm clothing (default)
         else
         {
-            _noSuitModel.SetActive(_playerModelUnsuitedRightArm.activeInHierarchy);
-            _suitModel.SetActive(_playerModelSuitedRightArm.activeInHierarchy);
+            _viewmodelArmNoSuit.SetActive(_playerModelRightArmNoSuit.activeInHierarchy);
+            _viewmodelArmSuit.SetActive(_playerModelRightArmSuit.activeInHierarchy);
         }
     }
 
