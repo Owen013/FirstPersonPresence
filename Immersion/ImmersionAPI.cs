@@ -7,7 +7,7 @@ public class ImmersionAPI
 {
     public enum ArmShader
     {
-        Default,
+        Standard,
         Viewmodel,
         ViewmodelCutoff
     }

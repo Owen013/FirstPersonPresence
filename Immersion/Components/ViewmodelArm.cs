@@ -31,7 +31,7 @@ public class ViewmodelArm : MonoBehaviour
 
     public enum ArmShader
     {
-        Default,
+        Standard,
         Viewmodel,
         ViewmodelCutoff
     }
@@ -57,13 +57,7 @@ public class ViewmodelArm : MonoBehaviour
         (new Vector3(0.0403f, 1.0224f, 0.141f), Quaternion.Euler(345.0329f, 184.0765f, 358.0521f), 1) // VisionTorch
     };
 
-    private static Shader s_defaultNoSuitShader;
-
-    private static Shader s_defaultSuitShader;
-
-    private static Shader s_viewmodelShader;
-
-    private static Shader s_viewmodelCutoffShader;
+    private static Shader[] s_armShaders;
 
     private static List<OWItem> s_itemsWithArms;
 
@@ -96,7 +90,7 @@ public class ViewmodelArm : MonoBehaviour
         arm.transform.localRotation = armTransform.rotation;
         arm.transform.localScale = armTransform.scale * Vector3.one;
         arm._owItem = owItem;
-        arm.SetShader(armShader);
+        arm.SetArmShader(armShader);
 
         if (owItem != null)
         {
@@ -117,36 +111,20 @@ public class ViewmodelArm : MonoBehaviour
         return arm;
     }
 
-    public void SetShader(ArmShader shader)
+    public void SetArmShader(ArmShader armShader)
     {
         // get shaders if we don't have them
-        s_defaultNoSuitShader ??= Shader.Find("Standard");
-        s_defaultSuitShader ??= Shader.Find("Outer Wilds/Environment/Foliage");
-        s_viewmodelShader ??= Shader.Find("Outer Wilds/Utility/View Model");
-        s_viewmodelCutoffShader ??= Shader.Find("Outer Wilds/Utility/View Model (Cutoff)");
+        s_armShaders ??=
+        [
+            Shader.Find("Standard"),
+            Shader.Find("Outer Wilds/Utility/View Model"),
+            Shader.Find("Outer Wilds/Utility/View Model (Cutoff)")
+        ];
 
         MeshRenderer noSuitMesh = _noSuitModel.GetComponent<MeshRenderer>();
-        MeshRenderer suitMesh = _suitModel.GetComponent<MeshRenderer>();
-
-        switch (shader)
-        {
-            case ArmShader.Viewmodel:
-                noSuitMesh.materials[0].shader = s_viewmodelShader;
-                noSuitMesh.materials[1].shader = s_viewmodelShader;
-                suitMesh.material.shader = s_viewmodelShader;
-                break;
-            case ArmShader.ViewmodelCutoff:
-                noSuitMesh.materials[0].shader = s_viewmodelCutoffShader;
-                noSuitMesh.materials[1].shader = s_viewmodelCutoffShader;
-                suitMesh.material.shader = s_viewmodelCutoffShader;
-                break;
-            default:
-                // in default case, the nosuit mesh and the suit mesh use different shaders
-                noSuitMesh.materials[0].shader = s_defaultNoSuitShader;
-                noSuitMesh.materials[1].shader = s_defaultNoSuitShader;
-                suitMesh.material.shader = s_defaultSuitShader;
-                break;
-        }
+        noSuitMesh.materials[0].shader = s_armShaders[(int)armShader];
+        noSuitMesh.materials[1].shader = s_armShaders[(int)armShader];
+        _suitModel.GetComponent<MeshRenderer>().material.shader = s_armShaders[(int)armShader];
     }
 
     private void Awake()
@@ -261,7 +239,7 @@ public class ViewmodelArm : MonoBehaviour
             case ItemType.SharedStone:
                 armParent = __instance.transform.Find("AnimRoot/Props_NOM_SharedStone");
                 armTransform = ArmTransform.SharedStone;
-                armShader = ArmShader.Default;
+                armShader = ArmShader.Standard;
                 NewViewmodelArm(armParent, s_armTransforms[(int)armTransform], armShader, __instance);
                 break;
             case ItemType.Scroll:
@@ -269,14 +247,14 @@ public class ViewmodelArm : MonoBehaviour
                 {
                     armParent = __instance.transform.Find("Props_NOM_Scroll/Props_NOM_Scroll_Geo");
                     armTransform = ArmTransform.ScrollEasterEgg;
-                    armShader = ArmShader.Default;
+                    armShader = ArmShader.Standard;
                     NewViewmodelArm(armParent, s_armTransforms[(int)armTransform], armShader, __instance);
                 }
                 else
                 {
                     armParent = __instance.transform.Find("Props_NOM_Scroll/Props_NOM_Scroll_Geo");
                     armTransform = ArmTransform.Scroll;
-                    armShader = ArmShader.Default;
+                    armShader = ArmShader.Standard;
                     NewViewmodelArm(armParent, s_armTransforms[(int)armTransform], armShader, __instance);
                 }
                 break;
@@ -287,7 +265,7 @@ public class ViewmodelArm : MonoBehaviour
                     {
                         armParent = renderer.transform;
                         armTransform = ArmTransform.NomaiConversationStone;
-                        armShader = ArmShader.Default;
+                        armShader = ArmShader.Standard;
                         NewViewmodelArm(armParent, s_armTransforms[(int)armTransform], armShader, __instance);
                     }
                 }
@@ -298,26 +276,26 @@ public class ViewmodelArm : MonoBehaviour
                     case WarpCoreType.Vessel:
                         armParent = __instance.transform.Find("Props_NOM_WarpCore_Advanced/Props_NOM_WarpCore_Advance_Geo");
                         armTransform = ArmTransform.WarpCore;
-                        armShader = ArmShader.Default;
+                        armShader = ArmShader.Standard;
                         NewViewmodelArm(armParent, s_armTransforms[(int)armTransform], armShader, __instance);
                         break;
                     case WarpCoreType.VesselBroken:
                         armParent = __instance.transform.Find("Props_NOM_WarpCore_Advanced_Broken_V3/Props_NOM_WarpCore_Advance_Broken_Geo");
                         armTransform = ArmTransform.WarpCoreBroken;
-                        armShader = ArmShader.Default;
+                        armShader = ArmShader.Standard;
                         NewViewmodelArm(armParent, s_armTransforms[(int)armTransform], armShader, __instance);
                         break;
                     default:
                         armParent = __instance.transform.Find("Props_NOM_WarpCore_Simple");
                         armTransform = ArmTransform.WarpCoreSimple;
-                        armShader = ArmShader.Default;
+                        armShader = ArmShader.Standard;
                         NewViewmodelArm(armParent, s_armTransforms[(int)armTransform], armShader, __instance);
                         break;
                 }
                 break;
             case ItemType.Lantern:
                 armParent = __instance.transform.Find("Props_IP_Lantern/Lantern_geo");
-                armShader = ArmShader.Default;
+                armShader = ArmShader.Standard;
                 if (armParent == null)
                 {
                     armParent = __instance.transform.Find("Props_IP_Lantern_Crack/Lantern_geo");
@@ -337,7 +315,7 @@ public class ViewmodelArm : MonoBehaviour
                     {
                         armParent = renderer.transform;
                         armTransform = ArmTransform.SlideReel;
-                        armShader = ArmShader.Default;
+                        armShader = ArmShader.Standard;
                         NewViewmodelArm(armParent, s_armTransforms[(int)armTransform], armShader, __instance);
                     }
                 }
@@ -351,7 +329,7 @@ public class ViewmodelArm : MonoBehaviour
                     {
                         armParent = __instance.transform.Find("Props_IP_DreamLanternItem_Nonfunctioning/PrototypeArtifact");
                         armTransform = ArmTransform.DreamLanternPrototype;
-                        armShader = ArmShader.Default;
+                        armShader = ArmShader.Standard;
                         NewViewmodelArm(armParent, s_armTransforms[(int)armTransform], armShader, __instance);
                     }
                     else
@@ -371,7 +349,7 @@ public class ViewmodelArm : MonoBehaviour
             case ItemType.VisionTorch:
                 armParent = __instance.transform.Find("Prefab_IP_VisionTorchProjector/Props_IP_ScannerStaff/Scannerstaff_geo");
                 armTransform = ArmTransform.VisionTorch;
-                armShader = ArmShader.Default;
+                armShader = ArmShader.Standard;
                 NewViewmodelArm(armParent, s_armTransforms[(int)armTransform], armShader, __instance);
                 break;
         }
