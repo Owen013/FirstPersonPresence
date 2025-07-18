@@ -115,9 +115,6 @@ public class ViewbobManager : MonoBehaviour
         Vector3 toolBob = Vector3.zero;
         if (ModMain.Instance.IsViewBobEnabled || ModMain.Instance.IsToolBobEnabled)
         {
-            //float predictedViewBobTime = _viewBobTime + 1.033333f * _animController._animator.speed * Time.deltaTime;
-            //float animatorTime = _animController._animator.GetCurrentAnimatorStateInfo(0).normalizedTime + 0.25f;
-            //_viewBobTime = Mathf.Floor(animatorTime) + Mathf.Repeat(Mathf.Clamp(animatorTime, predictedViewBobTime - 0.3f * Time.deltaTime, predictedViewBobTime + 0.3f * Time.deltaTime), 1f);
             _viewBobTime += 1.033333f * _animController._animator.speed * Time.deltaTime;
 
             if (!_characterController.IsGrounded() && !_characterController._isMovementLocked)

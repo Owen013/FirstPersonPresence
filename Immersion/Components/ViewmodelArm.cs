@@ -33,22 +33,22 @@ public class ViewmodelArm : MonoBehaviour
     }
 
     private static readonly (Vector3 position, Quaternion rotation, float scale)[] s_armTransforms =
-    {
-        (new Vector3(-0.01f, -0.11f, -0.16f), Quaternion.identity, 0.3f), // Signalscope
-        (new Vector3(0.0556f, -0.5962f, 0.0299f), Quaternion.Euler(24.6841f, 0f, 0f), 0.9f), // ProbeLauncher
-        (new Vector3(0.6251f, -0.5804f, -0.2715f), Quaternion.identity, 1.2f), // Translator
+    [
+        (new Vector3(0.2183f, -0.2501f, 0.2651f), Quaternion.Euler(0f, 0.8f, 0.3f), 0.3f), // Signalscope
+        (new Vector3(0.3482f, -0.9607f, 0.9992f), Quaternion.Euler(24.6841f, 0f, 0f), 0.9f), // ProbeLauncher
+        (new Vector3(0.7441f, -0.9404f, 0.7593f), Quaternion.Euler(0f, 3.5522f, 0f), 1.2f), // Translator
         (new Vector3(0.1865f, -0.0744f, -0.2171f), Quaternion.Euler(0f, 320f, 310f), 0.9f), // SharedStone
         (new Vector3(-0.1748f, 0.0613f, -0.6657f), Quaternion.Euler(358.7909f, 107.971f, 3.502f), 0.9f), // Scroll
         (new Vector3(0.1748f, -0.1898f, -0.2008f), Quaternion.Euler(0f, 0f, 292.1743f), 0.6f), // NomaiConversationStone
         (new Vector3(0.2098f, -0.3825f, -0.0593f), Quaternion.Euler(8.5636f, 336.946f, 331.5615f), 0.9f), // WarpCore
         (new Vector3(0.2098f, -0.3825f, -0.0593f), Quaternion.Euler(8.5636f, 336.946f, 331.5615f), 0.9f), // WarpCoreBroken
-        (new Vector3(0.0285f, -0.1719f, -0.2263f), Quaternion.Euler(323.3099f, 77.0467f, 330.0953f), 1), // WarpCoreSimple
+        (new Vector3(0.0285f, -0.1719f, -0.2263f), Quaternion.Euler(323.3099f, 77.0467f, 330.0953f), 1f), // WarpCoreSimple
         (new Vector3(0.256f, 0.6861f, 0.0302f), Quaternion.Euler(330f, 325f, 90f), 1.2f), // SimpleLantern
-        (new Vector3(-0.4219f, 0.3641f, -0.2282f), Quaternion.Euler(4.0031f, 145.1847f, 70.3509f), 1), // SlideReel
+        (new Vector3(-0.4219f, 0.3641f, -0.2282f), Quaternion.Euler(4.0031f, 145.1847f, 70.3509f), 1f), // SlideReel
         (new Vector3(0.3205f, 0.6353f, -0.1311f), Quaternion.Euler(330.5013f, 20.7251f, 78.4916f), 1.2f), // DreamLantern
         (new Vector3(0.1593f, 0.7578f, -0.144f), Quaternion.Euler(330f, 0f, 90f), 1.2f), // DreamLanternPrototype
-        (new Vector3(-0.0403f, 0.0674f, -0.141f), Quaternion.Euler(345.0329f, 4.0765f, 358.0521f), 1) // VisionTorch
-    };
+        (new Vector3(-0.0403f, 0.0674f, -0.141f), Quaternion.Euler(345.0329f, 4.0765f, 358.0521f), 1f) // VisionTorch
+    ];
 
     private static Shader[] s_armShaders;
 
@@ -64,6 +64,8 @@ public class ViewmodelArm : MonoBehaviour
 
     private GameObject _viewmodelArmSuit;
 
+    private PlayerTool _playerTool;
+
     private OWItem _owItem;
 
     public static ViewmodelArm NewViewmodelArm(Transform armParent, (Vector3 position, Quaternion rotation, float scale) armTransform, ArmShader armShader, OWItem owItem = null)
@@ -71,7 +73,7 @@ public class ViewmodelArm : MonoBehaviour
         // replace viewmodel arm if it already exists
         if (armParent.Find("ViewmodelArm") is var existingArm && existingArm != null)
         {
-            ModMain.Instance.Log(armParent.name + " already has a viewmodel arm. Replacing it", MessageType.Warning);
+            ModMain.Instance.ModHelper.Console.WriteLine($"{armParent.name} already has a viewmodel arm. Replacing it", MessageType.Warning);
             GameObject.Destroy(existingArm.gameObject);
         }
 
@@ -144,27 +146,34 @@ public class ViewmodelArm : MonoBehaviour
         _viewmodelArmSuit.transform.localScale = Vector3.one;
         MeshRenderer suitMesh = _viewmodelArmSuit.GetComponent<MeshRenderer>();
         suitMesh.shadowCastingMode = UnityEngine.Rendering.ShadowCastingMode.Off;
-        suitMesh.material.renderQueue = noSuitMesh.material.renderQueue;
+        suitMesh.material.renderQueue = noSuitMesh.material.renderQueue; // what does this do?
         _viewmodelArmSuit.SetActive(false);
     }
 
     private void LateUpdate()
     {
-        // if this is an item and it isn't being held, disable the arm gameobject
-        if (_owItem != null && Locator.GetToolModeSwapper()?._itemCarryTool._heldItem != _owItem)
+        if (!ModMain.Instance.IsViewModelHandsEnabled)
         {
             gameObject.SetActive(false);
             return;
         }
 
-        // disable viewmodel arm if disabled in config
-        if (!ModMain.Instance.IsViewModelHandsEnabled)
+        if (_owItem != null)
         {
-            _viewmodelArmNoSuit.SetActive(false);
-            _viewmodelArmSuit.SetActive(false);
+            if (Locator.GetToolModeSwapper()._itemCarryTool._heldItem != _owItem)
+            {
+                gameObject.SetActive(false);
+                return;
+            }
         }
-        // if lefty mode, use the clothing of the left arm for the viewmodel arm
-        else if (ModMain.Instance.IsLeftyModeEnabled && Locator.GetToolModeSwapper()._currentToolMode != ToolMode.Translator)
+        else if (_playerTool != null && !_playerTool._isEquipped && !_playerTool._isPuttingAway)
+        {
+            gameObject.SetActive(false);
+            return;
+        }
+
+        // if lefty mode, use the clothing of the left arm for the viewmodel arm UNLESS using translator, which is held with right hand no matter what
+        if (ModMain.Instance.IsLeftyModeEnabled && Locator.GetToolModeSwapper()._currentToolMode != ToolMode.Translator)
         {
             _viewmodelArmNoSuit.SetActive(_playerModelLeftArmNoSuit.activeInHierarchy);
             _viewmodelArmSuit.SetActive(_playerModelLeftArmSuit.activeInHierarchy);
@@ -181,26 +190,46 @@ public class ViewmodelArm : MonoBehaviour
     [HarmonyPatch(typeof(Signalscope), nameof(Signalscope.EquipTool))]
     private static void SignalscopeEquipped(Signalscope __instance)
     {
-        // don't create viewmodel arm if 1. it's disabled in config, 2. if there already one there, or 3. it's not a child of the player
-        if (!ModMain.Instance.IsViewModelHandsEnabled || __instance.transform.Find("Props_HEA_Signalscope/ViewmodelArm") || !__instance.GetComponentInParent<PlayerBody>()) return;
-        NewViewmodelArm(__instance.transform.Find("Props_HEA_Signalscope"), s_armTransforms[(int)ArmTransform.Signalscope], ArmShader.ViewmodelCutoff);
+        if (!ModMain.Instance.IsViewModelHandsEnabled) return;
+
+        if (__instance.transform.Find("ViewmodelArm"))
+        {
+            __instance.transform.Find("ViewmodelArm").gameObject.SetActive(true);
+            return;
+        }
+
+        NewViewmodelArm(__instance.transform, ArmTransform.Signalscope, ArmShader.ViewmodelCutoff)._playerTool = __instance;
+
     }
 
     [HarmonyPostfix]
     [HarmonyPatch(typeof(ProbeLauncher), nameof(ProbeLauncher.EquipTool))]
     private static void ProbeLauncherEquipped(ProbeLauncher __instance)
     {
-        if (!ModMain.Instance.IsViewModelHandsEnabled || __instance.transform.Find("Props_HEA_ProbeLauncher/ProbeLauncherChassis/ViewmodelArm") || !__instance.GetComponentInParent<PlayerBody>()) return;
-        NewViewmodelArm(__instance.transform.Find("Props_HEA_ProbeLauncher/ProbeLauncherChassis"), s_armTransforms[(int)ArmTransform.ProbeLauncher], ArmShader.ViewmodelCutoff);
+        if (!ModMain.Instance.IsViewModelHandsEnabled) return;
+
+        if (__instance.transform.Find("ViewmodelArm"))
+        {
+            __instance.transform.Find("ViewmodelArm").gameObject.SetActive(true);
+            return;
+        }
+
+        NewViewmodelArm(__instance.transform, ArmTransform.ProbeLauncher, ArmShader.ViewmodelCutoff)._playerTool = __instance;
     }
 
     [HarmonyPostfix]
-    [HarmonyPatch(typeof(NomaiTranslatorProp), nameof(NomaiTranslatorProp.OnEquipTool))]
-    private static void TranslatorEquipped(NomaiTranslatorProp __instance)
+    [HarmonyPatch(typeof(NomaiTranslator), nameof(NomaiTranslator.EquipTool))]
+    private static void TranslatorEquipped(NomaiTranslator __instance)
     {
-        // only the player has a translator, so don't need to check for that
-        if (!ModMain.Instance.IsViewModelHandsEnabled || __instance.transform.Find("TranslatorGroup/Props_HEA_Translator/Props_HEA_Translator_Geo/ViewmodelArm")) return;
-        NewViewmodelArm(__instance.transform.Find("TranslatorGroup/Props_HEA_Translator/Props_HEA_Translator_Geo"), s_armTransforms[(int)ArmTransform.Translator], ArmShader.ViewmodelCutoff);
+        if (!ModMain.Instance.IsViewModelHandsEnabled) return;
+
+        if (__instance.transform.Find("ViewmodelArm"))
+        {
+            __instance.transform.Find("ViewmodelArm").gameObject.SetActive(true);
+            return;
+        }
+
+        NewViewmodelArm(__instance.transform, ArmTransform.Translator, ArmShader.ViewmodelCutoff)._playerTool = __instance;
     }
 
     [HarmonyPostfix]
@@ -218,7 +247,7 @@ public class ViewmodelArm : MonoBehaviour
             case ItemType.Scroll:
                 if (__instance.name == "Prefab_NOM_Scroll_Jeff")
                 {
-                    NewViewmodelArm(__instance.transform, (new Vector3(0.2107f, - 0.0169f, 0.167f), Quaternion.Euler(358.7909f, 287.9709f, 59.1747f), 0.9f), ArmShader.Standard, __instance);
+                    NewViewmodelArm(__instance.transform, (new Vector3(0.2107f, -0.0169f, 0.167f), Quaternion.Euler(358.7909f, 287.9709f, 59.1747f), 0.9f), ArmShader.Standard, __instance);
                 }
                 else
                 {
