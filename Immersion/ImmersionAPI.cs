@@ -5,20 +5,18 @@ namespace Immersion;
 
 public class ImmersionAPI
 {
-    public enum ArmShader
-    {
-        Standard,
-        Viewmodel,
-        ViewmodelCutoff
-    }
-
     public float GetAnimSpeed()
     {
         return AnimSpeedController.Instance.AnimSpeed;
     }
 
-    public static GameObject NewViewmodelArm(Transform parent, (Vector3 position, Quaternion rotation, float scale) armTransform, ArmShader shader, OWItem owItem = null)
+    public GameObject NewViewmodelArm(PlayerTool playerTool, (Vector3 position, Quaternion rotation, float scale) armTransform, int armShader = 0)
     {
-        return ViewmodelArm.NewViewmodelArm(parent, armTransform, (ViewmodelArm.ArmShader)shader, owItem).gameObject;
+        return ViewmodelArm.NewViewmodelArm(playerTool, armTransform, (ViewmodelArm.ArmShader)armShader).gameObject;
+    }
+
+    public GameObject NewViewmodelArm(OWItem owItem, (Vector3 position, Quaternion rotation, float scale) armTransform, int armShader = 0)
+    {
+        return ViewmodelArm.NewViewmodelArm(owItem, armTransform, (ViewmodelArm.ArmShader)armShader).gameObject;
     }
 }

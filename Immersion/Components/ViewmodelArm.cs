@@ -7,48 +7,12 @@ namespace Immersion.Components;
 [HarmonyPatch]
 public class ViewmodelArm : MonoBehaviour
 {
-    public enum ArmTransform
-    {
-        Signalscope,
-        ProbeLauncher,
-        Translator,
-        SharedStone,
-        Scroll,
-        NomaiConversationStone,
-        WarpCore,
-        WarpCoreBroken,
-        WarpCoreSimple,
-        SimpleLantern,
-        SlideReel,
-        DreamLantern,
-        DreamLanternNonfunctioning,
-        VisionTorch
-    }
-
     public enum ArmShader
     {
         Standard,
         Viewmodel,
         ViewmodelCutoff
     }
-
-    private static readonly (Vector3 position, Quaternion rotation, float scale)[] s_armTransforms =
-    [
-        (new Vector3(0.2183f, -0.2501f, 0.2651f), Quaternion.Euler(0f, 0.8f, 0.3f), 0.3f), // Signalscope
-        (new Vector3(0.3482f, -0.9607f, 0.9992f), Quaternion.Euler(24.6841f, 0f, 0f), 0.9f), // ProbeLauncher
-        (new Vector3(0.7441f, -0.9404f, 0.7593f), Quaternion.Euler(0f, 3.5522f, 0f), 1.2f), // Translator
-        (new Vector3(0.1865f, -0.0744f, -0.2171f), Quaternion.Euler(0f, 320f, 310f), 0.9f), // SharedStone
-        (new Vector3(-0.1748f, 0.0613f, -0.6657f), Quaternion.Euler(358.7909f, 107.971f, 3.502f), 0.9f), // Scroll
-        (new Vector3(0.1748f, -0.1898f, -0.2008f), Quaternion.Euler(0f, 0f, 292.1743f), 0.6f), // NomaiConversationStone
-        (new Vector3(0.2098f, -0.3825f, -0.0593f), Quaternion.Euler(8.5636f, 336.946f, 331.5615f), 0.9f), // WarpCore
-        (new Vector3(0.2098f, -0.3825f, -0.0593f), Quaternion.Euler(8.5636f, 336.946f, 331.5615f), 0.9f), // WarpCoreBroken
-        (new Vector3(0.0285f, -0.1719f, -0.2263f), Quaternion.Euler(323.3099f, 77.0467f, 330.0953f), 1f), // WarpCoreSimple
-        (new Vector3(0.256f, 0.6861f, 0.0302f), Quaternion.Euler(330f, 325f, 90f), 1.2f), // SimpleLantern
-        (new Vector3(-0.4219f, 0.3641f, -0.2282f), Quaternion.Euler(4.0031f, 145.1847f, 70.3509f), 1f), // SlideReel
-        (new Vector3(0.3205f, 0.6353f, -0.1311f), Quaternion.Euler(330.5013f, 20.7251f, 78.4916f), 1.2f), // DreamLantern
-        (new Vector3(0.1593f, 0.7578f, -0.144f), Quaternion.Euler(330f, 0f, 90f), 1.2f), // DreamLanternPrototype
-        (new Vector3(-0.0403f, 0.0674f, -0.141f), Quaternion.Euler(345.0329f, 4.0765f, 358.0521f), 1f) // VisionTorch
-    ];
 
     private static Shader[] s_armShaders;
 
@@ -68,8 +32,20 @@ public class ViewmodelArm : MonoBehaviour
 
     private OWItem _owItem;
 
-    public static ViewmodelArm NewViewmodelArm(Transform armParent, (Vector3 position, Quaternion rotation, float scale) armTransform, ArmShader armShader, OWItem owItem = null)
+    public static ViewmodelArm NewViewmodelArm(PlayerTool playerTool, (Vector3 position, Quaternion rotation, float scale) armTransform, ArmShader armShader = ArmShader.Standard)
     {
+        return NewViewmodelArm(armTransform, playerTool, null, armShader);
+    }
+
+    public static ViewmodelArm NewViewmodelArm(OWItem owItem, (Vector3 position, Quaternion rotation, float scale) armTransform, ArmShader armShader = ArmShader.Standard)
+    {
+        return NewViewmodelArm(armTransform, null, owItem, armShader);
+    }
+
+    private static ViewmodelArm NewViewmodelArm((Vector3 position, Quaternion rotation, float scale) armTransform, PlayerTool playerTool = null, OWItem owItem = null, ArmShader armShader = ArmShader.Standard)
+    {
+        var armParent = playerTool?.transform ?? owItem?.transform;
+
         // replace viewmodel arm if it already exists
         if (armParent.Find("ViewmodelArm") is var existingArm && existingArm != null)
         {
@@ -82,26 +58,25 @@ public class ViewmodelArm : MonoBehaviour
         viewmodelArm.transform.localPosition = armTransform.position;
         viewmodelArm.transform.localRotation = armTransform.rotation;
         viewmodelArm.transform.localScale = armTransform.scale * Vector3.one;
-        viewmodelArm._owItem = owItem;
         viewmodelArm.SetArmShader(armShader);
 
         if (owItem != null)
         {
+            viewmodelArm._owItem = owItem;
             owItem.onPickedUp += (item) =>
             {
                 viewmodelArm.gameObject.SetActive(true);
             };
         }
+        else
+        {
+            viewmodelArm._playerTool = playerTool;
+        }
 
         return viewmodelArm;
     }
 
-    public static ViewmodelArm NewViewmodelArm(Transform armParent, ArmTransform armTransform, ArmShader armShader, OWItem owItem = null)
-    {
-        return NewViewmodelArm(armParent, s_armTransforms[(int)armTransform], armShader, owItem);
-    }
-
-    public void SetArmShader(ArmShader armShader)
+    private void SetArmShader(ArmShader armShader)
     {
         // get shaders if we don't have them
         s_armShaders ??=
@@ -111,6 +86,7 @@ public class ViewmodelArm : MonoBehaviour
             Shader.Find("Outer Wilds/Utility/View Model (Cutoff)")
         ];
 
+        // apply shaders to materials
         MeshRenderer noSuitMesh = _viewmodelArmNoSuit.GetComponent<MeshRenderer>();
         noSuitMesh.materials[0].shader = s_armShaders[(int)armShader];
         noSuitMesh.materials[1].shader = s_armShaders[(int)armShader];
@@ -198,8 +174,7 @@ public class ViewmodelArm : MonoBehaviour
             return;
         }
 
-        NewViewmodelArm(__instance.transform, ArmTransform.Signalscope, ArmShader.ViewmodelCutoff)._playerTool = __instance;
-
+        NewViewmodelArm(__instance, (new Vector3(0.2183f, -0.2501f, 0.2651f), Quaternion.Euler(0f, 0.8f, 0.3f), 0.3f), ArmShader.ViewmodelCutoff);
     }
 
     [HarmonyPostfix]
@@ -214,7 +189,7 @@ public class ViewmodelArm : MonoBehaviour
             return;
         }
 
-        NewViewmodelArm(__instance.transform, ArmTransform.ProbeLauncher, ArmShader.ViewmodelCutoff)._playerTool = __instance;
+        NewViewmodelArm(__instance, (new Vector3(0.3482f, -0.9607f, 0.9992f), Quaternion.Euler(24.6841f, 0f, 0f), 0.9f), ArmShader.ViewmodelCutoff);
     }
 
     [HarmonyPostfix]
@@ -229,7 +204,7 @@ public class ViewmodelArm : MonoBehaviour
             return;
         }
 
-        NewViewmodelArm(__instance.transform, ArmTransform.Translator, ArmShader.ViewmodelCutoff)._playerTool = __instance;
+        NewViewmodelArm(__instance, (new Vector3(0.7441f, -0.9404f, 0.7593f), Quaternion.Euler(0f, 3.5522f, 0f), 1.2f), ArmShader.ViewmodelCutoff);
     }
 
     [HarmonyPostfix]
@@ -242,53 +217,53 @@ public class ViewmodelArm : MonoBehaviour
         switch (__instance._type)
         {
             case ItemType.SharedStone:
-                NewViewmodelArm(__instance.transform, ArmTransform.SharedStone, ArmShader.Standard, __instance);
+                NewViewmodelArm(__instance, (new Vector3(0.1865f, -0.0744f, -0.2171f), Quaternion.Euler(0f, 320f, 310f), 0.9f));
                 break;
             case ItemType.Scroll:
                 if (__instance.name == "Prefab_NOM_Scroll_Jeff")
                 {
-                    NewViewmodelArm(__instance.transform, (new Vector3(0.2107f, -0.0169f, 0.167f), Quaternion.Euler(358.7909f, 287.9709f, 59.1747f), 0.9f), ArmShader.Standard, __instance);
+                    NewViewmodelArm(__instance, (new Vector3(0.2107f, -0.0169f, 0.167f), Quaternion.Euler(358.7909f, 287.9709f, 59.1747f), 0.9f));
                 }
                 else
                 {
-                    NewViewmodelArm(__instance.transform, ArmTransform.Scroll, ArmShader.Standard, __instance);
+                    NewViewmodelArm(__instance, (new Vector3(-0.1748f, 0.0613f, -0.6657f), Quaternion.Euler(358.7909f, 107.971f, 3.502f), 0.9f));
                 }
                 break;
             case ItemType.ConversationStone:
-                NewViewmodelArm(__instance.transform, ArmTransform.NomaiConversationStone, ArmShader.Standard, __instance);
+                NewViewmodelArm(__instance, (new Vector3(0.1748f, -0.1898f, -0.2008f), Quaternion.Euler(0f, 0f, 292.1743f), 0.6f));
                 break;
             case ItemType.WarpCore:
                 switch ((__instance as WarpCoreItem)._warpCoreType)
                 {
                     case WarpCoreType.Vessel:
-                        NewViewmodelArm(__instance.transform, ArmTransform.WarpCore, ArmShader.Standard, __instance);
+                        NewViewmodelArm(__instance, (new Vector3(0.2098f, -0.3825f, -0.0593f), Quaternion.Euler(8.5636f, 336.946f, 331.5615f), 0.9f));
                         break;
                     case WarpCoreType.VesselBroken:
-                        NewViewmodelArm(__instance.transform, ArmTransform.WarpCoreBroken, ArmShader.Standard, __instance);
+                        NewViewmodelArm(__instance, (new Vector3(0.2098f, -0.3825f, -0.0593f), Quaternion.Euler(8.5636f, 336.946f, 331.5615f), 0.9f));
                         break;
                     default:
-                        NewViewmodelArm(__instance.transform, ArmTransform.WarpCoreSimple, ArmShader.Standard, __instance);
+                        NewViewmodelArm(__instance, (new Vector3(0.0285f, -0.1719f, -0.2263f), Quaternion.Euler(323.3099f, 77.0467f, 330.0953f), 1f));
                         break;
                 }
                 break;
             case ItemType.Lantern:
-                NewViewmodelArm(__instance.transform, ArmTransform.SimpleLantern, ArmShader.Standard, __instance);
+                NewViewmodelArm(__instance, (new Vector3(0.256f, 0.6861f, 0.0302f), Quaternion.Euler(330f, 325f, 90f), 1.2f));
                 break;
             case ItemType.SlideReel:
-                NewViewmodelArm(__instance.transform, ArmTransform.SlideReel, ArmShader.Standard, __instance);
+                NewViewmodelArm(__instance, (new Vector3(-0.4219f, 0.3641f, -0.2282f), Quaternion.Euler(4.0031f, 145.1847f, 70.3509f), 1f));
                 break;
             case ItemType.DreamLantern:
                 if ((__instance as DreamLanternItem)._lanternType == DreamLanternType.Nonfunctioning)
                 {
-                    NewViewmodelArm(__instance.transform, ArmTransform.DreamLanternNonfunctioning, ArmShader.Standard, __instance);
+                    NewViewmodelArm(__instance, (new Vector3(0.1593f, 0.7578f, -0.144f), Quaternion.Euler(330f, 0f, 90f), 1.2f));
                 }
                 else
                 {
-                    NewViewmodelArm(__instance.transform, ArmTransform.DreamLantern, ArmShader.Viewmodel, __instance);
+                    NewViewmodelArm(__instance, (new Vector3(0.3205f, 0.6353f, -0.1311f), Quaternion.Euler(330.5013f, 20.7251f, 78.4916f), 1.2f), ArmShader.Viewmodel);
                 }
                 break;
             case ItemType.VisionTorch:
-                NewViewmodelArm(__instance.transform, ArmTransform.VisionTorch, ArmShader.Standard, __instance);
+                NewViewmodelArm(__instance, (new Vector3(-0.0403f, 0.0674f, -0.141f), Quaternion.Euler(345.0329f, 4.0765f, 358.0521f), 1f));
                 break;
         }
     }
