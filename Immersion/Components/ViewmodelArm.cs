@@ -263,7 +263,7 @@ public class ViewmodelArm : MonoBehaviour
                 }
                 break;
             case ItemType.VisionTorch:
-                NewViewmodelArm(__instance, (new Vector3(-0.0403f, 0.0674f, -0.141f), Quaternion.Euler(345.0329f, 4.0765f, 358.0521f), 1f));
+                NewViewmodelArm(__instance, (new Vector3(-0.0403f, -0.1344f, -0.125f), Quaternion.Euler(345.0329f, 4.0765f, 358.0521f), 1f));
                 break;
         }
     }
