@@ -233,8 +233,8 @@ public class ViewbobManager : MonoBehaviour
         }
 
         // decay already existing tool sway and then add new tool sway
-        _toolSway = Vector2.SmoothDamp(_toolSway, Vector2.zero, ref _toolSwayVelocity, 0.2f * ModMain.Instance.ToolSwaySmoothing, 5f);
-        _toolSway = Vector2.ClampMagnitude(_toolSway - lookDelta * (1f - _toolSway.magnitude), 1f);
+        _toolSway = Vector2.SmoothDamp(_toolSway, Vector2.zero, ref _toolSwayVelocity, 0.2f * ModMain.Instance.ToolSwaySmoothing);
+        _toolSway -= lookDelta * (1f - Mathf.Min((_toolSway - lookDelta).magnitude, 1));
         float localZOffset = 0.15f * (Mathf.Cos(Mathf.PI * _toolSway.y) - 1f);
         float globalZOffset = 0.15f * (Mathf.Cos(Mathf.PI * _toolSway.x) - 1f);
         float xSwayMultiplier = (Mathf.Cos(degreesY * 0.03490f) + 1f) * 0.5f;

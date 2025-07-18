@@ -233,6 +233,12 @@ public class ViewmodelArm : MonoBehaviour
         {
             case ItemType.SharedStone:
                 armParent = __instance.transform.Find("AnimRoot/Props_NOM_SharedStone");
+                if (armParent == null)
+                {
+                    ModMain.Instance.Log("Can't find ViewmodelArm parent for " + __instance.name);
+                    return;
+                }
+
                 armTransform = ArmTransform.SharedStone;
                 armShader = ArmShader.Standard;
                 NewViewmodelArm(armParent, s_armTransforms[(int)armTransform], armShader, __instance);
@@ -241,6 +247,12 @@ public class ViewmodelArm : MonoBehaviour
                 if (__instance.name == "Prefab_NOM_Scroll_egg")
                 {
                     armParent = __instance.transform.Find("Props_NOM_Scroll/Props_NOM_Scroll_Geo");
+                    if (armParent == null)
+                    {
+                        ModMain.Instance.Log("Can't find ViewmodelArm parent for " + __instance.name);
+                        return;
+                    }
+
                     armTransform = ArmTransform.ScrollEasterEgg;
                     armShader = ArmShader.Standard;
                     NewViewmodelArm(armParent, s_armTransforms[(int)armTransform], armShader, __instance);
@@ -248,6 +260,12 @@ public class ViewmodelArm : MonoBehaviour
                 else
                 {
                     armParent = __instance.transform.Find("Props_NOM_Scroll/Props_NOM_Scroll_Geo");
+                    if (armParent == null)
+                    {
+                        ModMain.Instance.Log("Can't find ViewmodelArm parent for " + __instance.name);
+                        return;
+                    }
+
                     armTransform = ArmTransform.Scroll;
                     armShader = ArmShader.Standard;
                     NewViewmodelArm(armParent, s_armTransforms[(int)armTransform], armShader, __instance);
@@ -259,6 +277,12 @@ public class ViewmodelArm : MonoBehaviour
                     if (renderer.name.Contains("_Back"))
                     {
                         armParent = renderer.transform;
+                        if (armParent == null)
+                        {
+                            ModMain.Instance.Log("Can't find ViewmodelArm parent for " + __instance.name);
+                            return;
+                        }
+
                         armTransform = ArmTransform.NomaiConversationStone;
                         armShader = ArmShader.Standard;
                         NewViewmodelArm(armParent, s_armTransforms[(int)armTransform], armShader, __instance);
@@ -270,18 +294,36 @@ public class ViewmodelArm : MonoBehaviour
                 {
                     case WarpCoreType.Vessel:
                         armParent = __instance.transform.Find("Props_NOM_WarpCore_Advanced/Props_NOM_WarpCore_Advance_Geo");
+                        if (armParent == null)
+                        {
+                            ModMain.Instance.Log("Can't find ViewmodelArm parent for " + __instance.name);
+                            return;
+                        }
+
                         armTransform = ArmTransform.WarpCore;
                         armShader = ArmShader.Standard;
                         NewViewmodelArm(armParent, s_armTransforms[(int)armTransform], armShader, __instance);
                         break;
                     case WarpCoreType.VesselBroken:
                         armParent = __instance.transform.Find("Props_NOM_WarpCore_Advanced_Broken_V3/Props_NOM_WarpCore_Advance_Broken_Geo");
+                        if (armParent == null)
+                        {
+                            ModMain.Instance.Log("Can't find ViewmodelArm parent for " + __instance.name);
+                            return;
+                        }
+
                         armTransform = ArmTransform.WarpCoreBroken;
                         armShader = ArmShader.Standard;
                         NewViewmodelArm(armParent, s_armTransforms[(int)armTransform], armShader, __instance);
                         break;
                     default:
                         armParent = __instance.transform.Find("Props_NOM_WarpCore_Simple");
+                        if (armParent == null)
+                        {
+                            ModMain.Instance.Log("Can't find ViewmodelArm parent for " + __instance.name);
+                            return;
+                        }
+
                         armTransform = ArmTransform.WarpCoreSimple;
                         armShader = ArmShader.Standard;
                         NewViewmodelArm(armParent, s_armTransforms[(int)armTransform], armShader, __instance);
@@ -294,6 +336,12 @@ public class ViewmodelArm : MonoBehaviour
                 if (armParent == null)
                 {
                     armParent = __instance.transform.Find("Props_IP_Lantern_Crack/Lantern_geo");
+                    if (armParent == null)
+                    {
+                        ModMain.Instance.Log("Can't find ViewmodelArm parent for " + __instance.name);
+                        return;
+                    }
+
                     armTransform = ArmTransform.SimpleLanternCracked;
                     NewViewmodelArm(armParent, s_armTransforms[(int)armTransform], armShader, __instance);
                 }
@@ -309,6 +357,12 @@ public class ViewmodelArm : MonoBehaviour
                     if (renderer.name.Contains("Frame_"))
                     {
                         armParent = renderer.transform;
+                        if (armParent == null)
+                        {
+                            ModMain.Instance.Log("Can't find ViewmodelArm parent for " + __instance.name);
+                            return;
+                        }
+
                         armTransform = ArmTransform.SlideReel;
                         armShader = ArmShader.Standard;
                         NewViewmodelArm(armParent, s_armTransforms[(int)armTransform], armShader, __instance);
@@ -323,6 +377,12 @@ public class ViewmodelArm : MonoBehaviour
                     if (armParent == null)
                     {
                         armParent = __instance.transform.Find("Props_IP_DreamLanternItem_Nonfunctioning/PrototypeArtifact");
+                        if (armParent == null)
+                        {
+                            ModMain.Instance.Log("Can't find ViewmodelArm parent for " + __instance.name);
+                            return;
+                        }
+
                         armTransform = ArmTransform.DreamLanternPrototype;
                         armShader = ArmShader.Standard;
                         NewViewmodelArm(armParent, s_armTransforms[(int)armTransform], armShader, __instance);
@@ -343,6 +403,12 @@ public class ViewmodelArm : MonoBehaviour
                 break;
             case ItemType.VisionTorch:
                 armParent = __instance.transform.Find("Prefab_IP_VisionTorchProjector/Props_IP_ScannerStaff/Scannerstaff_geo");
+                if (armParent == null)
+                {
+                    ModMain.Instance.Log("Can't find ViewmodelArm parent for " + __instance.name);
+                    return;
+                }
+
                 armTransform = ArmTransform.VisionTorch;
                 armShader = ArmShader.Standard;
                 NewViewmodelArm(armParent, s_armTransforms[(int)armTransform], armShader, __instance);
