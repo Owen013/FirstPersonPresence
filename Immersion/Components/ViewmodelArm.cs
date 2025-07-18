@@ -1,6 +1,5 @@
 ﻿using HarmonyLib;
 using OWML.Common;
-using System.Collections.Generic;
 using UnityEngine;
 
 namespace Immersion.Components;
@@ -15,17 +14,14 @@ public class ViewmodelArm : MonoBehaviour
         Translator,
         SharedStone,
         Scroll,
-        ScrollEasterEgg,
         NomaiConversationStone,
         WarpCore,
         WarpCoreBroken,
         WarpCoreSimple,
         SimpleLantern,
-        SimpleLanternCracked,
         SlideReel,
         DreamLantern,
-        DreamLanternPrototype,
-        DreamLanternPrototype2,
+        DreamLanternNonfunctioning,
         VisionTorch
     }
 
@@ -42,24 +38,19 @@ public class ViewmodelArm : MonoBehaviour
         (new Vector3(0.0556f, -0.5962f, 0.0299f), Quaternion.Euler(24.6841f, 0f, 0f), 0.9f), // ProbeLauncher
         (new Vector3(0.6251f, -0.5804f, -0.2715f), Quaternion.identity, 1.2f), // Translator
         (new Vector3(0.1865f, -0.0744f, -0.2171f), Quaternion.Euler(0f, 320f, 310f), 0.9f), // SharedStone
-        (new Vector3(-0.1748f, 0.0613f, -0.2957f), Quaternion.Euler(358.7909f, 107.971f, 3.502f), 0.9f), // Scroll
-        (new Vector3(-0.2028f, 0.0195f, -0.2974f), Quaternion.Euler(358.7909f, 107.971f, 3.502f), 0.9f), // BrittleHollowScroll
-        (new Vector3(0.1748f, -0.1398f, -0.2008f), Quaternion.Euler(0f, 0f, 292.1743f), 0.6f), // NomaiConversationStone
+        (new Vector3(-0.1748f, 0.0613f, -0.6657f), Quaternion.Euler(358.7909f, 107.971f, 3.502f), 0.9f), // Scroll
+        (new Vector3(0.1748f, -0.1898f, -0.2008f), Quaternion.Euler(0f, 0f, 292.1743f), 0.6f), // NomaiConversationStone
         (new Vector3(0.2098f, -0.3825f, -0.0593f), Quaternion.Euler(8.5636f, 336.946f, 331.5615f), 0.9f), // WarpCore
-        (new Vector3(-0.2098f, -0.3825f, 0.0593f), Quaternion.Euler(8.5636f, 156.946f, 331.5615f), 0.9f), // WarpCoreBroken
-        (new Vector3(0.057f, -0.4437f, -0.4526f), Quaternion.Euler(323.3099f, 77.0467f, 330.0953f), 2f), // WarpCoreSimple
-        (new Vector3(-0.2524f, 0.2953f, -0.0524f), Quaternion.Euler(330f, 140f, 90f), 1.2f), // SimpleLantern
-        (new Vector3(0.2494f, 0.6859f, 0.0476f), Quaternion.Euler(330f, 320f, 90f), 1.2f), // SimpleLanternCracked
-        (new Vector3(-0.4143f, 0.1576f, -0.2241f), Quaternion.Euler(4.0031f, 145.1847f, 70.3509f), 0.9f), // SlideReel
-        (new Vector3(0.15f, 0.3f, -0.16f), Quaternion.Euler(330f, 0f, 90f), 1.2f), // DreamLantern
+        (new Vector3(0.2098f, -0.3825f, -0.0593f), Quaternion.Euler(8.5636f, 336.946f, 331.5615f), 0.9f), // WarpCoreBroken
+        (new Vector3(0.0285f, -0.1719f, -0.2263f), Quaternion.Euler(323.3099f, 77.0467f, 330.0953f), 1), // WarpCoreSimple
+        (new Vector3(0.256f, 0.6861f, 0.0302f), Quaternion.Euler(330f, 325f, 90f), 1.2f), // SimpleLantern
+        (new Vector3(-0.4219f, 0.3641f, -0.2282f), Quaternion.Euler(4.0031f, 145.1847f, 70.3509f), 1), // SlideReel
+        (new Vector3(0.3205f, 0.6353f, -0.1311f), Quaternion.Euler(330.5013f, 20.7251f, 78.4916f), 1.2f), // DreamLantern
         (new Vector3(0.1593f, 0.7578f, -0.144f), Quaternion.Euler(330f, 0f, 90f), 1.2f), // DreamLanternPrototype
-        (new Vector3(0.1389f, 0.836f, -0.144f), Quaternion.Euler(0f, 0f, 90f), 1.2f), // DreamLanternPrototype2
-        (new Vector3(0.0403f, 1.0224f, 0.141f), Quaternion.Euler(345.0329f, 184.0765f, 358.0521f), 1) // VisionTorch
+        (new Vector3(-0.0403f, 0.0674f, -0.141f), Quaternion.Euler(345.0329f, 4.0765f, 358.0521f), 1) // VisionTorch
     };
 
     private static Shader[] s_armShaders;
-
-    private static List<OWItem> s_itemsWithArms;
 
     private GameObject _playerModelRightArmNoSuit;
 
@@ -94,9 +85,6 @@ public class ViewmodelArm : MonoBehaviour
 
         if (owItem != null)
         {
-            s_itemsWithArms ??= new List<OWItem>();
-
-            s_itemsWithArms.Add(owItem);
             owItem.onPickedUp += (item) =>
             {
                 viewmodelArm.gameObject.SetActive(true);
@@ -104,6 +92,11 @@ public class ViewmodelArm : MonoBehaviour
         }
 
         return viewmodelArm;
+    }
+
+    public static ViewmodelArm NewViewmodelArm(Transform armParent, ArmTransform armTransform, ArmShader armShader, OWItem owItem = null)
+    {
+        return NewViewmodelArm(armParent, s_armTransforms[(int)armTransform], armShader, owItem);
     }
 
     public void SetArmShader(ArmShader armShader)
@@ -184,14 +177,6 @@ public class ViewmodelArm : MonoBehaviour
         }
     }
 
-    private void OnDestroy()
-    {
-        if (_owItem != null)
-        {
-            s_itemsWithArms.Remove(_owItem);
-        }
-    }
-
     [HarmonyPostfix]
     [HarmonyPatch(typeof(Signalscope), nameof(Signalscope.EquipTool))]
     private static void SignalscopeEquipped(Signalscope __instance)
@@ -223,195 +208,58 @@ public class ViewmodelArm : MonoBehaviour
     private static void ItemPickedUp(OWItem __instance)
     {
         // don't try to add viewmodel arm if disabled in config or if this item already has one
-        if (!ModMain.Instance.IsViewModelHandsEnabled || s_itemsWithArms != null && s_itemsWithArms.Contains(__instance)) return;
-
-        Transform armParent;
-        ArmTransform armTransform;
-        ArmShader armShader;
+        if (!ModMain.Instance.IsViewModelHandsEnabled || __instance.transform.Find("ViewmodelArm")) return;
 
         switch (__instance._type)
         {
             case ItemType.SharedStone:
-                armParent = __instance.transform.Find("AnimRoot/Props_NOM_SharedStone");
-                if (armParent == null)
-                {
-                    ModMain.Instance.Log("Can't find ViewmodelArm parent for " + __instance.name);
-                    return;
-                }
-
-                armTransform = ArmTransform.SharedStone;
-                armShader = ArmShader.Standard;
-                NewViewmodelArm(armParent, s_armTransforms[(int)armTransform], armShader, __instance);
+                NewViewmodelArm(__instance.transform, ArmTransform.SharedStone, ArmShader.Standard, __instance);
                 break;
             case ItemType.Scroll:
-                if (__instance.name == "Prefab_NOM_Scroll_egg")
+                if (__instance.name == "Prefab_NOM_Scroll_Jeff")
                 {
-                    armParent = __instance.transform.Find("Props_NOM_Scroll/Props_NOM_Scroll_Geo");
-                    if (armParent == null)
-                    {
-                        ModMain.Instance.Log("Can't find ViewmodelArm parent for " + __instance.name);
-                        return;
-                    }
-
-                    armTransform = ArmTransform.ScrollEasterEgg;
-                    armShader = ArmShader.Standard;
-                    NewViewmodelArm(armParent, s_armTransforms[(int)armTransform], armShader, __instance);
+                    NewViewmodelArm(__instance.transform, (new Vector3(0.2107f, - 0.0169f, 0.167f), Quaternion.Euler(358.7909f, 287.9709f, 59.1747f), 0.9f), ArmShader.Standard, __instance);
                 }
                 else
                 {
-                    armParent = __instance.transform.Find("Props_NOM_Scroll/Props_NOM_Scroll_Geo");
-                    if (armParent == null)
-                    {
-                        ModMain.Instance.Log("Can't find ViewmodelArm parent for " + __instance.name);
-                        return;
-                    }
-
-                    armTransform = ArmTransform.Scroll;
-                    armShader = ArmShader.Standard;
-                    NewViewmodelArm(armParent, s_armTransforms[(int)armTransform], armShader, __instance);
+                    NewViewmodelArm(__instance.transform, ArmTransform.Scroll, ArmShader.Standard, __instance);
                 }
                 break;
             case ItemType.ConversationStone:
-                foreach (MeshRenderer renderer in __instance.GetComponentsInChildren<MeshRenderer>())
-                {
-                    if (renderer.name.Contains("_Back"))
-                    {
-                        armParent = renderer.transform;
-                        if (armParent == null)
-                        {
-                            ModMain.Instance.Log("Can't find ViewmodelArm parent for " + __instance.name);
-                            return;
-                        }
-
-                        armTransform = ArmTransform.NomaiConversationStone;
-                        armShader = ArmShader.Standard;
-                        NewViewmodelArm(armParent, s_armTransforms[(int)armTransform], armShader, __instance);
-                    }
-                }
+                NewViewmodelArm(__instance.transform, ArmTransform.NomaiConversationStone, ArmShader.Standard, __instance);
                 break;
             case ItemType.WarpCore:
-                switch (__instance.GetComponent<WarpCoreItem>()._warpCoreType)
+                switch ((__instance as WarpCoreItem)._warpCoreType)
                 {
                     case WarpCoreType.Vessel:
-                        armParent = __instance.transform.Find("Props_NOM_WarpCore_Advanced/Props_NOM_WarpCore_Advance_Geo");
-                        if (armParent == null)
-                        {
-                            ModMain.Instance.Log("Can't find ViewmodelArm parent for " + __instance.name);
-                            return;
-                        }
-
-                        armTransform = ArmTransform.WarpCore;
-                        armShader = ArmShader.Standard;
-                        NewViewmodelArm(armParent, s_armTransforms[(int)armTransform], armShader, __instance);
+                        NewViewmodelArm(__instance.transform, ArmTransform.WarpCore, ArmShader.Standard, __instance);
                         break;
                     case WarpCoreType.VesselBroken:
-                        armParent = __instance.transform.Find("Props_NOM_WarpCore_Advanced_Broken_V3/Props_NOM_WarpCore_Advance_Broken_Geo");
-                        if (armParent == null)
-                        {
-                            ModMain.Instance.Log("Can't find ViewmodelArm parent for " + __instance.name);
-                            return;
-                        }
-
-                        armTransform = ArmTransform.WarpCoreBroken;
-                        armShader = ArmShader.Standard;
-                        NewViewmodelArm(armParent, s_armTransforms[(int)armTransform], armShader, __instance);
+                        NewViewmodelArm(__instance.transform, ArmTransform.WarpCoreBroken, ArmShader.Standard, __instance);
                         break;
                     default:
-                        armParent = __instance.transform.Find("Props_NOM_WarpCore_Simple");
-                        if (armParent == null)
-                        {
-                            ModMain.Instance.Log("Can't find ViewmodelArm parent for " + __instance.name);
-                            return;
-                        }
-
-                        armTransform = ArmTransform.WarpCoreSimple;
-                        armShader = ArmShader.Standard;
-                        NewViewmodelArm(armParent, s_armTransforms[(int)armTransform], armShader, __instance);
+                        NewViewmodelArm(__instance.transform, ArmTransform.WarpCoreSimple, ArmShader.Standard, __instance);
                         break;
                 }
                 break;
             case ItemType.Lantern:
-                armParent = __instance.transform.Find("Props_IP_Lantern/Lantern_geo");
-                armShader = ArmShader.Standard;
-                if (armParent == null)
-                {
-                    armParent = __instance.transform.Find("Props_IP_Lantern_Crack/Lantern_geo");
-                    if (armParent == null)
-                    {
-                        ModMain.Instance.Log("Can't find ViewmodelArm parent for " + __instance.name);
-                        return;
-                    }
-
-                    armTransform = ArmTransform.SimpleLanternCracked;
-                    NewViewmodelArm(armParent, s_armTransforms[(int)armTransform], armShader, __instance);
-                }
-                else
-                {
-                    armTransform = ArmTransform.SimpleLantern;
-                    NewViewmodelArm(armParent, s_armTransforms[(int)armTransform], armShader, __instance);
-                }
+                NewViewmodelArm(__instance.transform, ArmTransform.SimpleLantern, ArmShader.Standard, __instance);
                 break;
             case ItemType.SlideReel:
-                foreach (MeshRenderer renderer in __instance.GetComponentsInChildren<MeshRenderer>())
-                {
-                    if (renderer.name.Contains("Frame_"))
-                    {
-                        armParent = renderer.transform;
-                        if (armParent == null)
-                        {
-                            ModMain.Instance.Log("Can't find ViewmodelArm parent for " + __instance.name);
-                            return;
-                        }
-
-                        armTransform = ArmTransform.SlideReel;
-                        armShader = ArmShader.Standard;
-                        NewViewmodelArm(armParent, s_armTransforms[(int)armTransform], armShader, __instance);
-                    }
-                }
+                NewViewmodelArm(__instance.transform, ArmTransform.SlideReel, ArmShader.Standard, __instance);
                 break;
             case ItemType.DreamLantern:
-                armParent = __instance.transform.Find("Props_IP_Artifact_ViewModel/artifact_geo");
-                if (armParent == null)
+                if ((__instance as DreamLanternItem)._lanternType == DreamLanternType.Nonfunctioning)
                 {
-                    armParent = __instance.transform.Find("ViewModel/Props_IP_DreamLanternItem_Malfunctioning (1)/PrototypeArtifact_2");
-                    if (armParent == null)
-                    {
-                        armParent = __instance.transform.Find("Props_IP_DreamLanternItem_Nonfunctioning/PrototypeArtifact");
-                        if (armParent == null)
-                        {
-                            ModMain.Instance.Log("Can't find ViewmodelArm parent for " + __instance.name);
-                            return;
-                        }
-
-                        armTransform = ArmTransform.DreamLanternPrototype;
-                        armShader = ArmShader.Standard;
-                        NewViewmodelArm(armParent, s_armTransforms[(int)armTransform], armShader, __instance);
-                    }
-                    else
-                    {
-                        armTransform = ArmTransform.DreamLanternPrototype2;
-                        armShader = ArmShader.Viewmodel;
-                        NewViewmodelArm(armParent, s_armTransforms[(int)armTransform], armShader, __instance);
-                    }
+                    NewViewmodelArm(__instance.transform, ArmTransform.DreamLanternNonfunctioning, ArmShader.Standard, __instance);
                 }
                 else
                 {
-                    armTransform = ArmTransform.DreamLantern;
-                    armShader = ArmShader.Viewmodel;
-                    NewViewmodelArm(armParent, s_armTransforms[(int)armTransform], armShader, __instance);
+                    NewViewmodelArm(__instance.transform, ArmTransform.DreamLantern, ArmShader.Viewmodel, __instance);
                 }
                 break;
             case ItemType.VisionTorch:
-                armParent = __instance.transform.Find("Prefab_IP_VisionTorchProjector/Props_IP_ScannerStaff/Scannerstaff_geo");
-                if (armParent == null)
-                {
-                    ModMain.Instance.Log("Can't find ViewmodelArm parent for " + __instance.name);
-                    return;
-                }
-
-                armTransform = ArmTransform.VisionTorch;
-                armShader = ArmShader.Standard;
-                NewViewmodelArm(armParent, s_armTransforms[(int)armTransform], armShader, __instance);
+                NewViewmodelArm(__instance.transform, ArmTransform.VisionTorch, ArmShader.Standard, __instance);
                 break;
         }
     }
