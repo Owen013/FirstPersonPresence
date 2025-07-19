@@ -10,13 +10,13 @@ public class ImmersionAPI
         return AnimSpeedController.Instance.AnimSpeed;
     }
 
-    public GameObject NewViewmodelArm(PlayerTool playerTool, (Vector3 position, Quaternion rotation, float scale) armTransform, int armShader = 0)
+    public GameObject NewViewmodelArm(PlayerTool playerTool, Vector3 localPos, Quaternion localRot, Vector3 localScale, int armShader = 0)
     {
-        return ViewmodelArm.NewViewmodelArm(playerTool, armTransform, (ViewmodelArm.ArmShader)armShader).gameObject;
+        return ViewmodelArm.NewViewmodelArm(playerTool, localPos, localRot, localScale, (ViewmodelArm.ArmShader)armShader).gameObject;
     }
 
-    public GameObject NewViewmodelArm(OWItem owItem, (Vector3 position, Quaternion rotation, float scale) armTransform, int armShader = 0)
+    public GameObject NewViewmodelArm(OWItem owItem, Vector3 localPos, Quaternion localRot, Vector3 localScale, int armShader = 0)
     {
-        return ViewmodelArm.NewViewmodelArm(owItem, armTransform, (ViewmodelArm.ArmShader)armShader).gameObject;
+        return ViewmodelArm.NewViewmodelArm(owItem, localPos, localRot, localScale, (ViewmodelArm.ArmShader)armShader).gameObject;
     }
 }
