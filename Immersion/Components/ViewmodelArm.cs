@@ -14,17 +14,15 @@ public class ViewmodelArm : MonoBehaviour
         ViewmodelCutoff
     }
 
-    private static GameObject s_playerRightArmNoSuit;
-
-    private static GameObject s_playerRightArmSuit;
-
-    private static GameObject s_playerLeftArmNoSuit;
-
-    private static GameObject s_playerLeftArmSuit;
-
-    private static bool s_isPlayerArmRefsInitialized;
-
     private static Shader[] s_armShaders;
+
+    private GameObject _playerRightArmNoSuit;
+
+    private GameObject _playerRightArmSuit;
+
+    private GameObject _playerLeftArmNoSuit;
+
+    private GameObject _playerLeftArmSuit;
 
     private GameObject _viewmodelArmNoSuit;
 
@@ -98,17 +96,12 @@ public class ViewmodelArm : MonoBehaviour
 
     private void Awake()
     {
-        if (!s_isPlayerArmRefsInitialized)
-        {
-            // grab references to the player's real arms
-            Transform playerTransform = Locator.GetPlayerController().transform;
-            s_playerRightArmNoSuit = playerTransform.Find("Traveller_HEA_Player_v2/player_mesh_noSuit:Traveller_HEA_Player/player_mesh_noSuit:Player_RightArm").gameObject;
-            s_playerRightArmSuit = playerTransform.Find("Traveller_HEA_Player_v2/Traveller_Mesh_v01:Traveller_Geo/Traveller_Mesh_v01:PlayerSuit_RightArm").gameObject;
-            s_playerLeftArmNoSuit = playerTransform.Find("Traveller_HEA_Player_v2/player_mesh_noSuit:Traveller_HEA_Player/player_mesh_noSuit:Player_LeftArm").gameObject;
-            s_playerLeftArmSuit = playerTransform.Find("Traveller_HEA_Player_v2/Traveller_Mesh_v01:Traveller_Geo/Traveller_Mesh_v01:PlayerSuit_LeftArm").gameObject;
-
-            s_isPlayerArmRefsInitialized = true;
-        }
+        // grab references to the player's real arms
+        Transform playerTransform = Locator.GetPlayerController().transform;
+        _playerRightArmNoSuit = playerTransform.Find("Traveller_HEA_Player_v2/player_mesh_noSuit:Traveller_HEA_Player/player_mesh_noSuit:Player_RightArm").gameObject;
+        _playerRightArmSuit = playerTransform.Find("Traveller_HEA_Player_v2/Traveller_Mesh_v01:Traveller_Geo/Traveller_Mesh_v01:PlayerSuit_RightArm").gameObject;
+        _playerLeftArmNoSuit = playerTransform.Find("Traveller_HEA_Player_v2/player_mesh_noSuit:Traveller_HEA_Player/player_mesh_noSuit:Player_LeftArm").gameObject;
+        _playerLeftArmSuit = playerTransform.Find("Traveller_HEA_Player_v2/Traveller_Mesh_v01:Traveller_Geo/Traveller_Mesh_v01:PlayerSuit_LeftArm").gameObject;
 
         // copy nosuit arm from marshmallow stick
         _viewmodelArmNoSuit = Instantiate(GameObject.Find("Player_Body/RoastingSystem/Stick_Root/Stick_Pivot/Stick_Tip/Props_HEA_RoastingStick/RoastingStick_Arm_NoSuit"));
@@ -159,14 +152,14 @@ public class ViewmodelArm : MonoBehaviour
         // if lefty mode, use the clothing of the left arm for the viewmodel arm UNLESS using translator, which is held with right hand no matter what
         if (ModMain.Instance.IsLeftyModeEnabled && Locator.GetToolModeSwapper()._currentToolMode != ToolMode.Translator)
         {
-            _viewmodelArmNoSuit.SetActive(s_playerLeftArmNoSuit.activeInHierarchy);
-            _viewmodelArmSuit.SetActive(s_playerLeftArmSuit.activeInHierarchy);
+            _viewmodelArmNoSuit.SetActive(_playerLeftArmNoSuit.activeInHierarchy);
+            _viewmodelArmSuit.SetActive(_playerLeftArmSuit.activeInHierarchy);
         }
         // otherwise, use right arm clothing (default)
         else
         {
-            _viewmodelArmNoSuit.SetActive(s_playerRightArmNoSuit.activeInHierarchy);
-            _viewmodelArmSuit.SetActive(s_playerRightArmSuit.activeInHierarchy);
+            _viewmodelArmNoSuit.SetActive(_playerRightArmNoSuit.activeInHierarchy);
+            _viewmodelArmSuit.SetActive(_playerRightArmSuit.activeInHierarchy);
         }
     }
 

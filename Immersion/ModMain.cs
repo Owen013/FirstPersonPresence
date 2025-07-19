@@ -113,8 +113,8 @@ public class ModMain : ModBehaviour
 
     private void Awake()
     {
-        Instance = this;
         Harmony.CreateAndPatchAll(Assembly.GetExecutingAssembly());
+        Instance = this;
     }
 
     private void Start()
