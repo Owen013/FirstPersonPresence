@@ -245,15 +245,15 @@ public class ViewmodelArm : MonoBehaviour
                 }
                 break;
             case ItemType.ConversationStone:
-                switch(__instance.name)
+                switch((__instance as NomaiConversationStone)._word)
                 {
-                    case "WordStone_Explain":
-                        NewViewmodelArm(__instance, new Vector3(0.2499f, -0.0963f, -0.1823f), Quaternion.Euler(0f, 0f, 323.7013f), 0.6f * Vector3.one);
-                        break;
-                    case "WordStone_Identify":
+                    case NomaiWord.Identify:
                         NewViewmodelArm(__instance, new Vector3(0.2427f, -0.1023f, -0.1823f), Quaternion.Euler(0f, 0f, 323.7013f), 0.6f * Vector3.one);
                         break;
-                    case "WordStone_Eye":
+                    case NomaiWord.Explain:
+                        NewViewmodelArm(__instance, new Vector3(0.2499f, -0.0963f, -0.1823f), Quaternion.Euler(0f, 0f, 323.7013f), 0.6f * Vector3.one);
+                        break;
+                    case NomaiWord.Eye:
                         NewViewmodelArm(__instance, new Vector3(0.1733f, - 0.1126f, - 0.1823f), Quaternion.Euler(0f, 0f, 323.7013f), 0.6f * Vector3.one);
                         break;
                     default:
@@ -265,10 +265,10 @@ public class ViewmodelArm : MonoBehaviour
                 switch ((__instance as WarpCoreItem)._warpCoreType)
                 {
                     case WarpCoreType.Vessel:
-                        NewViewmodelArm(__instance, new Vector3(0.2098f, -0.3825f, -0.0593f), Quaternion.Euler(8.5636f, 336.946f, 331.5615f), 0.9f * Vector3.one);
+                        NewViewmodelArm(__instance, new Vector3(0.1801f, -0.1364f, -0.003f), Quaternion.Euler(20.1261f, 336.8441f, 346.7959f), 0.9f * Vector3.one);
                         break;
                     case WarpCoreType.VesselBroken:
-                        NewViewmodelArm(__instance, new Vector3(0.2098f, -0.3825f, -0.0593f), Quaternion.Euler(8.5636f, 336.946f, 331.5615f), 0.9f * Vector3.one);
+                        NewViewmodelArm(__instance, new Vector3(0.1801f, -0.1364f, -0.003f), Quaternion.Euler(20.1261f, 336.8441f, 346.7959f), 0.9f * Vector3.one);
                         break;
                     default:
                         NewViewmodelArm(__instance, new Vector3(0.0285f, -0.1719f, -0.2263f), Quaternion.Euler(323.3099f, 77.0467f, 330.0953f), Vector3.one);
