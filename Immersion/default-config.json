@@ -140,6 +140,12 @@
     "Other": {
       "type": "separator"
     },
+    "TweakItemPos": {
+      "title": "Tweak Held Item Positions",
+      "tooltip": "Tweaks the position of some held items to prevent visual bugs such as items clipping through the camera. Recommended: Enabled",
+      "type": "toggle",
+      "value": true
+    },
     "UseJumpAnim": {
       "title": "Use Jumping Animation",
       "tooltip": "Makes the camera shake a bit when you jump, based on the view/tool bob amounts you set above. Recommended: Enabled",

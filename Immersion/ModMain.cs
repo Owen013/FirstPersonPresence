@@ -52,6 +52,8 @@ public class ModMain : ModBehaviour
 
     public float DynamicToolPosZAmount { get; private set; }
 
+    public bool IsTweakItemPosEnabled { get; private set; }
+
     public bool IsJumpAnimEnabled { get; private set; }
 
     public bool IsFallAnimEnabled { get; private set; }
@@ -101,6 +103,7 @@ public class ModMain : ModBehaviour
         DynamicToolPosYAmount = config.GetSettingsValue<float>("DynamicToolPosYAmount");
         DynamicToolPosZAmount = config.GetSettingsValue<float>("DynamicToolPosZAmount");
 
+        IsTweakItemPosEnabled = config.GetSettingsValue<bool>("TweakItemPos");
         IsJumpAnimEnabled = config.GetSettingsValue<bool>("UseJumpAnim");
         IsFallAnimEnabled = config.GetSettingsValue<bool>("UseFallAnim");
         IsLandingAnimEnabled = config.GetSettingsValue<bool>("UseLandingAnim");

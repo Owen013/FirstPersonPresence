@@ -237,7 +237,7 @@ public class ViewbobManager : MonoBehaviour
         float xSwayMultiplier = (Mathf.Cos(1f / 90f * Mathf.PI * degreesY) + 1f) / 2f;
 
         _mainToolRoot.transform.localPosition += ModMain.Instance.ToolSwayTranslateAmount * new Vector3(0, _toolSway.y, localZOffset);
-        _mainToolRoot.transform.localRotation *= Quaternion.Euler(ModMain.Instance.ToolSwayRotateAmount * new Vector3(-_toolSway.y, 0f, 0f));
+        _mainToolRoot.transform.localRotation *= Quaternion.Euler(ModMain.Instance.ToolSwayRotateAmount * _toolSway.y * Vector3.left);
         _mainToolRoot.transform.Translate(ModMain.Instance.ToolSwayTranslateAmount * xSwayMultiplier * (ModMain.Instance.SmolHatchlingAPI?.GetPlayerScale() ?? 1f) * new Vector3(_toolSway.x, 0f, globalZOffset), _characterController.transform);
         _mainToolRoot.transform.RotateAround(_characterController.transform.position, _characterController._owRigidbody.GetLocalUpDirection(), _toolSway.x * ModMain.Instance.ToolSwayRotateAmount);
     }
