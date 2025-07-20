@@ -1,4 +1,5 @@
 ﻿using HarmonyLib;
+using Immersion.Components;
 using Immersion.Interfaces;
 using OWML.Common;
 using OWML.ModHelper;
@@ -64,8 +65,6 @@ public class ModMain : ModBehaviour
 
     public bool IsHideStowedItemsEnabled { get; private set; }
 
-    public bool IsLeftyModeEnabled { get; private set; }
-
     public delegate void ConfigureEvent();
 
     public event ConfigureEvent OnConfigure;
@@ -109,7 +108,6 @@ public class ModMain : ModBehaviour
         IsLandingAnimEnabled = config.GetSettingsValue<bool>("UseLandingAnim");
         IsScoutAnimEnabled = config.GetSettingsValue<bool>("UseScoutAnim");
         IsHideStowedItemsEnabled = config.GetSettingsValue<bool>("HideStowedItems");
-        IsLeftyModeEnabled = config.GetSettingsValue<bool>("UseLeftyMode");
 
         OnConfigure?.Invoke();
     }
@@ -124,6 +122,17 @@ public class ModMain : ModBehaviour
     {
         SmolHatchlingAPI = ModHelper.Interaction.TryGetModApi<ISmolHatchling>("Owen013.TeenyHatchling");
         IsHikersModInstalled = ModHelper.Interaction.ModExists("Owen013.MovementMod");
+
+        LoadManager.OnCompleteSceneLoad += (_, _) =>
+        {
+            ModHelper.Events.Unity.FireOnNextUpdate(() =>
+            {
+                var player = Locator.GetPlayerBody();
+                if (player == null) return;
+                player.GetComponentInChildren<PlayerCameraController>().gameObject.AddComponent<ViewbobController>();
+                player.GetComponentInChildren<PlayerAnimController>().gameObject.AddComponent<AnimSpeedController>();
+            });
+        };
 
         ModHelper.Console.WriteLine($"Immersion is ready to go!", MessageType.Success);
     }

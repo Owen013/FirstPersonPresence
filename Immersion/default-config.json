@@ -175,12 +175,6 @@
       "tooltip": "Makes the item you're holding move fully offscreen when it goes into the stowed position (i.e. if you start using another tool or roasting a marshmallow while holding an item). Recommended: Enabled",
       "type": "toggle",
       "value": true
-    },
-    "UseLeftyMode": {
-      "title": "Enable Lefty Mode",
-      "tooltip": "Makes you hold items/tools in your left hand!",
-      "type": "toggle",
-      "value": false
     }
   }
 }

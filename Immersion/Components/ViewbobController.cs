@@ -1,10 +1,8 @@
-﻿using HarmonyLib;
-using UnityEngine;
+﻿using UnityEngine;
 
 namespace Immersion.Components;
 
-[HarmonyPatch]
-public class ViewbobManager : MonoBehaviour
+public class ViewbobController : MonoBehaviour
 {
     private PlayerCameraController _cameraController;
 
@@ -83,25 +81,6 @@ public class ViewbobManager : MonoBehaviour
                 _lastScoutLaunchTime = Time.time;
             }
         };
-        ModMain.Instance.OnConfigure += () =>
-        {
-            if (ModMain.Instance.IsLeftyModeEnabled)
-            {
-                _mainToolRoot.transform.localScale = new Vector3(-1f, 1f, 1f);
-                _probeLauncherRoot.transform.localScale = new Vector3(-1f, 1f, 1f);
-            }
-            else
-            {
-                _mainToolRoot.transform.localScale = Vector3.one;
-                _probeLauncherRoot.transform.localScale = Vector3.one;
-            }
-        };
-
-        if (ModMain.Instance.IsLeftyModeEnabled)
-        {
-            _mainToolRoot.transform.localScale = new Vector3(-1f, 1f, 1f);
-            _probeLauncherRoot.transform.localScale = new Vector3(-1f, 1f, 1f);
-        }
     }
 
     private void LateUpdate()
@@ -115,7 +94,7 @@ public class ViewbobManager : MonoBehaviour
         Vector3 toolBob = Vector3.zero;
         if (ModMain.Instance.IsViewBobEnabled || ModMain.Instance.IsToolBobEnabled)
         {
-            _viewBobTime += 1.033333f * _animController._animator.speed * Time.deltaTime;
+            _viewBobTime += _animController._animator.speed * Time.deltaTime;
 
             if (!_characterController.IsGrounded() && !_characterController._isMovementLocked)
             {
@@ -144,7 +123,7 @@ public class ViewbobManager : MonoBehaviour
             if (ModMain.Instance.IsToolBobEnabled)
             {
                 toolBob = _viewBobIntensity * new Vector3(Mathf.Sin(2 * Mathf.PI * _viewBobTime + 0.25f * Mathf.PI), Mathf.Cos(4 * Mathf.PI * _viewBobTime));
-                toolBob.z = toolBob.x * (ModMain.Instance.IsLeftyModeEnabled ? 1f : -1f);
+                toolBob.z = toolBob.x;
                 _mainToolRoot.transform.localPosition = new Vector3(0f, toolBob.y * ModMain.Instance.ToolBobYAmount);
                 _mainToolRoot.transform.localRotation = Quaternion.Euler(new Vector3(toolBob.y * ModMain.Instance.ToolBobPitchAmount, 0f, -toolBob.x * ModMain.Instance.ToolBobRollAmount));
                 _mainToolRoot.transform.Translate((ModMain.Instance.SmolHatchlingAPI?.GetPlayerScale() ?? 1f) * new Vector3(toolBob.x * ModMain.Instance.ToolBobXAmount, 0f, toolBob.z * ModMain.Instance.ToolBobZAmount), _characterController.transform);
@@ -267,15 +246,8 @@ public class ViewbobManager : MonoBehaviour
         float dampTime = targetRecoil > _scoutRecoil ? 0.05f : 0.1f;
         _scoutRecoil = Mathf.SmoothDamp(_scoutRecoil, targetRecoil, ref _scoutRecoilVelocity, dampTime);
 
-        RotateCamera(new Vector3(-5f, 0f, ModMain.Instance.IsLeftyModeEnabled ? 5f : -5f) * _scoutRecoil);
-        _probeLauncherRoot.transform.localPosition += new Vector3(ModMain.Instance.IsLeftyModeEnabled ? -0.25f : 0.25f, -0.25f, -0.5f) * _scoutRecoil;
-        _probeLauncherRoot.transform.localRotation *= Quaternion.Euler(new Vector3(-15f, 0f, ModMain.Instance.IsLeftyModeEnabled ? 15f : -15f) * _scoutRecoil);
-    }
-
-    [HarmonyPostfix]
-    [HarmonyPatch(typeof(PlayerCameraController), nameof(PlayerCameraController.Start))]
-    private static void AddToPlayerCamera(PlayerCameraController __instance)
-    {
-        __instance.gameObject.AddComponent<ViewbobManager>();
+        RotateCamera(new Vector3(-5f, 0f, -5f) * _scoutRecoil);
+        _probeLauncherRoot.transform.localPosition += new Vector3(0.25f, -0.25f, -0.5f) * _scoutRecoil;
+        _probeLauncherRoot.transform.localRotation *= Quaternion.Euler(new Vector3(-15f, 0f, -15f) * _scoutRecoil);
     }
 }

@@ -10,17 +10,15 @@ public class AnimSpeedController : MonoBehaviour
 
     public float AnimSpeed { get; private set; }
 
-    private Animator _animator;
-
     private PlayerCharacterController _characterController;
 
-    private GameObject[] _leftArmObjects;
+    private Animator _animator;
 
     private void Awake()
     {
         Instance = this;
-        _animator = GetComponent<Animator>();
         _characterController = Locator.GetPlayerController();
+        _animator = GetComponent<Animator>();
     }
 
     private void LateUpdate()
@@ -42,51 +40,6 @@ public class AnimSpeedController : MonoBehaviour
                 AnimSpeed *= ModMain.Instance.SmolHatchlingAPI.GetPlayerAnimSpeed();
             }
             _animator.speed = AnimSpeed;
-        }
-    }
-
-    [HarmonyPostfix]
-    [HarmonyPatch(typeof(PlayerAnimController), nameof(PlayerAnimController.Start))]
-    private static void AddToPlayerAnimator(PlayerAnimController __instance)
-    {
-        __instance.gameObject.AddComponent<AnimSpeedController>();
-    }
-
-    [HarmonyPostfix]
-    [HarmonyPatch(typeof(PlayerAnimController), nameof(PlayerAnimController.LateUpdate))]
-    private static void OnAnimControllerLateUpdate(PlayerAnimController __instance)
-    {
-        Instance._leftArmObjects ??=
-        [
-            __instance.transform.Find("player_mesh_noSuit:Traveller_HEA_Player/player_mesh_noSuit:Player_LeftArm").gameObject,
-            __instance.transform.Find("Traveller_Mesh_v01:Traveller_Geo/Traveller_Mesh_v01:PlayerSuit_LeftArm").gameObject
-        ];
-
-        for (int i = 0; i < __instance._rightArmObjects.Length; i++)
-        {
-            __instance._rightArmObjects[i].layer = __instance._defaultLayer;
-        }
-
-        for (int i = 0; i < Instance._leftArmObjects.Length; i++)
-        {
-            Instance._leftArmObjects[i].layer = __instance._defaultLayer;
-        }
-
-        ToolMode toolMode = Locator.GetToolModeSwapper().GetToolMode();
-        __instance._rightArmHidden = toolMode > ToolMode.None;
-        if (ModMain.Instance.IsLeftyModeEnabled && toolMode != ToolMode.Translator)
-        {
-            for (int i = 0; i < __instance._rightArmObjects.Length; i++)
-            {
-                Instance._leftArmObjects[i].layer = __instance._rightArmHidden ? __instance._probeOnlyLayer : __instance._defaultLayer;
-            }
-        }
-        else
-        {
-            for (int i = 0; i < __instance._rightArmObjects.Length; i++)
-            {
-                __instance._rightArmObjects[i].layer = __instance._rightArmHidden ? __instance._probeOnlyLayer : __instance._defaultLayer;
-            }
         }
     }
 }

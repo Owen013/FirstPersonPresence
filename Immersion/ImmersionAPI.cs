@@ -7,6 +7,7 @@ public class ImmersionAPI
 {
     public float GetAnimSpeed()
     {
+        if (AnimSpeedController.Instance == null) return 1f;
         return AnimSpeedController.Instance.AnimSpeed;
     }
 
