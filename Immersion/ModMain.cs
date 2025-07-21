@@ -131,6 +131,7 @@ public class ModMain : ModBehaviour
                 if (player == null) return;
                 player.GetComponentInChildren<PlayerCameraController>().gameObject.AddComponent<ViewbobController>();
                 player.GetComponentInChildren<PlayerAnimController>().gameObject.AddComponent<AnimSpeedController>();
+                ViewmodelArm.NewViewmodelArm(player.GetComponentInChildren<PlayerCameraController>().transform);
             });
         };
 
