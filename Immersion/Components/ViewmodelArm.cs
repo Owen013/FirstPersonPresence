@@ -1,5 +1,4 @@
 ﻿using HarmonyLib;
-using OWML.Common;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -25,29 +24,7 @@ public class ViewmodelArm : MonoBehaviour
 
     private GameObject _viewmodelArmSuit;
 
-    private static void SetUpArmModel(GameObject arm, Transform rootBone)
-    {
-        // destroys everything but the arm
-        var oldParent = arm.transform.parent;
-        arm.transform.parent = arm.transform.parent.parent;
-        Destroy(oldParent.gameObject);
-
-        arm.layer = 27;
-        var renderer = arm.GetComponent<SkinnedMeshRenderer>();
-
-        // delete unneeded bones
-        renderer.rootBone = rootBone;
-        var newBones = new List<Transform>();
-        foreach (Transform bone in renderer.bones)
-        {
-            if (bone != null)
-            {
-                newBones.Add(bone);
-            }
-        }
-
-        renderer.bones = newBones.ToArray();
-    }
+    private Transform[] _bones;
 
     public static ViewmodelArm NewViewmodelArm(Transform parent)
     {
@@ -62,6 +39,31 @@ public class ViewmodelArm : MonoBehaviour
         newRootBone.parent = playerModelClone.transform;
         Destroy(playerModelClone.transform.Find("Traveller_Rig_v01:Traveller_Trajectory_Jnt").gameObject);
 
+        void SetUpArmModel(GameObject arm, Transform rootBone)
+        {
+            // destroys everything but the arm
+            var oldParent = arm.transform.parent;
+            arm.transform.parent = arm.transform.parent.parent;
+            Destroy(oldParent.gameObject);
+
+            arm.layer = 27;
+            var renderer = arm.GetComponent<SkinnedMeshRenderer>();
+            renderer.updateWhenOffscreen = true;
+
+            // delete unneeded bones
+            renderer.rootBone = rootBone;
+            var newBones = new List<Transform>();
+            foreach (Transform bone in renderer.bones)
+            {
+                if (bone != null)
+                {
+                    newBones.Add(bone);
+                }
+            }
+
+            renderer.bones = newBones.ToArray();
+        }
+
         SetUpArmModel(playerModelClone.transform.Find("player_mesh_noSuit:Traveller_HEA_Player/player_mesh_noSuit:Player_RightArm").gameObject, newRootBone);
         SetUpArmModel(playerModelClone.transform.Find("Traveller_Mesh_v01:Traveller_Geo/Traveller_Mesh_v01:PlayerSuit_RightArm").gameObject, newRootBone);
 
@@ -69,8 +71,14 @@ public class ViewmodelArm : MonoBehaviour
         playerModelClone.transform.parent = parent;
         playerModelClone.transform.localPosition = Vector3.zero;
         playerModelClone.transform.localRotation = Quaternion.identity;
+        newRootBone.localPosition = new Vector3(-0.2741f, -6.3146f, -0.6957f);
 
-        return playerModelClone.AddComponent<ViewmodelArm>();
+        var viewmodelArm = playerModelClone.AddComponent<ViewmodelArm>();
+        viewmodelArm._viewmodelArmNoSuit = playerModelClone.transform.Find("player_mesh_noSuit:Player_RightArm").gameObject;
+        viewmodelArm._viewmodelArmSuit = playerModelClone.transform.Find("Traveller_Mesh_v01:PlayerSuit_RightArm").gameObject;
+        viewmodelArm._bones = playerModelClone.GetComponentInChildren<SkinnedMeshRenderer>().bones;
+
+        return viewmodelArm;
     }
 
     private void SetArmShader(ArmShader armShader)
@@ -90,15 +98,20 @@ public class ViewmodelArm : MonoBehaviour
         _viewmodelArmSuit.GetComponent<SkinnedMeshRenderer>().material.shader = s_armShaders[(int)armShader];
     }
 
+    private void OutputBoneTransforms()
+    {
+        foreach (var bone in _bones)
+        {
+            ModMain.Instance.ModHelper.Console.WriteLine($"{bone.name}: localPosition = {bone.localPosition}, localRotation = {bone.localRotation}");
+        }
+    }
+
     private void Awake()
     {
 
         Transform playerTransform = Locator.GetPlayerController().transform;
         _playerRightArmNoSuit = playerTransform.Find("Traveller_HEA_Player_v2/player_mesh_noSuit:Traveller_HEA_Player/player_mesh_noSuit:Player_RightArm").gameObject;
         _playerRightArmSuit = playerTransform.Find("Traveller_HEA_Player_v2/Traveller_Mesh_v01:Traveller_Geo/Traveller_Mesh_v01:PlayerSuit_RightArm").gameObject;
-
-        _viewmodelArmNoSuit = transform.Find("player_mesh_noSuit:Player_RightArm").gameObject;
-        _viewmodelArmSuit = transform.Find("Traveller_Mesh_v01:PlayerSuit_RightArm").gameObject;
     }
 
     private void LateUpdate()
