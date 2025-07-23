@@ -129,9 +129,10 @@ public class ModMain : ModBehaviour
             {
                 var player = Locator.GetPlayerBody();
                 if (player == null) return;
-                player.GetComponentInChildren<PlayerCameraController>().gameObject.AddComponent<ViewbobController>();
                 player.GetComponentInChildren<PlayerAnimController>().gameObject.AddComponent<AnimSpeedController>();
-                ViewmodelArm.NewViewmodelArm(player.GetComponentInChildren<PlayerCameraController>().transform);
+                Locator.GetPlayerCameraController().gameObject.AddComponent<ViewbobController>();
+
+                ViewmodelArm.OnSceneLoad();
             });
         };
 
