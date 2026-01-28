@@ -43,13 +43,9 @@ public class ViewmodelArm : MonoBehaviour
     {
         Transform armParent;
         if (playerTool != null)
-        {
             armParent = playerTool.transform;
-        }
         else
-        {
             armParent = owItem.transform;
-        }
 
         // replace viewmodel arm if it already exists
         var existingArm = armParent.Find("ViewmodelArm");
@@ -67,9 +63,7 @@ public class ViewmodelArm : MonoBehaviour
         viewmodelArm.SetArmShader(armShader);
 
         if (playerTool != null)
-        {
             viewmodelArm._playerTool = playerTool;
-        }
         else
         {
             viewmodelArm._owItem = owItem;
@@ -139,13 +133,11 @@ public class ViewmodelArm : MonoBehaviour
         }
 
         if (_playerTool != null)
-        {
             if (!_playerTool._isEquipped && !_playerTool._isPuttingAway)
             {
                 gameObject.SetActive(false);
                 return;
             }
-        }
         else if (_owItem != null && Locator.GetToolModeSwapper()._itemCarryTool._heldItem != _owItem)
         {
             gameObject.SetActive(false);
@@ -206,9 +198,7 @@ public class ViewmodelArm : MonoBehaviour
     private static void ItemPickedUp(OWItem __instance)
     {
         if (ModMain.Instance.IsTweakItemPosEnabled && __instance._type == ItemType.ConversationStone)
-        {
             __instance.transform.localPosition = 0.2f * Vector3.forward;
-        }
 
         // don't try to add viewmodel arm if disabled in config or if this item already has one
         if (!ModMain.Instance.IsViewModelHandsEnabled || __instance.transform.Find("ViewmodelArm")) return;
@@ -267,13 +257,9 @@ public class ViewmodelArm : MonoBehaviour
                 break;
             case ItemType.DreamLantern:
                 if ((__instance as DreamLanternItem)._lanternType == DreamLanternType.Nonfunctioning)
-                {
                     NewViewmodelArm(__instance, new Vector3(0.1593f, 0.7578f, -0.144f), Quaternion.Euler(330f, 0f, 90f), 1.2f * Vector3.one);
-                }
                 else
-                {
                     NewViewmodelArm(__instance, new Vector3(0.3205f, 0.6353f, -0.1311f), Quaternion.Euler(330.5013f, 20.7251f, 78.4916f), 1.2f * Vector3.one, ArmShader.Viewmodel);
-                }
                 break;
             case ItemType.VisionTorch:
                 NewViewmodelArm(__instance, new Vector3(-0.0403f, -0.1344f, -0.125f), Quaternion.Euler(345.0329f, 4.0765f, 358.0521f), Vector3.one);

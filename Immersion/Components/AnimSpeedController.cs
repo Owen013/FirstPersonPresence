@@ -24,21 +24,15 @@ public class AnimSpeedController : MonoBehaviour
     private void LateUpdate()
     {
         if (!_characterController.IsGrounded() && _characterController._fluidDetector.InFluidType(FluidVolume.Type.WATER))
-        {
             AnimSpeed = 0.6f;
-        }
         else
-        {
             AnimSpeed = 1f;
-        }
 
         // yield to hikers mod if installed, let it do the anim speed
         if (!ModMain.Instance.IsHikersModInstalled)
         {
             if (ModMain.Instance.SmolHatchlingAPI != null)
-            {
                 AnimSpeed *= ModMain.Instance.SmolHatchlingAPI.GetPlayerAnimSpeed();
-            }
             _animator.speed = AnimSpeed;
         }
     }

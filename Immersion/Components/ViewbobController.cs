@@ -77,9 +77,7 @@ public class ViewbobController : MonoBehaviour
         _characterController.GetComponentInChildren<PlayerProbeLauncher>().OnLaunchProbe += (probe) =>
         {
             if (ModMain.Instance.IsScoutAnimEnabled)
-            {
                 _lastScoutLaunchTime = Time.time;
-            }
         };
     }
 
@@ -94,8 +92,6 @@ public class ViewbobController : MonoBehaviour
         Vector3 toolBob = Vector3.zero;
         if (ModMain.Instance.IsViewBobEnabled || ModMain.Instance.IsToolBobEnabled)
         {
-            _viewBobTime += _animController._animator.speed * Time.deltaTime;
-
             if (!_characterController.IsGrounded() && !_characterController._isMovementLocked)
             {
                 // if in midair, use falling and/or jumping animation
@@ -111,6 +107,7 @@ public class ViewbobController : MonoBehaviour
                 _viewBobIntensity = Mathf.SmoothDamp(_viewBobIntensity, Mathf.Min(walkFraction + landingFraction, 2f), ref _viewBobVelocity, 0.075f);
             }
 
+            _viewBobTime += _animController._animator.speed * Time.deltaTime;
             // camera bob
             if (ModMain.Instance.IsViewBobEnabled)
             {
@@ -131,9 +128,7 @@ public class ViewbobController : MonoBehaviour
         }
 
         if (ModMain.Instance.IsToolSwayEnabled)
-        {
             UpdateToolSway();
-        }
         else
         {
             _toolSway = Vector3.zero;
@@ -141,17 +136,13 @@ public class ViewbobController : MonoBehaviour
         }
 
         if (ModMain.Instance.DynamicToolPosBehavior != "Disabled")
-        {
             _mainToolRoot.transform.localPosition += GetDynamicToolPos();
-        }
 
         // Probe Launcher position offset needs to be 3x bigger because the tools in it are further away and appear to move less
         _probeLauncherRoot.transform.localPosition = 3f * _mainToolRoot.transform.localPosition;
         _probeLauncherRoot.transform.localRotation = _mainToolRoot.transform.localRotation;
         if (ModMain.Instance.IsScoutAnimEnabled)
-        {
             ApplyScoutAnim();
-        }
 
         // Translator offset needs to be 3x bigger, also needs to convert forward bob into additional sideways bob
         _translatorRoot.transform.localPosition = 3f * _mainToolRoot.transform.localPosition;
@@ -162,9 +153,7 @@ public class ViewbobController : MonoBehaviour
         {
             ItemTool itemTool = Locator.GetToolModeSwapper()._itemCarryTool;
             if (!itemTool.IsEquipped() && !itemTool.IsPuttingAway())
-            {
                 itemTool.transform.localRotation = Quaternion.RotateTowards(itemTool.transform.localRotation, Quaternion.Euler(180f, 0f, 0f), 180f * Time.deltaTime);
-            }
         }
     }
 
@@ -179,7 +168,6 @@ public class ViewbobController : MonoBehaviour
     {
         Vector2 lookDelta = Vector2.zero;
         float degreesY = _cameraController.GetDegreesY();
-
         // get look delta
         if (!(PlayerState.InZeroG() && PlayerState.IsWearingSuit()) && OWInput.IsInputMode(InputMode.Character | InputMode.PatchingSuit))
         {
@@ -191,21 +179,15 @@ public class ViewbobController : MonoBehaviour
             lookDelta *= isAlarmWakingPlayer ? PlayerCameraController.LOOK_RATE * PlayerCameraController.ZOOM_SCALAR : PlayerCameraController.LOOK_RATE;
 
             if (Time.timeScale > 1f)
-            {
                 lookDelta /= Time.timeScale;
-            }
 
             // cancel out horizontal sway if player is patching suit, as they can't turn left/right while doing so
             if (OWInput.IsInputMode(InputMode.PatchingSuit))
-            {
                 lookDelta.x = 0f;
-            }
 
             // cancel out vertical sway if the player can't turn anymore in that direction
             if ((lookDelta.y > 0f && degreesY >= PlayerCameraController._maxDegreesYNormal) || (lookDelta.y < 0f && degreesY <= PlayerCameraController._minDegreesYNormal))
-            {
                 lookDelta.y = 0f;
-            }
         }
 
         // decay already existing tool sway and then add new tool sway
@@ -226,15 +208,11 @@ public class ViewbobController : MonoBehaviour
         float degreesY = _cameraController.GetDegreesY();
         Vector3 dynamicToolPos;
         if (ModMain.Instance.DynamicToolPosBehavior == "Legacy")
-        {
             // legacy behavior moves tool closer when looking up and further when looking down
             dynamicToolPos = new Vector3(0f, -degreesY / 45f * ModMain.Instance.DynamicToolPosYAmount, -degreesY / 90f * ModMain.Instance.DynamicToolPosZAmount);
-        }
         else
-        {
             // new behavior moves tool closer to camera the more you are looking up/down
             dynamicToolPos = new Vector3(0f, -degreesY / 45f * ModMain.Instance.DynamicToolPosYAmount, (Mathf.Cos(degreesY * Mathf.PI / 90f) - 1f) * ModMain.Instance.DynamicToolPosZAmount);
-        }
 
         return dynamicToolPos;
     }
