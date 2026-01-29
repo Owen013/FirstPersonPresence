@@ -126,7 +126,7 @@ public class ViewmodelArm : MonoBehaviour
 
     private void LateUpdate()
     {
-        if (!ModMain.Instance.IsViewModelHandsEnabled)
+        if (!ModMain.Instance.EnableViewmodelHands)
         {
             gameObject.SetActive(false);
             return;
@@ -152,7 +152,7 @@ public class ViewmodelArm : MonoBehaviour
     [HarmonyPatch(typeof(Signalscope), nameof(Signalscope.EquipTool))]
     private static void SignalscopeEquipped(Signalscope __instance)
     {
-        if (!ModMain.Instance.IsViewModelHandsEnabled) return;
+        if (!ModMain.Instance.EnableViewmodelHands) return;
 
         if (__instance.transform.Find("ViewmodelArm"))
         {
@@ -167,7 +167,7 @@ public class ViewmodelArm : MonoBehaviour
     [HarmonyPatch(typeof(ProbeLauncher), nameof(ProbeLauncher.EquipTool))]
     private static void ProbeLauncherEquipped(ProbeLauncher __instance)
     {
-        if (!ModMain.Instance.IsViewModelHandsEnabled) return;
+        if (!ModMain.Instance.EnableViewmodelHands) return;
 
         if (__instance.transform.Find("ViewmodelArm"))
         {
@@ -182,7 +182,7 @@ public class ViewmodelArm : MonoBehaviour
     [HarmonyPatch(typeof(NomaiTranslator), nameof(NomaiTranslator.EquipTool))]
     private static void TranslatorEquipped(NomaiTranslator __instance)
     {
-        if (!ModMain.Instance.IsViewModelHandsEnabled) return;
+        if (!ModMain.Instance.EnableViewmodelHands) return;
 
         if (__instance.transform.Find("ViewmodelArm"))
         {
@@ -197,11 +197,11 @@ public class ViewmodelArm : MonoBehaviour
     [HarmonyPatch(typeof(OWItem), nameof(OWItem.PickUpItem))]
     private static void ItemPickedUp(OWItem __instance)
     {
-        if (ModMain.Instance.IsTweakItemPosEnabled && __instance._type == ItemType.ConversationStone)
+        if (ModMain.Instance.TweakItemPos && __instance._type == ItemType.ConversationStone)
             __instance.transform.localPosition = 0.2f * Vector3.forward;
 
         // don't try to add viewmodel arm if disabled in config or if this item already has one
-        if (!ModMain.Instance.IsViewModelHandsEnabled || __instance.transform.Find("ViewmodelArm")) return;
+        if (!ModMain.Instance.EnableViewmodelHands || __instance.transform.Find("ViewmodelArm")) return;
 
         switch (__instance._type)
         {

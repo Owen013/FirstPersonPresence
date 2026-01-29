@@ -15,39 +15,17 @@
     "View Bobbing": {
       "type": "separator"
     },
-    "EnableViewBob": {
-      "title": "Enable View Bobbing",
+    "EnableCameraBob": {
+      "title": "Enable Camera Bobbing",
       "tooltip": "Makes the camera bob while you're moving.",
       "type": "toggle",
       "value": true
     },
-    "ViewBobXAmount": {
-      "title": "Horizonal Distance",
-      "tooltip": "How much the camera bobs from side to side, in units. Recommended: 0.04",
+    "CameraBobStrength": {
+      "title": "Camera Bob Strength",
+      "tooltip": "The scale of the camera's bobbing.",
       "type": "number",
-      "value": 0.04
-    },
-    "ViewBobYAmount": {
-      "title": "Vertical Distance",
-      "tooltip": "How much the camera bobs up and down, in units. Recommended: 0.04",
-      "type": "number",
-      "value": 0.04
-    },
-    "ViewBobRollAmount": {
-      "title": "Roll Amount",
-      "tooltip": "How much the camera should roll from side to side while moving, in degrees. Recommended: 0",
-      "type": "number",
-      "value": 0
-    },
-    "ViewBobPitchAmount": {
-      "title": "Pitch Amount",
-      "tooltip": "How much the camera should rotate up and down while moving, in degrees. Recommended: 0",
-      "type": "number",
-      "value": 0
-    },
-
-    "Tool Bobbing": {
-      "type": "separator"
+      "value": 1
     },
     "EnableToolBob": {
       "title": "Enable Tool Bobbing",
@@ -55,33 +33,25 @@
       "type": "toggle",
       "value": true
     },
-    "ToolBobXAmount": {
-      "title": "Horizontal Distance",
-      "tooltip": "The distance the tool moves side to side while running, in units. Recommended: 0.02",
+    "ToolBobStrength": {
+      "title": "Tool Bob Strength",
+      "tooltip": "The scale of the tool's bobbing.",
       "type": "number",
-      "value": 0.02
+      "value": 1
     },
-    "ToolBobYAmount": {
-      "title": "Vertical Distance",
-      "tooltip": "The distance the tool moves up and down while running, in units. Recommended: 0.01",
-      "type": "number",
-      "value": 0.01
+
+    "Dynamic Tool Position": {
+      "type": "separator"
     },
-    "ToolBobZAmount": {
-      "title": "Forward Distance",
-      "tooltip": "The distance the tool moves forward and backward while running, in units. Recommended: 0",
-      "type": "number",
-      "value": 0
+    "EnableDynamicToolPos": {
+      "title": "Enable Dynamic Tool Position",
+      "tooltip": "Makes the held tool move based on how far up/down you're looking.",
+      "type": "toggle",
+      "value": true
     },
-    "ToolBobRollAmount": {
-      "title": "Roll Amount",
-      "tooltip": "The angle the tool rolls from side to side while running, in degrees. Recommended: 0",
-      "type": "number",
-      "value": 0
-    },
-    "ToolBobPitchAmount": {
-      "title": "Pitch Amount",
-      "tooltip": "The angle the tool pitches up and down while running, in degrees. Recommended: 1",
+    "DynamicToolPosStrength": {
+      "title": "Dynamic Tool Position Strength",
+      "tooltip": "The scale of the tool's movement.",
       "type": "number",
       "value": 1
     },
@@ -95,49 +65,14 @@
       "type": "toggle",
       "value": true
     },
-    "ToolSwayTranslateAmount": {
-      "title": "Maximum Distance",
-      "tooltip": "The maximum distance the tool can sway, in units. Recommended: 0.1",
+    "ToolSwayStrength": {
+      "title": "Tool Sway Strength",
+      "tooltip": "The scale of the tool's movement.",
       "type": "number",
-      "value": 0.1
-    },
-    "ToolSwayRotateAmount": {
-      "title": "Maximum Angle",
-      "tooltip": "The maximum angle the tool can sway, in degrees. Recommended: 15",
-      "type": "number",
-      "value": 15
-    },
-    "ToolSwaySmoothing": {
-      "title": "Smooth Time",
-      "tooltip": "The amount of time it takes for the held item to sway halfway back to its normal position, in seconds. Recommended: 0.2",
-      "type": "number",
-      "value": 0.2
+      "value": 1
     },
 
-    "Dynamic Tool Position": {
-      "type": "separator"
-    },
-    "DynamicToolPosBehavior": {
-      "title": "Dynamic Tool Position Behavior",
-      "tooltip": "When enabled, you will hold items in a different position depending on how far up/down you are looking. Recommended: Default",
-      "type": "selector",
-      "value": "Default",
-      "options": [ "Disabled", "Default", "Legacy" ]
-    },
-    "DynamicToolPosYAmount": {
-      "title": "Maximum Vertical Distance",
-      "tooltip": "The maximum distance the tool will move up or down, in units. Recommended: 0.04",
-      "type": "number",
-      "value": 0.04
-    },
-    "DynamicToolPosZAmount": {
-      "title": "Maximum Forward Distance",
-      "tooltip": "The maximum distance the tool will move forward or backwards, in units. Recommended: 0.04",
-      "type": "number",
-      "value": 0.04
-    },
-
-    "Other": {
+    "Miscellaneous": {
       "type": "separator"
     },
     "TweakItemPos": {
@@ -145,6 +80,10 @@
       "tooltip": "Tweaks the position of some held items to prevent visual bugs such as items clipping through the camera. Recommended: Enabled",
       "type": "toggle",
       "value": true
+    },
+
+    "OLD": {
+      "type": "separator"
     },
     "UseJumpAnim": {
       "title": "Use Jumping Animation",
@@ -167,12 +106,6 @@
     "UseScoutAnim": {
       "title": "Use Scout Launcher Fire Animation",
       "tooltip": "Makes the camera and scout launcher recoil when you launch a scout. Recommended: Enabled",
-      "type": "toggle",
-      "value": true
-    },
-    "HideStowedItems": {
-      "title": "Hide Stowed Items",
-      "tooltip": "Makes the item you're holding move fully offscreen when it goes into the stowed position (i.e. if you start using another tool or roasting a marshmallow while holding an item). Recommended: Enabled",
       "type": "toggle",
       "value": true
     }

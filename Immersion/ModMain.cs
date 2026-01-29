@@ -13,116 +13,75 @@ public class ModMain : ModBehaviour
 
     public ISmolHatchling SmolHatchlingAPI { get; private set; }
 
+    // config
+
     public bool IsHikersModInstalled { get; private set; }
 
-    public bool IsViewModelHandsEnabled { get; private set; }
+    public bool EnableViewmodelHands { get; private set; }
 
-    public bool IsViewBobEnabled { get; private set; }
+    public bool EnableCameraBob { get; private set; }
 
-    public float ViewBobXAmount { get; private set; }
+    public float CameraBobStrength { get; private set; }
 
-    public float ViewBobRollAmount { get; private set; }
+    public bool EnableToolBob { get; private set; }
 
-    public float ViewBobPitchAmount { get; private set; }
+    public float ToolBobStrength { get; private set; }
 
-    public float ViewBobYAmount { get; private set; }
+    public bool EnableDynamicToolPos { get; private set; }
 
-    public bool IsToolBobEnabled { get; private set; }
+    public float DynamicToolPosStrength { get; private set; }
 
-    public float ToolBobXAmount { get; private set; }
+    public bool EnableToolSway { get; private set; }
 
-    public float ToolBobYAmount { get; private set; }
+    public float ToolSwayStrength { get; private set; }
 
-    public float ToolBobZAmount { get; private set; }
-
-    public float ToolBobRollAmount { get; private set; }
-
-    public float ToolBobPitchAmount { get; private set; }
-
-    public bool IsToolSwayEnabled { get; private set; }
-
-    public float ToolSwayTranslateAmount { get; private set; }
-
-    public float ToolSwayRotateAmount { get; private set; }
-
-    public float ToolSwaySmoothing { get; private set; }
-
-    public string DynamicToolPosBehavior { get; private set; }
-
-    public float DynamicToolPosYAmount { get; private set; }
-
-    public float DynamicToolPosZAmount { get; private set; }
-
-    public bool IsTweakItemPosEnabled { get; private set; }
-
-    public bool IsJumpAnimEnabled { get; private set; }
-
-    public bool IsFallAnimEnabled { get; private set; }
-
-    public bool IsLandingAnimEnabled { get; private set; }
-
-    public bool IsScoutAnimEnabled { get; private set; }
-
-    public bool IsHideStowedItemsEnabled { get; private set; }
-
-    public delegate void ConfigureEvent();
-
-    public event ConfigureEvent OnConfigure;
+    public bool TweakItemPos { get; private set; }
 
     public override object GetApi()
     {
+        // provide API for use by other mods
         return new ImmersionAPI();
     }
 
     public override void Configure(IModConfig config)
     {
-        base.Configure(config);
+        // viewmodel hands
+        EnableViewmodelHands = config.GetSettingsValue<bool>("EnableViewmodelHands");
 
-        IsViewModelHandsEnabled = config.GetSettingsValue<bool>("EnableViewmodelHands");
+        // viewbob
+        EnableCameraBob = config.GetSettingsValue<bool>("EnableCameraBob");
+        CameraBobStrength = config.GetSettingsValue<float>("CameraBobStrength");
+        EnableToolBob = config.GetSettingsValue<bool>("EnableToolBob");
+        ToolBobStrength = config.GetSettingsValue<float>("ToolBobStrength");
 
-        IsViewBobEnabled = config.GetSettingsValue<bool>("EnableViewBob");
-        ViewBobXAmount = config.GetSettingsValue<float>("ViewBobXAmount");
-        ViewBobYAmount = config.GetSettingsValue<float>("ViewBobYAmount");
-        ViewBobRollAmount = config.GetSettingsValue<float>("ViewBobRollAmount");
-        ViewBobPitchAmount = config.GetSettingsValue<float>("ViewBobPitchAmount");
+        // dynamic tool pos
+        EnableDynamicToolPos = config.GetSettingsValue<bool>("EnableDynamicToolPos");
+        DynamicToolPosStrength = config.GetSettingsValue<float>("DynamicToolPosStrength");
 
-        IsToolBobEnabled = config.GetSettingsValue<bool>("EnableToolBob");
-        ToolBobXAmount = config.GetSettingsValue<float>("ToolBobXAmount");
-        ToolBobYAmount = config.GetSettingsValue<float>("ToolBobYAmount");
-        ToolBobZAmount = config.GetSettingsValue<float>("ToolBobZAmount");
-        ToolBobRollAmount = config.GetSettingsValue<float>("ToolBobRollAmount");
-        ToolBobPitchAmount = config.GetSettingsValue<float>("ToolBobPitchAmount");
+        // tool sway
+        EnableToolSway = config.GetSettingsValue<bool>("EnableToolSway");
+        ToolSwayStrength = config.GetSettingsValue<float>("ToolSwayStrength");
 
-        IsToolSwayEnabled = config.GetSettingsValue<bool>("EnableToolSway");
-        ToolSwayTranslateAmount = config.GetSettingsValue<float>("ToolSwayTranslateAmount");
-        ToolSwayRotateAmount = config.GetSettingsValue<float>("ToolSwayRotateAmount");
-        ToolSwaySmoothing = config.GetSettingsValue<float>("ToolSwaySmoothing");
-
-        DynamicToolPosBehavior = config.GetSettingsValue<string>("DynamicToolPosBehavior");
-        DynamicToolPosYAmount = config.GetSettingsValue<float>("DynamicToolPosYAmount");
-        DynamicToolPosZAmount = config.GetSettingsValue<float>("DynamicToolPosZAmount");
-
-        IsTweakItemPosEnabled = config.GetSettingsValue<bool>("TweakItemPos");
-        IsJumpAnimEnabled = config.GetSettingsValue<bool>("UseJumpAnim");
-        IsFallAnimEnabled = config.GetSettingsValue<bool>("UseFallAnim");
-        IsLandingAnimEnabled = config.GetSettingsValue<bool>("UseLandingAnim");
-        IsScoutAnimEnabled = config.GetSettingsValue<bool>("UseScoutAnim");
-        IsHideStowedItemsEnabled = config.GetSettingsValue<bool>("HideStowedItems");
-
-        OnConfigure?.Invoke();
+        // misc
+        TweakItemPos = config.GetSettingsValue<bool>("TweakItemPos");
     }
 
     private void Awake()
     {
+        // create harmony patches
         Harmony.CreateAndPatchAll(Assembly.GetExecutingAssembly());
+
+        // set ModMain.Instance to be used by other classes (there should only ever be one ModMain instance at a time)
         Instance = this;
     }
 
     private void Start()
     {
+        // check for other mods
         SmolHatchlingAPI = ModHelper.Interaction.TryGetModApi<ISmolHatchling>("Owen013.TeenyHatchling");
         IsHikersModInstalled = ModHelper.Interaction.ModExists("Owen013.MovementMod");
 
+        // add components on scene load
         LoadManager.OnCompleteSceneLoad += (_, _) =>
         {
             ModHelper.Events.Unity.FireOnNextUpdate(() =>
@@ -134,6 +93,7 @@ public class ModMain : ModBehaviour
             });
         };
 
+        // ready
         ModHelper.Console.WriteLine($"Immersion is ready to go!", MessageType.Success);
     }
 }

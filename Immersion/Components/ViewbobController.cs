@@ -1,231 +1,175 @@
 ﻿using UnityEngine;
+using UnityEngine.UIElements;
 
 namespace Immersion.Components;
 
 public class ViewbobController : MonoBehaviour
 {
-    private PlayerCameraController _cameraController;
-
+    private PlayerCharacterController _playerController;
+    
     private PlayerAnimController _animController;
 
-    private PlayerCharacterController _characterController;
+    private PlayerCameraController _cameraController;
 
-    private GameObject _cameraRoot;
+    private CameraOffsetController _cameraOffsetter;
 
-    private GameObject _mainToolRoot;
+    private ToolOffsetController _itemToolOffsetter;
 
-    private GameObject _probeLauncherRoot;
+    private ToolOffsetController _signalscopeOffsetter;
 
-    private GameObject _translatorRoot;
+    private ToolOffsetController _probeLauncherOffsetter;
 
-    private float _viewBobTime;
+    private ToolOffsetController _translatorOffsetter;
 
-    private float _viewBobIntensity;
+    private float _viewbobTime;
 
-    private float _viewBobVelocity;
+    private float _viewbobStrength;
 
-    private float _lastLandedTime;
+    private Vector3 _toolSway;
 
-    private Vector2 _toolSway;
+    private Vector3 _toolSwayDampVelocity;
 
-    private Vector2 _toolSwayVelocity;
-
-    private float _lastScoutLaunchTime;
-
-    private float _scoutRecoil;
-
-    private float _scoutRecoilVelocity;
-
-    private void Start()
+    private void Awake()
     {
+        // get references to required components
+        _playerController = Locator.GetPlayerController();
+        _animController = _playerController.GetComponentInChildren<PlayerAnimController>();
         _cameraController = GetComponent<PlayerCameraController>();
-        _animController = Locator.GetPlayerBody().GetComponentInChildren<PlayerAnimController>();
-        _characterController = Locator.GetPlayerController();
+        _cameraOffsetter = _cameraController.gameObject.AddComponent<CameraOffsetController>();
 
-        static GameObject CreateRoot(string name, Transform parent)
+        // create PlayerTool offsetters
+        var mainCamera = _cameraController._playerCamera.mainCamera.transform;
+        _itemToolOffsetter = mainCamera.Find("ItemCarryTool").gameObject.AddComponent<ToolOffsetController>();
+        _signalscopeOffsetter = mainCamera.Find("Signalscope").gameObject.AddComponent<ToolOffsetController>();
+        _probeLauncherOffsetter = mainCamera.Find("ProbeLauncher").gameObject.AddComponent<ToolOffsetController>();
+        _translatorOffsetter = mainCamera.Find("NomaiTranslatorProp").gameObject.AddComponent<ToolOffsetController>();
+
+        _playerController.OnBecomeGrounded += () =>
         {
-            GameObject root = new GameObject(name);
-            root.transform.parent = parent;
-            root.transform.localPosition = Vector3.zero;
-            root.transform.localRotation = Quaternion.identity;
-            root.transform.localScale = Vector3.one;
-            return root;
-        }
-
-        // create view bob root and parent camera to it
-        _cameraRoot = CreateRoot("CameraRoot", _cameraController._playerCamera.mainCamera.transform.parent);
-        _cameraController._playerCamera.mainCamera.transform.parent = _cameraRoot.transform;
-
-        // create tool root and parent tools to it
-        _mainToolRoot = CreateRoot("MainToolRoot", _cameraController._playerCamera.mainCamera.transform);
-        _cameraController._playerCamera.mainCamera.transform.Find("ItemCarryTool").transform.parent = _mainToolRoot.transform;
-        _cameraController._playerCamera.mainCamera.transform.Find("Signalscope").transform.parent = _mainToolRoot.transform;
-
-        // create a separate root for the scout launcher since it's a lot bigger and farther from the camera
-        _probeLauncherRoot = CreateRoot("ProbeLauncherRoot", _cameraController._playerCamera.mainCamera.transform);
-        _cameraController._playerCamera.mainCamera.transform.Find("ProbeLauncher").transform.parent = _probeLauncherRoot.transform;
-
-        // create a separate root for the translator tool since it doesn't bob forward and backward
-        _translatorRoot = CreateRoot("TranslatorRoot", _cameraController._playerCamera.mainCamera.transform);
-        _cameraController._playerCamera.mainCamera.transform.Find("NomaiTranslatorProp").transform.parent = _translatorRoot.transform;
-
-        // subscribe to events
-        _characterController.OnBecomeGrounded += () =>
-        {
-            _lastLandedTime = Time.time;
-        };
-        _characterController.GetComponentInChildren<PlayerProbeLauncher>().OnLaunchProbe += (probe) =>
-        {
-            if (ModMain.Instance.IsScoutAnimEnabled)
-                _lastScoutLaunchTime = Time.time;
+            if (_viewbobStrength < 0.1f)
+                _viewbobTime = 0f;
         };
     }
 
-    private void LateUpdate()
+    private void ApplyToolOffsets(Vector3 position)
     {
-        // reset everything
-        _cameraRoot.transform.localPosition = Vector3.zero;
-        _cameraRoot.transform.localRotation = Quaternion.identity;
-        _mainToolRoot.transform.localPosition = Vector3.zero;
-        _mainToolRoot.transform.localRotation = Quaternion.identity;
+        // apply different scaling factors for different tools
+        _itemToolOffsetter.AddOffset(position);
+        _signalscopeOffsetter.AddOffset(position);
+        _probeLauncherOffsetter.AddOffset(3f * position);
+        _translatorOffsetter.AddOffset(3f * position);
+    }
 
-        Vector3 toolBob = Vector3.zero;
-        if (ModMain.Instance.IsViewBobEnabled || ModMain.Instance.IsToolBobEnabled)
+    private void ApplyToolOffsets(Quaternion rotation)
+    {
+        // apply same rotation offset for all tools
+        _itemToolOffsetter.AddOffset(rotation);
+        _signalscopeOffsetter.AddOffset(rotation);
+        _probeLauncherOffsetter.AddOffset(rotation);
+        _translatorOffsetter.AddOffset(rotation);
+    }
+
+    private void ApplyToolOffsets(Vector3 position, Quaternion rotation)
+    {
+        ApplyToolOffsets(position);
+        ApplyToolOffsets(rotation);
+    }
+
+    private void UpdateViewbob()
+    {
+        bool isCameraBobEnabled = ModMain.Instance.EnableCameraBob && ModMain.Instance.CameraBobStrength != 0f;
+        bool isToolBobEnabled = ModMain.Instance.EnableToolBob && ModMain.Instance.ToolBobStrength != 0f;
+        // only do this if viewbob is enabled for camera or tool
+        if (isCameraBobEnabled || isToolBobEnabled)
         {
-            if (!_characterController.IsGrounded() && !_characterController._isMovementLocked)
+            // viewbob cycle increases based on player ground speed
+            // viewbob time and viewbob strength are used by both camera and tool bobbing
+            _viewbobTime += _animController._animator.speed * Time.deltaTime;
+            if (_playerController.IsGrounded())
             {
-                // if in midair, use falling and/or jumping animation
-                float fallFraction = ModMain.Instance.IsFallAnimEnabled ? _animController._animator.GetFloat("FreefallSpeed") : 0f;
-                float jumpFraction = ModMain.Instance.IsJumpAnimEnabled ? Mathf.Max((_characterController._lastJumpTime + 0.5f - Time.time) * 2f, 0f) : 0f;
-                _viewBobIntensity = Mathf.SmoothDamp(_viewBobIntensity, Mathf.Min(fallFraction + jumpFraction, 2f), ref _viewBobVelocity, 0.075f);
+                // change viewbob strength quickly if on ground
+                Vector3 groundVelocity = _playerController.GetRelativeGroundVelocity();
+                groundVelocity.y = 0f;
+                _viewbobStrength = Mathf.MoveTowards(_viewbobStrength, Mathf.Min(groundVelocity.magnitude / 6f, 1f), 5f * Time.deltaTime);
             }
             else
             {
-                // if on ground, use walking and/or landing animation
-                float walkFraction = 0.5f * new Vector2(_animController._animator.GetFloat("RunSpeedX"), _animController._animator.GetFloat("RunSpeedY")).magnitude;
-                float landingFraction = ModMain.Instance.IsLandingAnimEnabled && Time.timeSinceLevelLoad > 1f ? 0.5f * Mathf.Max((_lastLandedTime + 0.25f - Time.time) * 6f, 0f) : 0f;
-                _viewBobIntensity = Mathf.SmoothDamp(_viewBobIntensity, Mathf.Min(walkFraction + landingFraction, 2f), ref _viewBobVelocity, 0.075f);
+                // decay viewbob strength slowly if in air
+                _viewbobStrength = Mathf.MoveTowards(_viewbobStrength, 0f, Time.deltaTime);
             }
 
-            _viewBobTime += _animController._animator.speed * Time.deltaTime;
-            // camera bob
-            if (ModMain.Instance.IsViewBobEnabled)
-            {
-                Vector2 cameraBob = _viewBobIntensity * new Vector2(Mathf.Sin(2 * Mathf.PI * _viewBobTime), Mathf.Cos(4 * Mathf.PI * _viewBobTime));
-                _cameraRoot.transform.Translate((ModMain.Instance.SmolHatchlingAPI?.GetPlayerScale() ?? 1f) * new Vector3(cameraBob.x * ModMain.Instance.ViewBobXAmount, cameraBob.y * ModMain.Instance.ViewBobYAmount));
-                RotateCamera(new Vector3(cameraBob.y * ModMain.Instance.ViewBobPitchAmount, 0f, -cameraBob.x * ModMain.Instance.ViewBobRollAmount));
-            }
+            // trig is used for a circular viewbob motion
+            var viewBob = _viewbobStrength * new Vector2(Mathf.Sin(_viewbobTime * 2f * Mathf.PI), Mathf.Cos(_viewbobTime * 4f * Mathf.PI));
 
-            // tool bob
-            if (ModMain.Instance.IsToolBobEnabled)
+            // apply camera offset if camera bob is enabled
+            if (isCameraBobEnabled)
+                _cameraOffsetter.AddOffset(ModMain.Instance.CameraBobStrength * 0.02f * new Vector3(viewBob.x, viewBob.y));
+
+            // apply tool offset if tool bob is enabled
+            if (isToolBobEnabled)
             {
-                toolBob = _viewBobIntensity * new Vector3(Mathf.Sin(2 * Mathf.PI * _viewBobTime + 0.25f * Mathf.PI), Mathf.Cos(4 * Mathf.PI * _viewBobTime));
-                toolBob.z = toolBob.x;
-                _mainToolRoot.transform.localPosition = new Vector3(0f, toolBob.y * ModMain.Instance.ToolBobYAmount);
-                _mainToolRoot.transform.localRotation = Quaternion.Euler(new Vector3(toolBob.y * ModMain.Instance.ToolBobPitchAmount, 0f, -toolBob.x * ModMain.Instance.ToolBobRollAmount));
-                _mainToolRoot.transform.Translate((ModMain.Instance.SmolHatchlingAPI?.GetPlayerScale() ?? 1f) * new Vector3(toolBob.x * ModMain.Instance.ToolBobXAmount, 0f, toolBob.z * ModMain.Instance.ToolBobZAmount), _characterController.transform);
+                var offsetPos = ModMain.Instance.ToolBobStrength * new Vector3(0.015f * viewBob.x, 0.002f * viewBob.y);
+                var offsetRot = Quaternion.Euler(ModMain.Instance.ToolBobStrength * _viewbobStrength * -0.5f * Mathf.Sin(_viewbobTime * 4f * Mathf.PI), 0f, 0f);
+                ApplyToolOffsets(offsetPos, offsetRot);
             }
         }
-
-        if (ModMain.Instance.IsToolSwayEnabled)
-            UpdateToolSway();
+        // reset viewbob parameters if both camera and tool bob are disabled
         else
         {
-            _toolSway = Vector3.zero;
-            _toolSwayVelocity = Vector3.zero;
-        }
-
-        if (ModMain.Instance.DynamicToolPosBehavior != "Disabled")
-            _mainToolRoot.transform.localPosition += GetDynamicToolPos();
-
-        // Probe Launcher position offset needs to be 3x bigger because the tools in it are further away and appear to move less
-        _probeLauncherRoot.transform.localPosition = 3f * _mainToolRoot.transform.localPosition;
-        _probeLauncherRoot.transform.localRotation = _mainToolRoot.transform.localRotation;
-        if (ModMain.Instance.IsScoutAnimEnabled)
-            ApplyScoutAnim();
-
-        // Translator offset needs to be 3x bigger, also needs to convert forward bob into additional sideways bob
-        _translatorRoot.transform.localPosition = 3f * _mainToolRoot.transform.localPosition;
-        _translatorRoot.transform.localRotation = _mainToolRoot.transform.localRotation;
-        _translatorRoot.transform.Translate(3f * (ModMain.Instance.SmolHatchlingAPI?.GetPlayerScale() ?? 1f) * new Vector3(toolBob.x * (new Vector2(ModMain.Instance.ToolBobXAmount, ModMain.Instance.ToolBobZAmount).magnitude - ModMain.Instance.ToolBobXAmount), 0f, ModMain.Instance.ToolBobZAmount * -toolBob.z), _characterController.transform);
-
-        if (ModMain.Instance.IsHideStowedItemsEnabled)
-        {
-            ItemTool itemTool = Locator.GetToolModeSwapper()._itemCarryTool;
-            if (!itemTool.IsEquipped() && !itemTool.IsPuttingAway())
-                itemTool.transform.localRotation = Quaternion.RotateTowards(itemTool.transform.localRotation, Quaternion.Euler(180f, 0f, 0f), 180f * Time.deltaTime);
+            _viewbobTime = 0f;
+            _viewbobStrength = 0f;
         }
     }
 
-    private void RotateCamera(Vector3 eulers)
+    private void UpdateDynamicToolPos()
     {
-        _cameraRoot.transform.RotateAround(_cameraController.transform.position, _cameraController.transform.TransformDirection(Vector3.right), eulers.x);
-        _cameraRoot.transform.RotateAround(_cameraController.transform.position, _cameraController.transform.TransformDirection(Vector3.up), eulers.y);
-        _cameraRoot.transform.RotateAround(_cameraController.transform.position, _cameraController.transform.TransformDirection(Vector3.forward), eulers.z);
+        // only do this if dynamic tool position is enabled and strength is non-zero
+        if (ModMain.Instance.EnableDynamicToolPos && ModMain.Instance.DynamicToolPosStrength != 0f)
+        {
+            float verticalLookAmount = _cameraController.GetDegreesY() / 90f;
+            Vector3 toolOffset = Vector3.zero;
+            // trig is used for circular motion
+            // tool moves down+back when looking up, and up+back when looking down
+            // tool is not offset when looking straight ahead
+            toolOffset.z = Mathf.Cos(verticalLookAmount * Mathf.PI / 3f) - 1;
+            toolOffset.y = -Mathf.Sin(verticalLookAmount * Mathf.PI / 3f);
+            ApplyToolOffsets(ModMain.Instance.DynamicToolPosStrength * 0.05f * toolOffset);
+        }
     }
 
     private void UpdateToolSway()
     {
-        Vector2 lookDelta = Vector2.zero;
-        float degreesY = _cameraController.GetDegreesY();
-        // get look delta
-        if (!(PlayerState.InZeroG() && PlayerState.IsWearingSuit()) && OWInput.IsInputMode(InputMode.Character | InputMode.PatchingSuit))
+        // only do this if tool sway is enabled
+        if (ModMain.Instance.EnableToolSway)
         {
-            lookDelta = OWInput.GetAxisValue(InputLibrary.look) * (_characterController._playerCam.fieldOfView / _characterController._initFOV);
-            lookDelta *= InputUtil.IsMouseMoveAxis(InputLibrary.look.AxisID) ? 0.01666667f : Time.deltaTime;
+            Vector2 lookDelta = OWInput.GetAxisValue(InputLibrary.look);
+            float degreesY = _cameraController.GetDegreesY();
+            if (degreesY >= PlayerCameraController._maxDegreesYNormal)
+                lookDelta.y = Mathf.Min(0f, lookDelta.y);
+            if (degreesY <= PlayerCameraController._minDegreesYNormal)
+                lookDelta.y = Mathf.Max(0f, lookDelta.y);
 
-            AlarmSequenceController alarm = Locator.GetAlarmSequenceController();
-            bool isAlarmWakingPlayer = alarm != null && alarm.IsAlarmWakingPlayer();
-            lookDelta *= isAlarmWakingPlayer ? PlayerCameraController.LOOK_RATE * PlayerCameraController.ZOOM_SCALAR : PlayerCameraController.LOOK_RATE;
-
-            if (Time.timeScale > 1f)
-                lookDelta /= Time.timeScale;
-
-            // cancel out horizontal sway if player is patching suit, as they can't turn left/right while doing so
-            if (OWInput.IsInputMode(InputMode.PatchingSuit))
-                lookDelta.x = 0f;
-
-            // cancel out vertical sway if the player can't turn anymore in that direction
-            if ((lookDelta.y > 0f && degreesY >= PlayerCameraController._maxDegreesYNormal) || (lookDelta.y < 0f && degreesY <= PlayerCameraController._minDegreesYNormal))
-                lookDelta.y = 0f;
+            var newSway = new Vector3(-lookDelta.x * Mathf.Cos(degreesY * Mathf.PI / 180f), -lookDelta.y, 0f);
+            _toolSway += newSway;
+            ApplyToolOffsets(ModMain.Instance.ToolSwayStrength * _toolSway);
         }
-
-        // decay already existing tool sway and then add new tool sway
-        _toolSway = Vector2.SmoothDamp(_toolSway, Vector2.zero, ref _toolSwayVelocity, ModMain.Instance.ToolSwaySmoothing);
-        _toolSway = _toolSway + -Vector2.ClampMagnitude(lookDelta / 90f, 90f) * (1f - _toolSway.magnitude);
-        float localZOffset = -(_toolSway.y * _toolSway.y) / 2f;
-        float globalZOffset = -(_toolSway.x * _toolSway.x) / 2f;
-        float xSwayMultiplier = (Mathf.Cos(1f / 90f * Mathf.PI * degreesY) + 1f) / 2f;
-
-        _mainToolRoot.transform.localPosition += ModMain.Instance.ToolSwayTranslateAmount * new Vector3(0, _toolSway.y, localZOffset);
-        _mainToolRoot.transform.localRotation *= Quaternion.Euler(ModMain.Instance.ToolSwayRotateAmount * _toolSway.y * Vector3.left);
-        _mainToolRoot.transform.Translate(ModMain.Instance.ToolSwayTranslateAmount * xSwayMultiplier * (ModMain.Instance.SmolHatchlingAPI?.GetPlayerScale() ?? 1f) * new Vector3(_toolSway.x, 0f, globalZOffset), _characterController.transform);
-        _mainToolRoot.transform.RotateAround(_characterController.transform.position, _characterController._owRigidbody.GetLocalUpDirection(), _toolSway.x * ModMain.Instance.ToolSwayRotateAmount);
-    }
-
-    private Vector3 GetDynamicToolPos()
-    {
-        float degreesY = _cameraController.GetDegreesY();
-        Vector3 dynamicToolPos;
-        if (ModMain.Instance.DynamicToolPosBehavior == "Legacy")
-            // legacy behavior moves tool closer when looking up and further when looking down
-            dynamicToolPos = new Vector3(0f, -degreesY / 45f * ModMain.Instance.DynamicToolPosYAmount, -degreesY / 90f * ModMain.Instance.DynamicToolPosZAmount);
         else
-            // new behavior moves tool closer to camera the more you are looking up/down
-            dynamicToolPos = new Vector3(0f, -degreesY / 45f * ModMain.Instance.DynamicToolPosYAmount, (Mathf.Cos(degreesY * Mathf.PI / 90f) - 1f) * ModMain.Instance.DynamicToolPosZAmount);
-
-        return dynamicToolPos;
+        {
+            _toolSway = Vector3.zero;
+            _toolSwayDampVelocity = Vector3.zero;
+        }
     }
 
-    // plays a recoil animation for 0.5 seconds after scout launch
-    private void ApplyScoutAnim()
+    private void Update()
     {
-        float targetRecoil = Mathf.Max(_lastScoutLaunchTime + 0.5f - Time.time, 0f) * 2f;
-        float dampTime = targetRecoil > _scoutRecoil ? 0.05f : 0.1f;
-        _scoutRecoil = Mathf.SmoothDamp(_scoutRecoil, targetRecoil, ref _scoutRecoilVelocity, dampTime);
+        UpdateViewbob();
+        UpdateDynamicToolPos();
+        UpdateToolSway();
+    }
 
-        RotateCamera(new Vector3(-5f, 0f, -5f) * _scoutRecoil);
-        _probeLauncherRoot.transform.localPosition += new Vector3(0.25f, -0.25f, -0.5f) * _scoutRecoil;
-        _probeLauncherRoot.transform.localRotation *= Quaternion.Euler(new Vector3(-15f, 0f, -15f) * _scoutRecoil);
+    private void FixedUpdate()
+    {
+        // decay tool sway
+        _toolSway = Vector3.SmoothDamp(_toolSway, Vector3.zero, ref _toolSwayDampVelocity, 0.5f);
     }
 }
