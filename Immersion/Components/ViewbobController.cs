@@ -201,9 +201,11 @@ public class ViewbobController : MonoBehaviour
             }
 
             float xSwayMultiplier = (Mathf.Cos(degreesY / 90f * Mathf.PI) + 1f) * 0.5f;
-            float zOffset = 0.15f * xSwayMultiplier * (Mathf.Cos(Mathf.PI * _toolSway.magnitude) - 1f);
-            Vector3 offsetPos = ModMain.Instance.ToolSwayStrength * 0.25f * new Vector3(_toolSway.x * xSwayMultiplier, _toolSway.y, zOffset);
-            //Quaternion offsetRot = Quaternion.Euler(ModMain.Instance.ToolSwayStrength * 15f * new Vector3(-_toolSway.y, _toolSway.x * xSwayMultiplier, _toolSway.x * Mathf.Sin(degreesY / 180f * Mathf.PI)));
+            float localZOffset = 0.15f * (Mathf.Cos(Mathf.PI * _toolSway.y) - 1f);
+            float globalZOffset = 0.15f * (Mathf.Cos(Mathf.PI * _toolSway.x) - 1f);
+            var offsetPos = new Vector3(_toolSway.x * xSwayMultiplier, _toolSway.y, localZOffset);
+            offsetPos += xSwayMultiplier * globalZOffset * _cameraController.transform.InverseTransformDirection(_playerController.transform.forward);
+            offsetPos *= ModMain.Instance.ToolSwayStrength * 0.25f;
             AddToolOffsets(offsetPos);
         }
         else

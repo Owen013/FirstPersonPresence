@@ -24,8 +24,10 @@
     "HeadBobStrength": {
       "title": "Head Bob Strength",
       "tooltip": "The scale of the camera's bobbing.",
-      "type": "number",
-      "value": 1
+      "type": "slider",
+      "value": 1,
+      "min": 0,
+      "max": 2
     },
     "EnableToolBob": {
       "title": "Enable Tool Bobbing",
@@ -36,8 +38,10 @@
     "ToolBobStrength": {
       "title": "Tool Bob Strength",
       "tooltip": "The scale of the tool's bobbing.",
-      "type": "number",
-      "value": 1
+      "type": "slider",
+      "value": 1,
+      "min": 0,
+      "max": 2
     },
 
     "Dynamic Tool Position": {
@@ -52,8 +56,10 @@
     "DynamicToolPosStrength": {
       "title": "Dynamic Tool Position Strength",
       "tooltip": "The scale of the tool's movement.",
-      "type": "number",
-      "value": 1
+      "type": "slider",
+      "value": 1,
+      "min": 0,
+      "max": 2
     },
 
     "Tool Sway": {
@@ -68,8 +74,10 @@
     "ToolSwayStrength": {
       "title": "Tool Sway Strength",
       "tooltip": "The scale of the tool's movement.",
-      "type": "number",
-      "value": 1
+      "type": "slider",
+      "value": 1,
+      "min": 0,
+      "max": 2
     },
 
     "Miscellaneous": {
