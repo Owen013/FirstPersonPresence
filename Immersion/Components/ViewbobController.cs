@@ -107,10 +107,10 @@ public class ViewbobController : MonoBehaviour
 
     private void UpdateViewbob()
     {
-        bool isCameraBobEnabled = ModMain.Instance.EnableHeadBob && ModMain.Instance.HeadBobStrength != 0f;
+        bool isHeadBobEnabled = ModMain.Instance.EnableHeadBob && ModMain.Instance.HeadBobStrength != 0f;
         bool isToolBobEnabled = ModMain.Instance.EnableToolBob && ModMain.Instance.ToolBobStrength != 0f;
         // only do this if player is not movement locked and viewbob is enabled for camera or tool
-        if (!_playerController._isMovementLocked && (isCameraBobEnabled || isToolBobEnabled))
+        if (!_playerController._isMovementLocked && (isHeadBobEnabled || isToolBobEnabled))
         {
             // viewbob cycle increases based on player ground speed
             // viewbob time and viewbob strength are used by both camera and tool bobbing
@@ -132,7 +132,7 @@ public class ViewbobController : MonoBehaviour
             var viewBob = _viewbobStrength * new Vector2(Mathf.Sin(_viewbobTime * 2f * Mathf.PI), Mathf.Cos(_viewbobTime * 4f * Mathf.PI));
 
             // apply camera offset if camera bob is enabled
-            if (isCameraBobEnabled)
+            if (isHeadBobEnabled)
                 _cameraOffsetter.AddOffset(ModMain.Instance.HeadBobStrength * 0.02f * new Vector3(viewBob.x, viewBob.y));
 
             // apply tool offset if tool bob is enabled
