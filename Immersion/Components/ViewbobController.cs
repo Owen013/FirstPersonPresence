@@ -1,5 +1,4 @@
 ﻿using UnityEngine;
-using static StencilPreviewImageEffect;
 
 namespace Immersion.Components;
 
@@ -37,6 +36,12 @@ public class ViewbobController : MonoBehaviour
 
     private float _landingAnimVelocity;
 
+    private float _lastScoutLaunchTime;
+
+    private float _scoutRecoil;
+
+    private float _scoutRecoilVelocity;
+
     private void StartLandingAnim(float landingSpeed)
     {
         _landingAnimVelocity = -landingSpeed;
@@ -65,6 +70,12 @@ public class ViewbobController : MonoBehaviour
 
             float landingSpeed = (_lastPlayerVelocity - _playerController.GetGroundBody().GetPointVelocity(_playerController.GetGroundContactPoint())).magnitude;
             StartLandingAnim(landingSpeed);
+        };
+
+        _probeLauncherOffsetter.GetComponent<ProbeLauncher>().OnLaunchProbe += (_) =>
+        {
+            if (ModMain.Instance.EnableScoutAnim)
+                _lastScoutLaunchTime = Time.time;
         };
     }
 
@@ -230,12 +241,31 @@ public class ViewbobController : MonoBehaviour
         }
     }
 
+    private void UpdateScoutAnim()
+    {
+        if (ModMain.Instance.EnableScoutAnim)
+        {
+            float targetRecoil = Mathf.Max(_lastScoutLaunchTime + 0.5f - Time.time, 0f) * 2f;
+            float dampTime = targetRecoil > _scoutRecoil ? 0.05f : 0.1f;
+            _scoutRecoil = Mathf.SmoothDamp(_scoutRecoil, targetRecoil, ref _scoutRecoilVelocity, dampTime);
+
+            _cameraOffsetter.AddOffset(Quaternion.Euler(_scoutRecoil * new Vector3(-5f, 0f, -5f)));
+            _probeLauncherOffsetter.AddOffset(new Vector3(0.25f, -0.25f, -0.5f) * _scoutRecoil, Quaternion.Euler(new Vector3(-15f, 0f, -15f) * _scoutRecoil));
+        }
+        else
+        {
+            _scoutRecoil = 0f;
+            _scoutRecoilVelocity = 0f;
+        }
+    }
+
     private void Update()
     {
         UpdateViewbob();
         UpdateDynamicToolPos();
         UpdateToolSway();
         //UpdateLandingAnim();
+        UpdateScoutAnim();
     }
 
     private void FixedUpdate()

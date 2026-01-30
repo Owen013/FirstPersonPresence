@@ -37,6 +37,8 @@ public class ModMain : ModBehaviour
 
     public bool TweakItemPos { get; private set; }
 
+    public bool EnableScoutAnim { get; private set; }
+
     public override object GetApi()
     {
         // provide API for use by other mods
@@ -61,6 +63,7 @@ public class ModMain : ModBehaviour
         // tool sway
         EnableToolSway = config.GetSettingsValue<bool>("EnableToolSway");
         ToolSwayStrength = config.GetSettingsValue<float>("ToolSwayStrength");
+        EnableScoutAnim = config.GetSettingsValue<bool>("EnableScoutAnim");
 
         // misc
         TweakItemPos = config.GetSettingsValue<bool>("TweakItemPos");

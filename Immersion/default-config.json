@@ -81,6 +81,12 @@
       "type": "toggle",
       "value": true
     },
+    "EnableScoutAnim": {
+      "title": "Enable Scout Launcher Fire Animation",
+      "tooltip": "Makes the camera and scout launcher recoil when you launch a scout.",
+      "type": "toggle",
+      "value": true
+    },
 
     "OLD": {
       "type": "separator"
@@ -100,12 +106,6 @@
     "UseLandingAnim": {
       "title": "Use Landing Animation",
       "tooltip": "Makes the camera shake a bit when you land on the ground, based on the view/tool bob amounts you set above. Recommended: Enabled",
-      "type": "toggle",
-      "value": true
-    },
-    "UseScoutAnim": {
-      "title": "Use Scout Launcher Fire Animation",
-      "tooltip": "Makes the camera and scout launcher recoil when you launch a scout. Recommended: Enabled",
       "type": "toggle",
       "value": true
     }
