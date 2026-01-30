@@ -1,5 +1,4 @@
 ﻿using UnityEngine;
-using UnityEngine.UIElements;
 
 namespace Immersion.Components;
 
@@ -29,6 +28,20 @@ public class ViewbobController : MonoBehaviour
 
     private Vector3 _toolSwayDampVelocity;
 
+    private Vector3 _lastPlayerVelocity;
+
+    private bool _isLandingAnimActive;
+
+    private float _landingAnimPos;
+
+    private float _landingAnimVelocity;
+
+    private void StartLandingAnim(float landingSpeed)
+    {
+        _landingAnimVelocity = -landingSpeed;
+        _isLandingAnimActive = true;
+    }
+
     private void Awake()
     {
         // get references to required components
@@ -48,6 +61,9 @@ public class ViewbobController : MonoBehaviour
         {
             if (_viewbobStrength < 0.1f)
                 _viewbobTime = 0f;
+
+            float landingSpeed = (_lastPlayerVelocity - _playerController.GetGroundBody().GetPointVelocity(_playerController.GetGroundContactPoint())).magnitude;
+            StartLandingAnim(landingSpeed);
         };
     }
 
@@ -150,8 +166,9 @@ public class ViewbobController : MonoBehaviour
                 lookDelta.y = Mathf.Max(0f, lookDelta.y);
 
             var newSway = new Vector3(-lookDelta.x * Mathf.Cos(degreesY * Mathf.PI / 180f), -lookDelta.y, 0f);
+            newSway *= Mathf.Sqrt(1f - Mathf.Pow(Mathf.Clamp01((_toolSway + newSway).magnitude), 2f));
             _toolSway += newSway;
-            ApplyToolOffsets(ModMain.Instance.ToolSwayStrength * _toolSway);
+            ApplyToolOffsets(ModMain.Instance.ToolSwayStrength * 0.05f * _toolSway);
         }
         else
         {
@@ -160,16 +177,29 @@ public class ViewbobController : MonoBehaviour
         }
     }
 
+    private void UpdateLandingAnim()
+    {
+        if (_isLandingAnimActive)
+        {
+            _landingAnimPos = Mathf.Min(_landingAnimPos + _landingAnimVelocity * Time.deltaTime, 0f);
+            _landingAnimVelocity += Time.deltaTime;
+
+            _cameraOffsetter.AddOffset(new Vector3(0f, _landingAnimPos, 0f));
+        }
+    }
+
     private void Update()
     {
         UpdateViewbob();
         UpdateDynamicToolPos();
         UpdateToolSway();
+        //UpdateLandingAnim();
     }
 
     private void FixedUpdate()
     {
         // decay tool sway
         _toolSway = Vector3.SmoothDamp(_toolSway, Vector3.zero, ref _toolSwayDampVelocity, 0.5f);
+        _lastPlayerVelocity = _playerController.GetAttachedOWRigidbody().GetVelocity();
     }
 }

@@ -2,6 +2,7 @@
 
 namespace Immersion.Components;
 
+[HarmonyPatch]
 public class ToolOffsetController : TransformOffsetController
 {
     [HarmonyPrefix]
