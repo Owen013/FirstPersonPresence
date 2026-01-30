@@ -28,25 +28,25 @@ public class ViewbobController : MonoBehaviour
 
     private Vector2 _toolSwayDampVelocity;
 
-    private Vector3 _lastPlayerVelocity;
-
-    private bool _isLandingAnimActive;
-
-    private float _landingAnimPos;
-
-    private float _landingAnimVelocity;
-
     private float _lastScoutLaunchTime;
 
     private float _scoutRecoil;
 
     private float _scoutRecoilVelocity;
 
-    private void StartLandingAnim(float landingSpeed)
-    {
-        _landingAnimVelocity = -landingSpeed;
-        _isLandingAnimActive = true;
-    }
+    private Vector3 _lastPlayerVelocity;
+
+    private bool _isLandingAnimActive;
+
+    private float _lastLandedSpeed;
+
+    private float _landingAnimPos;
+
+    private float _landingAnimDampVelocity;
+
+    private float _sprintAnimStrength;
+
+    private float _sprintAnimDampVelocity;
 
     private void Awake()
     {
@@ -54,9 +54,9 @@ public class ViewbobController : MonoBehaviour
         _playerController = Locator.GetPlayerController();
         _animController = _playerController.GetComponentInChildren<PlayerAnimController>();
         _cameraController = GetComponent<PlayerCameraController>();
-        _cameraOffsetter = _cameraController.gameObject.AddComponent<OffsetController>();
 
-        // create PlayerTool offsetters
+        // create offsetters
+        _cameraOffsetter = _cameraController.gameObject.AddComponent<OffsetController>();
         var mainCamera = _cameraController._playerCamera.mainCamera.transform;
         _itemToolOffsetter = mainCamera.Find("ItemCarryTool").gameObject.AddComponent<OffsetController>();
         _signalscopeOffsetter = mainCamera.Find("Signalscope").gameObject.AddComponent<OffsetController>();
@@ -65,17 +65,23 @@ public class ViewbobController : MonoBehaviour
 
         _playerController.OnBecomeGrounded += () =>
         {
+            // reset viewbob time if the current viewbob scale is small enough
             if (_viewbobStrength < 0.1f)
                 _viewbobTime = 0f;
 
+            // if the player lands with a downward speed of at least 5, play landing anim
             Vector3 landingVelocity = (_lastPlayerVelocity - _playerController.GetGroundBody().GetPointVelocity(_playerController.GetGroundContactPoint()));
             float landingSpeed = -_playerController.transform.InverseTransformVector(landingVelocity).y;
             if (landingSpeed >= 5f)
-                StartLandingAnim(landingSpeed);
+            {
+                _lastLandedSpeed = landingSpeed;
+                _isLandingAnimActive = true;
+            }
         };
 
         _probeLauncherOffsetter.GetComponent<ProbeLauncher>().OnLaunchProbe += (_) =>
         {
+            // play scout launcher animation if enabled
             if (ModMain.Instance.EnableScoutAnim)
                 _lastScoutLaunchTime = Time.time;
         };
@@ -191,6 +197,7 @@ public class ViewbobController : MonoBehaviour
                     lookInput.x = 0f;
                 }
 
+                // cancel out vertical sway if player is at max or min vertical look angle and is trying to turn more in that direction
                 if (degreesY >= PlayerCameraController._maxDegreesYNormal)
                     lookInput.y = Mathf.Min(0f, lookInput.y);
                 if (degreesY <= PlayerCameraController._minDegreesYNormal)
@@ -200,54 +207,23 @@ public class ViewbobController : MonoBehaviour
                 _toolSway -= lookInput * (1f - Mathf.Min((_toolSway - lookInput).magnitude, 1));
             }
 
+            // x sway is less pronounced the more up/down the player is looking
+            // sway is split into local (relative to camera) and global (relative to player)
             float xSwayMultiplier = (Mathf.Cos(degreesY / 90f * Mathf.PI) + 1f) * 0.5f;
             float localZOffset = 0.15f * (Mathf.Cos(Mathf.PI * _toolSway.y) - 1f);
             float globalZOffset = 0.15f * (Mathf.Cos(Mathf.PI * _toolSway.x) - 1f);
-            var offsetPos = new Vector3(_toolSway.x * xSwayMultiplier, _toolSway.y, localZOffset);
-            offsetPos += xSwayMultiplier * globalZOffset * _cameraController.transform.InverseTransformDirection(_playerController.transform.forward);
-            offsetPos *= ModMain.Instance.ToolSwayStrength * 0.25f;
-            AddToolOffsets(offsetPos);
+
+            // calculate and apply the final offset
+            var offset = new Vector3(_toolSway.x * xSwayMultiplier, _toolSway.y, localZOffset);
+            offset += xSwayMultiplier * globalZOffset * _cameraController.transform.InverseTransformDirection(_playerController.transform.forward);
+            offset *= ModMain.Instance.ToolSwayStrength * 0.25f;
+            AddToolOffsets(offset);
         }
         else
         {
+            // if tool sway is disabled, reset tool sway parameters
             _toolSway = Vector3.zero;
             _toolSwayDampVelocity = Vector3.zero;
-        }
-    }
-
-    private void UpdateLandingAnim()
-    {
-        if (ModMain.Instance.EnableLandingAnim)
-        {
-            _landingAnimPos = Mathf.Min(_landingAnimPos + _landingAnimVelocity * Time.deltaTime, 0f);
-
-            if (_isLandingAnimActive)
-            {
-                if (_landingAnimPos >= 0f && _landingAnimVelocity >= 0f)
-                {
-                    _landingAnimPos = 0f;
-                    _landingAnimVelocity = 0f;
-                    _isLandingAnimActive = false;
-                    return;
-                }
-                else if (_landingAnimPos <= -0.2f && _landingAnimVelocity < 0f)
-                {
-                    _landingAnimPos = -0.2f;
-                    _landingAnimVelocity = 0f;
-                }
-                else
-                {
-                    _landingAnimVelocity = Mathf.MoveTowards(_landingAnimVelocity, 1f, -_landingAnimPos * 20f * Time.deltaTime);
-                }
-
-                _cameraOffsetter.AddOffset(new Vector3(0f, _landingAnimPos, 0f));
-            }
-        }
-        else
-        {
-            _landingAnimPos = 0f;
-            _landingAnimVelocity = 0f;
-            _isLandingAnimActive = false;
         }
     }
 
@@ -256,16 +232,63 @@ public class ViewbobController : MonoBehaviour
         if (ModMain.Instance.EnableScoutAnim)
         {
             float targetRecoil = Mathf.Max(_lastScoutLaunchTime + 0.5f - Time.time, 0f) * 2f;
+            // damp moves quickly during the initial recoil, and slowly during the recovery
             float dampTime = targetRecoil > _scoutRecoil ? 0.05f : 0.1f;
             _scoutRecoil = Mathf.SmoothDamp(_scoutRecoil, targetRecoil, ref _scoutRecoilVelocity, dampTime);
-
+            // apply recoils to camera and scout launcher
             _cameraOffsetter.AddOffset(Quaternion.Euler(_scoutRecoil * new Vector3(-5f, 0f, -5f)));
             _probeLauncherOffsetter.AddOffset(new Vector3(0.25f, -0.25f, -0.5f) * _scoutRecoil, Quaternion.Euler(new Vector3(-15f, 0f, -15f) * _scoutRecoil));
         }
         else
         {
+            // reset recoil parameters if disabled
             _scoutRecoil = 0f;
             _scoutRecoilVelocity = 0f;
+        }
+    }
+
+    private void UpdateLandingAnim()
+    {
+        if (ModMain.Instance.EnableLandingAnim)
+        {
+            if (_isLandingAnimActive)
+            {
+                // update camera height based on landing speed
+                _landingAnimPos = Mathf.Min(_landingAnimPos - _lastLandedSpeed * Time.deltaTime, 0f);
+                if (_landingAnimPos <= -0.25f)
+                {
+                    // landing anim bottoms out at -0.25
+                    _landingAnimPos = -0.25f;
+                    _isLandingAnimActive = false;
+                }
+            }
+            else
+            {
+                _landingAnimPos = Mathf.SmoothDamp(_landingAnimPos, 0f, ref _landingAnimDampVelocity, 0.2f);
+            }
+
+            _cameraOffsetter.AddOffset(new Vector3(0f, _landingAnimPos, 0f));
+        }
+        else
+        {
+            // reset landing anim parameters if feature is disabled
+            _landingAnimPos = 0f;
+            _landingAnimDampVelocity = 0f;
+            _isLandingAnimActive = false;
+        }
+    }
+
+    private void UpdateSprintAnim()
+    {
+        if (ModMain.Instance.EnableSprintingAnim && ModMain.Instance.HikersModAPI != null)
+        {
+            _sprintAnimStrength = Mathf.SmoothDamp(_sprintAnimStrength, ModMain.Instance.HikersModAPI.IsSprinting() ? 1f : 0f, ref _sprintAnimDampVelocity, 0.2f);
+            AddToolOffsets(Quaternion.Euler(15f * _sprintAnimStrength, 0f, 0f));
+        }
+        else
+        {
+            _sprintAnimStrength = 0f;
+            _sprintAnimDampVelocity = 0f;
         }
     }
 
@@ -274,8 +297,9 @@ public class ViewbobController : MonoBehaviour
         UpdateViewbob();
         UpdateDynamicToolPos();
         UpdateToolSway();
-        UpdateLandingAnim();
         UpdateScoutAnim();
+        UpdateLandingAnim();
+        UpdateSprintAnim();
     }
 
     private void FixedUpdate()

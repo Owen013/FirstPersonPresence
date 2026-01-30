@@ -97,7 +97,13 @@
     },
     "EnableLandingAnim": {
       "title": "Enable Landing Animation",
-      "tooltip": "",
+      "tooltip": "Makes the camera move downward a bit when you land with some speed.",
+      "type": "toggle",
+      "value": true
+    },
+    "EnableSprintingAnim": {
+      "title": "Enable Sprinting Animation",
+      "tooltip": "(REQUIRES HIKER'S MOD) Makes the tool move downward while you're sprinting.",
       "type": "toggle",
       "value": true
     }
