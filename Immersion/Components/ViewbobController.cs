@@ -1,4 +1,5 @@
 ﻿using UnityEngine;
+using static StencilPreviewImageEffect;
 
 namespace Immersion.Components;
 
@@ -125,7 +126,7 @@ public class ViewbobController : MonoBehaviour
             if (isToolBobEnabled)
             {
                 var offsetPos = ModMain.Instance.ToolBobStrength * new Vector3(0.02f * viewBob.x, 0.003f * viewBob.y);
-                var offsetRot = Quaternion.Euler(ModMain.Instance.ToolBobStrength * _viewbobStrength * -1f * Mathf.Sin(_viewbobTime * 4f * Mathf.PI), 0f, 0f);
+                var offsetRot = Quaternion.Euler(ModMain.Instance.ToolBobStrength * _viewbobStrength * -0.75f * Mathf.Sin(_viewbobTime * 4f * Mathf.PI), 0f, 0f);
                 ApplyToolOffsets(offsetPos, offsetRot);
             }
         }
@@ -158,17 +159,24 @@ public class ViewbobController : MonoBehaviour
         // only do this if tool sway is enabled
         if (ModMain.Instance.EnableToolSway)
         {
-            Vector2 lookDelta = OWInput.GetAxisValue(InputLibrary.look);
+            // cancel new sway if in zero g with suit, as it uses a different movement mode
+            if (PlayerState.InZeroG() && PlayerState.IsWearingSuit()) return;
+
+            // get look input
+            Vector2 lookInput = OWInput.GetAxisValue(InputLibrary.look);
+            lookInput *= _cameraController._playerCamera.fieldOfView / _cameraController._initFOV;
+            lookInput *= InputUtil.IsMouseMoveAxis(InputLibrary.look.AxisID) ? 0.01666667f : Time.deltaTime;
+            bool isAlarmWakingPlayer = Locator.GetAlarmSequenceController() != null && Locator.GetAlarmSequenceController().IsAlarmWakingPlayer();
+            if (_cameraController._zoomed || isAlarmWakingPlayer)
+                lookInput *= PlayerCameraController.ZOOM_SCALAR;
+            //if (Time.timeScale > 1f)
+            //    lookInput /= Time.timeScale;
+
             float degreesY = _cameraController.GetDegreesY();
             if (degreesY >= PlayerCameraController._maxDegreesYNormal)
-                lookDelta.y = Mathf.Min(0f, lookDelta.y);
+                lookInput.y = Mathf.Min(0f, lookInput.y);
             if (degreesY <= PlayerCameraController._minDegreesYNormal)
-                lookDelta.y = Mathf.Max(0f, lookDelta.y);
-
-            var newSway = new Vector3(-lookDelta.x * Mathf.Cos(degreesY * Mathf.PI / 180f), -lookDelta.y, 0f);
-            newSway /= _toolSway.magnitude + 1f;
-            _toolSway += newSway;
-            ApplyToolOffsets(ModMain.Instance.ToolSwayStrength * 0.05f * _toolSway);
+                lookInput.y = Mathf.Max(0f, lookInput.y);
         }
         else
         {
