@@ -13,9 +13,7 @@ public class ModMain : ModBehaviour
 
     public ISmolHatchling SmolHatchlingAPI { get; private set; }
 
-    // config
-
-    public bool IsHikersModInstalled { get; private set; }
+    public IHikersMod HikersModAPI { get; private set; }
 
     public bool EnableViewmodelHands { get; private set; }
 
@@ -35,11 +33,15 @@ public class ModMain : ModBehaviour
 
     public float ToolSwayStrength { get; private set; }
 
+    public bool EnableBreathingAnim { get; private set; }
+
     public bool TweakItemPos { get; private set; }
 
     public bool EnableScoutAnim { get; private set; }
 
     public bool EnableLandingAnim { get; private set; }
+
+    public bool EnableSprintingAnim { get; private set; }
 
     public override object GetApi()
     {
@@ -68,8 +70,10 @@ public class ModMain : ModBehaviour
 
         // misc
         TweakItemPos = config.GetSettingsValue<bool>("TweakItemPos");
+        EnableBreathingAnim = config.GetSettingsValue<bool>("EnableBreathingAnim");
         EnableScoutAnim = config.GetSettingsValue<bool>("EnableScoutAnim");
         EnableLandingAnim = config.GetSettingsValue<bool>("EnableLandingAnim");
+        EnableSprintingAnim = config.GetSettingsValue<bool>("EnableSprintingAnim");
     }
 
     private void Awake()
@@ -85,7 +89,7 @@ public class ModMain : ModBehaviour
     {
         // check for other mods
         SmolHatchlingAPI = ModHelper.Interaction.TryGetModApi<ISmolHatchling>("Owen013.TeenyHatchling");
-        IsHikersModInstalled = ModHelper.Interaction.ModExists("Owen013.MovementMod");
+        HikersModAPI = ModHelper.Interaction.TryGetModApi<IHikersMod>("Owen013.MovementMod");
 
         // add components on scene load
         LoadManager.OnCompleteSceneLoad += (_, _) =>

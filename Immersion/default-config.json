@@ -24,8 +24,10 @@
     "HeadBobStrength": {
       "title": "Head Bob Strength",
       "tooltip": "The scale of the camera's bobbing.",
-      "type": "number",
-      "value": 1
+      "type": "slider",
+      "value": 1,
+      "min": 0,
+      "max": 2
     },
     "EnableToolBob": {
       "title": "Enable Tool Bobbing",
@@ -36,8 +38,10 @@
     "ToolBobStrength": {
       "title": "Tool Bob Strength",
       "tooltip": "The scale of the tool's bobbing.",
-      "type": "number",
-      "value": 1
+      "type": "slider",
+      "value": 1,
+      "min": 0,
+      "max": 2
     },
 
     "Dynamic Tool Position": {
@@ -52,8 +56,10 @@
     "DynamicToolPosStrength": {
       "title": "Dynamic Tool Position Strength",
       "tooltip": "The scale of the tool's movement.",
-      "type": "number",
-      "value": 1
+      "type": "slider",
+      "value": 1,
+      "min": 0,
+      "max": 2
     },
 
     "Tool Sway": {
@@ -68,8 +74,10 @@
     "ToolSwayStrength": {
       "title": "Tool Sway Strength",
       "tooltip": "The scale of the tool's movement.",
-      "type": "number",
-      "value": 1
+      "type": "slider",
+      "value": 1,
+      "min": 0,
+      "max": 2
     },
 
     "Miscellaneous": {
@@ -81,6 +89,12 @@
       "type": "toggle",
       "value": true
     },
+    "EnableBreathingAnim": {
+      "title": "Enable Breathing Animation",
+      "tooltip": "Makes the tool move very subtley while you're standing still.",
+      "type": "toggle",
+      "value": true
+    },
     "EnableScoutAnim": {
       "title": "Enable Scout Launcher Fire Animation",
       "tooltip": "Makes the camera and scout launcher recoil when you launch a scout.",
@@ -89,7 +103,13 @@
     },
     "EnableLandingAnim": {
       "title": "Enable Landing Animation",
-      "tooltip": "",
+      "tooltip": "Makes the camera move downward a bit when you land with some speed.",
+      "type": "toggle",
+      "value": true
+    },
+    "EnableSprintingAnim": {
+      "title": "Enable Sprinting Animation",
+      "tooltip": "(REQUIRES HIKER'S MOD) Makes the tool move downward while you're sprinting.",
       "type": "toggle",
       "value": true
     }

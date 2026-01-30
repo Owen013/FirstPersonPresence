@@ -9,9 +9,9 @@ namespace Immersion.Components;
 [HarmonyPatch]
 public class ViewmodelArm : MonoBehaviour
 {
-    private const string s_viewmodelArmsName = "ViewmodelArm";
-
     private static Dictionary<string, Shader> s_armShaders;
+
+    private ToolModeSwapper _toolModeSwapper;
 
     private GameObject _playerRightArmNoSuit;
 
@@ -22,8 +22,6 @@ public class ViewmodelArm : MonoBehaviour
     private GameObject _viewmodelArmSuit;
 
     private Transform[] _bones;
-
-    private ToolModeSwapper _toolModeSwapper;
 
     public enum ArmShader
     {
@@ -54,7 +52,7 @@ public class ViewmodelArm : MonoBehaviour
     public static ViewmodelArm NewViewmodelArm(PlayerTool tool)
     {
         var playerModelClone = Instantiate(Locator.GetPlayerBody().GetComponentInChildren<PlayerAnimController>().gameObject);
-        playerModelClone.name = s_viewmodelArmsName;
+        playerModelClone.name = "ViewmodelArm";
 
         // PlayerAnimController has to be destroyed first because Animator depends on it
         Destroy(playerModelClone.GetComponent<PlayerAnimController>());
@@ -110,7 +108,7 @@ public class ViewmodelArm : MonoBehaviour
 
     public void SetArmData(string itemName)
     {
-        ArmData armData = ArmData.GetArmData(itemName);
+        var armData = ArmData.GetArmData(itemName);
         if (armData == null)
         {
             ModMain.Instance.ModHelper.Console.WriteLine($"No ViewmodelArmData found for {itemName}");
