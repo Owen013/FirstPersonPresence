@@ -68,8 +68,10 @@ public class ViewbobController : MonoBehaviour
             if (_viewbobStrength < 0.1f)
                 _viewbobTime = 0f;
 
-            float landingSpeed = (_lastPlayerVelocity - _playerController.GetGroundBody().GetPointVelocity(_playerController.GetGroundContactPoint())).magnitude;
-            StartLandingAnim(landingSpeed);
+            Vector3 landingVelocity = (_lastPlayerVelocity - _playerController.GetGroundBody().GetPointVelocity(_playerController.GetGroundContactPoint()));
+            float landingSpeed = -_playerController.transform.InverseTransformVector(landingVelocity).y;
+            if (landingSpeed >= 5f)
+                StartLandingAnim(landingSpeed);
         };
 
         _probeLauncherOffsetter.GetComponent<ProbeLauncher>().OnLaunchProbe += (_) =>
@@ -79,7 +81,7 @@ public class ViewbobController : MonoBehaviour
         };
     }
 
-    private void ApplyToolOffsets(Vector3 position)
+    private void AddToolOffsets(Vector3 position)
     {
         // apply different scaling factors for different tools
         _itemToolOffsetter.AddOffset(position);
@@ -88,7 +90,7 @@ public class ViewbobController : MonoBehaviour
         _translatorOffsetter.AddOffset(3f * position);
     }
 
-    private void ApplyToolOffsets(Quaternion rotation)
+    private void AddToolOffsets(Quaternion rotation)
     {
         // apply same rotation offset for all tools
         _itemToolOffsetter.AddOffset(rotation);
@@ -97,18 +99,18 @@ public class ViewbobController : MonoBehaviour
         _translatorOffsetter.AddOffset(rotation);
     }
 
-    private void ApplyToolOffsets(Vector3 position, Quaternion rotation)
+    private void AddToolOffsets(Vector3 position, Quaternion rotation)
     {
-        ApplyToolOffsets(position);
-        ApplyToolOffsets(rotation);
+        AddToolOffsets(position);
+        AddToolOffsets(rotation);
     }
 
     private void UpdateViewbob()
     {
-        bool isCameraBobEnabled = ModMain.Instance.EnableCameraBob && ModMain.Instance.CameraBobStrength != 0f;
+        bool isCameraBobEnabled = ModMain.Instance.EnableHeadBob && ModMain.Instance.HeadBobStrength != 0f;
         bool isToolBobEnabled = ModMain.Instance.EnableToolBob && ModMain.Instance.ToolBobStrength != 0f;
-        // only do this if viewbob is enabled for camera or tool
-        if (isCameraBobEnabled || isToolBobEnabled)
+        // only do this if player is not movement locked and viewbob is enabled for camera or tool
+        if (!_playerController._isMovementLocked && (isCameraBobEnabled || isToolBobEnabled))
         {
             // viewbob cycle increases based on player ground speed
             // viewbob time and viewbob strength are used by both camera and tool bobbing
@@ -131,14 +133,14 @@ public class ViewbobController : MonoBehaviour
 
             // apply camera offset if camera bob is enabled
             if (isCameraBobEnabled)
-                _cameraOffsetter.AddOffset(ModMain.Instance.CameraBobStrength * 0.02f * new Vector3(viewBob.x, viewBob.y));
+                _cameraOffsetter.AddOffset(ModMain.Instance.HeadBobStrength * 0.02f * new Vector3(viewBob.x, viewBob.y));
 
             // apply tool offset if tool bob is enabled
             if (isToolBobEnabled)
             {
                 var offsetPos = ModMain.Instance.ToolBobStrength * new Vector3(0.02f * viewBob.x, 0.003f * viewBob.y);
                 var offsetRot = Quaternion.Euler(ModMain.Instance.ToolBobStrength * _viewbobStrength * -0.75f * Mathf.Sin(_viewbobTime * 4f * Mathf.PI), 0f, 0f);
-                ApplyToolOffsets(offsetPos, offsetRot);
+                AddToolOffsets(offsetPos, offsetRot);
             }
         }
         // reset viewbob parameters if both camera and tool bob are disabled
@@ -161,7 +163,7 @@ public class ViewbobController : MonoBehaviour
             // tool is not offset when looking straight ahead
             toolOffset.z = Mathf.Cos(verticalLookAmount * Mathf.PI / 3f) - 1;
             toolOffset.y = -Mathf.Sin(verticalLookAmount * Mathf.PI / 3f);
-            ApplyToolOffsets(ModMain.Instance.DynamicToolPosStrength * 0.05f * toolOffset);
+            AddToolOffsets(ModMain.Instance.DynamicToolPosStrength * 0.05f * toolOffset);
         }
     }
 
@@ -183,9 +185,6 @@ public class ViewbobController : MonoBehaviour
                 if (_cameraController._zoomed || isAlarmWakingPlayer)
                     lookInput *= PlayerCameraController.ZOOM_SCALAR;
 
-                //if (Time.timeScale > 1f)
-                //    lookInput /= Time.timeScale;
-
                 // cancel out horizontal sway if player is patching suit, as they can't turn left/right while doing so
                 if (OWInput.IsInputMode(InputMode.PatchingSuit))
                 {
@@ -205,7 +204,7 @@ public class ViewbobController : MonoBehaviour
             float zOffset = 0.15f * xSwayMultiplier * (Mathf.Cos(Mathf.PI * _toolSway.magnitude) - 1f);
             Vector3 offsetPos = ModMain.Instance.ToolSwayStrength * 0.25f * new Vector3(_toolSway.x * xSwayMultiplier, _toolSway.y, zOffset);
             //Quaternion offsetRot = Quaternion.Euler(ModMain.Instance.ToolSwayStrength * 15f * new Vector3(-_toolSway.y, _toolSway.x * xSwayMultiplier, _toolSway.x * Mathf.Sin(degreesY / 180f * Mathf.PI)));
-            ApplyToolOffsets(offsetPos);
+            AddToolOffsets(offsetPos);
         }
         else
         {
@@ -216,28 +215,37 @@ public class ViewbobController : MonoBehaviour
 
     private void UpdateLandingAnim()
     {
-        _landingAnimPos = Mathf.Min(_landingAnimPos + _landingAnimVelocity * Time.deltaTime, 0f);
-
-        if (_isLandingAnimActive)
+        if (ModMain.Instance.EnableLandingAnim)
         {
-            if (_landingAnimPos >= 0f && _landingAnimVelocity >= 0f)
-            {
-                _landingAnimPos = 0f;
-                _landingAnimVelocity = 0f;
-                _isLandingAnimActive = false;
-                return;
-            }
-            else if (_landingAnimPos <= -0.5f && _landingAnimVelocity < 0f)
-            {
-                _landingAnimPos = -0.5f;
-                _landingAnimVelocity = 0f;
-            }
-            else
-            {
-                _landingAnimVelocity = Mathf.MoveTowards(_landingAnimVelocity, 1f, -_landingAnimPos * 20f * Time.deltaTime);
-            }
+            _landingAnimPos = Mathf.Min(_landingAnimPos + _landingAnimVelocity * Time.deltaTime, 0f);
 
-            _cameraOffsetter.AddOffset(new Vector3(0f, _landingAnimPos, 0f));
+            if (_isLandingAnimActive)
+            {
+                if (_landingAnimPos >= 0f && _landingAnimVelocity >= 0f)
+                {
+                    _landingAnimPos = 0f;
+                    _landingAnimVelocity = 0f;
+                    _isLandingAnimActive = false;
+                    return;
+                }
+                else if (_landingAnimPos <= -0.2f && _landingAnimVelocity < 0f)
+                {
+                    _landingAnimPos = -0.2f;
+                    _landingAnimVelocity = 0f;
+                }
+                else
+                {
+                    _landingAnimVelocity = Mathf.MoveTowards(_landingAnimVelocity, 1f, -_landingAnimPos * 20f * Time.deltaTime);
+                }
+
+                _cameraOffsetter.AddOffset(new Vector3(0f, _landingAnimPos, 0f));
+            }
+        }
+        else
+        {
+            _landingAnimPos = 0f;
+            _landingAnimVelocity = 0f;
+            _isLandingAnimActive = false;
         }
     }
 
@@ -264,7 +272,7 @@ public class ViewbobController : MonoBehaviour
         UpdateViewbob();
         UpdateDynamicToolPos();
         UpdateToolSway();
-        //UpdateLandingAnim();
+        UpdateLandingAnim();
         UpdateScoutAnim();
     }
 

@@ -15,14 +15,14 @@
     "View Bobbing": {
       "type": "separator"
     },
-    "EnableCameraBob": {
-      "title": "Enable Camera Bobbing",
+    "EnableHeadBob": {
+      "title": "Enable Head Bobbing",
       "tooltip": "Makes the camera bob while you're moving.",
       "type": "toggle",
       "value": true
     },
-    "CameraBobStrength": {
-      "title": "Camera Bob Strength",
+    "HeadBobStrength": {
+      "title": "Head Bob Strength",
       "tooltip": "The scale of the camera's bobbing.",
       "type": "number",
       "value": 1
@@ -77,7 +77,7 @@
     },
     "TweakItemPos": {
       "title": "Tweak Held Item Positions",
-      "tooltip": "Tweaks the position of some held items to prevent visual bugs such as items clipping through the camera. Recommended: Enabled",
+      "tooltip": "Tweaks the position of some held items to prevent visual bugs such as items clipping through the camera.",
       "type": "toggle",
       "value": true
     },
@@ -87,25 +87,9 @@
       "type": "toggle",
       "value": true
     },
-
-    "OLD": {
-      "type": "separator"
-    },
-    "UseJumpAnim": {
-      "title": "Use Jumping Animation",
-      "tooltip": "Makes the camera shake a bit when you jump, based on the view/tool bob amounts you set above. Recommended: Enabled",
-      "type": "toggle",
-      "value": true
-    },
-    "UseFallAnim": {
-      "title": "Use Falling Animation",
-      "tooltip": "Makes the camera sway a bit as you fall, based on the view/tool bob amounts you set above. Recommended: Enabled",
-      "type": "toggle",
-      "value": true
-    },
-    "UseLandingAnim": {
-      "title": "Use Landing Animation",
-      "tooltip": "Makes the camera shake a bit when you land on the ground, based on the view/tool bob amounts you set above. Recommended: Enabled",
+    "EnableLandingAnim": {
+      "title": "Enable Landing Animation",
+      "tooltip": "",
       "type": "toggle",
       "value": true
     }

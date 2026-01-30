@@ -19,9 +19,9 @@ public class ModMain : ModBehaviour
 
     public bool EnableViewmodelHands { get; private set; }
 
-    public bool EnableCameraBob { get; private set; }
+    public bool EnableHeadBob { get; private set; }
 
-    public float CameraBobStrength { get; private set; }
+    public float HeadBobStrength { get; private set; }
 
     public bool EnableToolBob { get; private set; }
 
@@ -39,6 +39,8 @@ public class ModMain : ModBehaviour
 
     public bool EnableScoutAnim { get; private set; }
 
+    public bool EnableLandingAnim { get; private set; }
+
     public override object GetApi()
     {
         // provide API for use by other mods
@@ -51,8 +53,8 @@ public class ModMain : ModBehaviour
         EnableViewmodelHands = config.GetSettingsValue<bool>("EnableViewmodelHands");
 
         // viewbob
-        EnableCameraBob = config.GetSettingsValue<bool>("EnableCameraBob");
-        CameraBobStrength = config.GetSettingsValue<float>("CameraBobStrength");
+        EnableHeadBob = config.GetSettingsValue<bool>("EnableHeadBob");
+        HeadBobStrength = config.GetSettingsValue<float>("HeadBobStrength");
         EnableToolBob = config.GetSettingsValue<bool>("EnableToolBob");
         ToolBobStrength = config.GetSettingsValue<float>("ToolBobStrength");
 
@@ -63,10 +65,11 @@ public class ModMain : ModBehaviour
         // tool sway
         EnableToolSway = config.GetSettingsValue<bool>("EnableToolSway");
         ToolSwayStrength = config.GetSettingsValue<float>("ToolSwayStrength");
-        EnableScoutAnim = config.GetSettingsValue<bool>("EnableScoutAnim");
 
         // misc
         TweakItemPos = config.GetSettingsValue<bool>("TweakItemPos");
+        EnableScoutAnim = config.GetSettingsValue<bool>("EnableScoutAnim");
+        EnableLandingAnim = config.GetSettingsValue<bool>("EnableLandingAnim");
     }
 
     private void Awake()
