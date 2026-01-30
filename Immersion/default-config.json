@@ -89,6 +89,12 @@
       "type": "toggle",
       "value": true
     },
+    "EnableBreathingAnim": {
+      "title": "Enable Breathing Animation",
+      "tooltip": "Makes the tool move very subtley while you're standing still.",
+      "type": "toggle",
+      "value": true
+    },
     "EnableScoutAnim": {
       "title": "Enable Scout Launcher Fire Animation",
       "tooltip": "Makes the camera and scout launcher recoil when you launch a scout.",

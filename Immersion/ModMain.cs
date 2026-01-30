@@ -33,6 +33,8 @@ public class ModMain : ModBehaviour
 
     public float ToolSwayStrength { get; private set; }
 
+    public bool EnableBreathingAnim { get; private set; }
+
     public bool TweakItemPos { get; private set; }
 
     public bool EnableScoutAnim { get; private set; }
@@ -68,6 +70,7 @@ public class ModMain : ModBehaviour
 
         // misc
         TweakItemPos = config.GetSettingsValue<bool>("TweakItemPos");
+        EnableBreathingAnim = config.GetSettingsValue<bool>("EnableBreathingAnim");
         EnableScoutAnim = config.GetSettingsValue<bool>("EnableScoutAnim");
         EnableLandingAnim = config.GetSettingsValue<bool>("EnableLandingAnim");
         EnableSprintingAnim = config.GetSettingsValue<bool>("EnableSprintingAnim");

@@ -26,15 +26,23 @@ public class ViewbobController : MonoBehaviour
 
     private Vector2 _toolSway;
 
-    private Vector2 _toolSwayDampVelocity;
+    private Vector2 _toolSwayDampVel;
+
+    private Vector3 _breathingAnimPos;
+
+    private Vector3 _breathingAnimTargetPos;
+
+    private Vector3 _breathingAnimDampVel;
+
+    private float _nextBreathingAnimUpdateTime;
 
     private float _lastScoutLaunchTime;
 
     private float _scoutRecoil;
 
-    private float _scoutRecoilVelocity;
+    private float _scoutRecoilVel;
 
-    private Vector3 _lastPlayerVelocity;
+    private Vector3 _lastPlayerVel;
 
     private bool _isLandingAnimActive;
 
@@ -42,11 +50,11 @@ public class ViewbobController : MonoBehaviour
 
     private float _landingAnimPos;
 
-    private float _landingAnimDampVelocity;
+    private float _landingAnimDampVel;
 
     private float _sprintAnimStrength;
 
-    private float _sprintAnimDampVelocity;
+    private float _sprintAnimDampVel;
 
     private void Awake()
     {
@@ -70,7 +78,7 @@ public class ViewbobController : MonoBehaviour
                 _viewbobTime = 0f;
 
             // if the player lands with a downward speed of at least 5, play landing anim
-            Vector3 landingVelocity = (_lastPlayerVelocity - _playerController.GetGroundBody().GetPointVelocity(_playerController.GetGroundContactPoint()));
+            Vector3 landingVelocity = (_lastPlayerVel - _playerController.GetGroundBody().GetPointVelocity(_playerController.GetGroundContactPoint()));
             float landingSpeed = -_playerController.transform.InverseTransformVector(landingVelocity).y;
             if (landingSpeed >= 5f)
             {
@@ -223,7 +231,30 @@ public class ViewbobController : MonoBehaviour
         {
             // if tool sway is disabled, reset tool sway parameters
             _toolSway = Vector3.zero;
-            _toolSwayDampVelocity = Vector3.zero;
+            _toolSwayDampVel = Vector3.zero;
+        }
+    }
+
+    private void UpdateBreathingAnim()
+    {
+        if (ModMain.Instance.EnableBreathingAnim)
+        {
+            _breathingAnimPos = Vector3.SmoothDamp(_breathingAnimPos, _breathingAnimTargetPos, ref _breathingAnimDampVel, 1f);
+            AddToolOffsets(_breathingAnimPos);
+
+            if (Time.time >= _nextBreathingAnimUpdateTime)
+            {
+                // choose random tool offset
+                _breathingAnimTargetPos = 0.005f * new Vector3(Random.Range(0f, 1f), Random.Range(0f, 1f), Random.Range(0f, 1f));
+                _nextBreathingAnimUpdateTime = Time.time + Random.Range(0.1f, 1f);
+            }
+        }
+        else
+        {
+            _breathingAnimPos = Vector3.zero;
+            _breathingAnimTargetPos = Vector3.zero;
+            _breathingAnimDampVel = Vector3.zero;
+            _nextBreathingAnimUpdateTime = 0f;
         }
     }
 
@@ -234,7 +265,7 @@ public class ViewbobController : MonoBehaviour
             float targetRecoil = Mathf.Max(_lastScoutLaunchTime + 0.5f - Time.time, 0f) * 2f;
             // damp moves quickly during the initial recoil, and slowly during the recovery
             float dampTime = targetRecoil > _scoutRecoil ? 0.05f : 0.1f;
-            _scoutRecoil = Mathf.SmoothDamp(_scoutRecoil, targetRecoil, ref _scoutRecoilVelocity, dampTime);
+            _scoutRecoil = Mathf.SmoothDamp(_scoutRecoil, targetRecoil, ref _scoutRecoilVel, dampTime);
             // apply recoils to camera and scout launcher
             _cameraOffsetter.AddOffset(Quaternion.Euler(_scoutRecoil * new Vector3(-5f, 0f, -5f)));
             _probeLauncherOffsetter.AddOffset(new Vector3(0.25f, -0.25f, -0.5f) * _scoutRecoil, Quaternion.Euler(new Vector3(-15f, 0f, -15f) * _scoutRecoil));
@@ -243,7 +274,7 @@ public class ViewbobController : MonoBehaviour
         {
             // reset recoil parameters if disabled
             _scoutRecoil = 0f;
-            _scoutRecoilVelocity = 0f;
+            _scoutRecoilVel = 0f;
         }
     }
 
@@ -264,7 +295,7 @@ public class ViewbobController : MonoBehaviour
             }
             else
             {
-                _landingAnimPos = Mathf.SmoothDamp(_landingAnimPos, 0f, ref _landingAnimDampVelocity, 0.2f);
+                _landingAnimPos = Mathf.SmoothDamp(_landingAnimPos, 0f, ref _landingAnimDampVel, 0.2f);
             }
 
             _cameraOffsetter.AddOffset(new Vector3(0f, _landingAnimPos, 0f));
@@ -273,7 +304,7 @@ public class ViewbobController : MonoBehaviour
         {
             // reset landing anim parameters if feature is disabled
             _landingAnimPos = 0f;
-            _landingAnimDampVelocity = 0f;
+            _landingAnimDampVel = 0f;
             _isLandingAnimActive = false;
         }
     }
@@ -282,13 +313,13 @@ public class ViewbobController : MonoBehaviour
     {
         if (ModMain.Instance.EnableSprintingAnim && ModMain.Instance.HikersModAPI != null)
         {
-            _sprintAnimStrength = Mathf.SmoothDamp(_sprintAnimStrength, ModMain.Instance.HikersModAPI.IsSprinting() ? 1f : 0f, ref _sprintAnimDampVelocity, 0.2f);
+            _sprintAnimStrength = Mathf.SmoothDamp(_sprintAnimStrength, ModMain.Instance.HikersModAPI.IsSprinting() ? 1f : 0f, ref _sprintAnimDampVel, 0.2f);
             AddToolOffsets(Quaternion.Euler(15f * _sprintAnimStrength, 0f, 0f));
         }
         else
         {
             _sprintAnimStrength = 0f;
-            _sprintAnimDampVelocity = 0f;
+            _sprintAnimDampVel = 0f;
         }
     }
 
@@ -297,6 +328,7 @@ public class ViewbobController : MonoBehaviour
         UpdateViewbob();
         UpdateDynamicToolPos();
         UpdateToolSway();
+        UpdateBreathingAnim();
         UpdateScoutAnim();
         UpdateLandingAnim();
         UpdateSprintAnim();
@@ -305,7 +337,7 @@ public class ViewbobController : MonoBehaviour
     private void FixedUpdate()
     {
         // decay tool sway
-        _toolSway = Vector2.SmoothDamp(_toolSway, Vector2.zero, ref _toolSwayDampVelocity, 0.2f);
-        _lastPlayerVelocity = _playerController.GetAttachedOWRigidbody().GetVelocity();
+        _toolSway = Vector2.SmoothDamp(_toolSway, Vector2.zero, ref _toolSwayDampVel, 0.2f);
+        _lastPlayerVel = _playerController.GetAttachedOWRigidbody().GetVelocity();
     }
 }
