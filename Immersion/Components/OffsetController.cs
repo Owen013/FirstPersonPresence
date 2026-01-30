@@ -1,8 +1,10 @@
-﻿using UnityEngine;
+﻿using HarmonyLib;
+using UnityEngine;
 
 namespace Immersion.Components;
 
-public abstract class TransformOffsetController : MonoBehaviour
+[HarmonyPatch]
+public class OffsetController : MonoBehaviour
 {
     protected (Vector3 position, Quaternion rotation) currentOffset;
 
@@ -56,5 +58,23 @@ public abstract class TransformOffsetController : MonoBehaviour
     protected virtual void LateUpdate()
     {
         ApplyOffset();
+    }
+
+    [HarmonyPrefix]
+    [HarmonyPatch(typeof(PlayerCameraController), nameof(PlayerCameraController.UpdateCamera))]
+    private static void PlayerCameraController_UpdateCamera_Prefix(PlayerCameraController __instance)
+    {
+        // remove camera offset before vanilla update logic
+        var offsetController = __instance.GetComponent<OffsetController>();
+        offsetController?.ResetOffset();
+    }
+
+    [HarmonyPrefix]
+    [HarmonyPatch(typeof(PlayerTool), nameof(PlayerTool.Update))]
+    private static void PlayerTool_Update_Prefix(PlayerTool __instance)
+    {
+        // remove tool offset before vanilla update logic
+        var offsetController = __instance.GetComponent<OffsetController>();
+        offsetController?.ResetOffset();
     }
 }

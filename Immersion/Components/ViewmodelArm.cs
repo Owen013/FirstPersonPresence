@@ -16,6 +16,8 @@ public class ViewmodelArm : MonoBehaviour
 
     private static Shader[] s_armShaders;
 
+    private ItemTool _itemCarryTool;
+
     private GameObject _playerRightArmNoSuit;
 
     private GameObject _playerRightArmSuit;
@@ -95,6 +97,8 @@ public class ViewmodelArm : MonoBehaviour
 
     private void Awake()
     {
+        _itemCarryTool = Locator.GetToolModeSwapper()._itemCarryTool;
+
         // grab references to the player's real arms
         Transform playerTransform = Locator.GetPlayerController().transform;
         _playerRightArmNoSuit = playerTransform.Find("Traveller_HEA_Player_v2/player_mesh_noSuit:Traveller_HEA_Player/player_mesh_noSuit:Player_RightArm").gameObject;
@@ -133,12 +137,14 @@ public class ViewmodelArm : MonoBehaviour
         }
 
         if (_playerTool != null)
+        {
             if (!_playerTool._isEquipped && !_playerTool._isPuttingAway)
             {
                 gameObject.SetActive(false);
                 return;
             }
-        else if (_owItem != null && Locator.GetToolModeSwapper()._itemCarryTool._heldItem != _owItem)
+        }
+        else if (_owItem != null && _itemCarryTool._heldItem != _owItem)
         {
             gameObject.SetActive(false);
             return;

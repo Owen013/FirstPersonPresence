@@ -10,15 +10,15 @@ public class ViewbobController : MonoBehaviour
 
     private PlayerCameraController _cameraController;
 
-    private CameraOffsetController _cameraOffsetter;
+    private OffsetController _cameraOffsetter;
 
-    private ToolOffsetController _itemToolOffsetter;
+    private OffsetController _itemToolOffsetter;
 
-    private ToolOffsetController _signalscopeOffsetter;
+    private OffsetController _signalscopeOffsetter;
 
-    private ToolOffsetController _probeLauncherOffsetter;
+    private OffsetController _probeLauncherOffsetter;
 
-    private ToolOffsetController _translatorOffsetter;
+    private OffsetController _translatorOffsetter;
 
     private float _viewbobTime;
 
@@ -48,14 +48,14 @@ public class ViewbobController : MonoBehaviour
         _playerController = Locator.GetPlayerController();
         _animController = _playerController.GetComponentInChildren<PlayerAnimController>();
         _cameraController = GetComponent<PlayerCameraController>();
-        _cameraOffsetter = _cameraController.gameObject.AddComponent<CameraOffsetController>();
+        _cameraOffsetter = _cameraController.gameObject.AddComponent<OffsetController>();
 
         // create PlayerTool offsetters
         var mainCamera = _cameraController._playerCamera.mainCamera.transform;
-        _itemToolOffsetter = mainCamera.Find("ItemCarryTool").gameObject.AddComponent<ToolOffsetController>();
-        _signalscopeOffsetter = mainCamera.Find("Signalscope").gameObject.AddComponent<ToolOffsetController>();
-        _probeLauncherOffsetter = mainCamera.Find("ProbeLauncher").gameObject.AddComponent<ToolOffsetController>();
-        _translatorOffsetter = mainCamera.Find("NomaiTranslatorProp").gameObject.AddComponent<ToolOffsetController>();
+        _itemToolOffsetter = mainCamera.Find("ItemCarryTool").gameObject.AddComponent<OffsetController>();
+        _signalscopeOffsetter = mainCamera.Find("Signalscope").gameObject.AddComponent<OffsetController>();
+        _probeLauncherOffsetter = mainCamera.Find("ProbeLauncher").gameObject.AddComponent<OffsetController>();
+        _translatorOffsetter = mainCamera.Find("NomaiTranslatorProp").gameObject.AddComponent<OffsetController>();
 
         _playerController.OnBecomeGrounded += () =>
         {
@@ -106,7 +106,7 @@ public class ViewbobController : MonoBehaviour
                 // change viewbob strength quickly if on ground
                 Vector3 groundVelocity = _playerController.GetRelativeGroundVelocity();
                 groundVelocity.y = 0f;
-                _viewbobStrength = Mathf.MoveTowards(_viewbobStrength, Mathf.Min(groundVelocity.magnitude / 6f, 1f), 5f * Time.deltaTime);
+                _viewbobStrength = Mathf.MoveTowards(_viewbobStrength, Mathf.Min(groundVelocity.magnitude / 6f, 2f), 5f * Time.deltaTime);
             }
             else
             {
@@ -124,8 +124,8 @@ public class ViewbobController : MonoBehaviour
             // apply tool offset if tool bob is enabled
             if (isToolBobEnabled)
             {
-                var offsetPos = ModMain.Instance.ToolBobStrength * new Vector3(0.015f * viewBob.x, 0.002f * viewBob.y);
-                var offsetRot = Quaternion.Euler(ModMain.Instance.ToolBobStrength * _viewbobStrength * -0.5f * Mathf.Sin(_viewbobTime * 4f * Mathf.PI), 0f, 0f);
+                var offsetPos = ModMain.Instance.ToolBobStrength * new Vector3(0.02f * viewBob.x, 0.003f * viewBob.y);
+                var offsetRot = Quaternion.Euler(ModMain.Instance.ToolBobStrength * _viewbobStrength * -1f * Mathf.Sin(_viewbobTime * 4f * Mathf.PI), 0f, 0f);
                 ApplyToolOffsets(offsetPos, offsetRot);
             }
         }
@@ -166,7 +166,7 @@ public class ViewbobController : MonoBehaviour
                 lookDelta.y = Mathf.Max(0f, lookDelta.y);
 
             var newSway = new Vector3(-lookDelta.x * Mathf.Cos(degreesY * Mathf.PI / 180f), -lookDelta.y, 0f);
-            newSway *= Mathf.Sqrt(1f - Mathf.Pow(Mathf.Clamp01((_toolSway + newSway).magnitude), 2f));
+            newSway /= _toolSway.magnitude + 1f;
             _toolSway += newSway;
             ApplyToolOffsets(ModMain.Instance.ToolSwayStrength * 0.05f * _toolSway);
         }
@@ -179,10 +179,26 @@ public class ViewbobController : MonoBehaviour
 
     private void UpdateLandingAnim()
     {
+        _landingAnimPos = Mathf.Min(_landingAnimPos + _landingAnimVelocity * Time.deltaTime, 0f);
+
         if (_isLandingAnimActive)
         {
-            _landingAnimPos = Mathf.Min(_landingAnimPos + _landingAnimVelocity * Time.deltaTime, 0f);
-            _landingAnimVelocity += Time.deltaTime;
+            if (_landingAnimPos >= 0f && _landingAnimVelocity >= 0f)
+            {
+                _landingAnimPos = 0f;
+                _landingAnimVelocity = 0f;
+                _isLandingAnimActive = false;
+                return;
+            }
+            else if (_landingAnimPos <= -0.5f && _landingAnimVelocity < 0f)
+            {
+                _landingAnimPos = -0.5f;
+                _landingAnimVelocity = 0f;
+            }
+            else
+            {
+                _landingAnimVelocity = Mathf.MoveTowards(_landingAnimVelocity, 1f, -_landingAnimPos * 20f * Time.deltaTime);
+            }
 
             _cameraOffsetter.AddOffset(new Vector3(0f, _landingAnimPos, 0f));
         }
