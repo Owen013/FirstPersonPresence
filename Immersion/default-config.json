@@ -80,18 +80,30 @@
       "max": 2
     },
 
+    "Breathing Animation": {
+      "type": "separator"
+    },
+    "EnableBreathingAnim": {
+      "title": "Enable Breathing Animation",
+      "tooltip": "Makes the tool move very subtley while you're standing still.",
+      "type": "toggle",
+      "value": true
+    },
+    "BreathingAnimStrength": {
+      "title": "Breathing Animation Strength",
+      "tooltip": "The scale of the breathing effect.",
+      "type": "slider",
+      "value": true,
+      "min": 0,
+      "max": 2
+    },
+
     "Miscellaneous": {
       "type": "separator"
     },
     "TweakItemPos": {
       "title": "Tweak Held Item Positions",
       "tooltip": "Tweaks the position of some held items to prevent visual bugs such as items clipping through the camera.",
-      "type": "toggle",
-      "value": true
-    },
-    "EnableBreathingAnim": {
-      "title": "Enable Breathing Animation",
-      "tooltip": "Makes the tool move very subtley while you're standing still.",
       "type": "toggle",
       "value": true
     },
