@@ -9,9 +9,15 @@ namespace Immersion.Components;
 [HarmonyPatch]
 public class ViewmodelArm : MonoBehaviour
 {
+    private static GameObject s_armTemplate;
+
     private static Dictionary<string, Shader> s_armShaders;
 
-    private ToolModeSwapper _toolModeSwapper;
+    private PlayerTool _playerTool;
+
+    private OWItem _owItem;
+
+    private ItemTool _itemCarryTool;
 
     private GameObject _playerRightArmNoSuit;
 
@@ -49,19 +55,108 @@ public class ViewmodelArm : MonoBehaviour
         Thumb_04 = 19,
     }
 
-    public static ViewmodelArm NewViewmodelArm(PlayerTool tool)
+    public static ViewmodelArm NewViewmodelArm(PlayerTool playerTool)
     {
-        var playerModelClone = Instantiate(Locator.GetPlayerBody().GetComponentInChildren<PlayerAnimController>().gameObject);
-        playerModelClone.name = "ViewmodelArm";
+        return NewViewmodelArm(playerTool, null);
+    }
+
+    public static ViewmodelArm NewViewmodelArm(OWItem owItem)
+    {
+        return NewViewmodelArm(null, owItem);
+    }
+
+    // this method should not be used except by the above two methods
+    private static ViewmodelArm NewViewmodelArm(PlayerTool playerTool, OWItem owItem)
+    {
+        var armObject = Instantiate(s_armTemplate);
+        armObject.name = "ViewmodelArm";
+        armObject.SetActive(true);
+
+        // add component and initialize fields
+        var viewmodelArm = armObject.AddComponent<ViewmodelArm>();
+        viewmodelArm._viewmodelArmNoSuit = armObject.transform.Find("player_mesh_noSuit:Player_RightArm").gameObject;
+        viewmodelArm._viewmodelArmSuit = armObject.transform.Find("Traveller_Mesh_v01:PlayerSuit_RightArm").gameObject;
+        viewmodelArm._bones = viewmodelArm._viewmodelArmNoSuit.GetComponent<SkinnedMeshRenderer>().bones;
+
+        // Move to transform
+        if (playerTool != null)
+        {
+            viewmodelArm.transform.parent = playerTool.transform;
+            viewmodelArm._playerTool = playerTool;
+        }
+        else
+        {
+            viewmodelArm.transform.parent = owItem.transform;
+            viewmodelArm._owItem = owItem;
+            owItem.onPickedUp += (item) =>
+            {
+                viewmodelArm.gameObject.SetActive(true);
+            };
+        }
+
+        viewmodelArm.transform.localPosition = Vector3.zero;
+        viewmodelArm.transform.localRotation = Quaternion.identity;
+        viewmodelArm.transform.localScale = 0.1f * Vector3.one;
+        armObject.transform.Find("Traveller_Rig_v01:Traveller_Spine_01_Jnt").localPosition = new Vector3(-0.2741f, -8f, -0.6957f);
+
+        return viewmodelArm;
+    }
+
+    public void SetArmData(string itemName)
+    {
+        var armData = ArmData.GetArmData(itemName);
+        if (armData == null)
+        {
+            ModMain.Instance.ModHelper.Console.WriteLine($"No ViewmodelArmData found for {itemName}");
+            return;
+        }
+
+        SetBoneEulers(armData.boneEulers);
+        transform.localPosition = armData.localPosition;
+        transform.localScale = 0.1f * Vector3.one * armData.scale;
+        SetShader(armData.shaderName);
+    }
+
+    public void OutputBoneRotations()
+    {
+        for (int i = 0; i <= 14; i++)
+        {
+            var boneEulers = _bones[i + 5].localRotation.eulerAngles;
+            ModMain.Instance.ModHelper.Console.WriteLine($"{(ArmBone)(i + 5)}: [ {boneEulers.x}, {boneEulers.y}, {boneEulers.z} ]");
+        }
+    }
+
+    internal static void OnSceneLoad()
+    {
+        Transform camera = Locator.GetPlayerCamera().transform;
+
+        CreateArmTemplate();
+        ModMain.Instance.ModHelper.Events.Unity.FireOnNextUpdate(() =>
+        {
+            NewViewmodelArm(camera.Find("Signalscope").GetComponent<PlayerTool>()).SetArmData("Signalscope");
+            NewViewmodelArm(camera.Find("ProbeLauncher").GetComponent<PlayerTool>()).SetArmData("ProbeLauncher");
+            NewViewmodelArm(camera.Find("NomaiTranslatorProp").GetComponent<PlayerTool>()).SetArmData("Translator");
+            NewViewmodelArm(camera.Find("ItemCarryTool").GetComponent<PlayerTool>());
+        });
+    }
+
+    private static void CreateArmTemplate()
+    {
+        var armObject = Instantiate(Locator.GetPlayerBody().GetComponentInChildren<PlayerAnimController>().gameObject);
+        armObject.name = "ViewmodelArmTemplate";
 
         // PlayerAnimController has to be destroyed first because Animator depends on it
-        Destroy(playerModelClone.GetComponent<PlayerAnimController>());
-        playerModelClone.DestroyAllComponents<Behaviour>();
+        Destroy(armObject.GetComponent<PlayerAnimController>());
+        armObject.DestroyAllComponents<Behaviour>();
 
         // Set new root bone
-        var newRootBone = playerModelClone.transform.Find("Traveller_Rig_v01:Traveller_Trajectory_Jnt/Traveller_Rig_v01:Traveller_ROOT_Jnt/Traveller_Rig_v01:Traveller_Spine_01_Jnt");
-        newRootBone.parent = playerModelClone.transform;
-        Destroy(playerModelClone.transform.Find("Traveller_Rig_v01:Traveller_Trajectory_Jnt").gameObject);
+        var newRootBone = armObject.transform.Find("Traveller_Rig_v01:Traveller_Trajectory_Jnt/Traveller_Rig_v01:Traveller_ROOT_Jnt/Traveller_Rig_v01:Traveller_Spine_01_Jnt");
+        newRootBone.parent = armObject.transform;
+        foreach (Transform transform in armObject.GetComponentsInChildren<Transform>(true))
+        {
+            if (transform.name == "Traveller_Rig_v01:Traveller_Trajectory_Jnt" || transform.name == "player_mesh_noSuit:Traveller_HEA_Player" || transform.name == "Traveller_Rig_v01:Traveller" || transform.name == "Traveller_Mesh_v01:Traveller_Geo")
+                Destroy(transform.gameObject);
+        }
 
         static void SetUpArmModel(GameObject arm, Transform rootBone)
         {
@@ -86,56 +181,13 @@ public class ViewmodelArm : MonoBehaviour
             renderer.bones = newBones.ToArray();
         }
 
-        var noSuitArm = playerModelClone.transform.Find("player_mesh_noSuit:Traveller_HEA_Player/player_mesh_noSuit:Player_RightArm").gameObject;
-        var suitArm = playerModelClone.transform.Find("Traveller_Mesh_v01:Traveller_Geo/Traveller_Mesh_v01:PlayerSuit_RightArm").gameObject;
+        var noSuitArm = armObject.transform.Find("player_mesh_noSuit:Traveller_HEA_Player/player_mesh_noSuit:Player_RightArm").gameObject;
+        var suitArm = armObject.transform.Find("Traveller_Mesh_v01:Traveller_Geo/Traveller_Mesh_v01:PlayerSuit_RightArm").gameObject;
         SetUpArmModel(noSuitArm, newRootBone);
         SetUpArmModel(suitArm, newRootBone);
 
-        // Move to transform
-        playerModelClone.transform.parent = tool.transform;
-        playerModelClone.transform.localPosition = Vector3.zero;
-        playerModelClone.transform.localRotation = Quaternion.identity;
-        newRootBone.localPosition = new Vector3(-0.2741f, -8f, -0.6957f);
-
-        // add component and initialize fields
-        var viewmodelArm = playerModelClone.AddComponent<ViewmodelArm>();
-        viewmodelArm._viewmodelArmNoSuit = playerModelClone.transform.Find("player_mesh_noSuit:Player_RightArm").gameObject;
-        viewmodelArm._viewmodelArmSuit = playerModelClone.transform.Find("Traveller_Mesh_v01:PlayerSuit_RightArm").gameObject;
-        viewmodelArm._bones = noSuitArm.GetComponent<SkinnedMeshRenderer>().bones;
-
-        return viewmodelArm;
-    }
-
-    public void SetArmData(string itemName)
-    {
-        var armData = ArmData.GetArmData(itemName);
-        if (armData == null)
-        {
-            ModMain.Instance.ModHelper.Console.WriteLine($"No ViewmodelArmData found for {itemName}");
-            return;
-        }
-
-        SetBoneEulers(armData.boneEulers);
-        SetScale(armData.scale);
-        SetShader(armData.shaderName);
-    }
-
-    public void OutputBoneRotations()
-    {
-        for (int i = 0; i <= 14; i++)
-        {
-            var bone = _bones[i + 5];
-            ModMain.Instance.ModHelper.Console.WriteLine($"{(ArmBone)(i + 5)}: {bone.localRotation.eulerAngles}");
-        }
-    }
-
-    internal static void OnSceneLoad()
-    {
-        Transform player = Locator.GetPlayerTransform();
-
-        // create testing signalscope arm
-        var testArm = NewViewmodelArm(player.GetComponentInChildren<Signalscope>());
-        testArm.SetArmData("Signalscope");
+        armObject.SetActive(false);
+        s_armTemplate = armObject;
     }
 
     private void SetBoneEulers(Vector3[] eulers)
@@ -144,11 +196,6 @@ public class ViewmodelArm : MonoBehaviour
         {
             _bones[i + 5].localEulerAngles = eulers[i];
         }
-    }
-
-    private void SetScale(float scale)
-    {
-        transform.localScale = 0.1f * Vector3.one * scale;
     }
 
     private void SetShader(string shaderName)
@@ -182,7 +229,7 @@ public class ViewmodelArm : MonoBehaviour
 
     private void Awake()
     {
-        _toolModeSwapper = Locator.GetToolModeSwapper();
+        _itemCarryTool = Locator.GetToolModeSwapper().GetItemCarryTool();
 
         var playerTransform = Locator.GetPlayerController().transform;
         _playerRightArmNoSuit = playerTransform.Find("Traveller_HEA_Player_v2/player_mesh_noSuit:Traveller_HEA_Player/player_mesh_noSuit:Player_RightArm").gameObject;
@@ -191,7 +238,21 @@ public class ViewmodelArm : MonoBehaviour
 
     private void LateUpdate()
     {
-        if (!ModMain.Instance.EnableViewmodelHands || _toolModeSwapper.GetToolMode() == ToolMode.None)
+        if (!ModMain.Instance.EnableViewmodelHands)
+        {
+            gameObject.SetActive(false);
+            return;
+        }
+
+        if (_playerTool != null)
+        {
+            if (!_playerTool._isEquipped && !_playerTool._isPuttingAway)
+            {
+                gameObject.SetActive(false);
+                return;
+            }
+        }
+        else if (_owItem != null && _itemCarryTool._heldItem != _owItem)
         {
             gameObject.SetActive(false);
             return;
@@ -209,6 +270,84 @@ public class ViewmodelArm : MonoBehaviour
         if (arm != null)
         {
             arm.gameObject.SetActive(true);
+        }
+    }
+
+    [HarmonyPostfix]
+    [HarmonyPatch(typeof(OWItem), nameof(OWItem.PickUpItem))]
+    private static void ItemPickedUp(OWItem __instance)
+    {
+        if (ModMain.Instance.TweakItemPos && __instance._type == ItemType.ConversationStone)
+            __instance.transform.localPosition = 0.2f * Vector3.forward;
+
+        // don't try to add viewmodel arm if disabled in config or if this item already has one
+        if (!ModMain.Instance.EnableViewmodelHands || __instance.transform.Find("ViewmodelArm")) return;
+
+        switch (__instance._type)
+        {
+            case ItemType.SharedStone:
+                NewViewmodelArm(__instance).SetArmData("SharedStone");
+                break;
+            case ItemType.Scroll:
+                if (__instance.name == "Prefab_NOM_Scroll_Jeff")
+                {
+                    // ...
+                }
+                else
+                {
+                    // ...
+                }
+                break;
+            case ItemType.ConversationStone:
+                switch ((__instance as NomaiConversationStone)._word)
+                {
+                    case NomaiWord.Identify:
+                        // ...
+                        break;
+                    case NomaiWord.Explain:
+                        // ...
+                        break;
+                    case NomaiWord.Eye:
+                        // ...
+                        break;
+                    default:
+                        // ...
+                        break;
+                }
+                break;
+            case ItemType.WarpCore:
+                switch ((__instance as WarpCoreItem)._warpCoreType)
+                {
+                    case WarpCoreType.Vessel:
+                        // ...
+                        break;
+                    case WarpCoreType.VesselBroken:
+                        // ...
+                        break;
+                    default:
+                        // ...
+                        break;
+                }
+                break;
+            case ItemType.Lantern:
+                // ...
+                break;
+            case ItemType.SlideReel:
+                // ...
+                break;
+            case ItemType.DreamLantern:
+                if ((__instance as DreamLanternItem)._lanternType == DreamLanternType.Nonfunctioning)
+                {
+
+                }
+                else
+                {
+
+                }
+                break;
+            case ItemType.VisionTorch:
+                // ...
+                break;
         }
     }
 }

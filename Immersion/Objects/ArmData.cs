@@ -11,6 +11,10 @@ public class ArmData
 {
     public Vector3[] boneEulers;
 
+    public Vector3 localPosition;
+
+    public Vector3 localRotation;
+
     public float scale;
 
     public string shaderName;
@@ -33,7 +37,7 @@ public class ArmData
         {
             s_armData = [];
 
-            string jsonPath = Path.Combine(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location), "viewmodel_arm_data.json");
+            string jsonPath = Path.Combine(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location), "viewmodel-arm-data.json");
             JObject jsonData = JObject.Parse(File.ReadAllText(jsonPath));
 
             foreach (var (toolName, toolToken) in jsonData)
@@ -45,6 +49,16 @@ public class ArmData
                 if (toolObject["bone_eulers"] is JArray eulerArray)
                 {
                     armData.boneEulers = eulerArray.Select(vec => new Vector3((float)vec[0], (float)vec[1], (float)vec[2])).ToArray();
+                }
+
+                if (toolObject["arm_local_position"] != null)
+                {
+                    armData.localPosition = new Vector3((float)toolObject["arm_local_position"][0], (float)toolObject["arm_local_position"][1], (float)toolObject["arm_local_position"][2]);
+                }
+
+                if (toolObject["arm_local_rotation"] != null)
+                {
+                    armData.localRotation = new Vector3((float)toolObject["arm_local_rotation"][0], (float)toolObject["arm_local_rotation"][1], (float)toolObject["arm_local_rotation"][2]);
                 }
 
                 if (toolObject["arm_scale"] != null)
