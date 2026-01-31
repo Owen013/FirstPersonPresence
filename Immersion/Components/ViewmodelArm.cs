@@ -135,8 +135,7 @@ public class ViewmodelArm : MonoBehaviour
         {
             NewViewmodelArm(camera.Find("Signalscope").GetComponent<PlayerTool>()).SetArmData("Signalscope");
             NewViewmodelArm(camera.Find("ProbeLauncher").GetComponent<PlayerTool>()).SetArmData("ProbeLauncher");
-            NewViewmodelArm(camera.Find("NomaiTranslatorProp").GetComponent<PlayerTool>()).SetArmData("Translator");
-            NewViewmodelArm(camera.Find("ItemCarryTool").GetComponent<PlayerTool>());
+            NewViewmodelArm(camera.Find("NomaiTranslatorProp").GetComponent<PlayerTool>()).SetArmData("NomaiTranslator");
         });
     }
 
@@ -291,27 +290,27 @@ public class ViewmodelArm : MonoBehaviour
             case ItemType.Scroll:
                 if (__instance.name == "Prefab_NOM_Scroll_Jeff")
                 {
-                    // ...
+                    // IMPLEMENT
                 }
                 else
                 {
-                    // ...
+                    // IMPLEMENT
                 }
                 break;
             case ItemType.ConversationStone:
                 switch ((__instance as NomaiConversationStone)._word)
                 {
                     case NomaiWord.Identify:
-                        // ...
+                        // IMPLEMENT
                         break;
                     case NomaiWord.Explain:
-                        // ...
+                        // IMPLEMENT
                         break;
                     case NomaiWord.Eye:
-                        // ...
+                        // IMPLEMENT
                         break;
                     default:
-                        // ...
+                        // IMPLEMENT
                         break;
                 }
                 break;
@@ -319,21 +318,21 @@ public class ViewmodelArm : MonoBehaviour
                 switch ((__instance as WarpCoreItem)._warpCoreType)
                 {
                     case WarpCoreType.Vessel:
-                        // ...
+                        // IMPLEMENT
                         break;
                     case WarpCoreType.VesselBroken:
-                        // ...
+                        // IMPLEMENT
                         break;
                     default:
-                        // ...
+                        // IMPLEMENT
                         break;
                 }
                 break;
             case ItemType.Lantern:
-                // ...
+                // IMPLEMENT
                 break;
             case ItemType.SlideReel:
-                // ...
+                // IMPLEMENT
                 break;
             case ItemType.DreamLantern:
                 if ((__instance as DreamLanternItem)._lanternType == DreamLanternType.Nonfunctioning)
@@ -346,7 +345,7 @@ public class ViewmodelArm : MonoBehaviour
                 }
                 break;
             case ItemType.VisionTorch:
-                // ...
+                // IMPLEMENT
                 break;
         }
     }
