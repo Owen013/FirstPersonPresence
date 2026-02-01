@@ -11,6 +11,10 @@ public class ViewmodelArm : MonoBehaviour
 {
     private static GameObject s_armTemplate;
 
+    private static GameObject s_playerRightArmNoSuit;
+
+    private static GameObject s_playerRightArmSuit;
+
     private static Dictionary<string, Shader> s_armShaders;
 
     private PlayerTool _playerTool;
@@ -18,10 +22,6 @@ public class ViewmodelArm : MonoBehaviour
     private OWItem _owItem;
 
     private ItemTool _itemCarryTool;
-
-    private GameObject _playerRightArmNoSuit;
-
-    private GameObject _playerRightArmSuit;
 
     private GameObject _viewmodelArmNoSuit;
 
@@ -35,25 +35,6 @@ public class ViewmodelArm : MonoBehaviour
         Viewmodel,
         ViewmodelCutoff
     }
-
-    //public enum ArmBone
-    //{
-    //    Shoulder = 5,
-    //    Elbow = 6,
-    //    Wrist = 7,
-    //    Finger01_01 = 8,
-    //    Finger01_02 = 9,
-    //    Finger01_03 = 10,
-    //    Finger01_04 = 11,
-    //    Finger02_01 = 12,
-    //    Finger02_02 = 13,
-    //    Finger02_03 = 14,
-    //    Finger02_04 = 15,
-    //    Thumb_01 = 16,
-    //    Thumb_02 = 17,
-    //    Thumb_03 = 18,
-    //    Thumb_04 = 19,
-    //}
 
     public static ViewmodelArm NewViewmodelArm(PlayerTool playerTool)
     {
@@ -142,14 +123,13 @@ public class ViewmodelArm : MonoBehaviour
 
     internal static void OnSceneLoad()
     {
-        Transform camera = Locator.GetPlayerCamera().transform;
-
         CreateArmTemplate();
         ModMain.Instance.ModHelper.Events.Unity.FireOnNextUpdate(() =>
         {
-            NewViewmodelArm(camera.Find("Signalscope").GetComponent<PlayerTool>()).SetArmData("Signalscope");
-            NewViewmodelArm(camera.Find("ProbeLauncher").GetComponent<PlayerTool>()).SetArmData("ProbeLauncher");
-            NewViewmodelArm(camera.Find("NomaiTranslatorProp").GetComponent<PlayerTool>()).SetArmData("NomaiTranslator");
+            var camera = Locator.GetPlayerCamera();
+            NewViewmodelArm(camera.transform.Find("Signalscope").GetComponent<PlayerTool>()).SetArmData("Signalscope");
+            NewViewmodelArm(camera.transform.Find("ProbeLauncher").GetComponent<PlayerTool>()).SetArmData("ProbeLauncher");
+            NewViewmodelArm(camera.transform.Find("NomaiTranslatorProp").GetComponent<PlayerTool>()).SetArmData("NomaiTranslator");
         });
     }
 
@@ -203,87 +183,13 @@ public class ViewmodelArm : MonoBehaviour
         s_armTemplate = armObject;
     }
 
-    private void SetBoneEulers(Vector3[] eulers)
-    {
-        for (int i = 0; i <= 14; i++)
-        {
-            _bones[i + 5].localEulerAngles = eulers[i];
-        }
-    }
-
-    private void SetShader(string shaderName)
-    {
-        if (shaderName == "") return;
-
-        s_armShaders ??= [];
-
-        Shader shader;
-        if (!s_armShaders.ContainsKey(shaderName))
-        {
-            shader = Shader.Find(shaderName);
-            if (shader == null)
-            {
-                ModMain.Instance.ModHelper.Console.WriteLine($"\"{shaderName}\" shader not found", MessageType.Error);
-                return;
-            }
-
-            s_armShaders.Add(shaderName, shader);
-        }
-        else
-        {
-            shader = s_armShaders[shaderName];
-        }
-
-        var noSuitMesh = _viewmodelArmNoSuit.GetComponent<SkinnedMeshRenderer>();
-        noSuitMesh.materials[0].shader = shader;
-        noSuitMesh.materials[1].shader = shader;
-        _viewmodelArmSuit.GetComponent<SkinnedMeshRenderer>().material.shader = shader;
-    }
-
-    private void Awake()
-    {
-        _itemCarryTool = Locator.GetToolModeSwapper().GetItemCarryTool();
-
-        var playerTransform = Locator.GetPlayerController().transform;
-        _playerRightArmNoSuit = playerTransform.Find("Traveller_HEA_Player_v2/player_mesh_noSuit:Traveller_HEA_Player/player_mesh_noSuit:Player_RightArm").gameObject;
-        _playerRightArmSuit = playerTransform.Find("Traveller_HEA_Player_v2/Traveller_Mesh_v01:Traveller_Geo/Traveller_Mesh_v01:PlayerSuit_RightArm").gameObject;
-    }
-
-    private void LateUpdate()
-    {
-        if (!ModMain.Instance.EnableViewmodelHands)
-        {
-            gameObject.SetActive(false);
-            return;
-        }
-
-        if (_playerTool != null)
-        {
-            if (!_playerTool._isEquipped && !_playerTool._isPuttingAway)
-            {
-                gameObject.SetActive(false);
-                return;
-            }
-        }
-        else if (_owItem != null && _itemCarryTool._heldItem != _owItem)
-        {
-            gameObject.SetActive(false);
-            return;
-        }
-
-        _viewmodelArmNoSuit.SetActive(_playerRightArmNoSuit.activeInHierarchy);
-        _viewmodelArmSuit.SetActive(_playerRightArmSuit.activeInHierarchy);
-    }
-
     [HarmonyPostfix]
     [HarmonyPatch(typeof(PlayerTool), nameof(PlayerTool.EquipTool))]
     private static void OnEquipTool(PlayerTool __instance)
     {
         var arm = __instance.transform.Find("ViewmodelArm");
         if (arm != null)
-        {
             arm.gameObject.SetActive(true);
-        }
     }
 
     [HarmonyPostfix]
@@ -351,16 +257,92 @@ public class ViewmodelArm : MonoBehaviour
             case ItemType.DreamLantern:
                 if ((__instance as DreamLanternItem)._lanternType == DreamLanternType.Nonfunctioning)
                 {
-
+                    // IMPLEMENT
                 }
                 else
                 {
-
+                    // IMPLEMENT
                 }
                 break;
             case ItemType.VisionTorch:
                 // IMPLEMENT
                 break;
         }
+    }
+
+    private void SetBoneEulers(Vector3[] eulers)
+    {
+        for (int i = 0; i <= 14; i++)
+        {
+            _bones[i + 5].localEulerAngles = eulers[i];
+        }
+    }
+
+    private void SetShader(string shaderName)
+    {
+        if (shaderName == "") return;
+
+        Shader shader;
+        if (!s_armShaders.ContainsKey(shaderName))
+        {
+            shader = Shader.Find(shaderName);
+            if (shader == null)
+            {
+                ModMain.Instance.ModHelper.Console.WriteLine($"Shader \"{shaderName}\" not found", MessageType.Error);
+                return;
+            }
+
+            s_armShaders.Add(shaderName, shader);
+        }
+        else
+        {
+            shader = s_armShaders[shaderName];
+        }
+
+        var noSuitMesh = _viewmodelArmNoSuit.GetComponent<SkinnedMeshRenderer>();
+        noSuitMesh.materials[0].shader = shader;
+        noSuitMesh.materials[1].shader = shader;
+        _viewmodelArmSuit.GetComponent<SkinnedMeshRenderer>().material.shader = shader;
+    }
+
+    private void Awake()
+    {
+        _itemCarryTool = Locator.GetToolModeSwapper().GetItemCarryTool();
+
+        if (s_armShaders == null)
+            s_armShaders = [];
+
+        if (s_playerRightArmNoSuit == null || s_playerRightArmSuit == null)
+        {
+            var player = Locator.GetPlayerController().transform;
+            s_playerRightArmNoSuit = player.transform.Find("Traveller_HEA_Player_v2/player_mesh_noSuit:Traveller_HEA_Player/player_mesh_noSuit:Player_RightArm").gameObject;
+            s_playerRightArmSuit = player.transform.Find("Traveller_HEA_Player_v2/Traveller_Mesh_v01:Traveller_Geo/Traveller_Mesh_v01:PlayerSuit_RightArm").gameObject;
+        }
+    }
+
+    private void LateUpdate()
+    {
+        if (!ModMain.Instance.EnableViewmodelHands)
+        {
+            gameObject.SetActive(false);
+            return;
+        }
+
+        if (_playerTool != null)
+        {
+            if (!_playerTool._isEquipped && !_playerTool._isPuttingAway)
+            {
+                gameObject.SetActive(false);
+                return;
+            }
+        }
+        else if (_owItem != null && _itemCarryTool._heldItem != _owItem)
+        {
+            gameObject.SetActive(false);
+            return;
+        }
+
+        _viewmodelArmNoSuit.SetActive(s_playerRightArmNoSuit.activeInHierarchy);
+        _viewmodelArmSuit.SetActive(s_playerRightArmSuit.activeInHierarchy);
     }
 }

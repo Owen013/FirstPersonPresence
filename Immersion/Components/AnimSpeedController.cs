@@ -3,7 +3,6 @@ using UnityEngine;
 
 namespace Immersion.Components;
 
-[HarmonyPatch]
 public class AnimSpeedController : MonoBehaviour
 {
     public static AnimSpeedController Instance { get; private set; }

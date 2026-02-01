@@ -7,7 +7,7 @@
     },
     "EnableViewmodelHands": {
       "title": "Enable Viewmodel Hands",
-      "tooltip": "Adds a hand model to every item and tool when you hold them! Recommended: Enabled",
+      "tooltip": "Adds a hand model to every tool/item you can pick up.",
       "type": "toggle",
       "value": true
     },
@@ -23,57 +23,57 @@
     },
     "HeadBobStrength": {
       "title": "Head Bob Strength",
-      "tooltip": "The scale of the camera's bobbing.",
+      "tooltip": "The strength of the Head Bob effect.",
       "type": "slider",
       "value": 1,
       "min": 0,
       "max": 2
     },
-    "EnableToolBob": {
-      "title": "Enable Tool Bobbing",
-      "tooltip": "Makes the item you're holding bob while you're moving.",
+    "EnableHandBob": {
+      "title": "Enable Hand Bobbing",
+      "tooltip": "Makes your hand bob while you're moving and holding a tool/item.",
       "type": "toggle",
       "value": true
     },
-    "ToolBobStrength": {
+    "HandBobStrength": {
       "title": "Tool Bob Strength",
-      "tooltip": "The scale of the tool's bobbing.",
+      "tooltip": "The strength of the Hand Bob effect.",
       "type": "slider",
       "value": 1,
       "min": 0,
       "max": 2
     },
 
-    "Dynamic Tool Position": {
+    "Hand Height Offset": {
       "type": "separator"
     },
-    "EnableDynamicToolPos": {
-      "title": "Enable Dynamic Tool Position",
-      "tooltip": "Makes the held tool move based on how far up/down you're looking.",
+    "EnableHandHeightOffset": {
+      "title": "Enable Hand Height Offset",
+      "tooltip": "Makes your hand move up/down while holding a tool/item based on how far up/down you are looking.",
       "type": "toggle",
       "value": true
     },
-    "DynamicToolPosStrength": {
-      "title": "Dynamic Tool Position Strength",
-      "tooltip": "The scale of the tool's movement.",
+    "HandHeightOffsetStrength": {
+      "title": "Hand Height Offset Strength",
+      "tooltip": "The strength of the Hand Height Offset effect.",
       "type": "slider",
       "value": 1,
       "min": 0,
       "max": 2
     },
 
-    "Tool Sway": {
+    "Hand Sway": {
       "type": "separator"
     },
-    "EnableToolSway": {
-      "title": "Enable Tool Sway",
-      "tooltip": "When enabled, the tool will lag behind the camera as you look around.",
+    "EnableHandSway": {
+      "title": "Enable Hand Sway",
+      "tooltip": "Makes your hand lag behind the camera as you look around while holding a tool/item.",
       "type": "toggle",
       "value": true
     },
-    "ToolSwayStrength": {
+    "HandSwayStrength": {
       "title": "Tool Sway Strength",
-      "tooltip": "The scale of the tool's movement.",
+      "tooltip": "The strength of the Hand Sway effect.",
       "type": "slider",
       "value": 1,
       "min": 0,
@@ -91,7 +91,7 @@
     },
     "BreathingAnimStrength": {
       "title": "Breathing Animation Strength",
-      "tooltip": "The scale of the breathing effect.",
+      "tooltip": "The strength of the breathing effect.",
       "type": "slider",
       "value": true,
       "min": 0,

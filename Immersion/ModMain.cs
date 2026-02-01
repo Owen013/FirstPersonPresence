@@ -21,17 +21,17 @@ public class ModMain : ModBehaviour
 
     public float HeadBobStrength { get; private set; }
 
-    public bool EnableToolBob { get; private set; }
+    public bool EnableHandBob { get; private set; }
 
-    public float ToolBobStrength { get; private set; }
+    public float HandBobStrength { get; private set; }
 
-    public bool EnableDynamicToolPos { get; private set; }
+    public bool EnableHandHeightOffset { get; private set; }
 
-    public float DynamicToolPosStrength { get; private set; }
+    public float HandHeightOffsetStrength { get; private set; }
 
-    public bool EnableToolSway { get; private set; }
+    public bool EnableHandSway { get; private set; }
 
-    public float ToolSwayStrength { get; private set; }
+    public float HandSwayStrength { get; private set; }
 
     public bool EnableBreathingAnim { get; private set; }
 
@@ -59,16 +59,16 @@ public class ModMain : ModBehaviour
         // viewbob
         EnableHeadBob = config.GetSettingsValue<bool>("EnableHeadBob");
         HeadBobStrength = config.GetSettingsValue<float>("HeadBobStrength");
-        EnableToolBob = config.GetSettingsValue<bool>("EnableToolBob");
-        ToolBobStrength = config.GetSettingsValue<float>("ToolBobStrength");
+        EnableHandBob = config.GetSettingsValue<bool>("EnableHandBob");
+        HandBobStrength = config.GetSettingsValue<float>("HandBobStrength");
 
         // dynamic tool pos
-        EnableDynamicToolPos = config.GetSettingsValue<bool>("EnableDynamicToolPos");
-        DynamicToolPosStrength = config.GetSettingsValue<float>("DynamicToolPosStrength");
+        EnableHandHeightOffset = config.GetSettingsValue<bool>("EnableHandHeightOffset");
+        HandHeightOffsetStrength = config.GetSettingsValue<float>("HandHeightOffsetStrength");
 
         // tool sway
-        EnableToolSway = config.GetSettingsValue<bool>("EnableToolSway");
-        ToolSwayStrength = config.GetSettingsValue<float>("ToolSwayStrength");
+        EnableHandSway = config.GetSettingsValue<bool>("EnableHandSway");
+        HandSwayStrength = config.GetSettingsValue<float>("HandSwayStrength");
 
         // breathing anim
         EnableBreathingAnim = config.GetSettingsValue<bool>("EnableBreathingAnim");

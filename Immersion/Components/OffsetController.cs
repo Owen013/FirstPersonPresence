@@ -6,9 +6,9 @@ namespace Immersion.Components;
 [HarmonyPatch]
 public class OffsetController : MonoBehaviour
 {
-    protected (Vector3 position, Quaternion rotation) currentOffset;
+    private (Vector3 position, Quaternion rotation) currentOffset;
 
-    protected (Vector3 position, Quaternion rotation) nextOffset;
+    private (Vector3 position, Quaternion rotation) nextOffset;
 
     /// <summary>
     /// Adds a translational offset to be applied on the next LateUpdate
@@ -33,31 +33,10 @@ public class OffsetController : MonoBehaviour
     /// </summary>
     /// <param name="position">The translational component of the offset</param>
     /// <param name="rotation">The rotational component of the offset</param>
-    public virtual void AddOffset(Vector3 position, Quaternion rotation)
+    public void AddOffset(Vector3 position, Quaternion rotation)
     {
         AddOffset(position);
         AddOffset(rotation);
-    }
-
-    protected virtual void ApplyOffset()
-    {
-        ResetOffset();
-        currentOffset = nextOffset;
-        transform.localPosition += currentOffset.position;
-        transform.localRotation *= currentOffset.rotation;
-        nextOffset = (Vector3.zero, Quaternion.identity);
-    }
-
-    protected virtual void ResetOffset()
-    {
-        transform.localPosition -= currentOffset.position;
-        transform.localRotation *= Quaternion.Inverse(currentOffset.rotation);
-        currentOffset = (Vector3.zero, Quaternion.identity);
-    }
-
-    protected virtual void LateUpdate()
-    {
-        ApplyOffset();
     }
 
     [HarmonyPrefix]
@@ -76,5 +55,26 @@ public class OffsetController : MonoBehaviour
         // remove tool offset before vanilla update logic
         var offsetController = __instance.GetComponent<OffsetController>();
         offsetController?.ResetOffset();
+    }
+
+    private void ApplyOffset()
+    {
+        ResetOffset();
+        currentOffset = nextOffset;
+        transform.localPosition += currentOffset.position;
+        transform.localRotation *= currentOffset.rotation;
+        nextOffset = (Vector3.zero, Quaternion.identity);
+    }
+
+    private void ResetOffset()
+    {
+        transform.localPosition -= currentOffset.position;
+        transform.localRotation *= Quaternion.Inverse(currentOffset.rotation);
+        currentOffset = (Vector3.zero, Quaternion.identity);
+    }
+
+    private void LateUpdate()
+    {
+        ApplyOffset();
     }
 }

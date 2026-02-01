@@ -22,7 +22,7 @@ public class ViewbobController : MonoBehaviour
 
     private float _viewbobTime;
 
-    private float _viewbobStrength;
+    private float _viewbobScale;
 
     private float _viewbobDampVel;
 
@@ -36,7 +36,7 @@ public class ViewbobController : MonoBehaviour
 
     private Vector3 _breathingAnimDampVel;
 
-    private float _nextBreathingAnimUpdateTime;
+    private float _breathingAnimNextUpdateTime;
 
     private float _lastScoutLaunchTime;
 
@@ -54,7 +54,7 @@ public class ViewbobController : MonoBehaviour
 
     private float _landingAnimDampVel;
 
-    private float _sprintAnimStrength;
+    private float _sprintAnimScale;
 
     private float _sprintAnimDampVel;
 
@@ -76,8 +76,8 @@ public class ViewbobController : MonoBehaviour
         _playerController.OnBecomeGrounded += () =>
         {
             // if the player lands with a downward speed of at least 5, play landing anim
-            Vector3 landingVelocity = (_lastPlayerVel - _playerController.GetGroundBody().GetPointVelocity(_playerController.GetGroundContactPoint()));
-            float landingSpeed = -_playerController.transform.InverseTransformVector(landingVelocity).y;
+            Vector3 landingVel = (_lastPlayerVel - _playerController.GetGroundBody().GetPointVelocity(_playerController.GetGroundContactPoint()));
+            float landingSpeed = -_playerController.transform.InverseTransformVector(landingVel).y;
             if (landingSpeed >= 5f)
             {
                 _lastLandedSpeed = landingSpeed;
@@ -120,7 +120,7 @@ public class ViewbobController : MonoBehaviour
     private void UpdateViewbob()
     {
         // only do this if player is not movement locked and viewbob is enabled for camera or tool
-        if (!_playerController._isMovementLocked && (ModMain.Instance.EnableHeadBob || ModMain.Instance.EnableToolBob))
+        if (!_playerController._isMovementLocked && (ModMain.Instance.EnableHeadBob || ModMain.Instance.EnableHandBob))
         {
             // viewbob cycle increases based on player ground speed
             // viewbob time and viewbob strength are used by both camera and tool bobbing
@@ -128,28 +128,28 @@ public class ViewbobController : MonoBehaviour
             if (_playerController.IsGrounded())
             {
                 // change viewbob strength quickly if on ground
-                Vector3 groundVelocity = _playerController.GetRelativeGroundVelocity();
-                groundVelocity.y = 0f;
-                _viewbobStrength = Mathf.SmoothDamp(_viewbobStrength, Mathf.Min(groundVelocity.magnitude / 6f, 2f), ref _viewbobDampVel, 0.05f);
+                Vector3 groundVel = _playerController.GetRelativeGroundVelocity();
+                groundVel.y = 0f;
+                _viewbobScale = Mathf.SmoothDamp(_viewbobScale, Mathf.Min(groundVel.magnitude / 6f, 2f), ref _viewbobDampVel, 0.05f);
             }
             else
             {
                 // decay viewbob strength slowly if in air
-                _viewbobStrength = Mathf.SmoothDamp(_viewbobStrength, 0f, ref _viewbobDampVel, 1f);
+                _viewbobScale = Mathf.SmoothDamp(_viewbobScale, 0f, ref _viewbobDampVel, 1f);
             }
 
             // trig is used for a circular viewbob motion
-            var viewBob = _viewbobStrength * new Vector2(Mathf.Sin(_viewbobTime * 2f * Mathf.PI), Mathf.Cos(_viewbobTime * 4f * Mathf.PI));
+            var viewBob = _viewbobScale * new Vector2(Mathf.Sin(_viewbobTime * 2f * Mathf.PI), Mathf.Cos(_viewbobTime * 4f * Mathf.PI));
 
             // apply camera offset if camera bob is enabled
             if (ModMain.Instance.EnableHeadBob)
                 _cameraOffsetter.AddOffset(ModMain.Instance.HeadBobStrength * 0.02f * new Vector3(viewBob.x, viewBob.y));
 
             // apply tool offset if tool bob is enabled
-            if (ModMain.Instance.EnableToolBob)
+            if (ModMain.Instance.EnableHandBob)
             {
-                var offsetPos = ModMain.Instance.ToolBobStrength * new Vector3(0.02f * viewBob.x, 0.003f * viewBob.y);
-                var offsetRot = Quaternion.Euler(ModMain.Instance.ToolBobStrength * _viewbobStrength * -0.75f * Mathf.Sin(_viewbobTime * 4f * Mathf.PI), 0f, 0f);
+                var offsetPos = ModMain.Instance.HandBobStrength * new Vector3(0.02f * viewBob.x, 0.003f * viewBob.y);
+                var offsetRot = Quaternion.Euler(ModMain.Instance.HandBobStrength * _viewbobScale * -0.75f * Mathf.Sin(_viewbobTime * 4f * Mathf.PI), 0f, 0f);
                 AddToolOffsets(offsetPos, offsetRot);
             }
         }
@@ -157,7 +157,7 @@ public class ViewbobController : MonoBehaviour
         else
         {
             _viewbobTime = 0f;
-            _viewbobStrength = 0f;
+            _viewbobScale = 0f;
             _viewbobDampVel = 0f;
         }
     }
@@ -165,7 +165,7 @@ public class ViewbobController : MonoBehaviour
     private void UpdateDynamicToolPos()
     {
         // only do this if dynamic tool position is enabled and strength is non-zero
-        if (ModMain.Instance.EnableDynamicToolPos)
+        if (ModMain.Instance.EnableHandHeightOffset)
         {
             float verticalLookAmount = _cameraController.GetDegreesY() / 90f;
             Vector3 toolOffset = Vector3.zero;
@@ -174,14 +174,14 @@ public class ViewbobController : MonoBehaviour
             // tool is not offset when looking straight ahead
             toolOffset.z = Mathf.Cos(verticalLookAmount * Mathf.PI / 3f) - 1;
             toolOffset.y = -Mathf.Sin(verticalLookAmount * Mathf.PI / 3f);
-            AddToolOffsets(ModMain.Instance.DynamicToolPosStrength * 0.05f * toolOffset);
+            AddToolOffsets(ModMain.Instance.HandHeightOffsetStrength * 0.05f * toolOffset);
         }
     }
 
     private void UpdateToolSway()
     {
         // only do this if tool sway is enabled
-        if (ModMain.Instance.EnableToolSway)
+        if (ModMain.Instance.EnableHandSway)
         {
             float degreesY = _cameraController.GetDegreesY();
 
@@ -214,14 +214,14 @@ public class ViewbobController : MonoBehaviour
 
             // x sway is less pronounced the more up/down the player is looking
             // sway is split into local (relative to camera) and global (relative to player)
-            float xSwayMultiplier = (Mathf.Cos(degreesY / 90f * Mathf.PI) + 1f) * 0.5f;
+            float xSwayScale = (Mathf.Cos(degreesY / 90f * Mathf.PI) + 1f) * 0.5f;
             float localZOffset = 0.15f * (Mathf.Cos(Mathf.PI * _toolSway.y) - 1f);
             float globalZOffset = 0.15f * (Mathf.Cos(Mathf.PI * _toolSway.x) - 1f);
 
             // calculate and apply the final offset
-            var offset = new Vector3(_toolSway.x * xSwayMultiplier, _toolSway.y, localZOffset);
-            offset += xSwayMultiplier * globalZOffset * _cameraController.transform.InverseTransformDirection(_playerController.transform.forward);
-            offset *= ModMain.Instance.ToolSwayStrength * 0.25f;
+            var offset = new Vector3(_toolSway.x * xSwayScale, _toolSway.y, localZOffset);
+            offset += xSwayScale * globalZOffset * _cameraController.transform.InverseTransformDirection(_playerController.transform.forward);
+            offset *= ModMain.Instance.HandSwayStrength * 0.25f;
             AddToolOffsets(offset);
 
             // decay tool sway
@@ -242,11 +242,11 @@ public class ViewbobController : MonoBehaviour
             _breathingAnimPos = Vector3.SmoothDamp(_breathingAnimPos, _breathingAnimTargetPos, ref _breathingAnimDampVel, 1f);
             AddToolOffsets(ModMain.Instance.BreathingAnimStrength * 0.005f * _breathingAnimPos);
 
-            if (Time.time >= _nextBreathingAnimUpdateTime)
+            if (Time.time >= _breathingAnimNextUpdateTime)
             {
                 // choose random tool offset
                 _breathingAnimTargetPos = new Vector3(Random.Range(0f, 1f), Random.Range(0f, 1f), Random.Range(0f, 1f));
-                _nextBreathingAnimUpdateTime = Time.time + Random.Range(0.1f, 1f);
+                _breathingAnimNextUpdateTime = Time.time + Random.Range(0.1f, 1f);
             }
         }
         else
@@ -254,7 +254,7 @@ public class ViewbobController : MonoBehaviour
             _breathingAnimPos = Vector3.zero;
             _breathingAnimTargetPos = Vector3.zero;
             _breathingAnimDampVel = Vector3.zero;
-            _nextBreathingAnimUpdateTime = 0f;
+            _breathingAnimNextUpdateTime = 0f;
         }
     }
 
@@ -318,12 +318,12 @@ public class ViewbobController : MonoBehaviour
     {
         if (ModMain.Instance.EnableSprintingAnim && ModMain.Instance.HikersModAPI != null)
         {
-            _sprintAnimStrength = Mathf.SmoothDamp(_sprintAnimStrength, ModMain.Instance.HikersModAPI.IsSprinting() ? 1f : 0f, ref _sprintAnimDampVel, 0.2f);
-            AddToolOffsets(Quaternion.Euler(15f * _sprintAnimStrength, 0f, 0f));
+            _sprintAnimScale = Mathf.SmoothDamp(_sprintAnimScale, ModMain.Instance.HikersModAPI.IsSprinting() ? 1f : 0f, ref _sprintAnimDampVel, 0.2f);
+            AddToolOffsets(Quaternion.Euler(15f * _sprintAnimScale, 0f, 0f));
         }
         else
         {
-            _sprintAnimStrength = 0f;
+            _sprintAnimScale = 0f;
             _sprintAnimDampVel = 0f;
         }
     }
