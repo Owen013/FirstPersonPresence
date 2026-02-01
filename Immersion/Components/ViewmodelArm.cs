@@ -36,24 +36,24 @@ public class ViewmodelArm : MonoBehaviour
         ViewmodelCutoff
     }
 
-    public enum ArmBone
-    {
-        Shoulder = 5,
-        Elbow = 6,
-        Wrist = 7,
-        Finger01_01 = 8,
-        Finger01_02 = 9,
-        Finger01_03 = 10,
-        Finger01_04 = 11,
-        Finger02_01 = 12,
-        Finger02_02 = 13,
-        Finger02_03 = 14,
-        Finger02_04 = 15,
-        Thumb_01 = 16,
-        Thumb_02 = 17,
-        Thumb_03 = 18,
-        Thumb_04 = 19,
-    }
+    //public enum ArmBone
+    //{
+    //    Shoulder = 5,
+    //    Elbow = 6,
+    //    Wrist = 7,
+    //    Finger01_01 = 8,
+    //    Finger01_02 = 9,
+    //    Finger01_03 = 10,
+    //    Finger01_04 = 11,
+    //    Finger02_01 = 12,
+    //    Finger02_02 = 13,
+    //    Finger02_03 = 14,
+    //    Finger02_04 = 15,
+    //    Thumb_01 = 16,
+    //    Thumb_02 = 17,
+    //    Thumb_03 = 18,
+    //    Thumb_04 = 19,
+    //}
 
     public static ViewmodelArm NewViewmodelArm(PlayerTool playerTool)
     {
@@ -94,8 +94,9 @@ public class ViewmodelArm : MonoBehaviour
             };
         }
 
-        viewmodelArm.transform.localPosition = Vector3.zero;
-        viewmodelArm.transform.localRotation = Quaternion.identity;
+        var camera = Locator.GetPlayerCamera();
+        viewmodelArm.transform.position = camera.transform.position;
+        viewmodelArm.transform.rotation = camera.transform.rotation;
         viewmodelArm.transform.localScale = 0.1f * Vector3.one;
         armObject.transform.Find("Traveller_Rig_v01:Traveller_Spine_01_Jnt").localPosition = new Vector3(-0.2741f, -8f, -0.6957f);
 
@@ -113,17 +114,30 @@ public class ViewmodelArm : MonoBehaviour
 
         SetBoneEulers(armData.boneEulers);
         transform.localPosition = armData.localPosition;
+        transform.localEulerAngles = armData.localRotation;
         transform.localScale = 0.1f * Vector3.one * armData.scale;
         SetShader(armData.shaderName);
     }
 
-    public void OutputBoneRotations()
+    public void OutputArmData()
     {
-        for (int i = 0; i <= 14; i++)
+        string output = "Bone Eulers:\n";
+        for (int i = 0; i < 15; i++)
         {
             var boneEulers = _bones[i + 5].localRotation.eulerAngles;
-            ModMain.Instance.ModHelper.Console.WriteLine($"{(ArmBone)(i + 5)}: [ {boneEulers.x}, {boneEulers.y}, {boneEulers.z} ]");
+            output += $"[ {Mathf.Round(boneEulers.x * 10f) / 10f}, {Mathf.Round(boneEulers.y * 10f) / 10f}, {Mathf.Round(boneEulers.z * 10f) / 10f} ]";
+            if (i < 14)
+            {
+                output += ",\n";
+            }
         }
+
+        output += $"\n\nArm Local Position: {transform.localPosition}\n";
+        output += $"\nArm Local Rotation: {transform.localEulerAngles}\n";
+        output += $"\nArm Local Scale: {transform.localScale}\n";
+        output += $"\nShader: \"{_viewmodelArmNoSuit.GetComponent<SkinnedMeshRenderer>().materials[0].shader.name}\"";
+
+        ModMain.Instance.ModHelper.Console.WriteLine(output);
     }
 
     internal static void OnSceneLoad()
@@ -294,7 +308,7 @@ public class ViewmodelArm : MonoBehaviour
                 }
                 else
                 {
-                    // IMPLEMENT
+                    NewViewmodelArm(__instance).SetArmData("ScrollItem");
                 }
                 break;
             case ItemType.ConversationStone:
@@ -318,13 +332,13 @@ public class ViewmodelArm : MonoBehaviour
                 switch ((__instance as WarpCoreItem)._warpCoreType)
                 {
                     case WarpCoreType.Vessel:
-                        // IMPLEMENT
+                        NewViewmodelArm(__instance);
                         break;
                     case WarpCoreType.VesselBroken:
-                        // IMPLEMENT
+                        NewViewmodelArm(__instance);
                         break;
                     default:
-                        // IMPLEMENT
+                        NewViewmodelArm(__instance).SetArmData("WarpCoreSimple");
                         break;
                 }
                 break;
