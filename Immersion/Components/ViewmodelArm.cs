@@ -1,5 +1,6 @@
 ﻿using HarmonyLib;
 using Immersion.Objects;
+using Mono.Cecil;
 using OWML.Common;
 using System.Collections.Generic;
 using UnityEngine;
@@ -106,16 +107,16 @@ public class ViewmodelArm : MonoBehaviour
         for (int i = 0; i < 15; i++)
         {
             var boneEulers = _bones[i + 5].localRotation.eulerAngles;
-            output += $"[ {Mathf.Round(boneEulers.x * 10f) / 10f}, {Mathf.Round(boneEulers.y * 10f) / 10f}, {Mathf.Round(boneEulers.z * 10f) / 10f} ]";
+            output += $"[ {Mathf.Round(boneEulers.x * 100f) / 100f}, {Mathf.Round(boneEulers.y * 100f) / 100f}, {Mathf.Round(boneEulers.z * 100f) / 100f} ]";
             if (i < 14)
             {
                 output += ",\n";
             }
         }
 
-        output += $"\n\nArm Local Position: {transform.localPosition}\n";
-        output += $"\nArm Local Rotation: {transform.localEulerAngles}\n";
-        output += $"\nArm Local Scale: {transform.localScale}\n";
+        output += $"\n\nArm Local Position: [ {Mathf.Round(transform.localPosition.x * 100f) / 100f}, {Mathf.Round(transform.localPosition.y * 100f) / 100f}, {Mathf.Round(transform.localPosition.z * 100f) / 100f} ]\n";
+        output += $"\nArm Local Rotation: [ {Mathf.Round(transform.localEulerAngles.x * 100f) / 100f}, {Mathf.Round(transform.localEulerAngles.y * 100f) / 100f}, {Mathf.Round(transform.localEulerAngles.z * 100f) / 100f} ]\n";
+        output += $"\nArm Scale: {transform.localScale.x * 10f}\n";
         output += $"\nShader: \"{_viewmodelArmNoSuit.GetComponent<SkinnedMeshRenderer>().materials[0].shader.name}\"";
 
         ModMain.Instance.ModHelper.Console.WriteLine(output);
@@ -128,7 +129,6 @@ public class ViewmodelArm : MonoBehaviour
         {
             var camera = Locator.GetPlayerCamera();
             NewViewmodelArm(camera.transform.Find("Signalscope").GetComponent<PlayerTool>()).SetArmData("Signalscope");
-            NewViewmodelArm(camera.transform.Find("ProbeLauncher").GetComponent<PlayerTool>()).SetArmData("ProbeLauncher");
             NewViewmodelArm(camera.transform.Find("NomaiTranslatorProp").GetComponent<PlayerTool>()).SetArmData("NomaiTranslator");
         });
     }
@@ -196,7 +196,7 @@ public class ViewmodelArm : MonoBehaviour
     [HarmonyPatch(typeof(OWItem), nameof(OWItem.PickUpItem))]
     private static void ItemPickedUp(OWItem __instance)
     {
-        if (ModMain.Instance.TweakItemPos && __instance._type == ItemType.ConversationStone)
+        if (ModMain.Instance.EnableItemClipFix && __instance._type == ItemType.ConversationStone)
             __instance.transform.localPosition = 0.2f * Vector3.forward;
 
         // don't try to add viewmodel arm if disabled in config or if this item already has one
@@ -208,64 +208,58 @@ public class ViewmodelArm : MonoBehaviour
                 NewViewmodelArm(__instance).SetArmData("SharedStone");
                 break;
             case ItemType.Scroll:
-                if (__instance.name == "Prefab_NOM_Scroll_Jeff")
+                switch (__instance.name)
                 {
-                    // IMPLEMENT
+                    case "Prefab_NOM_Scroll_Jeff":
+                        NewViewmodelArm(__instance).SetArmData("Scroll_Jeff");
+                        break;
+                    case "Prefab_NOM_Scroll_egg":
+                        NewViewmodelArm(__instance).SetArmData("Scroll_Egg");
+                        break;
+                    default:
+                        NewViewmodelArm(__instance).SetArmData("Scroll");
+                        break;
                 }
-                else
-                {
-                    NewViewmodelArm(__instance).SetArmData("ScrollItem");
-                }
+
                 break;
             case ItemType.ConversationStone:
-                switch ((__instance as NomaiConversationStone)._word)
-                {
-                    case NomaiWord.Identify:
-                        // IMPLEMENT
-                        break;
-                    case NomaiWord.Explain:
-                        // IMPLEMENT
-                        break;
-                    case NomaiWord.Eye:
-                        // IMPLEMENT
-                        break;
-                    default:
-                        // IMPLEMENT
-                        break;
-                }
+                NewViewmodelArm(__instance).SetArmData("ConversationStone");
+                var word = (__instance as NomaiConversationStone)._word;
+                if (word == NomaiWord.Identify || word == NomaiWord.Explain)
+                    NewViewmodelArm(__instance).SetArmData("ConversationStone_Big");
+                else
+                    NewViewmodelArm(__instance).SetArmData("ConversationStone_Big");
                 break;
             case ItemType.WarpCore:
-                switch ((__instance as WarpCoreItem)._warpCoreType)
-                {
-                    case WarpCoreType.Vessel:
-                        NewViewmodelArm(__instance);
-                        break;
-                    case WarpCoreType.VesselBroken:
-                        NewViewmodelArm(__instance);
-                        break;
-                    default:
-                        NewViewmodelArm(__instance).SetArmData("WarpCoreSimple");
-                        break;
-                }
+                var warpCoreType = (__instance as WarpCoreItem)._warpCoreType;
+                if (warpCoreType == WarpCoreType.Vessel || warpCoreType == WarpCoreType.VesselBroken)
+                    NewViewmodelArm(__instance).SetArmData("WarpCore");
+                else
+                    NewViewmodelArm(__instance).SetArmData("WarpCore_Simple");
                 break;
             case ItemType.Lantern:
-                // IMPLEMENT
+                NewViewmodelArm(__instance).SetArmData("Lantern");
                 break;
             case ItemType.SlideReel:
-                // IMPLEMENT
+                NewViewmodelArm(__instance).SetArmData("SlideReel");
                 break;
             case ItemType.DreamLantern:
-                if ((__instance as DreamLanternItem)._lanternType == DreamLanternType.Nonfunctioning)
+                switch ((__instance as DreamLanternItem)._lanternType)
                 {
-                    // IMPLEMENT
+                    case DreamLanternType.Nonfunctioning:
+                        NewViewmodelArm(__instance).SetArmData("DreamLantern_Nonfunctioning");
+                        break;
+                    case DreamLanternType.Malfunctioning:
+                        NewViewmodelArm(__instance).SetArmData("DreamLantern_Malfunctioning");
+                        break;
+                    default:
+                        NewViewmodelArm(__instance).SetArmData("DreamLantern");
+                        break;
                 }
-                else
-                {
-                    // IMPLEMENT
-                }
+
                 break;
             case ItemType.VisionTorch:
-                // IMPLEMENT
+                NewViewmodelArm(__instance).SetArmData("VisionTorch");
                 break;
         }
     }

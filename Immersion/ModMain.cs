@@ -37,7 +37,7 @@ public class ModMain : ModBehaviour
 
     public float BreathingAnimStrength { get; private set; }
 
-    public bool TweakItemPos { get; private set; }
+    public bool EnableItemClipFix { get; private set; }
 
     public bool EnableScoutAnim { get; private set; }
 
@@ -75,10 +75,12 @@ public class ModMain : ModBehaviour
         BreathingAnimStrength = config.GetSettingsValue<float>("BreathingAnimStrength");
 
         // misc
-        TweakItemPos = config.GetSettingsValue<bool>("TweakItemPos");
+        EnableItemClipFix = config.GetSettingsValue<bool>("EnableItemClipFix");
         EnableScoutAnim = config.GetSettingsValue<bool>("EnableScoutAnim");
         EnableLandingAnim = config.GetSettingsValue<bool>("EnableLandingAnim");
         EnableSprintingAnim = config.GetSettingsValue<bool>("EnableSprintingAnim");
+
+        Locator.GetPlayerCamera()?.nearClipPlane = EnableItemClipFix ? 0.05f : 0.1f;
     }
 
     private void Awake()
@@ -104,7 +106,9 @@ public class ModMain : ModBehaviour
                 var player = Locator.GetPlayerBody();
                 if (player == null) return;
                 player.GetComponentInChildren<PlayerAnimController>().gameObject.AddComponent<AnimSpeedController>();
-                Locator.GetPlayerCameraController().gameObject.AddComponent<ViewbobController>();
+                var camera = Locator.GetPlayerCamera();
+                camera.gameObject.AddComponent<ViewbobController>();
+                camera.nearClipPlane = EnableItemClipFix ? 0.05f : 0.1f;
 
                 ViewmodelArm.OnSceneLoad();
             });

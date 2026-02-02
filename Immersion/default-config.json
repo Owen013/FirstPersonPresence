@@ -101,9 +101,9 @@
     "Miscellaneous": {
       "type": "separator"
     },
-    "TweakItemPos": {
-      "title": "Tweak Held Item Positions",
-      "tooltip": "Tweaks the position of some held items to prevent visual bugs such as items clipping through the camera.",
+    "EnableItemClipFix": {
+      "title": "Enable Item Clipping Fix",
+      "tooltip": "Changes the camera's near clip plane to prevent held items and viewmodel arms from clipping into the camera. May cause other less noticeable visual bugs.",
       "type": "toggle",
       "value": true
     },
