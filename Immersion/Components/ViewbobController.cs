@@ -83,6 +83,10 @@ public class ViewbobController : MonoBehaviour
             // if the player lands with a downward speed of at least 5, play landing anim
             Vector3 landingVel = (_lastPlayerVel - _playerController.GetGroundBody().GetPointVelocity(_playerController.GetGroundContactPoint()));
             float landingSpeed = -_playerController.transform.InverseTransformVector(landingVel).y;
+
+            if (ModMain.Instance.SmolHatchlingAPI != null)
+                landingSpeed /= ModMain.Instance.SmolHatchlingAPI.GetPlayerScale();
+
             if (landingSpeed >= 5f)
             {
                 _lastLandedSpeed = landingSpeed;
@@ -135,6 +139,10 @@ public class ViewbobController : MonoBehaviour
                 // change viewbob strength quickly if on ground
                 Vector3 groundVel = _playerController.GetRelativeGroundVelocity();
                 groundVel.y = 0f;
+
+                if (ModMain.Instance.SmolHatchlingAPI != null)
+                    groundVel /= ModMain.Instance.SmolHatchlingAPI.GetPlayerScale();
+
                 _viewbobScale = Mathf.SmoothDamp(_viewbobScale, Mathf.Min(groundVel.magnitude / 6f, 2f), ref _viewbobDampVel, 0.05f);
             }
             else
@@ -290,7 +298,9 @@ public class ViewbobController : MonoBehaviour
             if (_isLandingAnimActive)
             {
                 // update camera height based on landing speed
-                _landingAnimPos = Mathf.Min(_landingAnimPos - _lastLandedSpeed * Time.deltaTime, 0f);
+
+                float playerScale = ModMain.Instance.SmolHatchlingAPI != null ? ModMain.Instance.SmolHatchlingAPI.GetPlayerScale() : 1f;
+                _landingAnimPos = Mathf.Min(_landingAnimPos - _lastLandedSpeed * playerScale * Time.deltaTime, 0f);
                 if (_landingAnimPos <= -0.25f)
                 {
                     // landing anim bottoms out at -0.25

@@ -117,8 +117,6 @@ public class ModMain : ModBehaviour
                 camera.nearClipPlane = FixItemClipping ? 0.05f : 0.1f;
 
                 ViewmodelArm.OnSceneLoad();
-
-                ArmData.LoadArmData(Path.Combine(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location), "modded-armdata-test.json"));
             });
         };
 

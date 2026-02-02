@@ -71,7 +71,7 @@ public class ArmData
 
     public static ArmData GetArmData(string itemName)
     {
-        if (!s_armData.ContainsKey(itemName))
+        if (s_armData == null || !s_armData.ContainsKey(itemName))
         {
             LoadArmData();
             if (!s_armData.ContainsKey(itemName))
