@@ -1,10 +1,8 @@
 ﻿using HarmonyLib;
 using Immersion.Components;
 using Immersion.Interfaces;
-using Immersion.Objects;
 using OWML.Common;
 using OWML.ModHelper;
-using System.IO;
 using System.Reflection;
 
 namespace Immersion;
@@ -113,7 +111,7 @@ public class ModMain : ModBehaviour
                 player.GetComponentInChildren<PlayerAnimController>().gameObject.AddComponent<AnimSpeedController>();
 
                 var camera = Locator.GetPlayerCamera();
-                camera.gameObject.AddComponent<ViewbobController>();
+                camera.gameObject.AddComponent<OffsetManager>();
                 camera.nearClipPlane = FixItemClipping ? 0.05f : 0.1f;
 
                 ViewmodelArm.OnSceneLoad();

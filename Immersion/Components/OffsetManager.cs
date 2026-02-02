@@ -1,10 +1,8 @@
-﻿using HarmonyLib;
-using UnityEngine;
+﻿using UnityEngine;
 
 namespace Immersion.Components;
 
-[HarmonyPatch]
-public class ViewbobController : MonoBehaviour
+public class OffsetManager : MonoBehaviour
 {
     private PlayerCharacterController _playerController;
     

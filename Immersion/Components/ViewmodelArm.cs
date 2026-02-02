@@ -92,7 +92,7 @@ public class ViewmodelArm : MonoBehaviour
 
         SetBoneEulers(armData.boneEulers);
         transform.localPosition = armData.localPosition;
-        transform.localEulerAngles = armData.localRotation;
+        transform.localEulerAngles = armData.localEulerAngles;
         transform.localScale = 0.1f * Vector3.one * armData.scale;
         SetShader(armData.shaderName);
     }
@@ -110,12 +110,20 @@ public class ViewmodelArm : MonoBehaviour
             }
         }
 
-        output += $"\n\nArm Local Position: [ {Mathf.Round(transform.localPosition.x * 100f) / 100f}, {Mathf.Round(transform.localPosition.y * 100f) / 100f}, {Mathf.Round(transform.localPosition.z * 100f) / 100f} ]\n";
+        output += $"\n\nArm Local Position: [ {Mathf.Round(transform.localPosition.x * 1000f) / 1000f}, {Mathf.Round(transform.localPosition.y * 1000f) / 1000f}, {Mathf.Round(transform.localPosition.z * 1000f) / 1000f} ]\n";
         output += $"\nArm Local Rotation: [ {Mathf.Round(transform.localEulerAngles.x * 100f) / 100f}, {Mathf.Round(transform.localEulerAngles.y * 100f) / 100f}, {Mathf.Round(transform.localEulerAngles.z * 100f) / 100f} ]\n";
         output += $"\nArm Scale: {transform.localScale.x * 10f}\n";
         output += $"\nShader: \"{_viewmodelArmNoSuit.GetComponent<SkinnedMeshRenderer>().materials[0].shader.name}\"";
 
         ModMain.Instance.ModHelper.Console.WriteLine(output);
+    }
+
+    public void ResetArmTransform()
+    {
+        var camera = Locator.GetPlayerCamera();
+        transform.position = camera.transform.position;
+        transform.rotation = camera.transform.rotation;
+        transform.localScale = 0.1f * Vector3.one;
     }
 
     internal static void OnSceneLoad()
@@ -219,12 +227,11 @@ public class ViewmodelArm : MonoBehaviour
 
                 break;
             case ItemType.ConversationStone:
-                NewViewmodelArm(__instance).SetArmData("ConversationStone");
                 var word = (__instance as NomaiConversationStone)._word;
                 if (word == NomaiWord.Identify || word == NomaiWord.Explain)
                     NewViewmodelArm(__instance).SetArmData("ConversationStone_Big");
                 else
-                    NewViewmodelArm(__instance).SetArmData("ConversationStone_Big");
+                    NewViewmodelArm(__instance).SetArmData("ConversationStone");
                 break;
             case ItemType.WarpCore:
                 var warpCoreType = (__instance as WarpCoreItem)._warpCoreType;

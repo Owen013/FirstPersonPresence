@@ -1,6 +1,4 @@
-﻿using UnityEngine;
-
-namespace Immersion.Interfaces;
+﻿namespace Immersion.Interfaces;
 
 public interface IImmersion
 {
@@ -11,24 +9,22 @@ public interface IImmersion
     public float GetAnimSpeed();
 
     /// <summary>
-    /// Creates a new ViewmodelArm on a PlayerTool
+    /// Loads custom ArmData from a JSON at a specified path
     /// </summary>
-    /// <param name="playerTool">The tool that this ViewmodelArm is attached to</param>
-    /// <param name="localPos">Local position of ViewmodelArm</param>
-    /// <param name="localRot">Local rotation of ViewmodelArm</param>
-    /// <param name="localScale">Local scale of ViewmodelArm</param>
-    /// <param name="armShader">The shader used by the ViewmodelArm. 0 = Standard, 1 = Viewmodel, 2 = Viewmodel (Cutoff)</param>
-    /// <returns></returns>
-    public GameObject NewViewmodelArm(PlayerTool playerTool, Vector3 localPos, Quaternion localRot, Vector3 localScale, int armShader = 0);
+    /// <param name="jsonPath">The path of the custom ArmData JSON</param>
+    public void LoadArmData(string jsonPath);
 
     /// <summary>
-    /// Creates a new ViewmodelArm on an OWItem
+    /// Creates a new Viewmodel Arm for the specified tool
     /// </summary>
-    /// <param name="playerTool">The item that this ViewmodelArm is attached to</param>
-    /// <param name="localPos">Local position of ViewmodelArm</param>
-    /// <param name="localRot">Local rotation of ViewmodelArm</param>
-    /// <param name="localScale">Local scale of ViewmodelArm</param>
-    /// <param name="armShader">The shader used by the ViewmodelArm. 0 = Standard, 1 = Viewmodel, 2 = Viewmodel (Cutoff)</param>
-    /// <returns></returns>
-    public GameObject NewViewmodelArm(OWItem owItem, Vector3 localPos, Quaternion localRot, Vector3 localScale, int armShader = 0);
+    /// <param name="tool">The tool to add a Viewmodel Arm to</param>
+    /// <param name="itemName">The name tied to the ArmData this arm should use</param>
+    public void CreateViewmodelArm(PlayerTool tool, string itemName);
+
+    /// <summary>
+    /// Creates a new Viewmodel Arm for the specified item
+    /// </summary>
+    /// <param name="item">The item to add a Viewmodel Arm to</param>
+    /// <param name="itemName">The name tied to the ArmData this arm should use</param>
+    public void CreateViewmodelArm(OWItem item, string itemName);
 }
