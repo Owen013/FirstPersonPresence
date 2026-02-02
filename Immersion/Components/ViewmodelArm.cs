@@ -88,11 +88,7 @@ public class ViewmodelArm : MonoBehaviour
     public void SetArmData(string itemName)
     {
         var armData = ArmData.GetArmData(itemName);
-        if (armData == null)
-        {
-            ModMain.Instance.ModHelper.Console.WriteLine($"No ViewmodelArmData found for {itemName}");
-            return;
-        }
+        if (armData == null) return;
 
         SetBoneEulers(armData.boneEulers);
         transform.localPosition = armData.localPosition;
@@ -196,7 +192,7 @@ public class ViewmodelArm : MonoBehaviour
     [HarmonyPatch(typeof(OWItem), nameof(OWItem.PickUpItem))]
     private static void ItemPickedUp(OWItem __instance)
     {
-        if (ModMain.Instance.EnableItemClipFix && __instance._type == ItemType.ConversationStone)
+        if (ModMain.Instance.FixItemClipping && __instance._type == ItemType.ConversationStone)
             __instance.transform.localPosition = 0.2f * Vector3.forward;
 
         // don't try to add viewmodel arm if disabled in config or if this item already has one

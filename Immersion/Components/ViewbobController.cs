@@ -1,7 +1,9 @@
-﻿using UnityEngine;
+﻿using HarmonyLib;
+using UnityEngine;
 
 namespace Immersion.Components;
 
+[HarmonyPatch]
 public class ViewbobController : MonoBehaviour
 {
     private PlayerCharacterController _playerController;
@@ -9,6 +11,8 @@ public class ViewbobController : MonoBehaviour
     private PlayerAnimController _animController;
 
     private PlayerCameraController _cameraController;
+
+    private ToolModeSwapper _toolModeSwapper;
 
     private OffsetController _cameraOffsetter;
 
@@ -63,7 +67,8 @@ public class ViewbobController : MonoBehaviour
         // get references to required components
         _playerController = Locator.GetPlayerController();
         _animController = _playerController.GetComponentInChildren<PlayerAnimController>();
-        _cameraController = GetComponent<PlayerCameraController>();
+        _cameraController = Locator.GetPlayerCameraController();
+        _toolModeSwapper = Locator.GetToolModeSwapper();
 
         // create offsetters
         _cameraOffsetter = _cameraController.gameObject.AddComponent<OffsetController>();
@@ -186,7 +191,7 @@ public class ViewbobController : MonoBehaviour
             float degreesY = _cameraController.GetDegreesY();
 
             // only add new sway if player is in ground movement mode and the game is unpaused
-            if (!(PlayerState.InZeroG() && PlayerState.IsWearingSuit()) && !OWTime.IsPaused())
+            if (!OWTime.IsPaused() && OWInput.IsInputMode(InputMode.Character) && !(PlayerState.InZeroG() && PlayerState.IsWearingSuit()))
             {
                 // get look input
                 Vector2 lookInput = OWInput.GetAxisValue(InputLibrary.look);
@@ -196,8 +201,8 @@ public class ViewbobController : MonoBehaviour
                 if (_cameraController._zoomed || isAlarmWakingPlayer)
                     lookInput *= PlayerCameraController.ZOOM_SCALAR;
 
-                // cancel out horizontal sway if player is patching suit, as they can't turn left/right while doing so
-                if (OWInput.IsInputMode(InputMode.PatchingSuit))
+                // player can't turn left or right if turning is locked
+                if (_playerController._isTurningLocked)
                 {
                     lookInput.x = 0f;
                 }
@@ -328,6 +333,13 @@ public class ViewbobController : MonoBehaviour
         }
     }
 
+    private void UpdateHideStowedItems()
+    {
+        var itemCarryTool = _toolModeSwapper.GetItemCarryTool();
+        if (ModMain.Instance.HideStowedItems && itemCarryTool._heldItem != null && !itemCarryTool.IsPuttingAway() && _toolModeSwapper.GetToolMode() != ToolMode.Item)
+            _itemToolOffsetter.AddOffset(Vector3.back);
+    }
+
     private void Update()
     {
         UpdateViewbob();
@@ -337,5 +349,6 @@ public class ViewbobController : MonoBehaviour
         UpdateScoutAnim();
         UpdateLandingAnim();
         UpdateSprintAnim();
+        UpdateHideStowedItems();
     }
 }

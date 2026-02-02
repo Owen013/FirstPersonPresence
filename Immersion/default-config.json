@@ -101,12 +101,6 @@
     "Miscellaneous": {
       "type": "separator"
     },
-    "EnableItemClipFix": {
-      "title": "Enable Item Clipping Fix",
-      "tooltip": "Changes the camera's near clip plane to prevent held items and viewmodel arms from clipping into the camera. May cause other less noticeable visual bugs.",
-      "type": "toggle",
-      "value": true
-    },
     "EnableScoutAnim": {
       "title": "Enable Scout Launcher Fire Animation",
       "tooltip": "Makes the camera and scout launcher recoil when you launch a scout.",
@@ -122,6 +116,18 @@
     "EnableSprintingAnim": {
       "title": "Enable Sprinting Animation",
       "tooltip": "(REQUIRES HIKER'S MOD) Makes the tool move downward while you're sprinting.",
+      "type": "toggle",
+      "value": true
+    },
+    "FixHandClipping": {
+      "title": "Fix Hand Clipping",
+      "tooltip": "Changes the camera's near clip plane to prevent held items and viewmodel arms from clipping into the camera. May cause other less noticeable visual bugs.",
+      "type": "toggle",
+      "value": true
+    },
+    "HideStowedItems": {
+      "title": "Hide Stowed Items",
+      "tooltip": "Makes held items move fully offscreen when they are stowed (i.e. while piloting the ship, roasting marshmallows, or holding another tool).",
       "type": "toggle",
       "value": true
     }

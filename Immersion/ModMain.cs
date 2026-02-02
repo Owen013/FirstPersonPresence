@@ -1,8 +1,10 @@
 ﻿using HarmonyLib;
 using Immersion.Components;
 using Immersion.Interfaces;
+using Immersion.Objects;
 using OWML.Common;
 using OWML.ModHelper;
+using System.IO;
 using System.Reflection;
 
 namespace Immersion;
@@ -37,15 +39,17 @@ public class ModMain : ModBehaviour
 
     public float BreathingAnimStrength { get; private set; }
 
-    public bool EnableItemClipFix { get; private set; }
-
     public bool EnableScoutAnim { get; private set; }
 
     public bool EnableLandingAnim { get; private set; }
 
     public bool EnableSprintingAnim { get; private set; }
 
-    public override object GetApi()
+	public bool FixItemClipping { get; private set; }
+
+	public bool HideStowedItems { get; private set; }
+
+	public override object GetApi()
     {
         // provide API for use by other mods
         return new ImmersionAPI();
@@ -75,12 +79,13 @@ public class ModMain : ModBehaviour
         BreathingAnimStrength = config.GetSettingsValue<float>("BreathingAnimStrength");
 
         // misc
-        EnableItemClipFix = config.GetSettingsValue<bool>("EnableItemClipFix");
+        FixItemClipping = config.GetSettingsValue<bool>("FixHandClipping");
         EnableScoutAnim = config.GetSettingsValue<bool>("EnableScoutAnim");
         EnableLandingAnim = config.GetSettingsValue<bool>("EnableLandingAnim");
         EnableSprintingAnim = config.GetSettingsValue<bool>("EnableSprintingAnim");
+		HideStowedItems = config.GetSettingsValue<bool>("HideStowedItems");
 
-        Locator.GetPlayerCamera()?.nearClipPlane = EnableItemClipFix ? 0.05f : 0.1f;
+		Locator.GetPlayerCamera()?.nearClipPlane = FixItemClipping ? 0.05f : 0.1f;
     }
 
     private void Awake()
@@ -106,11 +111,14 @@ public class ModMain : ModBehaviour
                 var player = Locator.GetPlayerBody();
                 if (player == null) return;
                 player.GetComponentInChildren<PlayerAnimController>().gameObject.AddComponent<AnimSpeedController>();
+
                 var camera = Locator.GetPlayerCamera();
                 camera.gameObject.AddComponent<ViewbobController>();
-                camera.nearClipPlane = EnableItemClipFix ? 0.05f : 0.1f;
+                camera.nearClipPlane = FixItemClipping ? 0.05f : 0.1f;
 
                 ViewmodelArm.OnSceneLoad();
+
+                ArmData.LoadArmData(Path.Combine(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location), "modded-armdata-test.json"));
             });
         };
 
