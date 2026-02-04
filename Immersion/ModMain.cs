@@ -106,15 +106,13 @@ public class ModMain : ModBehaviour
         {
             ModHelper.Events.Unity.FireOnNextUpdate(() =>
             {
-                var player = Locator.GetPlayerBody();
-                if (player == null) return;
-                player.GetComponentInChildren<PlayerAnimController>().gameObject.AddComponent<AnimSpeedController>();
-
                 var camera = Locator.GetPlayerCamera();
                 camera.gameObject.AddComponent<OffsetManager>();
                 camera.nearClipPlane = FixItemClipping ? 0.05f : 0.1f;
 
-                ViewmodelArm.OnSceneLoad();
+                Locator.GetPlayerBody()?.GetComponentInChildren<PlayerAnimController>().gameObject.AddComponent<AnimSpeedController>();
+
+                ViewmodelArm.CreateArmTemplate();
             });
         };
 

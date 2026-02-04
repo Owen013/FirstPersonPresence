@@ -1,6 +1,5 @@
 ﻿using HarmonyLib;
 using Immersion.Objects;
-using Mono.Cecil;
 using OWML.Common;
 using System.Collections.Generic;
 using UnityEngine;
@@ -126,18 +125,7 @@ public class ViewmodelArm : MonoBehaviour
         transform.localScale = 0.1f * Vector3.one;
     }
 
-    internal static void OnSceneLoad()
-    {
-        CreateArmTemplate();
-        ModMain.Instance.ModHelper.Events.Unity.FireOnNextUpdate(() =>
-        {
-            var camera = Locator.GetPlayerCamera();
-            NewViewmodelArm(camera.transform.Find("Signalscope").GetComponent<PlayerTool>()).SetArmData("Signalscope");
-            NewViewmodelArm(camera.transform.Find("NomaiTranslatorProp").GetComponent<PlayerTool>()).SetArmData("NomaiTranslator");
-        });
-    }
-
-    private static void CreateArmTemplate()
+    internal static void CreateArmTemplate()
     {
         var armObject = Instantiate(Locator.GetPlayerBody().GetComponentInChildren<PlayerAnimController>().gameObject);
         armObject.name = "ViewmodelArmTemplate";
@@ -189,16 +177,35 @@ public class ViewmodelArm : MonoBehaviour
 
     [HarmonyPostfix]
     [HarmonyPatch(typeof(PlayerTool), nameof(PlayerTool.EquipTool))]
-    private static void OnEquipTool(PlayerTool __instance)
+    private static void PlayerTool_EquipTool_Postfix(PlayerTool __instance)
     {
-        var arm = __instance.transform.Find("ViewmodelArm");
-        if (arm != null)
-            arm.gameObject.SetActive(true);
+        // don't try to add viewmodel arm if disabled in config or if this tool already has one
+        if (!ModMain.Instance.EnableViewmodelHands) return;
+
+        // check for existing arm and enable if found (PlayerTool has no event for tool being equipped, so this is required)
+        var existingArm = __instance.transform.Find("ViewmodelArm");
+        if (existingArm != null)
+        {
+            existingArm.gameObject.SetActive(true);
+            return;
+        }
+
+        if (__instance is Signalscope)
+        {
+            NewViewmodelArm(__instance).SetArmData("Signalscope");
+            return;
+        }
+
+        if (__instance is NomaiTranslator)
+        {
+            NewViewmodelArm(__instance).SetArmData("NomaiTranslator");
+            return;
+        }
     }
 
     [HarmonyPostfix]
     [HarmonyPatch(typeof(OWItem), nameof(OWItem.PickUpItem))]
-    private static void ItemPickedUp(OWItem __instance)
+    private static void OWItem_PickUpItem_Postfix(OWItem __instance)
     {
         // don't try to add viewmodel arm if disabled in config or if this item already has one
         if (!ModMain.Instance.EnableViewmodelHands || __instance.transform.Find("ViewmodelArm")) return;
@@ -206,67 +213,78 @@ public class ViewmodelArm : MonoBehaviour
         switch (__instance._type)
         {
             case ItemType.SharedStone:
-                if (__instance is not SharedStone) return;
+                if (__instance is not SharedStone) break;
                 NewViewmodelArm(__instance).SetArmData("SharedStone");
                 break;
+
             case ItemType.Scroll:
-                if (__instance is not ScrollItem) return;
+                if (__instance is not ScrollItem) break;
                 switch (__instance.name)
                 {
                     case "Prefab_NOM_Scroll_Jeff":
                         NewViewmodelArm(__instance).SetArmData("Scroll_Jeff");
                         break;
+
                     case "Prefab_NOM_Scroll_egg":
                         NewViewmodelArm(__instance).SetArmData("Scroll_Egg");
                         break;
+
                     default:
                         NewViewmodelArm(__instance).SetArmData("Scroll");
                         break;
                 }
 
                 break;
+
             case ItemType.ConversationStone:
-                if (__instance is not NomaiConversationStone) return;
+                if (__instance is not NomaiConversationStone) break;
                 var word = (__instance as NomaiConversationStone)._word;
                 if (word == NomaiWord.Identify || word == NomaiWord.Explain)
                     NewViewmodelArm(__instance).SetArmData("ConversationStone_Big");
                 else
                     NewViewmodelArm(__instance).SetArmData("ConversationStone");
                 break;
+
             case ItemType.WarpCore:
-                if (__instance is not WarpCoreItem) return;
+                if (__instance is not WarpCoreItem) break;
                 var warpCoreType = (__instance as WarpCoreItem)._warpCoreType;
                 if (warpCoreType == WarpCoreType.Vessel || warpCoreType == WarpCoreType.VesselBroken)
                     NewViewmodelArm(__instance).SetArmData("WarpCore");
                 else
                     NewViewmodelArm(__instance).SetArmData("WarpCore_Simple");
                 break;
+
             case ItemType.Lantern:
-                if (__instance is not SimpleLanternItem) return;
+                if (__instance is not SimpleLanternItem) break;
                 NewViewmodelArm(__instance).SetArmData("Lantern");
                 break;
+
             case ItemType.SlideReel:
-                if (__instance is not SlideReelItem) return;
+                if (__instance is not SlideReelItem) break;
                 NewViewmodelArm(__instance).SetArmData("SlideReel");
                 break;
+
             case ItemType.DreamLantern:
-                if (__instance is not DreamLanternItem) return;
+                if (__instance is not DreamLanternItem) break;
                 switch ((__instance as DreamLanternItem)._lanternType)
                 {
                     case DreamLanternType.Nonfunctioning:
                         NewViewmodelArm(__instance).SetArmData("DreamLantern_Nonfunctioning");
                         break;
+
                     case DreamLanternType.Malfunctioning:
                         NewViewmodelArm(__instance).SetArmData("DreamLantern_Malfunctioning");
                         break;
+
                     default:
                         NewViewmodelArm(__instance).SetArmData("DreamLantern");
                         break;
                 }
 
                 break;
+
             case ItemType.VisionTorch:
-                if (__instance is not VisionTorchItem) return;
+                if (__instance is not VisionTorchItem) break;
                 NewViewmodelArm(__instance).SetArmData("VisionTorch");
                 break;
         }
@@ -332,7 +350,8 @@ public class ViewmodelArm : MonoBehaviour
 
         if (_playerTool != null)
         {
-            if (!_playerTool._isEquipped && !_playerTool._isPuttingAway)
+            bool isHoldingTool = _playerTool.IsEquipped() || _playerTool.IsPuttingAway();
+            if (!isHoldingTool || OWInput.IsInputMode(InputMode.ShipCockpit))
             {
                 gameObject.SetActive(false);
                 return;
