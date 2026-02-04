@@ -200,18 +200,17 @@ public class ViewmodelArm : MonoBehaviour
     [HarmonyPatch(typeof(OWItem), nameof(OWItem.PickUpItem))]
     private static void ItemPickedUp(OWItem __instance)
     {
-        if (ModMain.Instance.FixItemClipping && __instance._type == ItemType.ConversationStone)
-            __instance.transform.localPosition = 0.2f * Vector3.forward;
-
         // don't try to add viewmodel arm if disabled in config or if this item already has one
         if (!ModMain.Instance.EnableViewmodelHands || __instance.transform.Find("ViewmodelArm")) return;
 
         switch (__instance._type)
         {
             case ItemType.SharedStone:
+                if (__instance is not SharedStone) return;
                 NewViewmodelArm(__instance).SetArmData("SharedStone");
                 break;
             case ItemType.Scroll:
+                if (__instance is not ScrollItem) return;
                 switch (__instance.name)
                 {
                     case "Prefab_NOM_Scroll_Jeff":
@@ -227,6 +226,7 @@ public class ViewmodelArm : MonoBehaviour
 
                 break;
             case ItemType.ConversationStone:
+                if (__instance is not NomaiConversationStone) return;
                 var word = (__instance as NomaiConversationStone)._word;
                 if (word == NomaiWord.Identify || word == NomaiWord.Explain)
                     NewViewmodelArm(__instance).SetArmData("ConversationStone_Big");
@@ -234,6 +234,7 @@ public class ViewmodelArm : MonoBehaviour
                     NewViewmodelArm(__instance).SetArmData("ConversationStone");
                 break;
             case ItemType.WarpCore:
+                if (__instance is not WarpCoreItem) return;
                 var warpCoreType = (__instance as WarpCoreItem)._warpCoreType;
                 if (warpCoreType == WarpCoreType.Vessel || warpCoreType == WarpCoreType.VesselBroken)
                     NewViewmodelArm(__instance).SetArmData("WarpCore");
@@ -241,12 +242,15 @@ public class ViewmodelArm : MonoBehaviour
                     NewViewmodelArm(__instance).SetArmData("WarpCore_Simple");
                 break;
             case ItemType.Lantern:
+                if (__instance is not SimpleLanternItem) return;
                 NewViewmodelArm(__instance).SetArmData("Lantern");
                 break;
             case ItemType.SlideReel:
+                if (__instance is not SlideReelItem) return;
                 NewViewmodelArm(__instance).SetArmData("SlideReel");
                 break;
             case ItemType.DreamLantern:
+                if (__instance is not DreamLanternItem) return;
                 switch ((__instance as DreamLanternItem)._lanternType)
                 {
                     case DreamLanternType.Nonfunctioning:
@@ -262,6 +266,7 @@ public class ViewmodelArm : MonoBehaviour
 
                 break;
             case ItemType.VisionTorch:
+                if (__instance is not VisionTorchItem) return;
                 NewViewmodelArm(__instance).SetArmData("VisionTorch");
                 break;
         }
