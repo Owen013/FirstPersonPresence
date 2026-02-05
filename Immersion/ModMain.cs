@@ -104,7 +104,7 @@ public class ModMain : ModBehaviour
         // add components on scene load
         LoadManager.OnCompleteSceneLoad += (_, _) =>
         {
-            ModHelper.Events.Unity.FireOnNextUpdate(() =>
+            ModHelper.Events.Unity.FireInNUpdates(() =>
             {
                 var camera = Locator.GetPlayerCamera();
                 camera.gameObject.AddComponent<OffsetManager>();
@@ -113,7 +113,7 @@ public class ModMain : ModBehaviour
                 Locator.GetPlayerBody()?.GetComponentInChildren<PlayerAnimController>().gameObject.AddComponent<AnimSpeedController>();
 
                 ViewmodelArm.CreateArmTemplate();
-            });
+            }, 60);
         };
 
         // ready

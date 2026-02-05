@@ -49,6 +49,12 @@ public class ViewmodelArm : MonoBehaviour
     // this method should not be used except by the above two methods
     private static ViewmodelArm NewViewmodelArm(PlayerTool playerTool, OWItem owItem)
     {
+        if (s_armTemplate == null)
+        {
+            ModMain.Instance.ModHelper.Console.WriteLine("Cannot create ViewmodelArm right now; template has not been created", MessageType.Warning);
+            return null;
+        }
+
         var armObject = Instantiate(s_armTemplate);
         armObject.name = "ViewmodelArm";
         armObject.SetActive(true);
@@ -192,13 +198,13 @@ public class ViewmodelArm : MonoBehaviour
 
         if (__instance is Signalscope)
         {
-            NewViewmodelArm(__instance).SetArmData("Signalscope");
+            NewViewmodelArm(__instance)?.SetArmData("Signalscope");
             return;
         }
 
         if (__instance is NomaiTranslator)
         {
-            NewViewmodelArm(__instance).SetArmData("NomaiTranslator");
+            NewViewmodelArm(__instance)?.SetArmData("NomaiTranslator");
             return;
         }
     }
@@ -214,7 +220,7 @@ public class ViewmodelArm : MonoBehaviour
         {
             case ItemType.SharedStone:
                 if (__instance is not SharedStone) break;
-                NewViewmodelArm(__instance).SetArmData("SharedStone");
+                NewViewmodelArm(__instance)?.SetArmData("SharedStone");
                 break;
 
             case ItemType.Scroll:
@@ -222,15 +228,15 @@ public class ViewmodelArm : MonoBehaviour
                 switch (__instance.name)
                 {
                     case "Prefab_NOM_Scroll_Jeff":
-                        NewViewmodelArm(__instance).SetArmData("Scroll_Jeff");
+                        NewViewmodelArm(__instance)?.SetArmData("Scroll_Jeff");
                         break;
 
                     case "Prefab_NOM_Scroll_egg":
-                        NewViewmodelArm(__instance).SetArmData("Scroll_Egg");
+                        NewViewmodelArm(__instance)?.SetArmData("Scroll_Egg");
                         break;
 
                     default:
-                        NewViewmodelArm(__instance).SetArmData("Scroll");
+                        NewViewmodelArm(__instance)?.SetArmData("Scroll");
                         break;
                 }
 
@@ -240,28 +246,28 @@ public class ViewmodelArm : MonoBehaviour
                 if (__instance is not NomaiConversationStone) break;
                 var word = (__instance as NomaiConversationStone)._word;
                 if (word == NomaiWord.Identify || word == NomaiWord.Explain)
-                    NewViewmodelArm(__instance).SetArmData("ConversationStone_Big");
+                    NewViewmodelArm(__instance)?.SetArmData("ConversationStone_Big");
                 else
-                    NewViewmodelArm(__instance).SetArmData("ConversationStone");
+                    NewViewmodelArm(__instance)?.SetArmData("ConversationStone");
                 break;
 
             case ItemType.WarpCore:
                 if (__instance is not WarpCoreItem) break;
                 var warpCoreType = (__instance as WarpCoreItem)._warpCoreType;
                 if (warpCoreType == WarpCoreType.Vessel || warpCoreType == WarpCoreType.VesselBroken)
-                    NewViewmodelArm(__instance).SetArmData("WarpCore");
+                    NewViewmodelArm(__instance)?.SetArmData("WarpCore");
                 else
-                    NewViewmodelArm(__instance).SetArmData("WarpCore_Simple");
+                    NewViewmodelArm(__instance)?.SetArmData("WarpCore_Simple");
                 break;
 
             case ItemType.Lantern:
                 if (__instance is not SimpleLanternItem) break;
-                NewViewmodelArm(__instance).SetArmData("Lantern");
+                NewViewmodelArm(__instance)?.SetArmData("Lantern");
                 break;
 
             case ItemType.SlideReel:
                 if (__instance is not SlideReelItem) break;
-                NewViewmodelArm(__instance).SetArmData("SlideReel");
+                NewViewmodelArm(__instance)?.SetArmData("SlideReel");
                 break;
 
             case ItemType.DreamLantern:
@@ -269,15 +275,15 @@ public class ViewmodelArm : MonoBehaviour
                 switch ((__instance as DreamLanternItem)._lanternType)
                 {
                     case DreamLanternType.Nonfunctioning:
-                        NewViewmodelArm(__instance).SetArmData("DreamLantern_Nonfunctioning");
+                        NewViewmodelArm(__instance)?.SetArmData("DreamLantern_Nonfunctioning");
                         break;
 
                     case DreamLanternType.Malfunctioning:
-                        NewViewmodelArm(__instance).SetArmData("DreamLantern_Malfunctioning");
+                        NewViewmodelArm(__instance)?.SetArmData("DreamLantern_Malfunctioning");
                         break;
 
                     default:
-                        NewViewmodelArm(__instance).SetArmData("DreamLantern");
+                        NewViewmodelArm(__instance)?.SetArmData("DreamLantern");
                         break;
                 }
 
@@ -285,7 +291,7 @@ public class ViewmodelArm : MonoBehaviour
 
             case ItemType.VisionTorch:
                 if (__instance is not VisionTorchItem) break;
-                NewViewmodelArm(__instance).SetArmData("VisionTorch");
+                NewViewmodelArm(__instance)?.SetArmData("VisionTorch");
                 break;
         }
     }
