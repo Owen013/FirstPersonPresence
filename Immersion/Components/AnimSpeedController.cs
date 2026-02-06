@@ -1,7 +1,9 @@
-﻿using UnityEngine;
+﻿using HarmonyLib;
+using UnityEngine;
 
 namespace Immersion.Components;
 
+[HarmonyPatch]
 public class AnimSpeedController : MonoBehaviour
 {
     public static AnimSpeedController Instance { get; private set; }
@@ -11,6 +13,13 @@ public class AnimSpeedController : MonoBehaviour
     private PlayerCharacterController _characterController;
 
     private Animator _animator;
+
+    [HarmonyPostfix]
+    [HarmonyPatch(typeof(PlayerAnimController), nameof(PlayerAnimController.Start))]
+    private static void PlayerAnimController_Start_Postfix(PlayerAnimController __instance)
+    {
+        __instance.gameObject.AddComponent<AnimSpeedController>();
+    }
 
     private void Awake()
     {

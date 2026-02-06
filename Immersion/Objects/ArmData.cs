@@ -10,11 +10,9 @@ namespace Immersion.Objects;
 
 public class ArmData
 {
+    public Vector3[] bonePositions;
+
     public Vector3[] boneEulers;
-
-    public Vector3 localPosition;
-
-    public Vector3 localEulerAngles;
 
     public float scale;
 
@@ -49,14 +47,11 @@ public class ArmData
 
             var armData = new ArmData();
 
+            if (toolObject["bone_positions"] is JArray posArray)
+                armData.bonePositions = posArray.Select(vec => new Vector3((float)vec[0], (float)vec[1], (float)vec[2])).ToArray();
+
             if (toolObject["bone_eulers"] is JArray eulerArray)
                 armData.boneEulers = eulerArray.Select(vec => new Vector3((float)vec[0], (float)vec[1], (float)vec[2])).ToArray();
-
-            if (toolObject["arm_local_position"] != null)
-                armData.localPosition = new Vector3((float)toolObject["arm_local_position"][0], (float)toolObject["arm_local_position"][1], (float)toolObject["arm_local_position"][2]);
-
-            if (toolObject["arm_local_eulers"] != null)
-                armData.localEulerAngles = new Vector3((float)toolObject["arm_local_eulers"][0], (float)toolObject["arm_local_eulers"][1], (float)toolObject["arm_local_eulers"][2]);
 
             if (toolObject["arm_scale"] != null)
                 armData.scale = (float)toolObject["arm_scale"];

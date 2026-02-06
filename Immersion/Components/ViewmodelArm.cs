@@ -9,6 +9,58 @@ namespace Immersion.Components;
 [HarmonyPatch]
 public class ViewmodelArm : MonoBehaviour
 {
+    public static readonly string[] s_boneNames =
+    [
+        "Spine_01",
+        "Spine_02",
+        "Spine_Top",
+        "LF_Arm_Clavicle",
+        "RT_Arm_Clavicle",
+        "RT_Arm_Shoulder",
+        "RT_Arm_Elbow",
+        "RT_Arm_Wrist",
+        "RT_Finger_01_01",
+        "RT_Finger_01_02",
+        "RT_Finger_01_03",
+        "RT_Finger_01_04",
+        "RT_Finger_02_01",
+        "RT_Finger_02_02",
+        "RT_Finger_02_03",
+        "RT_Finger_02_04",
+        "RT_Thumb_01_01",
+        "RT_Thumb_01_02",
+        "RT_Thumb_01_03",
+        "RT_Thumb_01_04",
+        "Neck",
+        "Pack"
+    ];
+
+    public static readonly int[] s_boneParentIndices =
+    [
+        -1,
+        0,
+        1,
+        2,
+        2,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
+        10,
+        7,
+        12,
+        13,
+        14,
+        7,
+        16,
+        17,
+        18,
+        2,
+        2
+    ];
+
     private static GameObject s_armTemplate;
 
     private static GameObject s_playerRightArmNoSuit;
@@ -28,13 +80,6 @@ public class ViewmodelArm : MonoBehaviour
     private GameObject _viewmodelArmSuit;
 
     private Transform[] _bones;
-
-    public enum ArmShader
-    {
-        Standard,
-        Viewmodel,
-        ViewmodelCutoff
-    }
 
     public static ViewmodelArm NewViewmodelArm(PlayerTool playerTool)
     {
@@ -61,8 +106,8 @@ public class ViewmodelArm : MonoBehaviour
 
         // add component and initialize fields
         var viewmodelArm = armObject.AddComponent<ViewmodelArm>();
-        viewmodelArm._viewmodelArmNoSuit = armObject.transform.Find("player_mesh_noSuit:Player_RightArm").gameObject;
-        viewmodelArm._viewmodelArmSuit = armObject.transform.Find("Traveller_Mesh_v01:PlayerSuit_RightArm").gameObject;
+        viewmodelArm._viewmodelArmNoSuit = armObject.transform.Find("ArmMesh_NoSuit").gameObject;
+        viewmodelArm._viewmodelArmSuit = armObject.transform.Find("ArmMesh_Suit").gameObject;
         viewmodelArm._bones = viewmodelArm._viewmodelArmNoSuit.GetComponent<SkinnedMeshRenderer>().bones;
 
         // Move to transform
@@ -82,10 +127,9 @@ public class ViewmodelArm : MonoBehaviour
         }
 
         var camera = Locator.GetPlayerCamera();
-        viewmodelArm.transform.position = camera.transform.position;
-        viewmodelArm.transform.rotation = camera.transform.rotation;
+        viewmodelArm.transform.localPosition = Vector3.zero;
+        viewmodelArm.transform.localEulerAngles = Vector3.zero;
         viewmodelArm.transform.localScale = 0.1f * Vector3.one;
-        armObject.transform.Find("Traveller_Rig_v01:Traveller_Spine_01_Jnt").localPosition = new Vector3(-0.2741f, -8f, -0.6957f);
 
         return viewmodelArm;
     }
@@ -95,28 +139,27 @@ public class ViewmodelArm : MonoBehaviour
         var armData = ArmData.GetArmData(itemName);
         if (armData == null) return;
 
-        SetBoneEulers(armData.boneEulers);
-        transform.localPosition = armData.localPosition;
-        transform.localEulerAngles = armData.localEulerAngles;
+        SetBonePoses(armData.bonePositions, armData.boneEulers);
         transform.localScale = 0.1f * Vector3.one * armData.scale;
         SetShader(armData.shaderName);
     }
 
     public void OutputArmData()
     {
-        string output = "Bone Eulers:\n";
-        for (int i = 0; i < 15; i++)
+        string output = "Bone Positions:\n";
+        for (int i = 0; i < _bones.Length; i++)
         {
-            var boneEulers = _bones[i + 5].localRotation.eulerAngles;
-            output += $"[ {Mathf.Round(boneEulers.x * 100f) / 100f}, {Mathf.Round(boneEulers.y * 100f) / 100f}, {Mathf.Round(boneEulers.z * 100f) / 100f} ]";
-            if (i < 14)
-            {
-                output += ",\n";
-            }
+            var bonePositions = _bones[i].localPosition;
+            output += $"[ {Mathf.Round(bonePositions.x * 1000f) / 1000f}, {Mathf.Round(bonePositions.y * 1000f) / 1000f}, {Mathf.Round(bonePositions.z * 1000f) / 1000f} ],\n";
         }
 
-        output += $"\n\nArm Local Position: [ {Mathf.Round(transform.localPosition.x * 1000f) / 1000f}, {Mathf.Round(transform.localPosition.y * 1000f) / 1000f}, {Mathf.Round(transform.localPosition.z * 1000f) / 1000f} ]\n";
-        output += $"\nArm Local Rotation: [ {Mathf.Round(transform.localEulerAngles.x * 100f) / 100f}, {Mathf.Round(transform.localEulerAngles.y * 100f) / 100f}, {Mathf.Round(transform.localEulerAngles.z * 100f) / 100f} ]\n";
+        output += "\nBone Eulers:\n";
+        for (int i = 0; i < _bones.Length; i++)
+        {
+            var boneEulers = _bones[i].localEulerAngles;
+            output += $"[ {Mathf.Round(boneEulers.x * 100f) / 100f}, {Mathf.Round(boneEulers.y * 100f) / 100f}, {Mathf.Round(boneEulers.z * 100f) / 100f} ],\n";
+        }
+
         output += $"\nArm Scale: {transform.localScale.x * 10f}\n";
         output += $"\nShader: \"{_viewmodelArmNoSuit.GetComponent<SkinnedMeshRenderer>().materials[0].shader.name}\"";
 
@@ -131,54 +174,64 @@ public class ViewmodelArm : MonoBehaviour
         transform.localScale = 0.1f * Vector3.one;
     }
 
-    internal static void CreateArmTemplate()
+    [HarmonyPostfix]
+    [HarmonyPatch(typeof(PlayerAnimController), nameof(PlayerAnimController.Start))]
+    private static void PlayerAnimController_Start_Postfix(PlayerAnimController __instance)
     {
-        var armObject = Instantiate(Locator.GetPlayerBody().GetComponentInChildren<PlayerAnimController>().gameObject);
-        armObject.name = "ViewmodelArmTemplate";
+        // create viewmodel arm template
+        var armTemplate = new GameObject("ViewmodelArmTemplate");
+        armTemplate.SetActive(false);
 
-        // PlayerAnimController has to be destroyed first because Animator depends on it
-        Destroy(armObject.GetComponent<PlayerAnimController>());
-        armObject.DestroyAllComponents<Behaviour>();
-
-        // Set new root bone
-        var newRootBone = armObject.transform.Find("Traveller_Rig_v01:Traveller_Trajectory_Jnt/Traveller_Rig_v01:Traveller_ROOT_Jnt/Traveller_Rig_v01:Traveller_Spine_01_Jnt");
-        newRootBone.parent = armObject.transform;
-        foreach (Transform transform in armObject.GetComponentsInChildren<Transform>(true))
+        // create rig
+        var rig = new GameObject("Rig").transform;
+        rig.parent = armTemplate.transform;
+        var bones = new Transform[22];
+        for (int i = 0; i < bones.Length; i++)
         {
-            if (transform.name == "Traveller_Rig_v01:Traveller_Trajectory_Jnt" || transform.name == "player_mesh_noSuit:Traveller_HEA_Player" || transform.name == "Traveller_Rig_v01:Traveller" || transform.name == "Traveller_Mesh_v01:Traveller_Geo")
-                Destroy(transform.gameObject);
+            bones[i] = new GameObject(s_boneNames[i]).transform;
+            int parentIndex = s_boneParentIndices[i];
+            if (parentIndex == -1)
+                bones[i].parent = rig;
+            else
+                bones[i].parent = bones[parentIndex];
         }
 
-        static void SetUpArmModel(GameObject arm, Transform rootBone)
-        {
-            var oldParent = arm.transform.parent;
-            arm.transform.parent = arm.transform.parent.parent;
-            Destroy(oldParent.gameObject);
+        // set up arm meshes and set new bones list
+        var noSuitMesh = Instantiate(__instance.transform.Find("player_mesh_noSuit:Traveller_HEA_Player/player_mesh_noSuit:Player_RightArm")).GetComponent<SkinnedMeshRenderer>();
+        noSuitMesh.name = "ArmMesh_NoSuit";
+        noSuitMesh.transform.parent = armTemplate.transform;
+        noSuitMesh.gameObject.layer = 27;
+        noSuitMesh.updateWhenOffscreen = true;
+        noSuitMesh.rootBone = bones[0];
+        noSuitMesh.bones = bones;
 
-            arm.layer = 27;
-            var renderer = arm.GetComponent<SkinnedMeshRenderer>();
-            renderer.updateWhenOffscreen = true;
+        // suit mesh uses different bones for some forsaken reason
+        var suitMesh = Instantiate(__instance.transform.Find("Traveller_Mesh_v01:Traveller_Geo/Traveller_Mesh_v01:PlayerSuit_RightArm")).GetComponent<SkinnedMeshRenderer>();
+        suitMesh.name = "ArmMesh_Suit";
+        suitMesh.transform.parent = armTemplate.transform;
+        suitMesh.gameObject.layer = 27;
+        suitMesh.updateWhenOffscreen = true;
+        suitMesh.rootBone = bones[4];
+        suitMesh.bones =
+        [
+            bones[3],
+            bones[4],
+            bones[5],
+            bones[6],
+            bones[7],
+            bones[8],
+            bones[9],
+            bones[10],
+            bones[12],
+            bones[13],
+            bones[14],
+            bones[16],
+            bones[17],
+            bones[18]
+        ];
 
-            // delete unneeded bones
-            renderer.rootBone = rootBone;
-            var newBones = new List<Transform>();
-            for (int i = 0; i < renderer.bones.Length; i++)
-            {
-                if (/*i <= 19 && */renderer.bones[i] != null)
-                {
-                    newBones.Add(renderer.bones[i]);
-                }
-            }
-            renderer.bones = newBones.ToArray();
-        }
-
-        var noSuitArm = armObject.transform.Find("player_mesh_noSuit:Traveller_HEA_Player/player_mesh_noSuit:Player_RightArm").gameObject;
-        var suitArm = armObject.transform.Find("Traveller_Mesh_v01:Traveller_Geo/Traveller_Mesh_v01:PlayerSuit_RightArm").gameObject;
-        SetUpArmModel(noSuitArm, newRootBone);
-        SetUpArmModel(suitArm, newRootBone);
-
-        armObject.SetActive(false);
-        s_armTemplate = armObject;
+        // arm template is finished
+        s_armTemplate = armTemplate;
     }
 
     [HarmonyPostfix]
@@ -225,19 +278,14 @@ public class ViewmodelArm : MonoBehaviour
 
             case ItemType.Scroll:
                 if (__instance is not ScrollItem) break;
-                switch (__instance.name)
+
+                if (__instance.name == "Prefab_NOM_Scroll_Jeff")
                 {
-                    case "Prefab_NOM_Scroll_Jeff":
-                        NewViewmodelArm(__instance)?.SetArmData("Scroll_Jeff");
-                        break;
-
-                    case "Prefab_NOM_Scroll_egg":
-                        NewViewmodelArm(__instance)?.SetArmData("Scroll_Egg");
-                        break;
-
-                    default:
-                        NewViewmodelArm(__instance)?.SetArmData("Scroll");
-                        break;
+                    NewViewmodelArm(__instance)?.SetArmData("Scroll_Jeff");
+                }
+                else
+                {
+                    NewViewmodelArm(__instance)?.SetArmData("Scroll");
                 }
 
                 break;
@@ -296,11 +344,12 @@ public class ViewmodelArm : MonoBehaviour
         }
     }
 
-    private void SetBoneEulers(Vector3[] eulers)
+    private void SetBonePoses(Vector3[] positions, Vector3[] eulers)
     {
-        for (int i = 0; i <= 14; i++)
+        for (int i = 0; i < _bones.Length; i++)
         {
-            _bones[i + 5].localEulerAngles = eulers[i];
+            _bones[i].localPosition = positions[i];
+            _bones[i].localEulerAngles = eulers[i];
         }
     }
 
