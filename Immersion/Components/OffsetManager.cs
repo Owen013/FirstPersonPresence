@@ -30,9 +30,9 @@ public class OffsetManager : MonoBehaviour
 
     private float _viewbobDampVel;
 
-    private Vector2 _toolSway;
+    private Vector2 _handSway;
 
-    private Vector2 _toolSwayDampVel;
+    private Vector2 _handSwayDampVel;
 
     private Vector3 _breathingAnimPos;
 
@@ -183,7 +183,7 @@ public class OffsetManager : MonoBehaviour
         }
     }
 
-    private void UpdateDynamicToolPos()
+    private void UpdateHandHeightOffset()
     {
         // only do this if dynamic tool position is enabled and strength is non-zero
         if (ModMain.Instance.EnableHandHeightOffset)
@@ -199,7 +199,7 @@ public class OffsetManager : MonoBehaviour
         }
     }
 
-    private void UpdateToolSway()
+    private void UpdateHandSway()
     {
         // only do this if tool sway is enabled
         if (ModMain.Instance.EnableHandSway)
@@ -230,29 +230,29 @@ public class OffsetManager : MonoBehaviour
                     lookInput.y = Mathf.Max(0f, lookInput.y);
 
                 // decay already existing tool sway and then add new tool sway
-                _toolSway -= lookInput * (1f - Mathf.Min((_toolSway - lookInput).magnitude, 1));
+                _handSway -= lookInput * (1f - Mathf.Min((_handSway - lookInput).magnitude, 1));
             }
 
             // x sway is less pronounced the more up/down the player is looking
             // sway is split into local (relative to camera) and global (relative to player)
             float xSwayScale = (Mathf.Cos(degreesY / 90f * Mathf.PI) + 1f) * 0.5f;
-            float localZOffset = 0.15f * (Mathf.Cos(Mathf.PI * _toolSway.y) - 1f);
-            float globalZOffset = 0.15f * (Mathf.Cos(Mathf.PI * _toolSway.x) - 1f);
+            float localZOffset = 0.15f * (Mathf.Cos(Mathf.PI * _handSway.y) - 1f);
+            float globalZOffset = 0.15f * (Mathf.Cos(Mathf.PI * _handSway.x) - 1f);
 
             // calculate and apply the final offset
-            var offset = new Vector3(_toolSway.x * xSwayScale, _toolSway.y, localZOffset);
+            var offset = new Vector3(_handSway.x * xSwayScale, _handSway.y, localZOffset);
             offset += xSwayScale * globalZOffset * _cameraController.transform.InverseTransformDirection(_playerController.transform.forward);
             offset *= ModMain.Instance.HandSwayStrength * 0.25f;
             AddToolOffsets(offset);
 
             // decay tool sway
-            _toolSway = Vector2.SmoothDamp(_toolSway, Vector2.zero, ref _toolSwayDampVel, 0.2f);
+            _handSway = Vector2.SmoothDamp(_handSway, Vector2.zero, ref _handSwayDampVel, 0.2f);
         }
         else
         {
             // if tool sway is disabled, reset tool sway parameters
-            _toolSway = Vector3.zero;
-            _toolSwayDampVel = Vector3.zero;
+            _handSway = Vector3.zero;
+            _handSwayDampVel = Vector3.zero;
         }
     }
 
@@ -361,8 +361,8 @@ public class OffsetManager : MonoBehaviour
     private void Update()
     {
         UpdateViewbob();
-        UpdateDynamicToolPos();
-        UpdateToolSway();
+        UpdateHandHeightOffset();
+        UpdateHandSway();
         UpdateBreathingAnim();
         UpdateScoutAnim();
         UpdateLandingAnim();
