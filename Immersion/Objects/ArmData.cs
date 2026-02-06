@@ -30,13 +30,13 @@ public class ArmData
         {
             isDefaultArmData = true;
             jsonPath = Path.Combine(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location), "viewmodel-arm-data.json");
-            ModMain.Instance.ModHelper.Console.WriteLine($"Loading default ArmData...", MessageType.Info);
+            ModMain.Log($"Loading default ArmData...", MessageType.Info);
         }
         else
         {
             // other mods can load custom arm data for custom items or to replace ArmData for existing tools/items
             isDefaultArmData = false;
-            ModMain.Instance.ModHelper.Console.WriteLine($"Loading ArmData from \"{jsonPath}\"...", MessageType.Info);
+            ModMain.Log($"Loading ArmData from \"{jsonPath}\"...", MessageType.Info);
         }
 
         // create ArmData from JSON
@@ -64,7 +64,7 @@ public class ArmData
                 s_armData[itemName] = armData;
         }
 
-        ModMain.Instance.ModHelper.Console.WriteLine($"ArmData loaded successfully!", MessageType.Success);
+        ModMain.Log($"ArmData loaded successfully!", MessageType.Success);
     }
 
     public static ArmData GetArmData(string itemName)
@@ -78,7 +78,7 @@ public class ArmData
             if (!s_armData.ContainsKey(itemName))
             {
                 LoadArmData();
-                ModMain.Instance.ModHelper.Console.WriteLine($"No ArmData found for \"{itemName}\"", MessageType.Error);
+                ModMain.Log($"No ArmData found for \"{itemName}\"", MessageType.Error);
                 return null;
             }
         }

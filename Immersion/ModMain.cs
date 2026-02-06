@@ -10,41 +10,9 @@ public class ModMain : ModBehaviour
 {
     public static ModMain Instance { get; private set; }
 
-    public ISmolHatchling SmolHatchlingAPI { get; private set; }
+    public static ISmolHatchling SmolHatchlingAPI { get; private set; }
 
-    public IHikersMod HikersModAPI { get; private set; }
-
-    public bool EnableViewmodelHands { get; private set; }
-
-    public bool EnableHeadBob { get; private set; }
-
-    public float HeadBobStrength { get; private set; }
-
-    public bool EnableHandBob { get; private set; }
-
-    public float HandBobStrength { get; private set; }
-
-    public bool EnableHandHeightOffset { get; private set; }
-
-    public float HandHeightOffsetStrength { get; private set; }
-
-    public bool EnableHandSway { get; private set; }
-
-    public float HandSwayStrength { get; private set; }
-
-    public bool EnableBreathingAnim { get; private set; }
-
-    public float BreathingAnimStrength { get; private set; }
-
-    public bool EnableScoutAnim { get; private set; }
-
-    public bool EnableLandingAnim { get; private set; }
-
-    public bool EnableSprintingAnim { get; private set; }
-
-	public bool FixItemClipping { get; private set; }
-
-	public bool HideStowedItems { get; private set; }
+    public static IHikersMod HikersModAPI { get; private set; }
 
 	public override object GetApi()
     {
@@ -54,35 +22,14 @@ public class ModMain : ModBehaviour
 
     public override void Configure(IModConfig config)
     {
-        // viewmodel hands
-        EnableViewmodelHands = config.GetSettingsValue<bool>("EnableViewmodelHands");
+        Config.Configure(config);
 
-        // viewbob
-        EnableHeadBob = config.GetSettingsValue<bool>("EnableHeadBob");
-        HeadBobStrength = config.GetSettingsValue<float>("HeadBobStrength");
-        EnableHandBob = config.GetSettingsValue<bool>("EnableHandBob");
-        HandBobStrength = config.GetSettingsValue<float>("HandBobStrength");
+		Locator.GetPlayerCamera()?.nearClipPlane = Config.FixItemClipping ? 0.05f : 0.1f;
+    }
 
-        // dynamic tool pos
-        EnableHandHeightOffset = config.GetSettingsValue<bool>("EnableHandHeightOffset");
-        HandHeightOffsetStrength = config.GetSettingsValue<float>("HandHeightOffsetStrength");
-
-        // tool sway
-        EnableHandSway = config.GetSettingsValue<bool>("EnableHandSway");
-        HandSwayStrength = config.GetSettingsValue<float>("HandSwayStrength");
-
-        // breathing anim
-        EnableBreathingAnim = config.GetSettingsValue<bool>("EnableBreathingAnim");
-        BreathingAnimStrength = config.GetSettingsValue<float>("BreathingAnimStrength");
-
-        // misc
-        FixItemClipping = config.GetSettingsValue<bool>("FixHandClipping");
-        EnableScoutAnim = config.GetSettingsValue<bool>("EnableScoutAnim");
-        EnableLandingAnim = config.GetSettingsValue<bool>("EnableLandingAnim");
-        EnableSprintingAnim = config.GetSettingsValue<bool>("EnableSprintingAnim");
-		HideStowedItems = config.GetSettingsValue<bool>("HideStowedItems");
-
-		Locator.GetPlayerCamera()?.nearClipPlane = FixItemClipping ? 0.05f : 0.1f;
+    public static void Log(string message, MessageType type = MessageType.Message)
+    {
+        Instance.ModHelper.Console.WriteLine(message, type);
     }
 
     private void Awake()

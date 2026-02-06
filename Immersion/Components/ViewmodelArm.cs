@@ -160,7 +160,7 @@ public class ViewmodelArm : MonoBehaviour
         output += $"\nArm Scale: {transform.localScale.x * 10f}\n";
         output += $"\nShader: \"{_viewmodelArmNoSuit.GetComponent<SkinnedMeshRenderer>().materials[0].shader.name}\"";
 
-        ModMain.Instance.ModHelper.Console.WriteLine(output);
+        ModMain.Log(output);
     }
 
     public void ResetArmTransform()
@@ -235,7 +235,7 @@ public class ViewmodelArm : MonoBehaviour
     private static void PlayerTool_EquipTool_Postfix(PlayerTool __instance)
     {
         // don't try to add viewmodel arm if disabled in config or if this tool already has one
-        if (!ModMain.Instance.EnableViewmodelHands) return;
+        if (!Config.EnableViewmodelHands) return;
 
         // check for existing arm and enable if found (PlayerTool has no event for tool being equipped, so this is required)
         var existingArm = __instance.transform.Find("ViewmodelArm");
@@ -263,7 +263,7 @@ public class ViewmodelArm : MonoBehaviour
     private static void OWItem_PickUpItem_Postfix(OWItem __instance)
     {
         // don't try to add viewmodel arm if disabled in config or if this item already has one
-        if (!ModMain.Instance.EnableViewmodelHands || __instance.transform.Find("ViewmodelArm")) return;
+        if (!Config.EnableViewmodelHands || __instance.transform.Find("ViewmodelArm")) return;
 
         switch (__instance._type)
         {
@@ -359,7 +359,7 @@ public class ViewmodelArm : MonoBehaviour
             shader = Shader.Find(shaderName);
             if (shader == null)
             {
-                ModMain.Instance.ModHelper.Console.WriteLine($"Shader \"{shaderName}\" not found", MessageType.Error);
+                ModMain.Log($"Shader \"{shaderName}\" not found", MessageType.Error);
                 return;
             }
 
@@ -393,7 +393,7 @@ public class ViewmodelArm : MonoBehaviour
 
     private void LateUpdate()
     {
-        if (!ModMain.Instance.EnableViewmodelHands)
+        if (!Config.EnableViewmodelHands)
         {
             gameObject.SetActive(false);
             return;
