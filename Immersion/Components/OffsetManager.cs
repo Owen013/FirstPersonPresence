@@ -93,7 +93,12 @@ public class OffsetManager : MonoBehaviour
             float landingSpeed = -_playerController.transform.InverseTransformVector(landingVel).y;
 
             if (ModMain.Instance.SmolHatchlingAPI != null)
-                landingSpeed /= ModMain.Instance.SmolHatchlingAPI.GetPlayerScale();
+            {
+                // avoid dividing by 0
+                float playerScale = ModMain.Instance.SmolHatchlingAPI.GetPlayerScale();
+                if (playerScale != 0f)
+                    landingSpeed /= ModMain.Instance.SmolHatchlingAPI.GetPlayerScale();
+            }
 
             if (landingSpeed >= 5f)
             {
@@ -139,24 +144,32 @@ public class OffsetManager : MonoBehaviour
         // only do this if player is not movement locked and viewbob is enabled for camera or tool
         if (!_playerController._isMovementLocked && (ModMain.Instance.EnableHeadBob || ModMain.Instance.EnableHandBob))
         {
-            // viewbob cycle increases based on player ground speed
-            // viewbob time and viewbob strength are used by both camera and tool bobbing
-            _viewbobTime += _animController._animator.speed * Time.deltaTime;
-            if (_playerController.IsGrounded())
+            if (Time.deltaTime != 0f)
             {
-                // change viewbob strength quickly if on ground
-                Vector3 groundVel = _playerController.GetRelativeGroundVelocity();
-                groundVel.y = 0f;
+                // viewbob cycle increases based on player ground speed
+                // viewbob time and viewbob strength are used by both camera and tool bobbing
+                _viewbobTime += _animController._animator.speed * Time.deltaTime;
+                if (_playerController.IsGrounded())
+                {
+                    // change viewbob strength quickly if on ground
+                    Vector3 groundVel = _playerController.GetRelativeGroundVelocity();
+                    groundVel.y = 0f;
 
-                if (ModMain.Instance.SmolHatchlingAPI != null)
-                    groundVel /= ModMain.Instance.SmolHatchlingAPI.GetPlayerScale();
+                    if (ModMain.Instance.SmolHatchlingAPI != null)
+                    {
+                        // avoid dividing by 0
+                        float playerScale = ModMain.Instance.SmolHatchlingAPI.GetPlayerScale();
+                        if (playerScale != 0f)
+                            groundVel /= ModMain.Instance.SmolHatchlingAPI.GetPlayerScale();
+                    }
 
-                _viewbobScale = Mathf.SmoothDamp(_viewbobScale, Mathf.Min(groundVel.magnitude / 6f, 2f), ref _viewbobDampVel, 0.05f);
-            }
-            else
-            {
-                // decay viewbob strength slowly if in air
-                _viewbobScale = Mathf.SmoothDamp(_viewbobScale, 0f, ref _viewbobDampVel, 1f);
+                    _viewbobScale = Mathf.SmoothDamp(_viewbobScale, Mathf.Min(groundVel.magnitude / 6f, 2f), ref _viewbobDampVel, 0.05f);
+                }
+                else
+                {
+                    // decay viewbob strength slowly if in air
+                    _viewbobScale = Mathf.SmoothDamp(_viewbobScale, 0f, ref _viewbobDampVel, 1f);
+                }
             }
 
             // trig is used for a circular viewbob motion
@@ -207,7 +220,7 @@ public class OffsetManager : MonoBehaviour
             float degreesY = _cameraController.GetDegreesY();
 
             // only add new sway if player is in ground movement mode and the game is unpaused
-            if (!OWTime.IsPaused() && OWInput.IsInputMode(InputMode.Character) && !(PlayerState.InZeroG() && PlayerState.IsWearingSuit()))
+            if (Time.deltaTime != 0f && OWInput.IsInputMode(InputMode.Character) && !(PlayerState.InZeroG() && PlayerState.IsWearingSuit()))
             {
                 // get look input
                 Vector2 lookInput = OWInput.GetAxisValue(InputLibrary.look);
@@ -260,7 +273,9 @@ public class OffsetManager : MonoBehaviour
     {
         if (ModMain.Instance.EnableBreathingAnim && ModMain.Instance.BreathingAnimStrength != 0f)
         {
-            _breathingAnimPos = Vector3.SmoothDamp(_breathingAnimPos, _breathingAnimTargetPos, ref _breathingAnimDampVel, 1f);
+            if (Time.deltaTime != 0f)
+                _breathingAnimPos = Vector3.SmoothDamp(_breathingAnimPos, _breathingAnimTargetPos, ref _breathingAnimDampVel, 1f);
+
             AddToolOffsets(ModMain.Instance.BreathingAnimStrength * 0.005f * _breathingAnimPos);
 
             if (Time.time >= _breathingAnimNextUpdateTime)
@@ -283,10 +298,14 @@ public class OffsetManager : MonoBehaviour
     {
         if (ModMain.Instance.EnableScoutAnim)
         {
-            float targetRecoil = Mathf.Max(_lastScoutLaunchTime + 0.5f - Time.time, 0f) * 2f;
-            // damp moves quickly during the initial recoil, and slowly during the recovery
-            float dampTime = targetRecoil > _scoutRecoil ? 0.05f : 0.1f;
-            _scoutRecoil = Mathf.SmoothDamp(_scoutRecoil, targetRecoil, ref _scoutRecoilVel, dampTime);
+            if (Time.deltaTime != 0f)
+            {
+                float targetRecoil = Mathf.Max(_lastScoutLaunchTime + 0.5f - Time.time, 0f) * 2f;
+                // damp moves quickly during the initial recoil, and slowly during the recovery
+                float dampTime = targetRecoil > _scoutRecoil ? 0.05f : 0.1f;
+                _scoutRecoil = Mathf.SmoothDamp(_scoutRecoil, targetRecoil, ref _scoutRecoilVel, dampTime);
+            }
+
             // apply recoils to camera and scout launcher
             _cameraOffsetter.AddOffset(Quaternion.Euler(_scoutRecoil * new Vector3(-5f, 0f, -5f)));
             _probeLauncherOffsetter.AddOffset(new Vector3(0.25f, -0.25f, -0.5f) * _scoutRecoil, Quaternion.Euler(new Vector3(-15f, 0f, -15f) * _scoutRecoil));
@@ -303,22 +322,27 @@ public class OffsetManager : MonoBehaviour
     {
         if (ModMain.Instance.EnableLandingAnim)
         {
-            if (_isLandingAnimActive)
+            if (Time.deltaTime != 0f)
             {
-                // update camera height based on landing speed
-
-                float playerScale = ModMain.Instance.SmolHatchlingAPI != null ? ModMain.Instance.SmolHatchlingAPI.GetPlayerScale() : 1f;
-                _landingAnimPos = Mathf.Min(_landingAnimPos - _lastLandedSpeed * playerScale * Time.deltaTime, 0f);
-                if (_landingAnimPos <= -0.25f)
+                if (_isLandingAnimActive)
                 {
-                    // landing anim bottoms out at -0.25
-                    _landingAnimPos = -0.25f;
-                    _isLandingAnimActive = false;
+                    // update camera height based on landing speed
+
+
+
+                    float playerScale = ModMain.Instance.SmolHatchlingAPI != null ? ModMain.Instance.SmolHatchlingAPI.GetPlayerScale() : 1f;
+                    _landingAnimPos = Mathf.Min(_landingAnimPos - _lastLandedSpeed * playerScale * Time.deltaTime, 0f);
+                    if (_landingAnimPos <= -0.25f)
+                    {
+                        // landing anim bottoms out at -0.25
+                        _landingAnimPos = -0.25f;
+                        _isLandingAnimActive = false;
+                    }
                 }
-            }
-            else
-            {
-                _landingAnimPos = Mathf.SmoothDamp(_landingAnimPos, 0f, ref _landingAnimDampVel, 0.2f);
+                else
+                {
+                    _landingAnimPos = Mathf.SmoothDamp(_landingAnimPos, 0f, ref _landingAnimDampVel, 0.2f);
+                }
             }
 
             // apply offset
@@ -341,7 +365,8 @@ public class OffsetManager : MonoBehaviour
     {
         if (ModMain.Instance.EnableSprintingAnim && ModMain.Instance.HikersModAPI != null)
         {
-            _sprintAnimScale = Mathf.SmoothDamp(_sprintAnimScale, ModMain.Instance.HikersModAPI.IsSprinting() ? 1f : 0f, ref _sprintAnimDampVel, 0.2f);
+            if (Time.deltaTime != 0f)
+                _sprintAnimScale = Mathf.SmoothDamp(_sprintAnimScale, ModMain.Instance.HikersModAPI.IsSprinting() ? 1f : 0f, ref _sprintAnimDampVel, 0.2f);
             AddToolOffsets(Quaternion.Euler(15f * _sprintAnimScale, 0f, 0f));
         }
         else
@@ -358,7 +383,7 @@ public class OffsetManager : MonoBehaviour
             _itemToolOffsetter.AddOffset(Vector3.back);
     }
 
-    private void Update()
+    private void LateUpdate()
     {
         UpdateViewbob();
         UpdateDynamicToolPos();

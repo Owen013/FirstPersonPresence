@@ -1,5 +1,6 @@
 ﻿using Immersion.Components;
 using Immersion.Objects;
+using OWML.Common;
 using System;
 using UnityEngine;
 
@@ -7,12 +8,6 @@ namespace Immersion;
 
 public class ImmersionAPI
 {
-    public float GetAnimSpeed()
-    {
-        if (AnimSpeedController.Instance == null) return 1f;
-        return AnimSpeedController.Instance.AnimSpeed;
-    }
-
     public void LoadArmData(string jsonPath)
     {
         ArmData.LoadArmData(jsonPath);
@@ -28,6 +23,12 @@ public class ImmersionAPI
     {
         var arm = ViewmodelArm.NewViewmodelArm(item);
         arm.SetArmData(itemName);
+    }
+
+    [Obsolete("Immersion no longer changes AnimSpeed.")]
+    public float GetAnimSpeed()
+    {
+        return 1f;
     }
 
     [Obsolete("No longer works. Use CreateViewmodelArm() instead.")]
