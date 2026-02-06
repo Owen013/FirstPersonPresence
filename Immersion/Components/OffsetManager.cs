@@ -14,15 +14,15 @@ public class OffsetManager : MonoBehaviour
 
     private ToolModeSwapper _toolModeSwapper;
 
-    private OffsetController _cameraOffsetter;
+    private OffsetRoot _cameraOffsetRoot;
 
-    private OffsetController _itemToolOffsetter;
+    private OffsetRoot _itemToolOffsetRoot;
 
-    private OffsetController _signalscopeOffsetter;
+    private OffsetRoot _signalscopeOffsetRoot;
 
-    private OffsetController _probeLauncherOffsetter;
+    private OffsetRoot _probeLauncherOffsetRoot;
 
-    private OffsetController _translatorOffsetter;
+    private OffsetRoot _translatorOffsetRoot;
 
     private float _viewbobTime;
 
@@ -44,9 +44,11 @@ public class OffsetManager : MonoBehaviour
 
     private float _lastScoutLaunchTime;
 
-    private float _scoutRecoil;
+    private bool _isScoutAnimActive;
 
-    private float _scoutRecoilVel;
+    private float _scoutAnimStrength;
+
+    private float _scoutAnimVel;
 
     private Vector3 _lastPlayerVel;
 
@@ -78,18 +80,18 @@ public class OffsetManager : MonoBehaviour
         _cameraController = Locator.GetPlayerCameraController();
         _toolModeSwapper = Locator.GetToolModeSwapper();
 
-        // create offsetters
-        _cameraOffsetter = _cameraController.gameObject.AddComponent<OffsetController>();
-        var mainCamera = _cameraController._playerCamera.mainCamera.transform;
-        _itemToolOffsetter = mainCamera.Find("ItemCarryTool").gameObject.AddComponent<OffsetController>();
-        _signalscopeOffsetter = mainCamera.Find("Signalscope").gameObject.AddComponent<OffsetController>();
-        _probeLauncherOffsetter = mainCamera.Find("ProbeLauncher").gameObject.AddComponent<OffsetController>();
-        _translatorOffsetter = mainCamera.Find("NomaiTranslatorProp").gameObject.AddComponent<OffsetController>();
+        // create offset roots
+        _cameraOffsetRoot = OffsetRoot.NewOffsetRoot("OffsetRoot_Camera", _cameraController.gameObject);
+        var camera = _cameraController._playerCamera.transform;
+        _itemToolOffsetRoot = OffsetRoot.NewOffsetRoot("OffsetRoot_ItemCarryTool", camera.Find("ItemCarryTool").gameObject);
+        _signalscopeOffsetRoot = OffsetRoot.NewOffsetRoot("OffsetRoot_Signalscope", camera.Find("Signalscope").gameObject);
+        _probeLauncherOffsetRoot = OffsetRoot.NewOffsetRoot("OffsetRoot_ProbeLauncher", camera.Find("ProbeLauncher").gameObject);
+        _translatorOffsetRoot = OffsetRoot.NewOffsetRoot("OffsetRoot_NomaiTranslatorTranslatorProp", camera.Find("NomaiTranslatorProp").gameObject);
 
         _playerController.OnBecomeGrounded += () =>
         {
             // if the player lands with a downward speed of at least 5, play landing anim
-            Vector3 landingVel = (_lastPlayerVel - _playerController.GetGroundBody().GetPointVelocity(_playerController.GetGroundContactPoint()));
+            Vector3 landingVel = _lastPlayerVel - _playerController.GetGroundBody().GetPointVelocity(_playerController.GetGroundContactPoint());
             float landingSpeed = -_playerController.transform.InverseTransformVector(landingVel).y;
 
             if (ModMain.Instance.SmolHatchlingAPI != null)
@@ -107,30 +109,33 @@ public class OffsetManager : MonoBehaviour
             }
         };
 
-        _probeLauncherOffsetter.GetComponent<ProbeLauncher>().OnLaunchProbe += (_) =>
+        _probeLauncherOffsetRoot.GetComponentInChildren<ProbeLauncher>().OnLaunchProbe += (_) =>
         {
             // play scout launcher animation if enabled
             if (ModMain.Instance.EnableScoutAnim)
+            {
+                _isScoutAnimActive = true;
                 _lastScoutLaunchTime = Time.time;
+            }
         };
     }
 
     private void AddToolOffsets(Vector3 position)
     {
         // apply different scaling factors for different tools
-        _itemToolOffsetter.AddOffset(position);
-        _signalscopeOffsetter.AddOffset(position);
-        _probeLauncherOffsetter.AddOffset(3f * position);
-        _translatorOffsetter.AddOffset(3f * position);
+        _itemToolOffsetRoot.AddOffset(position);
+        _signalscopeOffsetRoot.AddOffset(position);
+        _probeLauncherOffsetRoot.AddOffset(3f * position);
+        _translatorOffsetRoot.AddOffset(3f * position);
     }
 
     private void AddToolOffsets(Quaternion rotation)
     {
         // apply same rotation offset for all tools
-        _itemToolOffsetter.AddOffset(rotation);
-        _signalscopeOffsetter.AddOffset(rotation);
-        _probeLauncherOffsetter.AddOffset(rotation);
-        _translatorOffsetter.AddOffset(rotation);
+        _itemToolOffsetRoot.AddOffset(rotation);
+        _signalscopeOffsetRoot.AddOffset(rotation);
+        _probeLauncherOffsetRoot.AddOffset(rotation);
+        _translatorOffsetRoot.AddOffset(rotation);
     }
 
     private void AddToolOffsets(Vector3 position, Quaternion rotation)
@@ -177,7 +182,7 @@ public class OffsetManager : MonoBehaviour
 
             // apply camera offset if camera bob is enabled
             if (ModMain.Instance.EnableHeadBob)
-                _cameraOffsetter.AddOffset(ModMain.Instance.HeadBobStrength * 0.02f * new Vector3(viewBob.x, viewBob.y));
+                _cameraOffsetRoot.AddOffset(ModMain.Instance.HeadBobStrength * 0.02f * new Vector3(viewBob.x, viewBob.y));
 
             // apply tool offset if tool bob is enabled
             if (ModMain.Instance.EnableHandBob)
@@ -298,23 +303,34 @@ public class OffsetManager : MonoBehaviour
     {
         if (ModMain.Instance.EnableScoutAnim)
         {
-            if (Time.deltaTime != 0f)
+            if (_isScoutAnimActive)
             {
-                float targetRecoil = Mathf.Max(_lastScoutLaunchTime + 0.5f - Time.time, 0f) * 2f;
-                // damp moves quickly during the initial recoil, and slowly during the recovery
-                float dampTime = targetRecoil > _scoutRecoil ? 0.05f : 0.1f;
-                _scoutRecoil = Mathf.SmoothDamp(_scoutRecoil, targetRecoil, ref _scoutRecoilVel, dampTime);
-            }
+                if (Time.deltaTime != 0f)
+                {
+                    float targetRecoil = Mathf.Max(_lastScoutLaunchTime + 0.5f - Time.time, 0f) * 2f;
+                    // damp moves quickly during the initial recoil, and slowly during the recovery
+                    float dampTime = targetRecoil > _scoutAnimStrength ? 0.05f : 0.1f;
+                    _scoutAnimStrength = Mathf.SmoothDamp(_scoutAnimStrength, targetRecoil, ref _scoutAnimVel, dampTime);
+                }
 
-            // apply recoils to camera and scout launcher
-            _cameraOffsetter.AddOffset(Quaternion.Euler(_scoutRecoil * new Vector3(-5f, 0f, -5f)));
-            _probeLauncherOffsetter.AddOffset(new Vector3(0.25f, -0.25f, -0.5f) * _scoutRecoil, Quaternion.Euler(new Vector3(-15f, 0f, -15f) * _scoutRecoil));
+                if (_scoutAnimStrength != 0f)
+                {
+                    // apply recoils to camera and scout launcher
+                    _cameraOffsetRoot.AddOffset(Quaternion.Euler(_scoutAnimStrength * new Vector3(-5f, 0f, -5f)));
+                    _probeLauncherOffsetRoot.AddOffset(new Vector3(0.25f, -0.25f, -0.5f) * _scoutAnimStrength, Quaternion.Euler(new Vector3(-15f, 0f, -15f) * _scoutAnimStrength));
+                }
+                else
+                {
+                    _isScoutAnimActive = false;
+                }
+            }
         }
         else
         {
             // reset recoil parameters if disabled
-            _scoutRecoil = 0f;
-            _scoutRecoilVel = 0f;
+            _isScoutAnimActive = false;
+            _scoutAnimStrength = 0f;
+            _scoutAnimVel = 0f;
         }
     }
 
@@ -327,9 +343,6 @@ public class OffsetManager : MonoBehaviour
                 if (_isLandingAnimActive)
                 {
                     // update camera height based on landing speed
-
-
-
                     float playerScale = ModMain.Instance.SmolHatchlingAPI != null ? ModMain.Instance.SmolHatchlingAPI.GetPlayerScale() : 1f;
                     _landingAnimPos = Mathf.Min(_landingAnimPos - _lastLandedSpeed * playerScale * Time.deltaTime, 0f);
                     if (_landingAnimPos <= -0.25f)
@@ -346,7 +359,7 @@ public class OffsetManager : MonoBehaviour
             }
 
             // apply offset
-            _cameraOffsetter.AddOffset(new Vector3(0f, _landingAnimPos, 0f));
+            _cameraOffsetRoot.AddOffset(new Vector3(0f, _landingAnimPos, 0f));
 
             // keep track of player velocity
             _lastPlayerVel = _playerController.GetAttachedOWRigidbody().GetVelocity();
@@ -380,7 +393,7 @@ public class OffsetManager : MonoBehaviour
     {
         var itemCarryTool = _toolModeSwapper.GetItemCarryTool();
         if (ModMain.Instance.HideStowedItems && itemCarryTool._heldItem != null && !itemCarryTool.IsPuttingAway() && _toolModeSwapper.GetToolMode() != ToolMode.Item)
-            _itemToolOffsetter.AddOffset(Vector3.back);
+            _itemToolOffsetRoot.AddOffset(Vector3.back);
     }
 
     private void LateUpdate()
