@@ -396,7 +396,7 @@ public class OffsetManager : MonoBehaviour
             _itemToolOffsetRoot.AddOffset(Vector3.back);
     }
 
-    private void LateUpdate()
+    private void Update()
     {
         UpdateViewbob();
         UpdateHandHeightOffset();
