@@ -101,17 +101,6 @@ public class ModMain : ModBehaviour
         SmolHatchlingAPI = ModHelper.Interaction.TryGetModApi<ISmolHatchling>("Owen013.TeenyHatchling");
         HikersModAPI = ModHelper.Interaction.TryGetModApi<IHikersMod>("Owen013.MovementMod");
 
-        // add components on scene load
-        LoadManager.OnCompleteSceneLoad += (_, _) =>
-        {
-            ModHelper.Events.Unity.FireInNUpdates(() =>
-            {
-                var camera = Locator.GetPlayerCamera();
-                camera.gameObject.AddComponent<OffsetManager>();
-                camera.nearClipPlane = FixItemClipping ? 0.05f : 0.1f;
-            }, 60);
-        };
-
         // ready
         ModHelper.Console.WriteLine($"Immersion is ready to go!", MessageType.Success);
     }

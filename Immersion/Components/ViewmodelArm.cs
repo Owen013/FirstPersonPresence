@@ -95,10 +95,7 @@ public class ViewmodelArm : MonoBehaviour
     private static ViewmodelArm NewViewmodelArm(PlayerTool playerTool, OWItem owItem)
     {
         if (s_armTemplate == null)
-        {
-            ModMain.Instance.ModHelper.Console.WriteLine("Cannot create ViewmodelArm right now; template has not been created", MessageType.Warning);
-            return null;
-        }
+            CreateArmTemplate();
 
         var armObject = Instantiate(s_armTemplate);
         armObject.name = "ViewmodelArm";
@@ -174,9 +171,7 @@ public class ViewmodelArm : MonoBehaviour
         transform.localScale = 0.1f * Vector3.one;
     }
 
-    [HarmonyPostfix]
-    [HarmonyPatch(typeof(PlayerAnimController), nameof(PlayerAnimController.Start))]
-    private static void PlayerAnimController_Start_Postfix(PlayerAnimController __instance)
+    private static void CreateArmTemplate()
     {
         // create viewmodel arm template
         var armTemplate = new GameObject("ViewmodelArmTemplate");
@@ -197,7 +192,8 @@ public class ViewmodelArm : MonoBehaviour
         }
 
         // set up arm meshes and set new bones list
-        var noSuitMesh = Instantiate(__instance.transform.Find("player_mesh_noSuit:Traveller_HEA_Player/player_mesh_noSuit:Player_RightArm")).GetComponent<SkinnedMeshRenderer>();
+        var playerModel = Locator.GetPlayerBody().GetComponentInChildren<PlayerAnimController>();
+        var noSuitMesh = Instantiate(playerModel.transform.Find("player_mesh_noSuit:Traveller_HEA_Player/player_mesh_noSuit:Player_RightArm")).GetComponent<SkinnedMeshRenderer>();
         noSuitMesh.name = "ArmMesh_NoSuit";
         noSuitMesh.transform.parent = armTemplate.transform;
         noSuitMesh.gameObject.layer = 27;
@@ -206,7 +202,7 @@ public class ViewmodelArm : MonoBehaviour
         noSuitMesh.bones = bones;
 
         // suit mesh uses different bones for some forsaken reason
-        var suitMesh = Instantiate(__instance.transform.Find("Traveller_Mesh_v01:Traveller_Geo/Traveller_Mesh_v01:PlayerSuit_RightArm")).GetComponent<SkinnedMeshRenderer>();
+        var suitMesh = Instantiate(playerModel.transform.Find("Traveller_Mesh_v01:Traveller_Geo/Traveller_Mesh_v01:PlayerSuit_RightArm")).GetComponent<SkinnedMeshRenderer>();
         suitMesh.name = "ArmMesh_Suit";
         suitMesh.transform.parent = armTemplate.transform;
         suitMesh.gameObject.layer = 27;

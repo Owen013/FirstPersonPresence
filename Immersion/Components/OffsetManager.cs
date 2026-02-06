@@ -1,7 +1,9 @@
-﻿using UnityEngine;
+﻿using HarmonyLib;
+using UnityEngine;
 
 namespace Immersion.Components;
 
+[HarmonyPatch]
 public class OffsetManager : MonoBehaviour
 {
     private PlayerCharacterController _playerController;
@@ -59,6 +61,14 @@ public class OffsetManager : MonoBehaviour
     private float _sprintAnimScale;
 
     private float _sprintAnimDampVel;
+
+    [HarmonyPostfix]
+    [HarmonyPatch(typeof(PlayerCameraController), nameof(PlayerCameraController.Start))]
+    private static void PlayerCameraController_Start_Postfix(PlayerCameraController __instance)
+    {
+        __instance.gameObject.AddComponent<OffsetManager>();
+        __instance._playerCamera.nearClipPlane = ModMain.Instance.FixItemClipping ? 0.05f : 0.1f;
+    }
 
     private void Awake()
     {
