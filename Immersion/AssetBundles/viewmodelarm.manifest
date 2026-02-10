@@ -1,0 +1,33 @@
+ManifestFileVersion: 0
+CRC: 3202628503
+Hashes:
+  AssetFileHash:
+    serializedVersion: 2
+    Hash: 20a25fd3078bcb3beb810e7f52d48469
+  TypeTreeHash:
+    serializedVersion: 2
+    Hash: 4a73ece96574b3fc74a91627d02420a6
+HashAppended: 0
+ClassTypes:
+- Class: 1
+  Script: {instanceID: 0}
+- Class: 4
+  Script: {instanceID: 0}
+- Class: 21
+  Script: {instanceID: 0}
+- Class: 28
+  Script: {instanceID: 0}
+- Class: 43
+  Script: {instanceID: 0}
+- Class: 48
+  Script: {instanceID: 0}
+- Class: 114
+  Script: {fileID: 1779289717, guid: 1246d55d18af78a44b8587698e2756ea, type: 3}
+- Class: 115
+  Script: {instanceID: 0}
+- Class: 137
+  Script: {instanceID: 0}
+SerializeReferenceClassIdentifiers: []
+Assets:
+- Assets/ViewmodelArm.prefab
+Dependencies: []

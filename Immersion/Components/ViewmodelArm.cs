@@ -1,7 +1,5 @@
 ﻿using HarmonyLib;
 using Immersion.Objects;
-using OWML.Common;
-using System.Collections.Generic;
 using UnityEngine;
 
 namespace Immersion.Components;
@@ -9,65 +7,15 @@ namespace Immersion.Components;
 [HarmonyPatch]
 public class ViewmodelArm : MonoBehaviour
 {
-    public static readonly string[] s_boneNames =
-    [
-        "Spine_01",
-        "Spine_02",
-        "Spine_Top",
-        "LF_Arm_Clavicle",
-        "RT_Arm_Clavicle",
-        "RT_Arm_Shoulder",
-        "RT_Arm_Elbow",
-        "RT_Arm_Wrist",
-        "RT_Finger_01_01",
-        "RT_Finger_01_02",
-        "RT_Finger_01_03",
-        "RT_Finger_01_04",
-        "RT_Finger_02_01",
-        "RT_Finger_02_02",
-        "RT_Finger_02_03",
-        "RT_Finger_02_04",
-        "RT_Thumb_01_01",
-        "RT_Thumb_01_02",
-        "RT_Thumb_01_03",
-        "RT_Thumb_01_04",
-        "Neck",
-        "Pack"
-    ];
+    private static GameObject s_viewmodelArmAsset;
+    
+    [SerializeField]
+    private GameObject _viewmodelArmNoSuit;
 
-    public static readonly int[] s_boneParentIndices =
-    [
-        -1,
-        0,
-        1,
-        2,
-        2,
-        4,
-        5,
-        6,
-        7,
-        8,
-        9,
-        10,
-        7,
-        12,
-        13,
-        14,
-        7,
-        16,
-        17,
-        18,
-        2,
-        2
-    ];
+    [SerializeField]
+    private GameObject _viewmodelArmSuit;
 
-    private static GameObject s_armTemplate;
-
-    private static GameObject s_playerRightArmNoSuit;
-
-    private static GameObject s_playerRightArmSuit;
-
-    private static Dictionary<string, Shader> s_armShaders;
+    private Transform[] _bones;
 
     private PlayerTool _playerTool;
 
@@ -75,59 +23,21 @@ public class ViewmodelArm : MonoBehaviour
 
     private ItemTool _itemCarryTool;
 
-    private GameObject _viewmodelArmNoSuit;
+    private GameObject _playerRightArmNoSuit;
 
-    private GameObject _viewmodelArmSuit;
-
-    private Transform[] _bones;
+    private GameObject _playerRightArmSuit;
 
     public static ViewmodelArm NewViewmodelArm(PlayerTool playerTool)
     {
-        return NewViewmodelArm(playerTool, null);
+        var viewmodelArm = LoadViewmodelArm(playerTool.transform);
+        viewmodelArm._playerTool = playerTool;
+        return viewmodelArm;
     }
 
     public static ViewmodelArm NewViewmodelArm(OWItem owItem)
     {
-        return NewViewmodelArm(null, owItem);
-    }
-
-    // this method should not be used except by the above two methods
-    private static ViewmodelArm NewViewmodelArm(PlayerTool playerTool, OWItem owItem)
-    {
-        if (s_armTemplate == null)
-            CreateArmTemplate();
-
-        var armObject = Instantiate(s_armTemplate);
-        armObject.name = "ViewmodelArm";
-        armObject.SetActive(true);
-
-        // add component and initialize fields
-        var viewmodelArm = armObject.AddComponent<ViewmodelArm>();
-        viewmodelArm._viewmodelArmNoSuit = armObject.transform.Find("ArmMesh_NoSuit").gameObject;
-        viewmodelArm._viewmodelArmSuit = armObject.transform.Find("ArmMesh_Suit").gameObject;
-        viewmodelArm._bones = viewmodelArm._viewmodelArmNoSuit.GetComponent<SkinnedMeshRenderer>().bones;
-
-        // Move to transform
-        if (playerTool != null)
-        {
-            viewmodelArm.transform.parent = playerTool.transform;
-            viewmodelArm._playerTool = playerTool;
-        }
-        else
-        {
-            viewmodelArm.transform.parent = owItem.transform;
-            viewmodelArm._owItem = owItem;
-            owItem.onPickedUp += (item) =>
-            {
-                viewmodelArm.gameObject.SetActive(true);
-            };
-        }
-
-        var camera = Locator.GetPlayerCamera();
-        viewmodelArm.transform.localPosition = Vector3.zero;
-        viewmodelArm.transform.localEulerAngles = Vector3.zero;
-        viewmodelArm.transform.localScale = 0.1f * Vector3.one;
-
+        var viewmodelArm = LoadViewmodelArm(owItem.transform);
+        viewmodelArm._owItem = owItem;
         return viewmodelArm;
     }
 
@@ -163,71 +73,17 @@ public class ViewmodelArm : MonoBehaviour
         ModMain.Log(output);
     }
 
-    public void ResetArmTransform()
+    private static ViewmodelArm LoadViewmodelArm(Transform parent)
     {
-        var camera = Locator.GetPlayerCamera();
-        transform.position = camera.transform.position;
-        transform.rotation = camera.transform.rotation;
-        transform.localScale = 0.1f * Vector3.one;
-    }
+        if (s_viewmodelArmAsset == null)
+            s_viewmodelArmAsset = ModMain.Instance.ModHelper.Assets.LoadBundle("AssetBundles/viewmodelarm").LoadAsset<GameObject>("Assets/ViewmodelArm.prefab");
 
-    private static void CreateArmTemplate()
-    {
-        // create viewmodel arm template
-        var armTemplate = new GameObject("ViewmodelArmTemplate");
-        armTemplate.SetActive(false);
-
-        // create rig
-        var rig = new GameObject("Rig").transform;
-        rig.parent = armTemplate.transform;
-        var bones = new Transform[22];
-        for (int i = 0; i < bones.Length; i++)
-        {
-            bones[i] = new GameObject(s_boneNames[i]).transform;
-            int parentIndex = s_boneParentIndices[i];
-            if (parentIndex == -1)
-                bones[i].parent = rig;
-            else
-                bones[i].parent = bones[parentIndex];
-        }
-
-        // set up arm meshes and set new bones list
-        var playerModel = Locator.GetPlayerBody().GetComponentInChildren<PlayerAnimController>();
-        var noSuitMesh = Instantiate(playerModel.transform.Find("player_mesh_noSuit:Traveller_HEA_Player/player_mesh_noSuit:Player_RightArm")).GetComponent<SkinnedMeshRenderer>();
-        noSuitMesh.name = "ArmMesh_NoSuit";
-        noSuitMesh.transform.parent = armTemplate.transform;
-        noSuitMesh.gameObject.layer = 27;
-        noSuitMesh.updateWhenOffscreen = true;
-        noSuitMesh.rootBone = bones[0];
-        noSuitMesh.bones = bones;
-
-        // suit mesh uses different bones for some forsaken reason
-        var suitMesh = Instantiate(playerModel.transform.Find("Traveller_Mesh_v01:Traveller_Geo/Traveller_Mesh_v01:PlayerSuit_RightArm")).GetComponent<SkinnedMeshRenderer>();
-        suitMesh.name = "ArmMesh_Suit";
-        suitMesh.transform.parent = armTemplate.transform;
-        suitMesh.gameObject.layer = 27;
-        suitMesh.updateWhenOffscreen = true;
-        suitMesh.rootBone = bones[4];
-        suitMesh.bones =
-        [
-            bones[3],
-            bones[4],
-            bones[5],
-            bones[6],
-            bones[7],
-            bones[8],
-            bones[9],
-            bones[10],
-            bones[12],
-            bones[13],
-            bones[14],
-            bones[16],
-            bones[17],
-            bones[18]
-        ];
-
-        // arm template is finished
-        s_armTemplate = armTemplate;
+        var viewmodelArm = Instantiate(s_viewmodelArmAsset).GetComponent<ViewmodelArm>();
+        viewmodelArm.name = "ViewmodelArm";
+        viewmodelArm.transform.parent = parent;
+        viewmodelArm.transform.localPosition = Vector3.zero;
+        viewmodelArm.transform.localRotation = Quaternion.identity;
+        return viewmodelArm;
     }
 
     [HarmonyPostfix]
@@ -247,13 +103,13 @@ public class ViewmodelArm : MonoBehaviour
 
         if (__instance is Signalscope)
         {
-            NewViewmodelArm(__instance)?.SetArmData("Signalscope");
+            NewViewmodelArm(__instance);//?;.SetArmData("Signalscope");
             return;
         }
 
         if (__instance is NomaiTranslator)
         {
-            NewViewmodelArm(__instance)?.SetArmData("NomaiTranslator");
+            NewViewmodelArm(__instance);//?.SetArmData("NomaiTranslator");
             return;
         }
     }
@@ -351,25 +207,7 @@ public class ViewmodelArm : MonoBehaviour
 
     private void SetShader(string shaderName)
     {
-        if (shaderName == "") return;
-
-        Shader shader;
-        if (!s_armShaders.ContainsKey(shaderName))
-        {
-            shader = Shader.Find(shaderName);
-            if (shader == null)
-            {
-                ModMain.Log($"Shader \"{shaderName}\" not found", MessageType.Error);
-                return;
-            }
-
-            s_armShaders.Add(shaderName, shader);
-        }
-        else
-        {
-            shader = s_armShaders[shaderName];
-        }
-
+        var shader = Shader.Find(shaderName);
         var noSuitMesh = _viewmodelArmNoSuit.GetComponent<SkinnedMeshRenderer>();
         noSuitMesh.materials[0].shader = shader;
         noSuitMesh.materials[1].shader = shader;
@@ -379,16 +217,11 @@ public class ViewmodelArm : MonoBehaviour
     private void Awake()
     {
         _itemCarryTool = Locator.GetToolModeSwapper().GetItemCarryTool();
+        _bones = _viewmodelArmNoSuit.GetComponent<SkinnedMeshRenderer>().bones;
 
-        if (s_armShaders == null)
-            s_armShaders = [];
-
-        if (s_playerRightArmNoSuit == null || s_playerRightArmSuit == null)
-        {
-            var player = Locator.GetPlayerController().transform;
-            s_playerRightArmNoSuit = player.transform.Find("Traveller_HEA_Player_v2/player_mesh_noSuit:Traveller_HEA_Player/player_mesh_noSuit:Player_RightArm").gameObject;
-            s_playerRightArmSuit = player.transform.Find("Traveller_HEA_Player_v2/Traveller_Mesh_v01:Traveller_Geo/Traveller_Mesh_v01:PlayerSuit_RightArm").gameObject;
-        }
+        var player = Locator.GetPlayerController().transform;
+        _playerRightArmNoSuit = player.transform.Find("Traveller_HEA_Player_v2/player_mesh_noSuit:Traveller_HEA_Player/player_mesh_noSuit:Player_RightArm").gameObject;
+        _playerRightArmSuit = player.transform.Find("Traveller_HEA_Player_v2/Traveller_Mesh_v01:Traveller_Geo/Traveller_Mesh_v01:PlayerSuit_RightArm").gameObject;
     }
 
     private void LateUpdate()
@@ -414,7 +247,7 @@ public class ViewmodelArm : MonoBehaviour
             return;
         }
 
-        _viewmodelArmNoSuit.SetActive(s_playerRightArmNoSuit.activeInHierarchy);
-        _viewmodelArmSuit.SetActive(s_playerRightArmSuit.activeInHierarchy);
+        _viewmodelArmNoSuit.SetActive(_playerRightArmNoSuit.activeInHierarchy);
+        _viewmodelArmSuit.SetActive(_playerRightArmSuit.activeInHierarchy);
     }
 }
