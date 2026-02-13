@@ -1,30 +1,39 @@
-﻿namespace Immersion.Interfaces;
+﻿using UnityEngine;
+
+namespace Immersion.Interfaces;
 
 public interface IImmersion
 {
     /// <summary>
-    /// Gets the animation speed multiplier from Immersion
+    /// Whether or not the Viewmodel Arms feature is enabled
     /// </summary>
-    /// <returns>The animation speed multiplier</returns>
-    public float GetAnimSpeed();
+    /// <returns>true if Viewmodel Arms are enabled, false if not</returns>
+    public bool AreViewmodelArmsEnabled();
 
     /// <summary>
-    /// Loads custom ArmData from a JSON at a specified path
+    /// Loads ArmData from JSON.
     /// </summary>
-    /// <param name="jsonPath">The path of the custom ArmData JSON</param>
+    /// <param name="jsonPath">The path to the JSON containing the custom ArmData information</param>
     public void LoadArmData(string jsonPath);
 
     /// <summary>
-    /// Creates a new Viewmodel Arm for the specified tool
+    /// Creates a Viewmodel Arm on a PlayerTool
     /// </summary>
-    /// <param name="tool">The tool to add a Viewmodel Arm to</param>
-    /// <param name="itemName">The name tied to the ArmData this arm should use</param>
-    public void CreateViewmodelArm(PlayerTool tool, string itemName);
+    /// <param name="tool">The PlayerTool to add a Viewmodel Arm to</param>
+    /// <returns>The Viewmodel Arm's GameObject</returns>
+    public GameObject CreateViewmodelArm(PlayerTool tool);
 
     /// <summary>
-    /// Creates a new Viewmodel Arm for the specified item
+    /// Creates a Viewmodel Arm on an OWItem
     /// </summary>
-    /// <param name="item">The item to add a Viewmodel Arm to</param>
-    /// <param name="itemName">The name tied to the ArmData this arm should use</param>
-    public void CreateViewmodelArm(OWItem item, string itemName);
+    /// <param name="item">The OWItem to add a Viewmodel Arm to</param>
+    /// <returns>The Viewmodel Arm's GameObject</returns>
+    public GameObject CreateViewmodelArm(OWItem item);
+
+    /// <summary>
+    /// Sets the ArmData for a Viewmodel Arm
+    /// </summary>
+    /// <param name="viewmodelArmObject">The GameObject of the ViewmodelArm</param>
+    /// <param name="itemName">The name (from the JSON) of the Arm Data information</param>
+    public void SetArmData(GameObject viewmodelArmObject, string itemName);
 }

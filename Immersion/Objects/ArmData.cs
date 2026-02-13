@@ -45,15 +45,18 @@ public class ArmData
             foreach (var data in newArmData)
             {
                 // only write new arm data if there is no arm data at this key
-                if (s_armData[data.Key] == null)
-                    s_armData[data.Key] = data.Value;
+                if (!s_armData.ContainsKey(data.Key))
+                    s_armData.Add(data.Key, data.Value);
             }
         }
         else
         {
             foreach (var data in newArmData)
                 // overwrite arm data if this is a custom json
-                s_armData[data.Key] = data.Value;
+                if (s_armData.ContainsKey(data.Key))
+                    s_armData[data.Key] = data.Value;
+                else
+                    s_armData.Add(data.Key, data.Value);
         }
 
         ModMain.Log($"ArmData loaded successfully!", MessageType.Success);

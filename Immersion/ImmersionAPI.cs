@@ -7,21 +7,29 @@ namespace Immersion;
 
 public class ImmersionAPI
 {
+    public bool AreViewmodelArmsEnabled()
+    {
+        return Config.EnableViewmodelHands;
+    }
+    
     public void LoadArmData(string jsonPath)
     {
         ArmData.LoadArmData(jsonPath);
     }
 
-    public void CreateViewmodelArm(PlayerTool tool, string itemName)
+    public GameObject CreateViewmodelArm(PlayerTool tool)
     {
-        var arm = ViewmodelArm.NewViewmodelArm(tool);
-        arm.SetArmData(itemName);
+        return ViewmodelArm.NewViewmodelArm(tool).gameObject;
     }
 
-    public void CreateViewmodelArm(OWItem item, string itemName)
+    public GameObject CreateViewmodelArm(OWItem item)
     {
-        var arm = ViewmodelArm.NewViewmodelArm(item);
-        arm.SetArmData(itemName);
+        return ViewmodelArm.NewViewmodelArm(item).gameObject;
+    }
+
+    public void SetArmData(GameObject viewmodelArmObject, string itemName)
+    {
+        viewmodelArmObject.GetComponent<ViewmodelArm>()?.SetArmData(itemName);
     }
 
     [Obsolete("Immersion no longer changes AnimSpeed.")]
