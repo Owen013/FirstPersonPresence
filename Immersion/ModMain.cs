@@ -43,7 +43,7 @@ public class ModMain : ModBehaviour
 
         LoadManager.OnCompleteSceneLoad += (_, _) =>
         {
-            ViewmodelArm.LoadAssetBundle();
+            ViewmodelArm.LoadAssetBundleIfNull();
         };
     }
 

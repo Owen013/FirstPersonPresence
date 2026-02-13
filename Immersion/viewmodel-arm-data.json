@@ -1,9 +1,11 @@
 {
   "Signalscope": {
+
     "arm_offset_pos": { "x": 0.12, "y":  -0.025, "z": -0.04 },
     "arm_offset_rot": { "x": 0, "y":  0, "z": 0 },
     "arm_scale": 0.5,
     "arm_shader": "Outer Wilds/Utility/View Model (Cutoff)",
+
     "bone_eulers": {
       "Shoulder": { "x": 270, "y": 90, "z": 0 },
       "Elbow": { "x": 0, "y": 15, "z": 0 },
@@ -21,13 +23,16 @@
       "Thumb_03": { "x": 0, "y": 0, "z": 30 },
       "Thumb_04": { "x": 0, "y": 0, "z": 0 },
     }
+
   },
 
   "ProbeLauncher": {
+
     "arm_offset_pos": { "x": 0, "y": 0, "z": 0 },
     "arm_offset_rot": { "x": 0, "y":  0, "z": 0 },
     "arm_scale": 0.5,
     "arm_shader": "Outer Wilds/Utility/View Model (Cutoff)",
+
     "bone_eulers": {
       "Shoulder": { "x": 0, "y": 0, "z": 0 },
       "Elbow": { "x": 0, "y": 0, "z": 0 },
@@ -45,13 +50,16 @@
       "Thumb_03": { "x": 0, "y": 0, "z": 0 },
       "Thumb_04": { "x": 0, "y": 0, "z": 0 }
     }
+
   },
 
   "NomaiTranslator": {
+
     "arm_offset_pos": { "x": 0.34, "y":  -0.012, "z": -0.34 },
     "arm_offset_rot": { "x": 0, "y":  0, "z": 0 },
     "arm_scale": 2,
     "arm_shader": "Outer Wilds/Utility/View Model (Cutoff)",
+
     "bone_eulers": {
       "Shoulder": { "x": 270, "y": 90, "z": 0 },
       "Elbow": { "x": 0, "y": 15, "z": 0 },
@@ -69,13 +77,16 @@
       "Thumb_03": { "x": 0, "y": 0, "z": 30 },
       "Thumb_04": { "x": 0, "y": 0, "z": 0 },
     }
+
   },
+
 
   "SharedStone": {
     "arm_offset_pos": { "x": 0.06, "y":  0.495, "z": -0.53 },
     "arm_offset_rot": { "x": 22.9192, "y":  357.4393, "z": 352.8304 },
     "arm_scale": 1,
     "arm_shader": "Standard",
+
     "bone_eulers": {
       "Shoulder": { "x": 270, "y": 90, "z": 0 },
       "Elbow": { "x": 0, "y": 30, "z": 0 },
@@ -93,13 +104,16 @@
       "Thumb_03": { "x": 0, "y": 0, "z": 0 },
       "Thumb_04": { "x": 0, "y": 0, "z": 0 },
     }
+
   },
 
   "Scroll": {
+
     "arm_offset_pos": { "x": -0.58, "y":  0.195, "z": -0.25 },
     "arm_offset_rot": { "x": 13.7909, "y":  107.9709, "z": 60.3106 },
     "arm_scale": 1,
     "arm_shader": "Standard",
+
     "bone_eulers": {
       "Shoulder": { "x": 270, "y": 90, "z": 0 },
       "Elbow": { "x": 0, "y": 30, "z": 0 },
@@ -117,269 +131,330 @@
       "Thumb_03": { "x": 0, "y": 0, "z": 345 },
       "Thumb_04": { "x": 0, "y": 0, "z": 0 },
     }
+
+  },
+
+  "Scroll_Egg": {
+
+    "arm_offset_pos": { "x": -0.58, "y":  0.195, "z": -0.25 },
+    "arm_offset_rot": { "x": 13.7909, "y":  107.9709, "z": 60.3106 },
+    "arm_scale": 1,
+    "arm_shader": "Standard",
+
+    "bone_eulers": {
+      "Shoulder": { "x": 270, "y": 90, "z": 0 },
+      "Elbow": { "x": 0, "y": 30, "z": 0 },
+      "Wrist": { "x": 0, "y": 0, "z": 0 },
+      "Finger_01_01": { "x": 0, "y": 0, "z": 15 },
+      "Finger_01_02": { "x": 0, "y": 0, "z": 0 },
+      "Finger_01_03": { "x": 0, "y": 0, "z": 0 },
+      "Finger_01_04": { "x": 0, "y": 0, "z": 0 },
+      "Finger_02_01": { "x": 0, "y": 0, "z": 30 },
+      "Finger_02_02": { "x": 0, "y": 0, "z": 0 },
+      "Finger_02_03": { "x": 0, "y": 0, "z": 0 },
+      "Finger_02_04": { "x": 0, "y": 0, "z": 0 },
+      "Thumb_01": { "x": 90, "y": 60, "z": 0 },
+      "Thumb_02": { "x": 0, "y": 15, "z": 30 },
+      "Thumb_03": { "x": 0, "y": 0, "z": 345 },
+      "Thumb_04": { "x": 0, "y": 0, "z": 0 },
+    }
+
   },
 
   "Scroll_Jeff": {
-    "arm_offset_pos": { "x": 0, "y": 0, "z": 0 },
-    "arm_offset_rot": { "x": 0, "y":  0, "z": 0 },
-    "arm_scale": 0.5,
+
+    "arm_offset_pos": { "x": 0.61, "y":  0.185, "z": -0.38 },
+    "arm_offset_rot": { "x": 13.7909, "y":  287.9709, "z": 60.3106 },
+    "arm_scale": 1,
     "arm_shader": "Standard",
+
     "bone_eulers": {
-      "Shoulder": { "x": 0, "y": 0, "z": 0 },
-      "Elbow": { "x": 0, "y": 0, "z": 0 },
+      "Shoulder": { "x": 270, "y": 90, "z": 0 },
+      "Elbow": { "x": 0, "y": 30, "z": 0 },
       "Wrist": { "x": 0, "y": 0, "z": 0 },
-      "Finger_01_01": { "x": 0, "y": 0, "z": 0 },
+      "Finger_01_01": { "x": 0, "y": 0, "z": 15 },
       "Finger_01_02": { "x": 0, "y": 0, "z": 0 },
       "Finger_01_03": { "x": 0, "y": 0, "z": 0 },
       "Finger_01_04": { "x": 0, "y": 0, "z": 0 },
-      "Finger_02_01": { "x": 0, "y": 0, "z": 0 },
+      "Finger_02_01": { "x": 0, "y": 0, "z": 30 },
       "Finger_02_02": { "x": 0, "y": 0, "z": 0 },
       "Finger_02_03": { "x": 0, "y": 0, "z": 0 },
       "Finger_02_04": { "x": 0, "y": 0, "z": 0 },
-      "Thumb_01": { "x": 0, "y": 0, "z": 0 },
-      "Thumb_02": { "x": 0, "y": 0, "z": 0 },
-      "Thumb_03": { "x": 0, "y": 0, "z": 0 },
-      "Thumb_04": { "x": 0, "y": 0, "z": 0 }
+      "Thumb_01": { "x": 90, "y": 45, "z": 0 },
+      "Thumb_02": { "x": 0, "y": 15, "z": 30 },
+      "Thumb_03": { "x": 0, "y": 0, "z": 345 },
+      "Thumb_04": { "x": 0, "y": 0, "z": 0 },
     }
+
   },
 
   "ConversationStone": {
-    "arm_offset_pos": { "x": 0, "y": 0, "z": 0 },
-    "arm_offset_rot": { "x": 0, "y":  0, "z": 0 },
-    "arm_scale": 0.5,
+
+    "arm_offset_pos": { "x": 0.08, "y":  0.415, "z": -0.58 },
+    "arm_offset_rot": { "x": 22.9192, "y":  357.4393, "z": 352.8304 },
+    "arm_scale": 1,
     "arm_shader": "Standard",
+
     "bone_eulers": {
-      "Shoulder": { "x": 0, "y": 0, "z": 0 },
-      "Elbow": { "x": 0, "y": 0, "z": 0 },
-      "Wrist": { "x": 0, "y": 0, "z": 0 },
-      "Finger_01_01": { "x": 0, "y": 0, "z": 0 },
-      "Finger_01_02": { "x": 0, "y": 0, "z": 0 },
-      "Finger_01_03": { "x": 0, "y": 0, "z": 0 },
+      "Shoulder": { "x": 270, "y": 90, "z": 0 },
+      "Elbow": { "x": 0, "y": 30, "z": 0 },
+      "Wrist": { "x": 0, "y": 0, "z": 15 },
+      "Finger_01_01": { "x": 15, "y": 0, "z": 45 },
+      "Finger_01_02": { "x": 0, "y": 0, "z": 45 },
+      "Finger_01_03": { "x": 0, "y": 0, "z": 45 },
       "Finger_01_04": { "x": 0, "y": 0, "z": 0 },
-      "Finger_02_01": { "x": 0, "y": 0, "z": 0 },
-      "Finger_02_02": { "x": 0, "y": 0, "z": 0 },
-      "Finger_02_03": { "x": 0, "y": 0, "z": 0 },
+      "Finger_02_01": { "x": 0, "y": 0, "z": 45 },
+      "Finger_02_02": { "x": 0, "y": 0, "z": 60 },
+      "Finger_02_03": { "x": 0, "y": 0, "z": 60 },
       "Finger_02_04": { "x": 0, "y": 0, "z": 0 },
-      "Thumb_01": { "x": 0, "y": 0, "z": 0 },
-      "Thumb_02": { "x": 0, "y": 0, "z": 0 },
-      "Thumb_03": { "x": 0, "y": 0, "z": 0 },
-      "Thumb_04": { "x": 0, "y": 0, "z": 0 }
+      "Thumb_01": { "x": 90, "y": 45, "z": 0 },
+      "Thumb_02": { "x": 0, "y": 0, "z": 30 },
+      "Thumb_03": { "x": 0, "y": 0, "z": 30 },
+      "Thumb_04": { "x": 0, "y": 0, "z": 0 },
     }
+
   },
 
   "ConversationStone_Big": {
-    "arm_offset_pos": { "x": 0, "y": 0, "z": 0 },
-    "arm_offset_rot": { "x": 0, "y":  0, "z": 0 },
-    "arm_scale": 0.5,
+
+    "arm_offset_pos": { "x": 0.14, "y":  0.415, "z": -0.58 },
+    "arm_offset_rot": { "x": 22.9192, "y":  357.4393, "z": 352.8304 },
+    "arm_scale": 1,
     "arm_shader": "Standard",
+
     "bone_eulers": {
-      "Shoulder": { "x": 0, "y": 0, "z": 0 },
-      "Elbow": { "x": 0, "y": 0, "z": 0 },
-      "Wrist": { "x": 0, "y": 0, "z": 0 },
-      "Finger_01_01": { "x": 0, "y": 0, "z": 0 },
-      "Finger_01_02": { "x": 0, "y": 0, "z": 0 },
-      "Finger_01_03": { "x": 0, "y": 0, "z": 0 },
+      "Shoulder": { "x": 270, "y": 90, "z": 0 },
+      "Elbow": { "x": 0, "y": 30, "z": 0 },
+      "Wrist": { "x": 0, "y": 0, "z": 15 },
+      "Finger_01_01": { "x": 15, "y": 0, "z": 45 },
+      "Finger_01_02": { "x": 0, "y": 0, "z": 45 },
+      "Finger_01_03": { "x": 0, "y": 0, "z": 45 },
       "Finger_01_04": { "x": 0, "y": 0, "z": 0 },
-      "Finger_02_01": { "x": 0, "y": 0, "z": 0 },
-      "Finger_02_02": { "x": 0, "y": 0, "z": 0 },
-      "Finger_02_03": { "x": 0, "y": 0, "z": 0 },
+      "Finger_02_01": { "x": 0, "y": 0, "z": 45 },
+      "Finger_02_02": { "x": 0, "y": 0, "z": 60 },
+      "Finger_02_03": { "x": 0, "y": 0, "z": 60 },
       "Finger_02_04": { "x": 0, "y": 0, "z": 0 },
-      "Thumb_01": { "x": 0, "y": 0, "z": 0 },
-      "Thumb_02": { "x": 0, "y": 0, "z": 0 },
-      "Thumb_03": { "x": 0, "y": 0, "z": 0 },
-      "Thumb_04": { "x": 0, "y": 0, "z": 0 }
+      "Thumb_01": { "x": 90, "y": 45, "z": 0 },
+      "Thumb_02": { "x": 0, "y": 0, "z": 30 },
+      "Thumb_03": { "x": 0, "y": 0, "z": 30 },
+      "Thumb_04": { "x": 0, "y": 0, "z": 0 },
     }
+
   },
 
   "WarpCore": {
-    "arm_offset_pos": { "x": 0, "y": 0, "z": 0 },
-    "arm_offset_rot": { "x": 0, "y":  0, "z": 0 },
-    "arm_scale": 0.5,
+
+    "arm_offset_pos": { "x": 0.31, "y":  0.285, "z": -0.6 },
+    "arm_offset_rot": { "x": 353.9485, "y":  346.0866, "z": 349.0536 },
+    "arm_scale": 1,
     "arm_shader": "Standard",
+
     "bone_eulers": {
-      "Shoulder": { "x": 0, "y": 0, "z": 0 },
+      "Shoulder": { "x": 270, "y": 90, "z": 0 },
       "Elbow": { "x": 0, "y": 0, "z": 0 },
-      "Wrist": { "x": 0, "y": 0, "z": 0 },
-      "Finger_01_01": { "x": 0, "y": 0, "z": 0 },
+      "Wrist": { "x": 15, "y": 15, "z": 30 },
+      "Finger_01_01": { "x": 0, "y": 0, "z": 15 },
       "Finger_01_02": { "x": 0, "y": 0, "z": 0 },
       "Finger_01_03": { "x": 0, "y": 0, "z": 0 },
       "Finger_01_04": { "x": 0, "y": 0, "z": 0 },
-      "Finger_02_01": { "x": 0, "y": 0, "z": 0 },
+      "Finger_02_01": { "x": 0, "y": 0, "z": 30 },
       "Finger_02_02": { "x": 0, "y": 0, "z": 0 },
       "Finger_02_03": { "x": 0, "y": 0, "z": 0 },
       "Finger_02_04": { "x": 0, "y": 0, "z": 0 },
-      "Thumb_01": { "x": 0, "y": 0, "z": 0 },
-      "Thumb_02": { "x": 0, "y": 0, "z": 0 },
-      "Thumb_03": { "x": 0, "y": 0, "z": 0 },
-      "Thumb_04": { "x": 0, "y": 0, "z": 0 }
+      "Thumb_01": { "x": 90, "y": 45, "z": 0 },
+      "Thumb_02": { "x": 0, "y": 15, "z": 0 },
+      "Thumb_03": { "x": 0, "y": 0, "z": 345 },
+      "Thumb_04": { "x": 0, "y": 0, "z": 0 },
     }
+
   },
 
   "WarpCore_Simple": {
-    "arm_offset_pos": { "x": 0, "y": 0, "z": 0 },
-    "arm_offset_rot": { "x": 0, "y":  0, "z": 0 },
-    "arm_scale": 0.5,
+
+    "arm_offset_pos": { "x": -0.61, "y":  0.035, "z": 0.06 },
+    "arm_offset_rot": { "x": 343.8428, "y":  97.7163, "z": 357.7892 },
+    "arm_scale": 1,
     "arm_shader": "Standard",
+
     "bone_eulers": {
-      "Shoulder": { "x": 0, "y": 0, "z": 0 },
-      "Elbow": { "x": 0, "y": 0, "z": 0 },
+      "Shoulder": { "x": 270, "y": 90, "z": 0 },
+      "Elbow": { "x": 0, "y": 30, "z": 0 },
       "Wrist": { "x": 0, "y": 0, "z": 0 },
-      "Finger_01_01": { "x": 0, "y": 0, "z": 0 },
+      "Finger_01_01": { "x": 0, "y": 0, "z": 15 },
       "Finger_01_02": { "x": 0, "y": 0, "z": 0 },
       "Finger_01_03": { "x": 0, "y": 0, "z": 0 },
       "Finger_01_04": { "x": 0, "y": 0, "z": 0 },
-      "Finger_02_01": { "x": 0, "y": 0, "z": 0 },
+      "Finger_02_01": { "x": 0, "y": 0, "z": 30 },
       "Finger_02_02": { "x": 0, "y": 0, "z": 0 },
       "Finger_02_03": { "x": 0, "y": 0, "z": 0 },
       "Finger_02_04": { "x": 0, "y": 0, "z": 0 },
-      "Thumb_01": { "x": 0, "y": 0, "z": 0 },
-      "Thumb_02": { "x": 0, "y": 0, "z": 0 },
-      "Thumb_03": { "x": 0, "y": 0, "z": 0 },
-      "Thumb_04": { "x": 0, "y": 0, "z": 0 }
+      "Thumb_01": { "x": 90, "y": 45, "z": 0 },
+      "Thumb_02": { "x": 0, "y": 15, "z": 30 },
+      "Thumb_03": { "x": 0, "y": 0, "z": 345 },
+      "Thumb_04": { "x": 0, "y": 0, "z": 0 },
     }
+
   },
 
   "SlideReel": {
-    "arm_offset_pos": { "x": 0, "y": 0, "z": 0 },
-    "arm_offset_rot": { "x": 0, "y":  0, "z": 0 },
-    "arm_scale": 0.5,
+
+    "arm_offset_pos": { "x": -0.3700001, "y":  0.3749999, "z": 0.48 },
+    "arm_offset_rot": { "x": 4.003094, "y":  145.1852, "z": 86.24213 },
+    "arm_scale": 1,
     "arm_shader": "Standard",
+
     "bone_eulers": {
-      "Shoulder": { "x": 0, "y": 0, "z": 0 },
-      "Elbow": { "x": 0, "y": 0, "z": 0 },
-      "Wrist": { "x": 0, "y": 0, "z": 0 },
-      "Finger_01_01": { "x": 0, "y": 0, "z": 0 },
-      "Finger_01_02": { "x": 0, "y": 0, "z": 0 },
-      "Finger_01_03": { "x": 0, "y": 0, "z": 0 },
+      "Shoulder": { "x": 270, "y": 90, "z": 0 },
+      "Elbow": { "x": 0, "y": 30, "z": 0 },
+      "Wrist": { "x": 0, "y": 330, "z": 45 },
+      "Finger_01_01": { "x": 15, "y": 0, "z": 45 },
+      "Finger_01_02": { "x": 0, "y": 0, "z": 45 },
+      "Finger_01_03": { "x": 0, "y": 0, "z": 45 },
       "Finger_01_04": { "x": 0, "y": 0, "z": 0 },
-      "Finger_02_01": { "x": 0, "y": 0, "z": 0 },
-      "Finger_02_02": { "x": 0, "y": 0, "z": 0 },
-      "Finger_02_03": { "x": 0, "y": 0, "z": 0 },
+      "Finger_02_01": { "x": 0, "y": 0, "z": 45 },
+      "Finger_02_02": { "x": 0, "y": 0, "z": 60 },
+      "Finger_02_03": { "x": 0, "y": 0, "z": 60 },
       "Finger_02_04": { "x": 0, "y": 0, "z": 0 },
-      "Thumb_01": { "x": 0, "y": 0, "z": 0 },
-      "Thumb_02": { "x": 0, "y": 0, "z": 0 },
+      "Thumb_01": { "x": 90, "y": 45, "z": 0 },
+      "Thumb_02": { "x": 0, "y": 0, "z": 60 },
       "Thumb_03": { "x": 0, "y": 0, "z": 0 },
-      "Thumb_04": { "x": 0, "y": 0, "z": 0 }
+      "Thumb_04": { "x": 0, "y": 0, "z": 0 },
     }
+
   },
 
   "Lantern": {
-    "arm_offset_pos": { "x": 0, "y": 0, "z": 0 },
+
+    "arm_offset_pos": { "x": -0.14, "y":  1.01, "z": -0.6 },
     "arm_offset_rot": { "x": 0, "y":  0, "z": 0 },
-    "arm_scale": 0.5,
+    "arm_scale": 1,
     "arm_shader": "Standard",
+
     "bone_eulers": {
-      "Shoulder": { "x": 0, "y": 0, "z": 0 },
-      "Elbow": { "x": 0, "y": 0, "z": 0 },
-      "Wrist": { "x": 0, "y": 0, "z": 0 },
-      "Finger_01_01": { "x": 0, "y": 0, "z": 0 },
-      "Finger_01_02": { "x": 0, "y": 0, "z": 0 },
-      "Finger_01_03": { "x": 0, "y": 0, "z": 0 },
+      "Shoulder": { "x": 0, "y": 90, "z": 330 },
+      "Elbow": { "x": 0, "y": 15, "z": 0 },
+      "Wrist": { "x": 0, "y": 345, "z": 30 },
+      "Finger_01_01": { "x": 0, "y": 0, "z": 45 },
+      "Finger_01_02": { "x": 0, "y": 0, "z": 45 },
+      "Finger_01_03": { "x": 0, "y": 0, "z": 45 },
       "Finger_01_04": { "x": 0, "y": 0, "z": 0 },
-      "Finger_02_01": { "x": 0, "y": 0, "z": 0 },
-      "Finger_02_02": { "x": 0, "y": 0, "z": 0 },
-      "Finger_02_03": { "x": 0, "y": 0, "z": 0 },
+      "Finger_02_01": { "x": 0, "y": 0, "z": 45 },
+      "Finger_02_02": { "x": 0, "y": 0, "z": 60 },
+      "Finger_02_03": { "x": 0, "y": 0, "z": 60 },
       "Finger_02_04": { "x": 0, "y": 0, "z": 0 },
-      "Thumb_01": { "x": 0, "y": 0, "z": 0 },
-      "Thumb_02": { "x": 0, "y": 0, "z": 0 },
-      "Thumb_03": { "x": 0, "y": 0, "z": 0 },
-      "Thumb_04": { "x": 0, "y": 0, "z": 0 }
+      "Thumb_01": { "x": 90, "y": 15, "z": 0 },
+      "Thumb_02": { "x": 0, "y": 0, "z": 30 },
+      "Thumb_03": { "x": 0, "y": 0, "z": 30 },
+      "Thumb_04": { "x": 0, "y": 0, "z": 0 },
     }
+
   },
 
   "DreamLantern": {
-    "arm_offset_pos": { "x": 0, "y": 0, "z": 0 },
+
+    "arm_offset_pos": { "x": -0.16, "y":  1.145, "z": -0.49 },
     "arm_offset_rot": { "x": 0, "y":  0, "z": 0 },
-    "arm_scale": 0.5,
+    "arm_scale": 1,
     "arm_shader": "Outer Wilds/Utility/View Model",
+
     "bone_eulers": {
-      "Shoulder": { "x": 0, "y": 0, "z": 0 },
-      "Elbow": { "x": 0, "y": 0, "z": 0 },
-      "Wrist": { "x": 0, "y": 0, "z": 0 },
-      "Finger_01_01": { "x": 0, "y": 0, "z": 0 },
-      "Finger_01_02": { "x": 0, "y": 0, "z": 0 },
-      "Finger_01_03": { "x": 0, "y": 0, "z": 0 },
+      "Shoulder": { "x": 315, "y": 45, "z": 0 },
+      "Elbow": { "x": 0, "y": 60, "z": 0 },
+      "Wrist": { "x": 30, "y": 345, "z": 30 },
+      "Finger_01_01": { "x": 0, "y": 0, "z": 45 },
+      "Finger_01_02": { "x": 0, "y": 0, "z": 45 },
+      "Finger_01_03": { "x": 0, "y": 0, "z": 45 },
       "Finger_01_04": { "x": 0, "y": 0, "z": 0 },
-      "Finger_02_01": { "x": 0, "y": 0, "z": 0 },
-      "Finger_02_02": { "x": 0, "y": 0, "z": 0 },
-      "Finger_02_03": { "x": 0, "y": 0, "z": 0 },
+      "Finger_02_01": { "x": 0, "y": 0, "z": 45 },
+      "Finger_02_02": { "x": 0, "y": 0, "z": 60 },
+      "Finger_02_03": { "x": 0, "y": 0, "z": 60 },
       "Finger_02_04": { "x": 0, "y": 0, "z": 0 },
-      "Thumb_01": { "x": 0, "y": 0, "z": 0 },
-      "Thumb_02": { "x": 0, "y": 0, "z": 0 },
-      "Thumb_03": { "x": 0, "y": 0, "z": 0 },
-      "Thumb_04": { "x": 0, "y": 0, "z": 0 }
+      "Thumb_01": { "x": 90, "y": 15, "z": 0 },
+      "Thumb_02": { "x": 0, "y": 0, "z": 30 },
+      "Thumb_03": { "x": 0, "y": 0, "z": 30 },
+      "Thumb_04": { "x": 0, "y": 0, "z": 0 },
     }
+
   },
 
   "DreamLantern_Malfunctioning": {
-    "arm_offset_pos": { "x": 0, "y": 0, "z": 0 },
+
+    "arm_offset_pos": { "x": -0.16, "y":  1.175, "z": -0.49 },
     "arm_offset_rot": { "x": 0, "y":  0, "z": 0 },
-    "arm_scale": 0.5,
+    "arm_scale": 1,
     "arm_shader": "Outer Wilds/Utility/View Model",
+
     "bone_eulers": {
-      "Shoulder": { "x": 0, "y": 0, "z": 0 },
-      "Elbow": { "x": 0, "y": 0, "z": 0 },
-      "Wrist": { "x": 0, "y": 0, "z": 0 },
-      "Finger_01_01": { "x": 0, "y": 0, "z": 0 },
-      "Finger_01_02": { "x": 0, "y": 0, "z": 0 },
-      "Finger_01_03": { "x": 0, "y": 0, "z": 0 },
+      "Shoulder": { "x": 315, "y": 45, "z": 0 },
+      "Elbow": { "x": 0, "y": 60, "z": 0 },
+      "Wrist": { "x": 30, "y": 345, "z": 30 },
+      "Finger_01_01": { "x": 0, "y": 0, "z": 45 },
+      "Finger_01_02": { "x": 0, "y": 0, "z": 45 },
+      "Finger_01_03": { "x": 0, "y": 0, "z": 45 },
       "Finger_01_04": { "x": 0, "y": 0, "z": 0 },
-      "Finger_02_01": { "x": 0, "y": 0, "z": 0 },
-      "Finger_02_02": { "x": 0, "y": 0, "z": 0 },
-      "Finger_02_03": { "x": 0, "y": 0, "z": 0 },
+      "Finger_02_01": { "x": 0, "y": 0, "z": 45 },
+      "Finger_02_02": { "x": 0, "y": 0, "z": 60 },
+      "Finger_02_03": { "x": 0, "y": 0, "z": 60 },
       "Finger_02_04": { "x": 0, "y": 0, "z": 0 },
-      "Thumb_01": { "x": 0, "y": 0, "z": 0 },
-      "Thumb_02": { "x": 0, "y": 0, "z": 0 },
-      "Thumb_03": { "x": 0, "y": 0, "z": 0 },
-      "Thumb_04": { "x": 0, "y": 0, "z": 0 }
+      "Thumb_01": { "x": 90, "y": 15, "z": 0 },
+      "Thumb_02": { "x": 0, "y": 0, "z": 30 },
+      "Thumb_03": { "x": 0, "y": 0, "z": 30 },
+      "Thumb_04": { "x": 0, "y": 0, "z": 0 },
     }
+
   },
 
   "DreamLantern_Nonfunctioning": {
-    "arm_offset_pos": { "x": 0, "y": 0, "z": 0 },
+
+    "arm_offset_pos": { "x": -0.15, "y":  1.11, "z": -0.6 },
     "arm_offset_rot": { "x": 0, "y":  0, "z": 0 },
-    "arm_scale": 0.5,
+    "arm_scale": 1,
     "arm_shader": "Standard",
+
     "bone_eulers": {
-      "Shoulder": { "x": 0, "y": 0, "z": 0 },
-      "Elbow": { "x": 0, "y": 0, "z": 0 },
-      "Wrist": { "x": 0, "y": 0, "z": 0 },
-      "Finger_01_01": { "x": 0, "y": 0, "z": 0 },
-      "Finger_01_02": { "x": 0, "y": 0, "z": 0 },
-      "Finger_01_03": { "x": 0, "y": 0, "z": 0 },
+      "Shoulder": { "x": 0, "y": 90, "z": 330 },
+      "Elbow": { "x": 0, "y": 15, "z": 0 },
+      "Wrist": { "x": 0, "y": 345, "z": 30 },
+      "Finger_01_01": { "x": 0, "y": 0, "z": 45 },
+      "Finger_01_02": { "x": 0, "y": 0, "z": 45 },
+      "Finger_01_03": { "x": 0, "y": 0, "z": 45 },
       "Finger_01_04": { "x": 0, "y": 0, "z": 0 },
-      "Finger_02_01": { "x": 0, "y": 0, "z": 0 },
-      "Finger_02_02": { "x": 0, "y": 0, "z": 0 },
-      "Finger_02_03": { "x": 0, "y": 0, "z": 0 },
+      "Finger_02_01": { "x": 0, "y": 0, "z": 45 },
+      "Finger_02_02": { "x": 0, "y": 0, "z": 60 },
+      "Finger_02_03": { "x": 0, "y": 0, "z": 60 },
       "Finger_02_04": { "x": 0, "y": 0, "z": 0 },
-      "Thumb_01": { "x": 0, "y": 0, "z": 0 },
-      "Thumb_02": { "x": 0, "y": 0, "z": 0 },
-      "Thumb_03": { "x": 0, "y": 0, "z": 0 },
-      "Thumb_04": { "x": 0, "y": 0, "z": 0 }
+      "Thumb_01": { "x": 90, "y": 15, "z": 0 },
+      "Thumb_02": { "x": 0, "y": 0, "z": 30 },
+      "Thumb_03": { "x": 0, "y": 0, "z": 30 },
+      "Thumb_04": { "x": 0, "y": 0, "z": 0 },
     }
+
   },
 
   "VisionTorch": {
-    "arm_offset_pos": { "x": 0, "y": 0, "z": 0 },
+
+    "arm_offset_pos": { "x": -0.22, "y":  0.445, "z": -0.65 },
     "arm_offset_rot": { "x": 0, "y":  0, "z": 0 },
-    "arm_scale": 0.5,
+    "arm_scale": 1,
     "arm_shader": "Standard",
+
     "bone_eulers": {
-      "Shoulder": { "x": 0, "y": 0, "z": 0 },
-      "Elbow": { "x": 0, "y": 0, "z": 0 },
+      "Shoulder": { "x": 270, "y": 90, "z": 0 },
+      "Elbow": { "x": 0, "y": 15, "z": 0 },
       "Wrist": { "x": 0, "y": 0, "z": 0 },
-      "Finger_01_01": { "x": 0, "y": 0, "z": 0 },
-      "Finger_01_02": { "x": 0, "y": 0, "z": 0 },
-      "Finger_01_03": { "x": 0, "y": 0, "z": 0 },
+      "Finger_01_01": { "x": 0, "y": 0, "z": 45 },
+      "Finger_01_02": { "x": 0, "y": 0, "z": 45 },
+      "Finger_01_03": { "x": 0, "y": 0, "z": 45 },
       "Finger_01_04": { "x": 0, "y": 0, "z": 0 },
-      "Finger_02_01": { "x": 0, "y": 0, "z": 0 },
-      "Finger_02_02": { "x": 0, "y": 0, "z": 0 },
-      "Finger_02_03": { "x": 0, "y": 0, "z": 0 },
+      "Finger_02_01": { "x": 0, "y": 0, "z": 45 },
+      "Finger_02_02": { "x": 0, "y": 0, "z": 60 },
+      "Finger_02_03": { "x": 0, "y": 0, "z": 60 },
       "Finger_02_04": { "x": 0, "y": 0, "z": 0 },
-      "Thumb_01": { "x": 0, "y": 0, "z": 0 },
-      "Thumb_02": { "x": 0, "y": 0, "z": 0 },
-      "Thumb_03": { "x": 0, "y": 0, "z": 0 },
-      "Thumb_04": { "x": 0, "y": 0, "z": 0 }
+      "Thumb_01": { "x": 45, "y": 180, "z": 165 },
+      "Thumb_02": { "x": 0, "y": 0, "z": 30 },
+      "Thumb_03": { "x": 0, "y": 0, "z": 30 },
+      "Thumb_04": { "x": 0, "y": 0, "z": 0 },
     }
+
   }
 }

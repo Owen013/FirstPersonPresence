@@ -9,12 +9,18 @@ namespace Immersion.Components;
 public class ViewmodelArm : MonoBehaviour
 {
     private static GameObject s_viewmodelArmAsset;
-    
+
     [SerializeField]
     private SkinnedMeshRenderer _armMeshNoSuit;
 
     [SerializeField]
     private SkinnedMeshRenderer _armMeshSuit;
+
+    [SerializeField]
+    private SkinnedMeshRenderer _prePassNoSuit;
+
+    [SerializeField]
+    private SkinnedMeshRenderer _prePassSuit;
 
     private Dictionary<string, Transform> _bones;
 
@@ -52,29 +58,32 @@ public class ViewmodelArm : MonoBehaviour
         transform.localEulerAngles = armData.arm_offset_rot;
         transform.localScale = 0.1f * Vector3.one * armData.arm_scale;
         SetShader(armData.arm_shader);
+
         SetBoneEulers(armData.bone_eulers);
     }
 
     public void OutputArmData()
     {
-        string output = "  [ARMDATA NAME HERE] {\n";
-        var pos = transform.localPosition;
-        output += "    \"arm_offset_pos\": { " + $"\"x\": {pos.x}, \"y\":  {pos.y}, \"z\": {pos.z}" + " },\n";
-        var rot = transform.localEulerAngles;
-        output += "    \"arm_offset_rot\": { " + $"\"x\": {rot.x}, \"y\":  {rot.y}, \"z\": {rot.z}" + " },\n";
+        string output = "  [ARMDATA NAME HERE] {\n\n";
+
+        var armPos = transform.localPosition;
+        output += "    \"arm_offset_pos\": { " + $"\"x\": {armPos.x}, \"y\":  {armPos.y}, \"z\": {armPos.z}" + " },\n";
+        var armRot = transform.localEulerAngles;
+        output += "    \"arm_offset_rot\": { " + $"\"x\": {armRot.x}, \"y\":  {armRot.y}, \"z\": {armRot.z}" + " },\n";
         output += $"    \"arm_scale\": {10f * transform.localScale.x},\n";
-        output += $"    \"arm_shader\": \"{_armMeshNoSuit.material.shader.name}\",\n";
+        output += $"    \"arm_shader\": \"{_armMeshNoSuit.material.shader.name}\",\n\n";
         output += "    \"bone_eulers\": {\n";
+
         foreach (var keyValuePair in _bones)
         {
             var eulers = keyValuePair.Value.localEulerAngles;
             output += $"      \"{keyValuePair.Key}\": " + "{ " + $"\"x\": {eulers.x}, \"y\": {eulers.y}, \"z\": {eulers.z}" + " },\n";
         }
 
-        ModMain.Log(output + "    }\n  }");
+        ModMain.Log(output + "    }\n\n  }");
     }
 
-    internal static void LoadAssetBundle()
+    internal static void LoadAssetBundleIfNull()
     {
         if (s_viewmodelArmAsset == null)
             s_viewmodelArmAsset = ModMain.Instance.ModHelper.Assets.LoadBundle("AssetBundles/viewmodelarm").LoadAsset<GameObject>("Assets/ViewmodelArm.prefab");
@@ -82,12 +91,14 @@ public class ViewmodelArm : MonoBehaviour
 
     private static ViewmodelArm NewViewmodelArm(Transform parent)
     {
-        LoadAssetBundle();
+        LoadAssetBundleIfNull();
+
         var viewmodelArm = Instantiate(s_viewmodelArmAsset).GetComponent<ViewmodelArm>();
         viewmodelArm.name = "ViewmodelArm";
         viewmodelArm.transform.parent = parent;
         viewmodelArm.transform.localPosition = Vector3.zero;
         viewmodelArm.transform.localRotation = Quaternion.identity;
+
         return viewmodelArm;
     }
 
@@ -123,80 +134,95 @@ public class ViewmodelArm : MonoBehaviour
     [HarmonyPatch(typeof(OWItem), nameof(OWItem.PickUpItem))]
     private static void OWItem_PickUpItem_Postfix(OWItem __instance)
     {
-        // don't try to add viewmodel arm if disabled in config or if this item already has one
-        if (!Config.EnableViewmodelHands || __instance.transform.Find("ViewmodelArm")) return;
+        if (!Config.EnableViewmodelHands) return;
 
-        switch (__instance._type)
+        // rotate lantern to put it in better position for viewmodel arm
+        if (__instance.GetItemType() == ItemType.Lantern)
+            __instance.transform.localEulerAngles = new Vector3(0f, 327f, 0f);
+
+        // don't try to add viewmodel arm if disabled in config or if this item already has one
+        if (__instance.transform.Find("ViewmodelArm")) return;
+
+        switch (__instance.GetItemType())
         {
             case ItemType.SharedStone:
-                if (__instance is not SharedStone) break;
-                NewViewmodelArm(__instance)?.SetArmData("SharedStone");
+                if (__instance is SharedStone)
+                    NewViewmodelArm(__instance)?.SetArmData("SharedStone");
                 break;
 
             case ItemType.Scroll:
-                if (__instance is not ScrollItem) break;
-
-                if (__instance.name == "Prefab_NOM_Scroll_Jeff")
+                if (__instance is ScrollItem)
                 {
-                    NewViewmodelArm(__instance)?.SetArmData("Scroll_Jeff");
-                }
-                else
-                {
-                    NewViewmodelArm(__instance)?.SetArmData("Scroll");
-                }
+                    switch(__instance.name)
+                    {
+                        case "Prefab_NOM_Scroll_egg":
+                            NewViewmodelArm(__instance)?.SetArmData("Scroll_Egg");
+                            break;
 
+                        case "Prefab_NOM_Scroll_Jeff":
+                            NewViewmodelArm(__instance)?.SetArmData("Scroll_Jeff");
+                            break;
+
+                        default:
+                            NewViewmodelArm(__instance)?.SetArmData("Scroll");
+                            break;
+                    }
+                }
                 break;
 
             case ItemType.ConversationStone:
-                if (__instance is not NomaiConversationStone) break;
-                var word = (__instance as NomaiConversationStone)._word;
-                if (word == NomaiWord.Identify || word == NomaiWord.Explain)
-                    NewViewmodelArm(__instance)?.SetArmData("ConversationStone_Big");
-                else
-                    NewViewmodelArm(__instance)?.SetArmData("ConversationStone");
+                if (__instance is NomaiConversationStone solanumStone)
+                {
+                    if (solanumStone._word == NomaiWord.Identify || solanumStone._word == NomaiWord.Explain)
+                        NewViewmodelArm(__instance)?.SetArmData("ConversationStone_Big");
+                    else
+                        NewViewmodelArm(__instance)?.SetArmData("ConversationStone");
+                }
                 break;
 
             case ItemType.WarpCore:
-                if (__instance is not WarpCoreItem) break;
-                var warpCoreType = (__instance as WarpCoreItem)._warpCoreType;
-                if (warpCoreType == WarpCoreType.Vessel || warpCoreType == WarpCoreType.VesselBroken)
-                    NewViewmodelArm(__instance)?.SetArmData("WarpCore");
-                else
-                    NewViewmodelArm(__instance)?.SetArmData("WarpCore_Simple");
+                if (__instance is WarpCoreItem warpCore)
+                {
+                    if (warpCore._warpCoreType == WarpCoreType.Vessel || warpCore._warpCoreType == WarpCoreType.VesselBroken)
+                        NewViewmodelArm(__instance)?.SetArmData("WarpCore");
+                    else
+                        NewViewmodelArm(__instance)?.SetArmData("WarpCore_Simple");
+                }
                 break;
 
             case ItemType.Lantern:
-                if (__instance is not SimpleLanternItem) break;
-                NewViewmodelArm(__instance)?.SetArmData("Lantern");
+                if (__instance is SimpleLanternItem)
+                    NewViewmodelArm(__instance)?.SetArmData("Lantern");
                 break;
 
             case ItemType.SlideReel:
-                if (__instance is not SlideReelItem) break;
-                NewViewmodelArm(__instance)?.SetArmData("SlideReel");
+                if (__instance is SlideReelItem)
+                    NewViewmodelArm(__instance)?.SetArmData("SlideReel");
                 break;
 
             case ItemType.DreamLantern:
-                if (__instance is not DreamLanternItem) break;
-                switch ((__instance as DreamLanternItem)._lanternType)
+                if (__instance is DreamLanternItem dreamLantern)
                 {
-                    case DreamLanternType.Nonfunctioning:
-                        NewViewmodelArm(__instance)?.SetArmData("DreamLantern_Nonfunctioning");
-                        break;
+                    switch (dreamLantern._lanternType)
+                    {
+                        case DreamLanternType.Nonfunctioning:
+                            NewViewmodelArm(__instance)?.SetArmData("DreamLantern_Nonfunctioning");
+                            break;
 
-                    case DreamLanternType.Malfunctioning:
-                        NewViewmodelArm(__instance)?.SetArmData("DreamLantern_Malfunctioning");
-                        break;
+                        case DreamLanternType.Malfunctioning:
+                            NewViewmodelArm(__instance)?.SetArmData("DreamLantern_Malfunctioning");
+                            break;
 
-                    default:
-                        NewViewmodelArm(__instance)?.SetArmData("DreamLantern");
-                        break;
+                        default:
+                            NewViewmodelArm(__instance)?.SetArmData("DreamLantern");
+                            break;
+                    }
                 }
-
                 break;
 
             case ItemType.VisionTorch:
-                if (__instance is not VisionTorchItem) break;
-                NewViewmodelArm(__instance)?.SetArmData("VisionTorch");
+                if (__instance is VisionTorchItem)
+                    NewViewmodelArm(__instance)?.SetArmData("VisionTorch");
                 break;
         }
     }
@@ -207,14 +233,16 @@ public class ViewmodelArm : MonoBehaviour
         _armMeshNoSuit.materials[0].shader = shader;
         _armMeshNoSuit.materials[1].shader = shader;
         _armMeshSuit.material.shader = shader;
+
+        bool isViewmodel = shaderName == "Outer Wilds/Utility/View Model" || shaderName == "Outer Wilds/Utility/View Model (Cutoff)";
+        _prePassNoSuit.gameObject.SetActive(isViewmodel);
+        _prePassSuit.gameObject.SetActive(isViewmodel);
     }
 
     private void SetBoneEulers(Dictionary<string, Vector3> boneEulersDict)
     {
         foreach (var boneEulers in boneEulersDict)
-        {
             _bones[boneEulers.Key].localEulerAngles = boneEulers.Value;
-        }
     }
 
     private void Awake()
@@ -243,6 +271,11 @@ public class ViewmodelArm : MonoBehaviour
             ["Thumb_03"] = _armMeshNoSuit.bones[18],
             ["Thumb_04"] = _armMeshNoSuit.bones[19]
         };
+
+        var prepassShader = Shader.Find("Outer Wilds/Utility/View Model Prepass");
+        _prePassNoSuit.materials[0].shader = prepassShader;
+        _prePassNoSuit.materials[1].shader = prepassShader;
+        _prePassSuit.material.shader = prepassShader;
     }
 
     private void LateUpdate()
