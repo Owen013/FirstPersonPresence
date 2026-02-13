@@ -107,7 +107,7 @@ public class ViewmodelArm : MonoBehaviour
     private static void PlayerTool_EquipTool_Postfix(PlayerTool __instance)
     {
         // don't try to add viewmodel arm if disabled in config or if this tool already has one
-        if (!Config.EnableViewmodelHands) return;
+        if (!Config.EnableViewmodelArms) return;
 
         // check for existing arm and enable if found (PlayerTool has no event for tool being equipped, so this is required)
         var existingArm = __instance.transform.Find("ViewmodelArm");
@@ -134,7 +134,7 @@ public class ViewmodelArm : MonoBehaviour
     [HarmonyPatch(typeof(OWItem), nameof(OWItem.PickUpItem))]
     private static void OWItem_PickUpItem_Postfix(OWItem __instance)
     {
-        if (!Config.EnableViewmodelHands) return;
+        if (!Config.EnableViewmodelArms) return;
 
         // rotate lantern to put it in better position for viewmodel arm
         if (__instance.GetItemType() == ItemType.Lantern)
@@ -280,7 +280,7 @@ public class ViewmodelArm : MonoBehaviour
 
     private void LateUpdate()
     {
-        if (!Config.EnableViewmodelHands)
+        if (!Config.EnableViewmodelArms)
         {
             gameObject.SetActive(false);
             return;

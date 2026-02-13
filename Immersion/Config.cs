@@ -4,7 +4,7 @@ namespace Immersion;
 
 public static class Config
 {
-    public static bool EnableViewmodelHands { get; private set; }
+    public static bool EnableViewmodelArms { get; private set; }
 
     public static bool EnableHeadBob { get; private set; }
 
@@ -39,7 +39,7 @@ public static class Config
     public static void Configure(IModConfig config)
     {
         // viewmodel hands
-        EnableViewmodelHands = config.GetSettingsValue<bool>("EnableViewmodelHands");
+        EnableViewmodelArms = config.GetSettingsValue<bool>("EnableViewmodelArms");
 
         // viewbob
         EnableHeadBob = config.GetSettingsValue<bool>("EnableHeadBob");

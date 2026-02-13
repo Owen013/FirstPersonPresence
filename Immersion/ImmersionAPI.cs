@@ -9,7 +9,7 @@ public class ImmersionAPI
 {
     public bool AreViewmodelArmsEnabled()
     {
-        return Config.EnableViewmodelHands;
+        return Config.EnableViewmodelArms;
     }
     
     public void LoadArmData(string jsonPath)
