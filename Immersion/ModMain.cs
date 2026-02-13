@@ -1,4 +1,5 @@
 ﻿using HarmonyLib;
+using Immersion.Components;
 using Immersion.Interfaces;
 using OWML.Common;
 using OWML.ModHelper;
@@ -39,6 +40,11 @@ public class ModMain : ModBehaviour
 
         // set ModMain.Instance to be used by other classes (there should only ever be one ModMain instance at a time)
         Instance = this;
+
+        LoadManager.OnCompleteSceneLoad += (_, _) =>
+        {
+            ViewmodelArm.LoadAssetBundle();
+        };
     }
 
     private void Start()

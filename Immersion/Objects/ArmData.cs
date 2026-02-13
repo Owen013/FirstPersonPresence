@@ -1,8 +1,7 @@
-﻿using Newtonsoft.Json.Linq;
+﻿using Newtonsoft.Json;
 using OWML.Common;
 using System.Collections.Generic;
 using System.IO;
-using System.Linq;
 using System.Reflection;
 using UnityEngine;
 
@@ -10,21 +9,20 @@ namespace Immersion.Objects;
 
 public class ArmData
 {
-    public Vector3[] bonePositions;
+    public Vector3 arm_offset_pos;
 
-    public Vector3[] boneEulers;
+    public Vector3 arm_offset_rot;
 
-    public float scale;
+    public float arm_scale;
 
-    public string shaderName;
+    public string arm_shader;
+
+    public Dictionary<string, Vector3> bone_eulers;
 
     private static Dictionary<string, ArmData> s_armData;
 
     public static void LoadArmData(string jsonPath = "")
     {
-        if (s_armData == null)
-            s_armData = [];
-
         bool isDefaultArmData;
         if (jsonPath == "")
         {
@@ -39,29 +37,23 @@ public class ArmData
             ModMain.Log($"Loading ArmData from \"{jsonPath}\"...", MessageType.Info);
         }
 
-        // create ArmData from JSON
-        JObject jsonData = JObject.Parse(File.ReadAllText(jsonPath));
-        foreach (var (itemName, toolToken) in jsonData)
+        var newArmData = JsonConvert.DeserializeObject<Dictionary<string, ArmData>>(File.ReadAllText(jsonPath));
+        if (s_armData == null)
+            s_armData = newArmData;
+        else if (isDefaultArmData)
         {
-            if (toolToken is not JObject toolObject) continue;
-
-            var armData = new ArmData();
-
-            if (toolObject["bone_positions"] is JArray posArray)
-                armData.bonePositions = posArray.Select(vec => new Vector3((float)vec[0], (float)vec[1], (float)vec[2])).ToArray();
-
-            if (toolObject["bone_eulers"] is JArray eulerArray)
-                armData.boneEulers = eulerArray.Select(vec => new Vector3((float)vec[0], (float)vec[1], (float)vec[2])).ToArray();
-
-            if (toolObject["arm_scale"] != null)
-                armData.scale = (float)toolObject["arm_scale"];
-
-            if (toolObject["arm_shader"] != null)
-                armData.shaderName = (string)toolObject["arm_shader"];
-
-            // default ArmData is only saved if there isn't already an ArmData at that key. custom ArmData replaces already existing data
-            if (!s_armData.ContainsKey(itemName) || !isDefaultArmData)
-                s_armData[itemName] = armData;
+            foreach (var data in newArmData)
+            {
+                // only write new arm data if there is no arm data at this key
+                if (s_armData[data.Key] == null)
+                    s_armData[data.Key] = data.Value;
+            }
+        }
+        else
+        {
+            foreach (var data in newArmData)
+                // overwrite arm data if this is a custom json
+                s_armData[data.Key] = data.Value;
         }
 
         ModMain.Log($"ArmData loaded successfully!", MessageType.Success);
