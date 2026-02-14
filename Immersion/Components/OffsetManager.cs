@@ -84,7 +84,7 @@ public class OffsetManager : MonoBehaviour
         _itemToolOffsetRoot = OffsetRoot.NewOffsetRoot("OffsetRoot_ItemCarryTool", camera.Find("ItemCarryTool").gameObject);
         _signalscopeOffsetRoot = OffsetRoot.NewOffsetRoot("OffsetRoot_Signalscope", camera.Find("Signalscope").gameObject);
         _probeLauncherOffsetRoot = OffsetRoot.NewOffsetRoot("OffsetRoot_ProbeLauncher", camera.Find("ProbeLauncher").gameObject);
-        _translatorOffsetRoot = OffsetRoot.NewOffsetRoot("OffsetRoot_NomaiTranslatorTranslatorProp", camera.Find("NomaiTranslatorProp").gameObject);
+        _translatorOffsetRoot = OffsetRoot.NewOffsetRoot("OffsetRoot_NomaiTranslatorProp", camera.Find("NomaiTranslatorProp").gameObject);
 
         _playerController.OnBecomeGrounded += () =>
         {
