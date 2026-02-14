@@ -1,16 +1,14 @@
-﻿using HarmonyLib;
-using UnityEngine;
+﻿using UnityEngine;
 
 namespace Immersion.Components;
 
-[HarmonyPatch]
 public class OffsetManager : MonoBehaviour
 {
-    private PlayerCharacterController _playerController;
-    
-    private PlayerAnimController _animController;
-
     private PlayerCameraController _cameraController;
+
+    private PlayerCharacterController _playerController;
+
+    private PlayerAnimController _animController;
 
     private ToolModeSwapper _toolModeSwapper;
 
@@ -64,20 +62,18 @@ public class OffsetManager : MonoBehaviour
 
     private float _sprintAnimDampVel;
 
-    [HarmonyPostfix]
-    [HarmonyPatch(typeof(PlayerCameraController), nameof(PlayerCameraController.Start))]
-    private static void PlayerCameraController_Start_Postfix(PlayerCameraController __instance)
+    internal static void AddToPlayerCamera(PlayerCameraController playerCamera)
     {
-        __instance.gameObject.AddComponent<OffsetManager>();
-        __instance._playerCamera.nearClipPlane = Config.FixItemClipping ? 0.05f : 0.1f;
+        playerCamera.gameObject.AddComponent<OffsetManager>();
+        playerCamera._playerCamera.nearClipPlane = Config.FixItemClipping ? 0.05f : 0.1f;
     }
 
     private void Awake()
     {
         // get references to required components
+        _cameraController = Locator.GetPlayerCameraController();
         _playerController = Locator.GetPlayerController();
         _animController = _playerController.GetComponentInChildren<PlayerAnimController>();
-        _cameraController = Locator.GetPlayerCameraController();
         _toolModeSwapper = Locator.GetToolModeSwapper();
 
         // create offset roots

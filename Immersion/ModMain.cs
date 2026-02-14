@@ -24,7 +24,6 @@ public class ModMain : ModBehaviour
     public override void Configure(IModConfig config)
     {
         Config.Configure(config);
-
 		Locator.GetPlayerCamera()?.nearClipPlane = Config.FixItemClipping ? 0.05f : 0.1f;
     }
 
@@ -35,15 +34,15 @@ public class ModMain : ModBehaviour
 
     private void Awake()
     {
-        // create harmony patches
-        Harmony.CreateAndPatchAll(Assembly.GetExecutingAssembly());
-
         // set ModMain.Instance to be used by other classes (there should only ever be one ModMain instance at a time)
         Instance = this;
 
+        // create harmony patches
+        new Harmony("Owen_013.FirstPersonPresence").PatchAll(Assembly.GetExecutingAssembly());
+
         LoadManager.OnCompleteSceneLoad += (_, _) =>
         {
-            ViewmodelArm.LoadAssetBundleIfNull();
+            ViewmodelArm.LoadAssetIfNull();
         };
     }
 

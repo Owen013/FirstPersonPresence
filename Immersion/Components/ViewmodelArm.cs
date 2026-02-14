@@ -1,11 +1,8 @@
-﻿using HarmonyLib;
-using Immersion.Objects;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using UnityEngine;
 
 namespace Immersion.Components;
 
-[HarmonyPatch]
 public class ViewmodelArm : MonoBehaviour
 {
     private static GameObject s_viewmodelArmAsset;
@@ -83,7 +80,128 @@ public class ViewmodelArm : MonoBehaviour
         ModMain.Log(output + "    }\n\n  }");
     }
 
-    internal static void LoadAssetBundleIfNull()
+    internal static void OnEquipTool(PlayerTool tool)
+    {
+        // don't try to add viewmodel arm if disabled in config or if this tool already has one
+        if (!Config.EnableViewmodelArms) return;
+
+        // check for existing arm and enable if found (PlayerTool has no event for tool being equipped, so this is required)
+        var existingArm = tool.transform.Find("ViewmodelArm");
+        if (existingArm != null)
+        {
+            existingArm.gameObject.SetActive(true);
+            return;
+        }
+
+        if (tool is Signalscope)
+        {
+            NewViewmodelArm(tool)?.SetArmData("Signalscope");
+            return;
+        }
+
+        if (tool is NomaiTranslator)
+        {
+            NewViewmodelArm(tool)?.SetArmData("NomaiTranslator");
+            return;
+        }
+    }
+
+    internal static void OnPickUpItem(OWItem item)
+    {
+        if (!Config.EnableViewmodelArms) return;
+
+        // rotate lantern to put it in better position for viewmodel arm
+        if (item.GetItemType() == ItemType.Lantern)
+            item.transform.localEulerAngles = new Vector3(0f, 327f, 0f);
+
+        // don't try to add viewmodel arm if disabled in config or if this item already has one
+        if (item.transform.Find("ViewmodelArm")) return;
+
+        switch (item.GetItemType())
+        {
+            case ItemType.SharedStone:
+                if (item is SharedStone)
+                    NewViewmodelArm(item)?.SetArmData("SharedStone");
+                break;
+
+            case ItemType.Scroll:
+                if (item is ScrollItem)
+                {
+                    switch (item.name)
+                    {
+                        case "Prefab_NOM_Scroll_egg":
+                            NewViewmodelArm(item)?.SetArmData("Scroll_Egg");
+                            break;
+
+                        case "Prefab_NOM_Scroll_Jeff":
+                            NewViewmodelArm(item)?.SetArmData("Scroll_Jeff");
+                            break;
+
+                        default:
+                            NewViewmodelArm(item)?.SetArmData("Scroll");
+                            break;
+                    }
+                }
+                break;
+
+            case ItemType.ConversationStone:
+                if (item is NomaiConversationStone solanumStone)
+                {
+                    if (solanumStone._word == NomaiWord.Identify || solanumStone._word == NomaiWord.Explain)
+                        NewViewmodelArm(item)?.SetArmData("ConversationStone_Big");
+                    else
+                        NewViewmodelArm(item)?.SetArmData("ConversationStone");
+                }
+                break;
+
+            case ItemType.WarpCore:
+                if (item is WarpCoreItem warpCore)
+                {
+                    if (warpCore._warpCoreType == WarpCoreType.Vessel || warpCore._warpCoreType == WarpCoreType.VesselBroken)
+                        NewViewmodelArm(item)?.SetArmData("WarpCore");
+                    else
+                        NewViewmodelArm(item)?.SetArmData("WarpCore_Simple");
+                }
+                break;
+
+            case ItemType.Lantern:
+                if (item is SimpleLanternItem)
+                    NewViewmodelArm(item)?.SetArmData("Lantern");
+                break;
+
+            case ItemType.SlideReel:
+                if (item is SlideReelItem)
+                    NewViewmodelArm(item)?.SetArmData("SlideReel");
+                break;
+
+            case ItemType.DreamLantern:
+                if (item is DreamLanternItem dreamLantern)
+                {
+                    switch (dreamLantern._lanternType)
+                    {
+                        case DreamLanternType.Nonfunctioning:
+                            NewViewmodelArm(item)?.SetArmData("DreamLantern_Nonfunctioning");
+                            break;
+
+                        case DreamLanternType.Malfunctioning:
+                            NewViewmodelArm(item)?.SetArmData("DreamLantern_Malfunctioning");
+                            break;
+
+                        default:
+                            NewViewmodelArm(item)?.SetArmData("DreamLantern");
+                            break;
+                    }
+                }
+                break;
+
+            case ItemType.VisionTorch:
+                if (item is VisionTorchItem)
+                    NewViewmodelArm(item)?.SetArmData("VisionTorch");
+                break;
+        }
+    }
+
+    internal static void LoadAssetIfNull()
     {
         if (s_viewmodelArmAsset == null)
             s_viewmodelArmAsset = ModMain.Instance.ModHelper.Assets.LoadBundle("AssetBundles/viewmodelarm").LoadAsset<GameObject>("Assets/ViewmodelArm.prefab");
@@ -91,7 +209,7 @@ public class ViewmodelArm : MonoBehaviour
 
     private static ViewmodelArm NewViewmodelArm(Transform parent)
     {
-        LoadAssetBundleIfNull();
+        LoadAssetIfNull();
 
         var viewmodelArm = Instantiate(s_viewmodelArmAsset).GetComponent<ViewmodelArm>();
         viewmodelArm.name = "ViewmodelArm";
@@ -100,131 +218,6 @@ public class ViewmodelArm : MonoBehaviour
         viewmodelArm.transform.localRotation = Quaternion.identity;
 
         return viewmodelArm;
-    }
-
-    [HarmonyPostfix]
-    [HarmonyPatch(typeof(PlayerTool), nameof(PlayerTool.EquipTool))]
-    private static void PlayerTool_EquipTool_Postfix(PlayerTool __instance)
-    {
-        // don't try to add viewmodel arm if disabled in config or if this tool already has one
-        if (!Config.EnableViewmodelArms) return;
-
-        // check for existing arm and enable if found (PlayerTool has no event for tool being equipped, so this is required)
-        var existingArm = __instance.transform.Find("ViewmodelArm");
-        if (existingArm != null)
-        {
-            existingArm.gameObject.SetActive(true);
-            return;
-        }
-
-        if (__instance is Signalscope)
-        {
-            NewViewmodelArm(__instance)?.SetArmData("Signalscope");
-            return;
-        }
-
-        if (__instance is NomaiTranslator)
-        {
-            NewViewmodelArm(__instance)?.SetArmData("NomaiTranslator");
-            return;
-        }
-    }
-
-    [HarmonyPostfix]
-    [HarmonyPatch(typeof(OWItem), nameof(OWItem.PickUpItem))]
-    private static void OWItem_PickUpItem_Postfix(OWItem __instance)
-    {
-        if (!Config.EnableViewmodelArms) return;
-
-        // rotate lantern to put it in better position for viewmodel arm
-        if (__instance.GetItemType() == ItemType.Lantern)
-            __instance.transform.localEulerAngles = new Vector3(0f, 327f, 0f);
-
-        // don't try to add viewmodel arm if disabled in config or if this item already has one
-        if (__instance.transform.Find("ViewmodelArm")) return;
-
-        switch (__instance.GetItemType())
-        {
-            case ItemType.SharedStone:
-                if (__instance is SharedStone)
-                    NewViewmodelArm(__instance)?.SetArmData("SharedStone");
-                break;
-
-            case ItemType.Scroll:
-                if (__instance is ScrollItem)
-                {
-                    switch(__instance.name)
-                    {
-                        case "Prefab_NOM_Scroll_egg":
-                            NewViewmodelArm(__instance)?.SetArmData("Scroll_Egg");
-                            break;
-
-                        case "Prefab_NOM_Scroll_Jeff":
-                            NewViewmodelArm(__instance)?.SetArmData("Scroll_Jeff");
-                            break;
-
-                        default:
-                            NewViewmodelArm(__instance)?.SetArmData("Scroll");
-                            break;
-                    }
-                }
-                break;
-
-            case ItemType.ConversationStone:
-                if (__instance is NomaiConversationStone solanumStone)
-                {
-                    if (solanumStone._word == NomaiWord.Identify || solanumStone._word == NomaiWord.Explain)
-                        NewViewmodelArm(__instance)?.SetArmData("ConversationStone_Big");
-                    else
-                        NewViewmodelArm(__instance)?.SetArmData("ConversationStone");
-                }
-                break;
-
-            case ItemType.WarpCore:
-                if (__instance is WarpCoreItem warpCore)
-                {
-                    if (warpCore._warpCoreType == WarpCoreType.Vessel || warpCore._warpCoreType == WarpCoreType.VesselBroken)
-                        NewViewmodelArm(__instance)?.SetArmData("WarpCore");
-                    else
-                        NewViewmodelArm(__instance)?.SetArmData("WarpCore_Simple");
-                }
-                break;
-
-            case ItemType.Lantern:
-                if (__instance is SimpleLanternItem)
-                    NewViewmodelArm(__instance)?.SetArmData("Lantern");
-                break;
-
-            case ItemType.SlideReel:
-                if (__instance is SlideReelItem)
-                    NewViewmodelArm(__instance)?.SetArmData("SlideReel");
-                break;
-
-            case ItemType.DreamLantern:
-                if (__instance is DreamLanternItem dreamLantern)
-                {
-                    switch (dreamLantern._lanternType)
-                    {
-                        case DreamLanternType.Nonfunctioning:
-                            NewViewmodelArm(__instance)?.SetArmData("DreamLantern_Nonfunctioning");
-                            break;
-
-                        case DreamLanternType.Malfunctioning:
-                            NewViewmodelArm(__instance)?.SetArmData("DreamLantern_Malfunctioning");
-                            break;
-
-                        default:
-                            NewViewmodelArm(__instance)?.SetArmData("DreamLantern");
-                            break;
-                    }
-                }
-                break;
-
-            case ItemType.VisionTorch:
-                if (__instance is VisionTorchItem)
-                    NewViewmodelArm(__instance)?.SetArmData("VisionTorch");
-                break;
-        }
     }
 
     private void SetShader(string shaderName)
