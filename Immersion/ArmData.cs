@@ -9,15 +9,20 @@ namespace Immersion;
 
 public class ArmData
 {
-    public Vector3 arm_offset_pos;
+    [JsonProperty("arm_offset_pos")]
+    public Vector3 armOffsetPos;
 
-    public Vector3 arm_offset_rot;
+    [JsonProperty("arm_offset_rot")]
+    public Vector3 armOffsetRot;
 
-    public float arm_scale;
+    [JsonProperty("arm_scale")]
+    public float armScale;
 
-    public string arm_shader;
+    [JsonProperty("arm_shader")]
+    public string armShader;
 
-    public Dictionary<string, Vector3> bone_eulers;
+    [JsonProperty("bone_eulers")]
+    public Dictionary<string, Vector3> boneEulers;
 
     private static Dictionary<string, ArmData> s_armData;
 

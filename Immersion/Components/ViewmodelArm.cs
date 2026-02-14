@@ -51,12 +51,12 @@ public class ViewmodelArm : MonoBehaviour
         var armData = ArmData.GetArmData(itemName);
         if (armData == null) return;
 
-        transform.localPosition = armData.arm_offset_pos;
-        transform.localEulerAngles = armData.arm_offset_rot;
-        transform.localScale = 0.1f * Vector3.one * armData.arm_scale;
-        SetShader(armData.arm_shader);
+        transform.localPosition = armData.armOffsetPos;
+        transform.localEulerAngles = armData.armOffsetRot;
+        transform.localScale = 0.1f * Vector3.one * armData.armScale;
+        SetShader(armData.armShader);
 
-        SetBoneEulers(armData.bone_eulers);
+        SetBoneEulers(armData.boneEulers);
     }
 
     public void OutputArmData()

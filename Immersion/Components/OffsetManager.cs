@@ -62,6 +62,8 @@ public class OffsetManager : MonoBehaviour
 
     private float _sprintAnimDampVel;
 
+    private float _addedStowDegrees;
+
     internal static void AddToPlayerCamera(PlayerCameraController playerCamera)
     {
         playerCamera.gameObject.AddComponent<OffsetManager>();
@@ -389,7 +391,12 @@ public class OffsetManager : MonoBehaviour
     {
         var itemCarryTool = _toolModeSwapper.GetItemCarryTool();
         if (Config.HideStowedItems && itemCarryTool._heldItem != null && !itemCarryTool.IsPuttingAway() && _toolModeSwapper.GetToolMode() != ToolMode.Item)
-            _itemToolOffsetRoot.AddOffset(Vector3.back);
+        {
+            _addedStowDegrees = Mathf.MoveTowards(_addedStowDegrees, 45f, 135f * Time.deltaTime);
+            _itemToolOffsetRoot.AddOffset(Quaternion.Euler(_addedStowDegrees, 0f, 0f));
+        }
+        else
+            _addedStowDegrees = 0f;
     }
 
     private void Update()
