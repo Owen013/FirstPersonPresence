@@ -15,7 +15,12 @@ public class ModMain : ModBehaviour
 
     public static IHikersMod HikersModAPI { get; private set; }
 
-	public override object GetApi()
+    public static void Log(string message, MessageType type = MessageType.Message)
+    {
+        Instance.ModHelper.Console.WriteLine(message, type);
+    }
+
+    public override object GetApi()
     {
         // provide API for use by other mods
         return new ImmersionAPI();
@@ -25,11 +30,6 @@ public class ModMain : ModBehaviour
     {
         Config.Configure(config);
 		Locator.GetPlayerCamera()?.nearClipPlane = Config.FixItemClipping ? 0.05f : 0.1f;
-    }
-
-    public static void Log(string message, MessageType type = MessageType.Message)
-    {
-        Instance.ModHelper.Console.WriteLine(message, type);
     }
 
     private void Awake()
