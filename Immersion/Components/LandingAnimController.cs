@@ -18,10 +18,18 @@ public class LandingAnimController : MonoBehaviour
 
     private float _landingAnimDampVel;
 
+    private void OnConfigured()
+    {
+        enabled = Config.EnableLandingAnim;
+    }
+
     private void Awake()
     {
         _offsetManager = OffsetManager.Instance;
         _playerController = Locator.GetPlayerController();
+
+        Config.OnConfigured += OnConfigured;
+        OnConfigured();
 
         _playerController.OnBecomeGrounded += () =>
         {
@@ -47,41 +55,42 @@ public class LandingAnimController : MonoBehaviour
 
     private void Update()
     {
-        if (Config.EnableLandingAnim)
+        if (Time.deltaTime != 0f)
         {
-            if (Time.deltaTime != 0f)
+            if (_isLandingAnimActive)
             {
-                if (_isLandingAnimActive)
+                // update camera height based on landing speed
+                float playerScale = ModMain.SmolHatchlingAPI != null ? ModMain.SmolHatchlingAPI.GetPlayerScale() : 1f;
+                _landingAnimPos = Mathf.Min(_landingAnimPos - _lastLandedSpeed * playerScale * Time.deltaTime, 0f);
+                if (_landingAnimPos <= -0.25f)
                 {
-                    // update camera height based on landing speed
-                    float playerScale = ModMain.SmolHatchlingAPI != null ? ModMain.SmolHatchlingAPI.GetPlayerScale() : 1f;
-                    _landingAnimPos = Mathf.Min(_landingAnimPos - _lastLandedSpeed * playerScale * Time.deltaTime, 0f);
-                    if (_landingAnimPos <= -0.25f)
-                    {
-                        // landing anim bottoms out at -0.25
-                        _landingAnimPos = -0.25f;
-                        _isLandingAnimActive = false;
-                    }
-                }
-                else
-                {
-                    _landingAnimPos = Mathf.SmoothDamp(_landingAnimPos, 0f, ref _landingAnimDampVel, 0.2f);
+                    // landing anim bottoms out at -0.25
+                    _landingAnimPos = -0.25f;
+                    _isLandingAnimActive = false;
                 }
             }
-
-            // apply offset
-            _offsetManager.AddCameraOffset(new Vector3(0f, _landingAnimPos, 0f));
-
-            // keep track of player velocity
-            _lastPlayerVel = _playerController.GetAttachedOWRigidbody().GetVelocity();
+            else
+                _landingAnimPos = Mathf.SmoothDamp(_landingAnimPos, 0f, ref _landingAnimDampVel, 0.2f);
         }
-        else
-        {
-            // reset landing anim parameters if feature is disabled
-            _lastPlayerVel = Vector3.zero;
-            _landingAnimPos = 0f;
-            _landingAnimDampVel = 0f;
-            _isLandingAnimActive = false;
-        }
+
+        // apply offset
+        _offsetManager.AddCameraOffset(new Vector3(0f, _landingAnimPos, 0f));
+
+        // keep track of player velocity
+        _lastPlayerVel = _playerController.GetAttachedOWRigidbody().GetVelocity();
+    }
+
+    private void OnDisable()
+    {
+        // reset landing anim parameters if feature is disabled
+        _lastPlayerVel = Vector3.zero;
+        _landingAnimPos = 0f;
+        _landingAnimDampVel = 0f;
+        _isLandingAnimActive = false;
+    }
+
+    private void OnDestroy()
+    {
+        Config.OnConfigured -= OnConfigured;
     }
 }

@@ -83,6 +83,6 @@ public class OffsetManager : MonoBehaviour
         gameObject.AddComponent<HideStowedItemsController>();
 
         if (ModMain.HikersModAPI != null)
-            gameObject.AddComponent<SprintAnimController>();
+            gameObject.AddComponent<SprintingAnimController>();
     }
 }

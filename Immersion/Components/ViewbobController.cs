@@ -16,17 +16,24 @@ public class ViewbobController : MonoBehaviour
 
     private float _viewbobDampVel;
 
+    private void OnConfigured()
+    {
+        enabled = Config.EnableHeadBob || Config.EnableHandBob;
+    }
+
     private void Awake()
     {
         _offsetManager = OffsetManager.Instance;
         _playerController = Locator.GetPlayerController();
         _animController = _playerController.GetComponentInChildren<PlayerAnimController>();
+
+        Config.OnConfigured += OnConfigured;
+        OnConfigured();
     }
 
     private void Update()
     {
-        // only do this if player is not movement locked and viewbob is enabled for camera or tool
-        if (!_playerController._isMovementLocked && (Config.EnableHeadBob || Config.EnableHandBob))
+        if (!_playerController._isMovementLocked)
         {
             if (Time.deltaTime != 0f)
             {
@@ -75,12 +82,23 @@ public class ViewbobController : MonoBehaviour
                 _offsetManager.AddToolOffsets(offsetPos, offsetRot);
             }
         }
-        // reset viewbob parameters if both camera and tool bob are disabled
         else
         {
             _viewbobTime = 0f;
             _viewbobScale = 0f;
             _viewbobDampVel = 0f;
         }
+    }
+
+    private void OnDisable()
+    {
+        _viewbobTime = 0f;
+        _viewbobScale = 0f;
+        _viewbobDampVel = 0f;
+    }
+
+    private void OnDestroy()
+    {
+        Config.OnConfigured -= OnConfigured;
     }
 }

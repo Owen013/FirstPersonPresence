@@ -1,4 +1,5 @@
 ﻿using OWML.Common;
+using System;
 
 namespace Immersion;
 
@@ -36,6 +37,8 @@ public static class Config
 
     public static bool HideStowedItems { get; private set; }
 
+    public static event Action OnConfigured;
+
     internal static void Configure(IModConfig config)
     {
         // viewmodel hands
@@ -65,5 +68,7 @@ public static class Config
         EnableLandingAnim = config.GetSettingsValue<bool>("EnableLandingAnim");
         EnableSprintingAnim = config.GetSettingsValue<bool>("EnableSprintingAnim");
         HideStowedItems = config.GetSettingsValue<bool>("HideStowedItems");
+
+        OnConfigured?.Invoke();
     }
 }
