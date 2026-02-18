@@ -15,7 +15,7 @@ public class ModMain : ModBehaviour
 
     public static IHikersMod HikersModAPI { get; private set; }
 
-    public static bool IsTheStrangerTheyAreInstalled;
+    public static bool IsTheStrangerTheyAreInstalled { get; private set; }
 
     public static void Log(string message, MessageType type = MessageType.Message)
     {
