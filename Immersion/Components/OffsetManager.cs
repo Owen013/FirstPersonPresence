@@ -16,15 +16,11 @@ public class OffsetManager : MonoBehaviour
 
     public OffsetRoot TranslatorOffsetRoot { get; private set; }
 
-    public void AddCameraOffset(Vector3 position)
-    {
+    public void AddCameraOffset(Vector3 position) =>
         CameraOffsetRoot.AddOffset(position);
-    }
 
-    public void AddCameraOffset(Quaternion rotation)
-    {
+    public void AddCameraOffset(Quaternion rotation) =>
         CameraOffsetRoot.AddOffset(rotation);
-    }
 
     public void AddCameraOffset(Vector3 position, Quaternion rotation)
     {
@@ -54,12 +50,6 @@ public class OffsetManager : MonoBehaviour
     {
         AddToolOffsets(position);
         AddToolOffsets(rotation);
-    }
-
-    internal static void AddToPlayerCamera(PlayerCameraController playerCamera)
-    {
-        playerCamera.gameObject.AddComponent<OffsetManager>();
-        playerCamera._playerCamera.nearClipPlane = Config.FixItemClipping ? 0.05f : 0.1f;
     }
 
     private void Awake()

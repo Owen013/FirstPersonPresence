@@ -17,16 +17,11 @@ public class ModMain : ModBehaviour
 
     public static bool IsTheStrangerTheyAreInstalled { get; private set; }
 
-    public static void Log(string message, MessageType type = MessageType.Message)
-    {
+    public static void Log(string message, MessageType type = MessageType.Message) =>
         Instance.ModHelper.Console.WriteLine(message, type);
-    }
 
-    public override object GetApi()
-    {
-        // provide API for use by other mods
-        return new ImmersionAPI();
-    }
+    public override object GetApi() =>
+        new ImmersionAPI();
 
     public override void Configure(IModConfig config)
     {

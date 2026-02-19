@@ -1,5 +1,6 @@
 ﻿using Newtonsoft.Json;
 using OWML.Common;
+using OWML.Utils;
 using System.Collections.Generic;
 using System.IO;
 using System.Reflection;
@@ -85,6 +86,54 @@ public class ArmData
             return s_armData[armDataID];
 
         ModMain.Log($"No ArmData found for {armDataID}", MessageType.Error);
+        return null;
+    }
+
+    public static string TryGetArmDataID(OWItem item)
+    {
+        if (ItemUtils.IsBaseGameItem(item))
+        {
+            var itemType = item.GetItemType();
+            switch (itemType)
+            {
+                // some items have variants
+                case ItemType.Scroll:
+                    return item.name switch
+                    {
+                        "Prefab_NOM_Scroll_egg" => "Scroll_Egg",
+                        "Prefab_NOM_Scroll_Jeff" => "Scroll_Jeff",
+                        _ => "Scroll"
+                    };
+                case ItemType.ConversationStone:
+                    var word = (item as NomaiConversationStone).GetWord();
+                    if (word == NomaiWord.Identify || word == NomaiWord.Explain)
+                        return "ConversationStone_Big";
+                    else
+                        return "ConversationStone";
+
+                case ItemType.WarpCore:
+                    var warpCoreType = (item as WarpCoreItem).GetWarpCoreType();
+                    if (warpCoreType == WarpCoreType.Vessel || warpCoreType == WarpCoreType.VesselBroken)
+                        return "WarpCore";
+                    else
+                        return "WarpCore_Simple";
+
+                case ItemType.DreamLantern:
+                    return (item as DreamLanternItem).GetLanternType() switch
+                    {
+                        DreamLanternType.Nonfunctioning => "DreamLantern_Nonfunctioning",
+                        DreamLanternType.Malfunctioning => "DreamLantern_Malfunctioning",
+                        _ => "DreamLantern"
+                    };
+
+                // for the rest, their arm data identifier is simply their item type
+                default:
+                    return itemType.GetName();
+            }
+        }
+        else if (ItemUtils.IsTSTAItem(item))
+            return $"TSTA_{item.GetDisplayName().Trim()}";
+
         return null;
     }
 }
