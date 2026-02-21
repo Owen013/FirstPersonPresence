@@ -1,4 +1,5 @@
-﻿using Newtonsoft.Json;
+﻿using Immersion.Utils;
+using Newtonsoft.Json;
 using OWML.Common;
 using OWML.Utils;
 using System.Collections.Generic;
@@ -6,7 +7,7 @@ using System.IO;
 using System.Reflection;
 using UnityEngine;
 
-namespace Immersion;
+namespace Immersion.Objects;
 
 public class ArmData
 {
@@ -35,7 +36,7 @@ public class ArmData
         if (jsonPath == "")
         {
             isDefaultArmData = true;
-            jsonPath = $"{Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location)}/viewmodel-arm-data.json";
+            jsonPath = $"{Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location)}/Data/viewmodel-arm-data.json";
             ModMain.Log($"Loading default ArmData...", MessageType.Info);
         }
         else

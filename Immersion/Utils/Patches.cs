@@ -1,7 +1,7 @@
 ﻿using HarmonyLib;
 using Immersion.Components;
 
-namespace Immersion;
+namespace Immersion.Utils;
 
 [HarmonyPatch]
 internal static class Patches

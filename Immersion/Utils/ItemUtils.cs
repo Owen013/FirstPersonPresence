@@ -1,6 +1,6 @@
 ﻿using UnityEngine;
 
-namespace Immersion;
+namespace Immersion.Utils;
 
 internal static class ItemUtils
 {
