@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.LowLevel;
 
 namespace Immersion.Components;
 
@@ -23,31 +24,19 @@ public class ViewmodelArm : MonoBehaviour
 
     private PlayerTool _playerTool;
 
+    private OWItem _owItem;
+
+    private ItemTool _itemCarryTool;
+
     private GameObject _playerModelArmNoSuit;
 
     private GameObject _playerModelArmSuit;
 
-    public static ViewmodelArm NewViewmodelArm(PlayerTool playerTool)
-    {
-        var viewmodelArm = NewViewmodelArm(playerTool.transform);
-        viewmodelArm._playerTool = playerTool;
+    public static ViewmodelArm NewViewmodelArm(PlayerTool playerTool) =>
+        NewViewmodelArm(playerTool.transform);
 
-        viewmodelArm.SetArmData(playerTool.name);
-
-        return viewmodelArm;
-    }
-
-    public static ViewmodelArm NewViewmodelArm(OWItem owItem)
-    {
-        var viewmodelArm = NewViewmodelArm(owItem.transform);
-        owItem.onPickedUp.AddListener((_) => viewmodelArm.gameObject.SetActive(true));
-
-        string armDataID = ArmData.TryGetArmDataID(owItem);
-        if (armDataID != null)
-            viewmodelArm.SetArmData(armDataID);
-
-        return viewmodelArm;
-    }
+    public static ViewmodelArm NewViewmodelArm(OWItem owItem) =>
+        NewViewmodelArm(owItem.transform);
 
     public void SetArmData(ArmData armData)
     {
@@ -86,10 +75,8 @@ public class ViewmodelArm : MonoBehaviour
         ModMain.Log(output + "    }\n  }");
     }
 
-    internal static void LoadAssetBundle()
-    {
+    internal static void LoadAssetBundle() =>
         s_viewmodelArmAssetBundle = ModMain.Instance.ModHelper.Assets.LoadBundle("AssetBundles/viewmodelarm");
-    }
 
     internal static void OnEquipTool(PlayerTool tool)
     {
@@ -119,9 +106,6 @@ public class ViewmodelArm : MonoBehaviour
                 NewViewmodelArm(item);
         }
     }
-
-    internal static void OnDropItem(OWItem item) =>
-        item.transform.Find("ViewmodelArm")?.gameObject.SetActive(false);
 
     private static void ApplyItemAdjustments(OWItem item)
     {
@@ -197,9 +181,21 @@ public class ViewmodelArm : MonoBehaviour
 
     private void Start()
     {
-        var player = Locator.GetPlayerController().transform;
-        _playerModelArmNoSuit = player.transform.Find("Traveller_HEA_Player_v2/player_mesh_noSuit:Traveller_HEA_Player/player_mesh_noSuit:Player_RightArm").gameObject;
-        _playerModelArmSuit = player.transform.Find("Traveller_HEA_Player_v2/Traveller_Mesh_v01:Traveller_Geo/Traveller_Mesh_v01:PlayerSuit_RightArm").gameObject;
+        _playerTool = transform.parent.GetComponent<PlayerTool>();
+        if (_playerTool != null)
+            SetArmData(_playerTool.name);
+        else
+        {
+            _owItem = transform.parent.GetComponent<OWItem>();
+            _owItem.onPickedUp.AddListener((_) => gameObject.SetActive(true));
+            _itemCarryTool = Locator.GetToolModeSwapper().GetItemCarryTool();
+
+            string armDataID = ArmData.TryGetArmDataID(_owItem);
+            if (armDataID != null)
+                SetArmData(armDataID);
+        }
+        _playerModelArmNoSuit = Locator.GetPlayerBody().transform.Find("Traveller_HEA_Player_v2/player_mesh_noSuit:Traveller_HEA_Player/player_mesh_noSuit:Player_RightArm").gameObject;
+        _playerModelArmSuit = Locator.GetPlayerBody().transform.Find("Traveller_HEA_Player_v2/Traveller_Mesh_v01:Traveller_Geo/Traveller_Mesh_v01:PlayerSuit_RightArm").gameObject;
     }
 
     private void LateUpdate()
@@ -210,14 +206,16 @@ public class ViewmodelArm : MonoBehaviour
             return;
         }
 
-        if (_playerTool != null)
+
+        if ((_playerTool != null && !_playerTool.IsEquipped() && !_playerTool.IsPuttingAway()) || OWInput.IsInputMode(InputMode.ShipCockpit))
         {
-            bool isHoldingTool = _playerTool.IsEquipped() || _playerTool.IsPuttingAway();
-            if (!isHoldingTool || OWInput.IsInputMode(InputMode.ShipCockpit))
-            {
-                gameObject.SetActive(false);
-                return;
-            }
+            gameObject.SetActive(false);
+            return;
+        }
+        else if (_owItem != null && _itemCarryTool.GetHeldItem() != _owItem)
+        {
+            gameObject.SetActive(false);
+            return;
         }
 
         _armMeshNoSuit.gameObject.SetActive(_playerModelArmNoSuit.activeInHierarchy);

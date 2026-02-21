@@ -16,11 +16,8 @@ internal static class Patches
 
     [HarmonyPostfix]
     [HarmonyPatch(typeof(OWItem), nameof(OWItem.DropItem))]
-    private static void OWItem_DropItem_Postfix(OWItem __instance)
-    {
-        ViewmodelArm.OnDropItem(__instance);
+    private static void OWItem_DropItem_Postfix(OWItem __instance) =>
         ItemUtils.OnDropItem(__instance);
-    }
 
     [HarmonyPostfix]
     [HarmonyPatch(typeof(PlayerCameraController), nameof(PlayerCameraController.Start))]
