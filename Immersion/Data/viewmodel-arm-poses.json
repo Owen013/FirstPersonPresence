@@ -386,14 +386,14 @@
   },
   
   "TSTA_Mineral": {
-    "arm_offset_pos": { "x": -0.617, "y":  -0.115, "z": 0.33 },
-    "arm_offset_rot": { "x": 358.7909, "y":  107.971, "z": 60.3106 },
+    "arm_offset_pos": { "x": 0.073, "y":  0.025, "z": -0.66 },
+    "arm_offset_rot": { "x": 0, "y":  0, "z": 345 },
     "arm_scale": 1,
     "arm_shader": "Standard",
     "bone_eulers": {
       "Shoulder": { "x": 270, "y": 90, "z": 0 },
       "Elbow": { "x": 0, "y": 30, "z": 0 },
-      "Wrist": { "x": 330, "y": 0, "z": 0 },
+      "Wrist": { "x": 15, "y": 0, "z": 15 },
       "Finger_01_01": { "x": 0, "y": 0, "z": 0 },
       "Finger_01_02": { "x": 0, "y": 0, "z": 0 },
       "Finger_01_03": { "x": 0, "y": 0, "z": 0 },

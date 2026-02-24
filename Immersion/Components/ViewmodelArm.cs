@@ -39,7 +39,7 @@ public class ViewmodelArm : MonoBehaviour
     public static ViewmodelArm NewViewmodelArm(OWItem owItem) =>
         NewViewmodelArm(owItem.transform);
 
-    public void SetArmData(ArmData armData)
+    public void SetArmData(ArmPose armData)
     {
         transform.localPosition = armData.armOffsetPos;
         transform.localEulerAngles = armData.armOffsetRot;
@@ -50,7 +50,7 @@ public class ViewmodelArm : MonoBehaviour
 
     public void SetArmData(string armDataID)
     {
-        var armData = ArmData.GetArmData(armDataID);
+        var armData = ArmPose.GetArmPose(armDataID);
         if (armData != null)
             SetArmData(armData);
     }
@@ -82,7 +82,7 @@ public class ViewmodelArm : MonoBehaviour
     internal static void OnEquipTool(PlayerTool tool)
     {
         // don't try to add viewmodel arm if disabled in config
-        if (!Config.EnableViewmodelArms || !ArmData.ArmDataExists(tool.name)) return;
+        if (!Config.EnableViewmodelArms || !ArmPose.ArmPoseExists(tool.name)) return;
 
         // check for existing arm and enable if found (PlayerTool has no event for tool being equipped, so this is required)
         var existingArm = tool.transform.Find("ViewmodelArm");
@@ -97,22 +97,18 @@ public class ViewmodelArm : MonoBehaviour
 
     internal static void OnPickUpItem(OWItem item)
     {
-        if (!Config.EnableViewmodelArms || !ArmData.ArmDataExists(ArmData.TryGetArmDataID(item))) return;
+        if (!Config.EnableViewmodelArms || ArmPose.GetArmPoseID(item) == null) return;
 
-        bool isCompatibleItem = ItemUtils.IsBaseGameItem(item) || ItemUtils.IsTSTAItem(item);
-        if (isCompatibleItem)
-        {
-            ApplyItemAdjustments(item);
-            if (item.transform.Find("ViewmodelArm") == null)
-                NewViewmodelArm(item);
-        }
+        ApplyItemAdjustments(item);
+        if (item.transform.Find("ViewmodelArm") == null)
+            NewViewmodelArm(item);
     }
 
     private static void ApplyItemAdjustments(OWItem item)
     {
-        if (ItemUtils.IsBaseGameItem(item) && item.GetItemType() == ItemType.Lantern)
+        if (item.GetItemType() == ItemType.Lantern)
             item.transform.localEulerAngles = new Vector3(0f, 327f, 0f);
-        else if (ItemUtils.IsTSTAItem(item) && item.GetDisplayName() == "Skull")
+        else if (item.GetDisplayName() == "Skull")
             ModMain.Instance.ModHelper.Events.Unity.FireOnNextUpdate(() => item.transform.localScale = 0.6f * Vector3.one);
     }
 
@@ -191,7 +187,7 @@ public class ViewmodelArm : MonoBehaviour
             _owItem.onPickedUp.AddListener((_) => gameObject.SetActive(true));
             _itemCarryTool = Locator.GetToolModeSwapper().GetItemCarryTool();
 
-            string armDataID = ArmData.TryGetArmDataID(_owItem);
+            string armDataID = ArmPose.GetArmPoseID(_owItem);
             if (armDataID != null)
                 SetArmData(armDataID);
         }

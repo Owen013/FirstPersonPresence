@@ -15,7 +15,7 @@ public class ImmersionAPI
     
     public void LoadArmData(string jsonPath)
     {
-        ArmData.LoadArmData(jsonPath);
+        ArmPose.LoadArmData(jsonPath);
     }
 
     public GameObject CreateViewmodelArm(PlayerTool tool)

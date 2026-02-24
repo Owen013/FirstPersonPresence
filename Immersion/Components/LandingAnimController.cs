@@ -5,6 +5,10 @@ namespace Immersion.Components;
 
 public class LandingAnimController : MonoBehaviour
 {
+    public static LandingAnimController Instance { get; private set; }
+    
+    public float LandingAnimPosition { get; private set; }
+
     private OffsetManager _offsetManager;
 
     private PlayerCharacterController _playerController;
@@ -15,8 +19,6 @@ public class LandingAnimController : MonoBehaviour
 
     private float _lastLandedSpeed;
 
-    private float _landingAnimPos;
-
     private float _landingAnimDampVel;
 
     private void OnConfigured()
@@ -26,6 +28,8 @@ public class LandingAnimController : MonoBehaviour
 
     private void Awake()
     {
+        Instance = this;
+
         _offsetManager = OffsetManager.Instance;
         _playerController = Locator.GetPlayerController();
 
@@ -62,20 +66,20 @@ public class LandingAnimController : MonoBehaviour
             {
                 // update camera height based on landing speed
                 float playerScale = ModMain.SmolHatchlingAPI != null ? ModMain.SmolHatchlingAPI.GetPlayerScale() : 1f;
-                _landingAnimPos = Mathf.Min(_landingAnimPos - _lastLandedSpeed * playerScale * Time.deltaTime, 0f);
-                if (_landingAnimPos <= -0.25f)
+                LandingAnimPosition = Mathf.Min(LandingAnimPosition - _lastLandedSpeed * playerScale * Time.deltaTime, 0f);
+                if (LandingAnimPosition <= -0.3f)
                 {
-                    // landing anim bottoms out at -0.25
-                    _landingAnimPos = -0.25f;
+                    // landing anim bottoms out at -0.3
+                    LandingAnimPosition = -0.3f;
                     _isLandingAnimActive = false;
                 }
             }
             else
-                _landingAnimPos = Mathf.SmoothDamp(_landingAnimPos, 0f, ref _landingAnimDampVel, 0.2f);
+                LandingAnimPosition = Mathf.SmoothDamp(LandingAnimPosition, 0f, ref _landingAnimDampVel, 0.2f);
         }
 
         // apply offset
-        _offsetManager.AddCameraOffset(new Vector3(0f, _landingAnimPos, 0f));
+        _offsetManager.AddCameraOffset(new Vector3(0f, LandingAnimPosition, 0f));
 
         // keep track of player velocity
         _lastPlayerVel = _playerController.GetAttachedOWRigidbody().GetVelocity();
@@ -85,7 +89,7 @@ public class LandingAnimController : MonoBehaviour
     {
         // reset landing anim parameters if feature is disabled
         _lastPlayerVel = Vector3.zero;
-        _landingAnimPos = 0f;
+        LandingAnimPosition = 0f;
         _landingAnimDampVel = 0f;
         _isLandingAnimActive = false;
     }

@@ -1,5 +1,6 @@
 ﻿using HarmonyLib;
 using Immersion.Components;
+using UnityEngine;
 
 namespace Immersion.Utils;
 
@@ -11,13 +12,35 @@ internal static class Patches
     private static void OWItem_PickUpItem_Postfix(OWItem __instance)
     {
         ViewmodelArm.OnPickUpItem(__instance);
-        ItemUtils.OnPickUpItem(__instance);
+        if (__instance.GetDisplayName() == "Skull")
+        {
+            // TSTA skull has weird bounds, so it can stop rendering when near the edges of the screen
+            // normally isn't a problem, since its held position is not close enough to the edge of screen for this to be an issue
+            // with Immersion installed, hand sway / hand height offset can cause skull to move far enough away to disappear
+            // so set the renderers to update when "offscreen" while the skull is held
+            foreach (var renderer in __instance.GetComponentsInChildren<SkinnedMeshRenderer>())
+                renderer.updateWhenOffscreen = true;
+        }
     }
 
     [HarmonyPostfix]
     [HarmonyPatch(typeof(OWItem), nameof(OWItem.DropItem))]
-    private static void OWItem_DropItem_Postfix(OWItem __instance) =>
-        ItemUtils.OnDropItem(__instance);
+    private static void OWItem_DropItem_Postfix(OWItem __instance)
+    {
+        if (__instance.GetDisplayName() == "Skull")
+        {
+            foreach (var renderer in __instance.GetComponentsInChildren<SkinnedMeshRenderer>())
+                renderer.updateWhenOffscreen = false;
+        }
+    }
+
+    //[HarmonyPostfix]
+    //[HarmonyPatch(typeof(PlayerAnimController), nameof(PlayerAnimController.LateUpdate))]
+    //private static void PlayerAnimController_LateUpdate_Postfix(PlayerAnimController __instance)
+    //{
+    //    if (Config.EnableLandingAnim)
+    //        __instance._animator.SetLayerWeight(1, Mathf.Max(__instance._animator.GetLayerWeight(1), -LandingAnimController.Instance.LandingAnimPosition / 0.3f));
+    //}
 
     [HarmonyPostfix]
     [HarmonyPatch(typeof(PlayerCameraController), nameof(PlayerCameraController.Start))]
