@@ -1,6 +1,7 @@
 ﻿using HarmonyLib;
 using Immersion.APIs;
 using Immersion.Components;
+using Immersion.Objects;
 using Immersion.Utils;
 using OWML.Common;
 using OWML.ModHelper;
@@ -45,6 +46,7 @@ public class ModMain : ModBehaviour
 
         // load assets
         ViewmodelArm.LoadAssetBundle();
+        ArmData.LoadArmData();
 
         // ready
         ModHelper.Console.WriteLine($"Immersion is ready to go!", MessageType.Success);
