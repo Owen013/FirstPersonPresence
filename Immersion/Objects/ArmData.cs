@@ -1,5 +1,4 @@
-﻿using Immersion.Utils;
-using Newtonsoft.Json;
+﻿using Newtonsoft.Json;
 using OWML.Common;
 using OWML.Utils;
 using System.Collections.Generic;
@@ -92,51 +91,43 @@ public class ArmData
         return null;
     }
 
-    public static string TryGetArmDataID(OWItem item)
+    internal static string TryGetArmDataID(OWItem item)
     {
-        if (ItemUtils.IsBaseGameItem(item))
+        var itemTypeName = item.GetItemType().GetName();
+        return itemTypeName switch
         {
-            var itemType = item.GetItemType();
-            switch (itemType)
+            // vanilla items
+            "SharedStone" or "SlideReel" or "Lantern" or "VisionTorch" => itemTypeName,
+
+            // vanilla items with variants
+            "Scroll" => item.name switch
             {
-                // some items have variants
-                case ItemType.Scroll:
-                    return item.name switch
-                    {
-                        "Prefab_NOM_Scroll_egg" => "Scroll_Egg",
-                        "Prefab_NOM_Scroll_Jeff" => "Scroll_Jeff",
-                        _ => "Scroll"
-                    };
-                case ItemType.ConversationStone:
-                    var word = (item as NomaiConversationStone).GetWord();
-                    if (word == NomaiWord.Identify || word == NomaiWord.Explain)
-                        return "ConversationStone_Big";
-                    else
-                        return "ConversationStone";
+                "Prefab_NOM_Scroll_egg" => "Scroll_Egg",
+                "Prefab_NOM_Scroll_Jeff" => "Scroll_Jeff",
+                _ => "Scroll"
+            },
+            "ConversationStone" => (item as NomaiConversationStone).GetWord() switch
+            {
+                NomaiWord.Identify => "ConversationStone_Big",
+                NomaiWord.Explain => "ConversationStone_Big",
+                _ => "ConversationStone"
+            },
+            "WarpCore" => (item as WarpCoreItem).GetWarpCoreType() switch
+            {
+                WarpCoreType.Vessel => "WarpCore",
+                WarpCoreType.VesselBroken => "WarpCore",
+                _ => "WarpCore_Simple"
+            },
+            "DreamLantern" => (item as DreamLanternItem).GetLanternType() switch
+            {
+                DreamLanternType.Nonfunctioning => "DreamLantern_Nonfunctioning",
+                DreamLanternType.Malfunctioning => "DreamLantern_Malfunctioning",
+                _ => "DreamLantern"
+            },
 
-                case ItemType.WarpCore:
-                    var warpCoreType = (item as WarpCoreItem).GetWarpCoreType();
-                    if (warpCoreType == WarpCoreType.Vessel || warpCoreType == WarpCoreType.VesselBroken)
-                        return "WarpCore";
-                    else
-                        return "WarpCore_Simple";
-
-                case ItemType.DreamLantern:
-                    return (item as DreamLanternItem).GetLanternType() switch
-                    {
-                        DreamLanternType.Nonfunctioning => "DreamLantern_Nonfunctioning",
-                        DreamLanternType.Malfunctioning => "DreamLantern_Malfunctioning",
-                        _ => "DreamLantern"
-                    };
-
-                // for the rest, their arm data identifier is simply their item type
-                default:
-                    return itemType.GetName();
-            }
-        }
-        else if (ItemUtils.IsTSTAItem(item))
-            return $"TSTA_{item.GetDisplayName().Trim()}";
-
-        return null;
+            // TSTA items
+            "CloakMineral" or "StrangerSeal" or "GhostbirdSkull" => $"TSTA_{itemTypeName}",
+            _ => null,
+        };
     }
 }

@@ -45,7 +45,7 @@ public class ModMain : ModBehaviour
         IsTheStrangerTheyAreInstalled = ModHelper.Interaction.ModExists("AnonymousStrangerOW.TheStrangerTheyAre");
 
         // load assets
-        ViewmodelArm.LoadAssetBundle();
+        ViewmodelArm.LoadAsset();
         ArmData.LoadArmData();
 
         // ready
