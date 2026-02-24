@@ -15,7 +15,7 @@ public class ImmersionAPI
     
     public void LoadArmData(string jsonPath)
     {
-        ArmData.LoadArmData(jsonPath);
+        ArmPose.LoadArmPoses(jsonPath);
     }
 
     public GameObject CreateViewmodelArm(PlayerTool tool)
@@ -30,7 +30,7 @@ public class ImmersionAPI
 
     public void SetArmData(GameObject viewmodelArmObject, string itemName)
     {
-        viewmodelArmObject.GetComponent<ViewmodelArm>()?.SetArmData(itemName);
+        viewmodelArmObject.GetComponent<ViewmodelArm>()?.SetArmPose(itemName);
     }
 
     [Obsolete("Immersion no longer changes AnimSpeed.")]

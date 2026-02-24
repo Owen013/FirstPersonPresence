@@ -40,25 +40,25 @@ public class ViewmodelArm : MonoBehaviour
     public static ViewmodelArm NewViewmodelArm(OWItem owItem) =>
         NewViewmodelArm(owItem.transform);
 
-    public void SetArmData(ArmData armData)
+    public void SetArmPose(ArmPose armPose)
     {
-        transform.localPosition = armData.armOffsetPos;
-        transform.localEulerAngles = armData.armOffsetRot;
-        transform.localScale = 0.1f * armData.armScale * Vector3.one;
-        SetShader(armData.armShader);
-        SetBoneEulers(armData.boneEulers);
+        transform.localPosition = armPose.armOffsetPos;
+        transform.localEulerAngles = armPose.armOffsetRot;
+        transform.localScale = 0.1f * armPose.armScale * Vector3.one;
+        SetShader(armPose.armShader);
+        SetBoneEulers(armPose.boneEulers);
     }
 
-    public void SetArmData(string armDataID)
+    public void SetArmPose(string armPoseID)
     {
-        var armData = ArmData.GetArmData(armDataID);
+        var armData = ArmPose.GetArmPose(armPoseID);
         if (armData != null)
-            SetArmData(armData);
+            SetArmPose(armData);
     }
 
-    public void OutputArmData()
+    public void OutputArmPose()
     {
-        string output = "  [ARMDATA NAME HERE] {\n";
+        string output = "  [ARM POSE ID HERE] {\n";
 
         var armPos = transform.localPosition;
         output += "    \"arm_offset_pos\": { " + $"\"x\": {armPos.x}, \"y\":  {armPos.y}, \"z\": {armPos.z}" + " },\n";
@@ -86,7 +86,7 @@ public class ViewmodelArm : MonoBehaviour
     internal static void OnEquipTool(PlayerTool tool)
     {
         // don't try to add viewmodel arm if disabled in config
-        if (!Config.EnableViewmodelArms || !ArmData.ArmDataExists(tool.name)) return;
+        if (!Config.EnableViewmodelArms || !ArmPose.ArmPoseExists(tool.name)) return;
 
         // check for existing arm and enable if found (PlayerTool has no event for tool being equipped, so this is required)
         var existingArm = tool.transform.Find("ViewmodelArm");
@@ -101,7 +101,7 @@ public class ViewmodelArm : MonoBehaviour
 
     internal static void OnPickUpItem(OWItem item)
     {
-        if (!Config.EnableViewmodelArms || !ArmData.ArmDataExists(ArmData.TryGetArmDataID(item))) return;
+        if (!Config.EnableViewmodelArms || !ArmPose.ArmPoseExists(ArmPose.TryGetArmPoseID(item))) return;
 
         ApplyItemAdjustments(item);
         if (item.transform.Find("ViewmodelArm") == null)
@@ -110,10 +110,15 @@ public class ViewmodelArm : MonoBehaviour
 
     private static void ApplyItemAdjustments(OWItem item)
     {
-        if (item.GetItemType() == ItemType.Lantern)
-            item.transform.localEulerAngles = new Vector3(0f, 327f, 0f);
-        else if (item.GetItemType().GetName() == "GhostbirdSkull")
-            ModMain.Instance.ModHelper.Events.Unity.FireOnNextUpdate(() => item.transform.localScale = 0.6f * Vector3.one);
+        switch (item.GetItemType().GetName())
+        {
+            case "Lantern":
+                item.transform.localEulerAngles = new Vector3(0f, 327f, 0f);
+                return;
+            case "GhostbirdSkull":
+                ModMain.Instance.ModHelper.Events.Unity.FireOnNextUpdate(() => item.transform.localScale = 0.6f * Vector3.one);
+                return;
+        }
     }
 
     private static ViewmodelArm NewViewmodelArm(Transform parent)
@@ -181,16 +186,16 @@ public class ViewmodelArm : MonoBehaviour
     {
         _playerTool = transform.parent.GetComponent<PlayerTool>();
         if (_playerTool != null)
-            SetArmData(_playerTool.name);
+            SetArmPose(_playerTool.name);
         else
         {
             _owItem = transform.parent.GetComponent<OWItem>();
             _owItem.onPickedUp.AddListener((_) => gameObject.SetActive(true));
             _itemCarryTool = Locator.GetToolModeSwapper().GetItemCarryTool();
 
-            string armDataID = ArmData.TryGetArmDataID(_owItem);
+            string armDataID = ArmPose.TryGetArmPoseID(_owItem);
             if (armDataID != null)
-                SetArmData(armDataID);
+                SetArmPose(armDataID);
         }
         _playerModelArmNoSuit = Locator.GetPlayerBody().transform.Find("Traveller_HEA_Player_v2/player_mesh_noSuit:Traveller_HEA_Player/player_mesh_noSuit:Player_RightArm").gameObject;
         _playerModelArmSuit = Locator.GetPlayerBody().transform.Find("Traveller_HEA_Player_v2/Traveller_Mesh_v01:Traveller_Geo/Traveller_Mesh_v01:PlayerSuit_RightArm").gameObject;
@@ -203,7 +208,6 @@ public class ViewmodelArm : MonoBehaviour
             gameObject.SetActive(false);
             return;
         }
-
 
         if ((_playerTool != null && !_playerTool.IsEquipped() && !_playerTool.IsPuttingAway()) || OWInput.IsInputMode(InputMode.ShipCockpit))
         {

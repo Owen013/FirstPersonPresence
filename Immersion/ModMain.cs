@@ -46,7 +46,7 @@ public class ModMain : ModBehaviour
 
         // load assets
         ViewmodelArm.LoadAsset();
-        ArmData.LoadArmData();
+        ArmPose.LoadArmPoses();
 
         // ready
         ModHelper.Console.WriteLine($"Immersion is ready to go!", MessageType.Success);

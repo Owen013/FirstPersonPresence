@@ -8,7 +8,7 @@ using UnityEngine;
 
 namespace Immersion.Objects;
 
-public class ArmData
+public class ArmPose
 {
     [JsonProperty("arm_offset_pos")]
     public Vector3 armOffsetPos;
@@ -25,73 +25,73 @@ public class ArmData
     [JsonProperty("bone_eulers")]
     public Dictionary<string, Vector3> boneEulers;
 
-    private static Dictionary<string, ArmData> s_armData;
+    private static Dictionary<string, ArmPose> s_armPoses;
 
-    private static bool s_isDefaultArmDataLoaded;
+    private static bool s_isDefaultArmPosesLoaded;
 
-    public static void LoadArmData(string jsonPath = "")
+    public static void LoadArmPoses(string jsonPath = "")
     {
-        bool isDefaultArmData;
+        bool isDefaultArmPoses;
         if (jsonPath == "")
         {
-            isDefaultArmData = true;
-            jsonPath = $"{Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location)}/Data/viewmodel-arm-data.json";
-            ModMain.Log($"Loading default ArmData...", MessageType.Info);
+            isDefaultArmPoses = true;
+            jsonPath = $"{Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location)}/Data/viewmodel-arm-poses.json";
+            ModMain.Log($"Loading default arm poses...", MessageType.Info);
         }
         else
         {
             // other mods can load custom arm data for custom items or to replace ArmData for existing tools/items
-            isDefaultArmData = false;
-            ModMain.Log($"Loading ArmData from \"{jsonPath}\"...", MessageType.Info);
+            isDefaultArmPoses = false;
+            ModMain.Log($"Loading arm poses from \"{jsonPath}\"...", MessageType.Info);
         }
 
-        var newArmData = JsonConvert.DeserializeObject<Dictionary<string, ArmData>>(File.ReadAllText(jsonPath));
-        if (s_armData == null)
-            s_armData = newArmData;
-        else if (isDefaultArmData)
+        var newArmData = JsonConvert.DeserializeObject<Dictionary<string, ArmPose>>(File.ReadAllText(jsonPath));
+        if (s_armPoses == null)
+            s_armPoses = newArmData;
+        else if (isDefaultArmPoses)
         {
             foreach (var data in newArmData)
             {
                 // only write new arm data if there is no arm data at this key
-                if (!s_armData.ContainsKey(data.Key))
-                    s_armData.Add(data.Key, data.Value);
+                if (!s_armPoses.ContainsKey(data.Key))
+                    s_armPoses.Add(data.Key, data.Value);
             }
         }
         else
         {
             foreach (var data in newArmData)
                 // overwrite arm data if this is a custom json
-                if (s_armData.ContainsKey(data.Key))
-                    s_armData[data.Key] = data.Value;
+                if (s_armPoses.ContainsKey(data.Key))
+                    s_armPoses[data.Key] = data.Value;
                 else
-                    s_armData.Add(data.Key, data.Value);
+                    s_armPoses.Add(data.Key, data.Value);
         }
 
-        if (isDefaultArmData)
-            s_isDefaultArmDataLoaded = true;
-        ModMain.Log($"ArmData loaded successfully!", MessageType.Success);
+        if (isDefaultArmPoses)
+            s_isDefaultArmPosesLoaded = true;
+        ModMain.Log($"Arm poses loaded successfully!", MessageType.Success);
     }
 
-    public static bool ArmDataExists(string armDataID)
+    public static bool ArmPoseExists(string armDataID)
     {
         if (string.IsNullOrEmpty(armDataID)) return false;
 
-        if ((s_armData == null || !s_armData.ContainsKey(armDataID)) && !s_isDefaultArmDataLoaded)
-            LoadArmData();
+        if ((s_armPoses == null || !s_armPoses.ContainsKey(armDataID)) && !s_isDefaultArmPosesLoaded)
+            LoadArmPoses();
 
-        return s_armData.ContainsKey(armDataID);
+        return s_armPoses.ContainsKey(armDataID);
     }
 
-    public static ArmData GetArmData(string armDataID)
+    public static ArmPose GetArmPose(string armDataID)
     {
-        if (ArmDataExists(armDataID))
-            return s_armData[armDataID];
+        if (ArmPoseExists(armDataID))
+            return s_armPoses[armDataID];
 
         ModMain.Log($"No ArmData found for {armDataID}", MessageType.Error);
         return null;
     }
 
-    internal static string TryGetArmDataID(OWItem item)
+    internal static string TryGetArmPoseID(OWItem item)
     {
         var itemTypeName = item.GetItemType().GetName();
         return itemTypeName switch
@@ -108,14 +108,12 @@ public class ArmData
             },
             "ConversationStone" => (item as NomaiConversationStone).GetWord() switch
             {
-                NomaiWord.Identify => "ConversationStone_Big",
-                NomaiWord.Explain => "ConversationStone_Big",
+                NomaiWord.Identify or NomaiWord.Explain => "ConversationStone_Big",
                 _ => "ConversationStone"
             },
             "WarpCore" => (item as WarpCoreItem).GetWarpCoreType() switch
             {
-                WarpCoreType.Vessel => "WarpCore",
-                WarpCoreType.VesselBroken => "WarpCore",
+                WarpCoreType.Vessel or WarpCoreType.VesselBroken => "WarpCore",
                 _ => "WarpCore_Simple"
             },
             "DreamLantern" => (item as DreamLanternItem).GetLanternType() switch
@@ -127,6 +125,8 @@ public class ArmData
 
             // TSTA items
             "CloakMineral" or "StrangerSeal" or "GhostbirdSkull" => $"TSTA_{itemTypeName}",
+
+            // nothing found
             _ => null,
         };
     }
