@@ -73,6 +73,8 @@ public class ArmData
 
     public static bool ArmDataExists(string armDataID)
     {
+        if (string.IsNullOrEmpty(armDataID)) return false;
+
         if ((s_armData == null || !s_armData.ContainsKey(armDataID)) && !s_isDefaultArmDataLoaded)
             LoadArmData();
 

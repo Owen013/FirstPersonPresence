@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using OWML.Utils;
+using UnityEngine;
 
 namespace Immersion;
 
@@ -24,16 +25,16 @@ internal static class ItemUtils
     {
         if (!ModMain.IsTheStrangerTheyAreInstalled) return false;
 
-        string itemName = item.GetDisplayName();
+        string itemName = item.GetItemType().GetName();
         return
-            itemName == "Mineral" ||
-            itemName == " Seal" ||
-            itemName == "Skull";
+            itemName == "CloakMineral" ||
+            itemName == "StrangerSeal" ||
+            itemName == "GhostbirdSkull";
     }
 
     internal static void OnPickUpItem(OWItem item)
     {
-        if (IsTSTAItem(item) && item.GetDisplayName() == "Skull")
+        if (IsTSTAItem(item) && item.GetItemType().GetName() == "GhostbirdSkull")
         {
             // TSTA skull has weird bounds, so it can stop rendering when near the edges of the screen
             // normally isn't a problem, since its held position is not close enough to the edge of screen for this to be an issue
@@ -46,7 +47,7 @@ internal static class ItemUtils
 
     internal static void OnDropItem(OWItem item)
     {
-        if (IsTSTAItem(item) && item.GetDisplayName() == "Skull")
+        if (IsTSTAItem(item) && item.GetItemType().GetName() == "GhostbirdSkull")
         {
             foreach (var renderer in item.GetComponentsInChildren<SkinnedMeshRenderer>())
                 renderer.updateWhenOffscreen = false;

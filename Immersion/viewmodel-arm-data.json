@@ -385,7 +385,7 @@
     }
   },
   
-  "TSTA_Mineral": {
+  "TSTA_CloakMineral": {
     "arm_offset_pos": { "x": -0.617, "y":  -0.115, "z": 0.33 },
     "arm_offset_rot": { "x": 358.7909, "y":  107.971, "z": 60.3106 },
     "arm_scale": 1,
@@ -409,7 +409,7 @@
     }
   },
   
-  "TSTA_Seal": {
+  "TSTA_StrangerSeal": {
     "arm_offset_pos": { "x": 0.08, "y":  0.515, "z": -0.57 },
     "arm_offset_rot": { "x": 22.9192, "y":  357.4393, "z": 352.8304 },
     "arm_scale": 1,
@@ -433,7 +433,7 @@
     }
   },
 
-  "TSTA_Skull": {
+  "TSTA_GhostbirdSkull": {
     "arm_offset_pos": { "x": -0.04, "y":  0.315, "z": -0.92 },
     "arm_offset_rot": { "x": 0, "y":  0, "z": 345 },
     "arm_scale": 1,
