@@ -58,23 +58,26 @@ public class ViewmodelArm : MonoBehaviour
 
     public void OutputArmPose()
     {
-        string output = "  [ARM POSE ID HERE] {\n";
-
         var armPos = transform.localPosition;
-        output += "    \"arm_local_position\": { " + $"\"x\": {armPos.x}, \"y\": {armPos.y}, \"z\": {armPos.z}" + " },\n";
         var armRot = transform.localEulerAngles;
-        output += "    \"arm_local_euler_angles\": { " + $"\"x\": {armRot.x}, \"y\": {armRot.y}, \"z\": {armRot.z}" + " },\n";
-        output += $"    \"arm_scale\": {10f * transform.localScale.x},\n";
-        output += $"    \"arm_shader\": \"{_armMeshNoSuit.material.shader.name}\",\n";
-        output += "    \"bones_local_euler_angles\": {\n";
 
+        string boneEulers = "";
         foreach (var keyValuePair in _bones)
         {
             var eulers = keyValuePair.Value.localEulerAngles;
-            output += $"      \"{keyValuePair.Key}\": " + "{ " + $"\"x\": {eulers.x}, \"y\": {eulers.y}, \"z\": {eulers.z}" + " },\n";
+            boneEulers += $"      \"{keyValuePair.Key}\": {{ \"x\": {eulers.x}, \"y\": {eulers.y}, \"z\": {eulers.z} }},\n";
         }
 
-        ModMain.Log(output + "    }\n  }");
+        string output = "  [ARM POSE ID HERE] {\n" +
+            $"    \"arm_local_position\": {{ \"x\": {armPos.x}, \"y\": {armPos.y}, \"z\": {armPos.z} }},\n" +
+            $"    \"arm_local_euler_angles\": {{ \"x\": {armRot.x}, \"y\": {armRot.y}, \"z\": {armRot.z} }},\n" +
+            $"    \"arm_scale\": {10f * transform.localScale.x},\n" +
+            $"    \"arm_shader\": \"{_armMeshNoSuit.material.shader.name}\",\n" +
+            "    \"bones_local_euler_angles\": {\n" +
+            boneEulers +
+            "    }\n  }";
+
+        ModMain.Log(output);
     }
 
     internal static void LoadAsset()
