@@ -32,8 +32,6 @@ public class HandHeightOffsetController : MonoBehaviour
         _offsetManager.AddToolOffsets(Config.ViewmodelOffsetStrength * 0.05f * toolOffset);
     }
 
-    private void OnDestroy()
-    {
+    private void OnDestroy() =>
         Config.OnConfigured -= OnConfigured;
-    }
 }

@@ -65,8 +65,6 @@ public class ScoutAnimController : MonoBehaviour
         _scoutAnimVel = 0f;
     }
 
-    private void OnDestroy()
-    {
+    private void OnDestroy() =>
         Config.OnConfigured -= OnConfigured;
-    }
 }

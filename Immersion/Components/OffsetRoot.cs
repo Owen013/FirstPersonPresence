@@ -31,19 +31,15 @@ public class OffsetRoot : MonoBehaviour
     /// Adds a translational offset to be applied on the next LateUpdate
     /// </summary>
     /// <param name="position">The translational component of the offset</param>
-    public void AddOffset(Vector3 position)
-    {
+    public void AddOffset(Vector3 position) =>
         nextLocalPosition += position;
-    }
 
     /// <summary>
     /// Adds a rotational offset to be applied on the next LateUpdate
     /// </summary>
     /// <param name="rotation">The rotational component of the offset</param>
-    public void AddOffset(Quaternion rotation)
-    {
+    public void AddOffset(Quaternion rotation) =>
         nextLocalRotation *= rotation;
-    }
 
     /// <summary>
     /// Adds an offset to be applied on the next LateUpdate
@@ -54,6 +50,12 @@ public class OffsetRoot : MonoBehaviour
     {
         AddOffset(position);
         AddOffset(rotation);
+    }
+
+    private void ResetOffset()
+    {
+        transform.localPosition = Vector3.zero;
+        transform.localRotation = Quaternion.identity;
     }
 
     private void ApplyOffset()
@@ -67,14 +69,6 @@ public class OffsetRoot : MonoBehaviour
         (nextLocalPosition, nextLocalRotation) = (Vector3.zero, Quaternion.identity);
     }
 
-    private void ResetOffset()
-    {
-        transform.localPosition = Vector3.zero;
-        transform.localRotation = Quaternion.identity;
-    }
-
-    private void LateUpdate()
-    {
+    private void LateUpdate() =>
         ApplyOffset();
-    }
 }

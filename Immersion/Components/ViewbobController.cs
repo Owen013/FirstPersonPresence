@@ -95,8 +95,6 @@ public class ViewbobController : MonoBehaviour
         _viewbobDampVel = 0f;
     }
 
-    private void OnDestroy()
-    {
+    private void OnDestroy() =>
         Config.OnConfigured -= OnConfigured;
-    }
 }

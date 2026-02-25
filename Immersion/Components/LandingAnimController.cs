@@ -87,8 +87,6 @@ public class LandingAnimController : MonoBehaviour
         _isLandingAnimActive = false;
     }
 
-    private void OnDestroy()
-    {
+    private void OnDestroy() =>
         Config.OnConfigured -= OnConfigured;
-    }
 }

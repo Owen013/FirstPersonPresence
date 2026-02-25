@@ -14,10 +14,8 @@ public class HandSwayController : MonoBehaviour
 
     private Vector2 _handSwayDampVel;
 
-    private void OnConfigured()
-    {
+    private void OnConfigured() =>
         enabled = Config.EnableViewmodelSway;
-    }
 
     private void Awake()
     {
@@ -85,8 +83,6 @@ public class HandSwayController : MonoBehaviour
         _handSwayDampVel = Vector3.zero;
     }
 
-    private void OnDestroy()
-    {
+    private void OnDestroy() =>
         Config.OnConfigured -= OnConfigured;
-    }
 }

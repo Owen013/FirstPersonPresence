@@ -25,24 +25,19 @@ public class HideStowedItemsController : MonoBehaviour
     private void Update()
     {
         var itemCarryTool = _toolModeSwapper.GetItemCarryTool();
-        if (itemCarryTool._heldItem != null && !itemCarryTool.IsPuttingAway() && _toolModeSwapper.GetToolMode() != ToolMode.Item)
+        if (itemCarryTool.GetHeldItem() != null && !itemCarryTool.IsPuttingAway() && _toolModeSwapper.GetToolMode() != ToolMode.Item)
         {
+            // tilt item carry tool further offscreen once its vanilla stow animation finishes
             _addedStowDegrees = Mathf.MoveTowards(_addedStowDegrees, 45f, 135f * Time.deltaTime);
             _offsetManager.ItemToolOffsetRoot.AddOffset(Quaternion.Euler(_addedStowDegrees, 0f, 0f));
         }
         else
-        {
             _addedStowDegrees = 0f;
-        }
     }
 
-    private void OnDisable()
-    {
+    private void OnDisable() =>
         _addedStowDegrees = 0f;
-    }
 
-    private void OnDestroy()
-    {
+    private void OnDestroy() =>
         Config.OnConfigured -= OnConfigured;
-    }
 }

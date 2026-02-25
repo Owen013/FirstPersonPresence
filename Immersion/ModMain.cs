@@ -40,7 +40,7 @@ public class ModMain : ModBehaviour
         SmolHatchlingAPI = ModHelper.Interaction.TryGetModApi<ISmolHatchling>("Owen013.TeenyHatchling");
         HikersModAPI = ModHelper.Interaction.TryGetModApi<IHikersMod>("Owen013.MovementMod");
 
-        // load assets
+        // load viewmodel arm stuff
         ViewmodelArm.LoadAsset();
         ArmPose.LoadArmPoses();
 

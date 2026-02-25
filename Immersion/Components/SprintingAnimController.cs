@@ -34,8 +34,6 @@ public class SprintingAnimController : MonoBehaviour
         _sprintAnimDampVel = 0f;
     }
 
-    private void OnDestroy()
-    {
+    private void OnDestroy() =>
         Config.OnConfigured -= OnConfigured;
-    }
 }
