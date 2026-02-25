@@ -10,11 +10,11 @@ namespace Immersion.Objects;
 
 public class ArmPose
 {
-    [JsonProperty("arm_offset_pos")]
-    public readonly Vector3 armOffsetPos;
+    [JsonProperty("arm_local_position")]
+    public readonly Vector3 armLocalPosition;
 
-    [JsonProperty("arm_offset_rot")]
-    public readonly Vector3 armOffsetRot;
+    [JsonProperty("arm_local_euler_angles")]
+    public readonly Vector3 armLocalEulerAngles;
 
     [JsonProperty("arm_scale")]
     public readonly float armScale;
@@ -22,39 +22,35 @@ public class ArmPose
     [JsonProperty("arm_shader")]
     public readonly string armShader;
 
-    [JsonProperty("bone_eulers")]
-    public readonly Dictionary<string, Vector3> boneEulers;
+    [JsonProperty("bones_local_euler_angles")]
+    public readonly Dictionary<string, Vector3> bonesLocalEulerAngles;
 
     private static Dictionary<string, ArmPose> s_armPoses;
 
-    private static bool s_isDefaultArmPosesLoaded;
+    private static bool s_areDefaultArmPosesLoaded;
 
     public static void LoadArmPoses(string jsonPath = "")
     {
-        bool isDefaultArmPoses;
-        if (jsonPath == "")
+        bool isLoadingDefaultArmPoses = string.IsNullOrEmpty(jsonPath);
+        if (isLoadingDefaultArmPoses)
         {
-            isDefaultArmPoses = true;
             jsonPath = $"{Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location)}/Data/viewmodel-arm-poses.json";
             ModMain.Log($"Loading default Arm Poses...", MessageType.Info);
         }
         else
-        {
-            // other mods can load custom arm data for custom items or to replace arm poses for existing tools/items
-            isDefaultArmPoses = false;
-            ModMain.Log($"Loading Arm Poses from \"{jsonPath}\"...", MessageType.Info);
-        }
+            // other mods can load custom arm data for custom items or to replace ArmData for existing tools/items
+            ModMain.Log($"Loading arm poses from \"{jsonPath}\"...", MessageType.Info);
 
         var newArmPoses = JsonConvert.DeserializeObject<Dictionary<string, ArmPose>>(File.ReadAllText(jsonPath));
         if (s_armPoses == null)
             s_armPoses = newArmPoses;
-        else if (isDefaultArmPoses)
+        else if (isLoadingDefaultArmPoses)
         {
-            foreach (var data in newArmPoses)
+            foreach (var pose in newArmPoses)
             {
                 // only write new arm data if there is no arm data at this key
-                if (!s_armPoses.ContainsKey(data.Key))
-                    s_armPoses.Add(data.Key, data.Value);
+                if (!s_armPoses.ContainsKey(pose.Key))
+                    s_armPoses.Add(pose.Key, pose.Value);
             }
         }
         else
@@ -67,16 +63,16 @@ public class ArmPose
                     s_armPoses.Add(data.Key, data.Value);
         }
 
-        if (isDefaultArmPoses)
-            s_isDefaultArmPosesLoaded = true;
-        ModMain.Log($"Arm Poses loaded successfully!", MessageType.Success);
+        if (isLoadingDefaultArmPoses)
+            s_areDefaultArmPosesLoaded = true;
+        ModMain.Log($"Arm poses loaded successfully!", MessageType.Success);
     }
 
     public static bool ArmPoseExists(string armPoseID)
     {
         if (string.IsNullOrEmpty(armPoseID)) return false;
 
-        if ((s_armPoses == null || !s_armPoses.ContainsKey(armPoseID)) && !s_isDefaultArmPosesLoaded)
+        if ((s_armPoses == null || !s_armPoses.ContainsKey(armPoseID)) && !s_areDefaultArmPosesLoaded)
             LoadArmPoses();
 
         return s_armPoses.ContainsKey(armPoseID);
