@@ -14,10 +14,8 @@ public class ScoutAnimController : MonoBehaviour
 
     private float _scoutAnimVel;
 
-    private void OnConfigured()
-    {
+    private void OnConfigured() =>
         enabled = Config.EnableScoutAnim;
-    }
 
     private void Awake()
     {

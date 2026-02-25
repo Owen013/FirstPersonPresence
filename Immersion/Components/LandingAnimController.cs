@@ -18,10 +18,8 @@ public class LandingAnimController : MonoBehaviour
 
     private float _landingAnimDampVel;
 
-    private void OnConfigured()
-    {
+    private void OnConfigured() =>
         enabled = Config.EnableLandingAnim;
-    }
 
     private void Awake()
     {

@@ -8,10 +8,8 @@ public class HandHeightOffsetController : MonoBehaviour
 
     private PlayerCameraController _cameraController;
 
-    private void OnConfigured()
-    {
+    private void OnConfigured() =>
         enabled = Config.EnableHandHeightOffset;
-    }
 
     private void Awake()
     {

@@ -10,10 +10,8 @@ public class HideStowedItemsController : MonoBehaviour
 
     private float _addedStowDegrees;
 
-    private void OnConfigured()
-    {
+    private void OnConfigured() =>
         enabled = Config.HideStowedItems;
-    }
 
     private void Awake()
     {

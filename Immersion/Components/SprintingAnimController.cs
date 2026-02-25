@@ -10,10 +10,8 @@ public class SprintingAnimController : MonoBehaviour
 
     private float _sprintAnimDampVel;
 
-    private void OnConfigured()
-    {
+    private void OnConfigured() =>
         enabled = Config.EnableSprintingAnim;
-    }
 
     private void Awake()
     {

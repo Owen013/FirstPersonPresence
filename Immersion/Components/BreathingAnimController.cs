@@ -14,10 +14,8 @@ public class BreathingAnimController : MonoBehaviour
 
     private float _breathingAnimNextUpdateTime;
 
-    private void OnConfigured()
-    {
+    private void OnConfigured() =>
         enabled = Config.EnableBreathingAnim;
-    }
 
     private void Awake()
     {

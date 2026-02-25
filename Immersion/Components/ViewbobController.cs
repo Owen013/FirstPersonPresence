@@ -16,10 +16,8 @@ public class ViewbobController : MonoBehaviour
 
     private float _viewbobDampVel;
 
-    private void OnConfigured()
-    {
+    private void OnConfigured() =>
         enabled = Config.EnableHeadBob || Config.EnableHandBob;
-    }
 
     private void Awake()
     {
