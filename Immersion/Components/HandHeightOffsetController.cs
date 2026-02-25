@@ -1,5 +1,4 @@
-﻿using Immersion.Utils;
-using UnityEngine;
+﻿using UnityEngine;
 
 namespace Immersion.Components;
 

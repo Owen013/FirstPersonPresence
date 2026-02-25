@@ -2,7 +2,6 @@
 using Immersion.APIs;
 using Immersion.Components;
 using Immersion.Objects;
-using Immersion.Utils;
 using OWML.Common;
 using OWML.ModHelper;
 using System.Reflection;

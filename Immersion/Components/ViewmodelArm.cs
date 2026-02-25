@@ -1,5 +1,4 @@
 ﻿using Immersion.Objects;
-using Immersion.Utils;
 using OWML.Utils;
 using System.Collections.Generic;
 using UnityEngine;

@@ -3,7 +3,7 @@ using Immersion.Components;
 using OWML.Utils;
 using UnityEngine;
 
-namespace Immersion.Utils;
+namespace Immersion;
 
 [HarmonyPatch]
 internal static class Patches

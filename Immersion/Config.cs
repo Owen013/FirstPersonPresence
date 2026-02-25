@@ -1,7 +1,7 @@
 ﻿using OWML.Common;
 using System;
 
-namespace Immersion.Utils;
+namespace Immersion;
 
 public static class Config
 {
