@@ -91,7 +91,7 @@ public class ArmPose
         return null;
     }
 
-    internal static string TryGetArmPoseID(OWItem item)
+    public static string TryGetArmPoseID(OWItem item)
     {
         var itemTypeName = item.GetItemType().GetName();
         return itemTypeName switch
