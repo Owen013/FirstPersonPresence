@@ -25,7 +25,7 @@ public class ModMain : ModBehaviour
     public override void Configure(IModConfig config)
     {
         Config.Configure(config);
-		Locator.GetPlayerCamera()?.nearClipPlane = Config.FixItemClipping ? 0.05f : 0.1f;
+		Locator.GetPlayerCamera()?.nearClipPlane = Config.FixViewmodelClipping ? 0.05f : 0.1f;
     }
 
     private void Awake()

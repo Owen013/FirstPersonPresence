@@ -29,51 +29,51 @@
       "min": 0,
       "max": 2
     },
-    "EnableHandBob": {
-      "title": "Enable Hand Bobbing",
+    "EnableViewmodelBob": {
+      "title": "Enable Viewmodel Bobbing",
       "tooltip": "Makes your held item/tool bob while you're moving.",
       "type": "toggle",
       "value": true
     },
-    "HandBobStrength": {
-      "title": "Tool Bob Strength",
-      "tooltip": "The strength of the Hand Bob effect.",
+    "ViewmodelBobStrength": {
+      "title": "Viewmodel Bob Strength",
+      "tooltip": "The strength of the Viewmodel Bob effect.",
       "type": "slider",
       "value": 1,
       "min": 0,
       "max": 2
     },
 
-    "Hand Height Offset": {
+    "Viewmodel Offset": {
       "type": "separator"
     },
-    "EnableHandHeightOffset": {
-      "title": "Enable Hand Height Offset",
+    "EnableViewmodelOffset": {
+      "title": "Enable Viewmodel Offset",
       "tooltip": "Makes your held item/tool move up/down based on how far up/down you are looking.",
       "type": "toggle",
       "value": true
     },
-    "HandHeightOffsetStrength": {
-      "title": "Hand Height Offset Strength",
-      "tooltip": "The strength of the Hand Height Offset effect.",
+    "ViewmodelOffsetStrength": {
+      "title": "Viewmodel Offset Strength",
+      "tooltip": "The strength of the Viewmodel Offset effect.",
       "type": "slider",
       "value": 1,
       "min": 0,
       "max": 2
     },
 
-    "Hand Sway": {
+    "Viewmodel Sway": {
       "type": "separator"
     },
-    "EnableHandSway": {
-      "title": "Enable Hand Sway",
+    "EnableViewmodelSway": {
+      "title": "Enable Viewmodel Sway",
       "tooltip": "Makes your held item/tool lag behind the camera as you look around.",
       "type": "toggle",
       "value": true
     },
-    "HandSwayStrength": {
-      "title": "Tool Sway Strength",
-      "tooltip": "The strength of the Hand Sway effect.",
+    "ViewmodelSwayStrength": {
+      "title": "Viewmodel Sway Strength",
+      "tooltip": "The strength of the Viewmodel Sway effect.",
       "type": "slider",
       "value": 1,
       "min": 0,
@@ -119,8 +119,8 @@
       "type": "toggle",
       "value": true
     },
-    "FixHandClipping": {
-      "title": "Fix Hand Clipping",
+    "FixViewmodelClipping": {
+      "title": "Fix Viewmodel Clipping",
       "tooltip": "Changes the camera's near clip plane to prevent held items and viewmodel arms from clipping into the camera. May cause other less noticeable visual bugs.",
       "type": "toggle",
       "value": true

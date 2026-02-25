@@ -17,7 +17,7 @@ public class ViewbobController : MonoBehaviour
     private float _viewbobDampVel;
 
     private void OnConfigured() =>
-        enabled = Config.EnableHeadBob || Config.EnableHandBob;
+        enabled = Config.EnableHeadBob || Config.EnableViewmodelBob;
 
     private void Awake()
     {
@@ -73,10 +73,10 @@ public class ViewbobController : MonoBehaviour
                 _offsetManager.AddCameraOffset(Config.HeadBobStrength * 0.02f * new Vector3(viewBob.x, viewBob.y));
 
             // apply tool offset if tool bob is enabled
-            if (Config.EnableHandBob)
+            if (Config.EnableViewmodelBob)
             {
-                var offsetPos = Config.HandBobStrength * new Vector3(0.02f * viewBob.x, 0.003f * viewBob.y);
-                var offsetRot = Quaternion.Euler(Config.HandBobStrength * _viewbobScale * -0.75f * Mathf.Sin(_viewbobTime * 4f * Mathf.PI), 0f, 0f);
+                var offsetPos = Config.ViewmodelBobStrength * new Vector3(0.02f * viewBob.x, 0.003f * viewBob.y);
+                var offsetRot = Quaternion.Euler(Config.ViewmodelBobStrength * _viewbobScale * -0.75f * Mathf.Sin(_viewbobTime * 4f * Mathf.PI), 0f, 0f);
                 _offsetManager.AddToolOffsets(offsetPos, offsetRot);
             }
         }

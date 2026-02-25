@@ -40,7 +40,7 @@ internal static class Patches
     private static void PlayerCameraController_Start_Postfix(PlayerCameraController __instance)
     {
         __instance.gameObject.AddComponent<OffsetManager>();
-        __instance._playerCamera.nearClipPlane = Config.FixItemClipping ? 0.05f : 0.1f;
+        __instance._playerCamera.nearClipPlane = Config.FixViewmodelClipping ? 0.05f : 0.1f;
     }
 
     [HarmonyPostfix]

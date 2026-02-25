@@ -9,7 +9,7 @@ public class HandHeightOffsetController : MonoBehaviour
     private PlayerCameraController _cameraController;
 
     private void OnConfigured() =>
-        enabled = Config.EnableHandHeightOffset;
+        enabled = Config.EnableViewmodelOffset;
 
     private void Awake()
     {
@@ -29,7 +29,7 @@ public class HandHeightOffsetController : MonoBehaviour
         // tool is not offset when looking straight ahead
         toolOffset.z = Mathf.Cos(verticalLookAmount * Mathf.PI / 3f) - 1;
         toolOffset.y = -Mathf.Sin(verticalLookAmount * Mathf.PI / 3f);
-        _offsetManager.AddToolOffsets(Config.HandHeightOffsetStrength * 0.05f * toolOffset);
+        _offsetManager.AddToolOffsets(Config.ViewmodelOffsetStrength * 0.05f * toolOffset);
     }
 
     private void OnDestroy()

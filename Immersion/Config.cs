@@ -11,17 +11,17 @@ public static class Config
 
     public static float HeadBobStrength { get; private set; }
 
-    public static bool EnableHandBob { get; private set; }
+    public static bool EnableViewmodelBob { get; private set; }
 
-    public static float HandBobStrength { get; private set; }
+    public static float ViewmodelBobStrength { get; private set; }
 
-    public static bool EnableHandHeightOffset { get; private set; }
+    public static bool EnableViewmodelOffset { get; private set; }
 
-    public static float HandHeightOffsetStrength { get; private set; }
+    public static float ViewmodelOffsetStrength { get; private set; }
 
-    public static bool EnableHandSway { get; private set; }
+    public static bool EnableViewmodelSway { get; private set; }
 
-    public static float HandSwayStrength { get; private set; }
+    public static float ViewmodelSwayStrength { get; private set; }
 
     public static bool EnableBreathingAnim { get; private set; }
 
@@ -33,7 +33,7 @@ public static class Config
 
     public static bool EnableSprintingAnim { get; private set; }
 
-    public static bool FixItemClipping { get; private set; }
+    public static bool FixViewmodelClipping { get; private set; }
 
     public static bool HideStowedItems { get; private set; }
 
@@ -47,23 +47,23 @@ public static class Config
         // viewbob
         EnableHeadBob = config.GetSettingsValue<bool>("EnableHeadBob");
         HeadBobStrength = config.GetSettingsValue<float>("HeadBobStrength");
-        EnableHandBob = config.GetSettingsValue<bool>("EnableHandBob");
-        HandBobStrength = config.GetSettingsValue<float>("HandBobStrength");
+        EnableViewmodelBob = config.GetSettingsValue<bool>("EnableViewmodelBob");
+        ViewmodelBobStrength = config.GetSettingsValue<float>("ViewmodelBobStrength");
 
         // dynamic tool pos
-        EnableHandHeightOffset = config.GetSettingsValue<bool>("EnableHandHeightOffset");
-        HandHeightOffsetStrength = config.GetSettingsValue<float>("HandHeightOffsetStrength");
+        EnableViewmodelOffset = config.GetSettingsValue<bool>("EnableViewmodelOffset");
+        ViewmodelOffsetStrength = config.GetSettingsValue<float>("ViewmodelOffsetStrength");
 
         // tool sway
-        EnableHandSway = config.GetSettingsValue<bool>("EnableHandSway");
-        HandSwayStrength = config.GetSettingsValue<float>("HandSwayStrength");
+        EnableViewmodelSway = config.GetSettingsValue<bool>("EnableViewmodelSway");
+        ViewmodelSwayStrength = config.GetSettingsValue<float>("ViewmodelSwayStrength");
 
         // breathing anim
         EnableBreathingAnim = config.GetSettingsValue<bool>("EnableBreathingAnim");
         BreathingAnimStrength = config.GetSettingsValue<float>("BreathingAnimStrength");
 
         // misc
-        FixItemClipping = config.GetSettingsValue<bool>("FixHandClipping");
+        FixViewmodelClipping = config.GetSettingsValue<bool>("FixViewmodelClipping");
         EnableScoutAnim = config.GetSettingsValue<bool>("EnableScoutAnim");
         EnableLandingAnim = config.GetSettingsValue<bool>("EnableLandingAnim");
         EnableSprintingAnim = config.GetSettingsValue<bool>("EnableSprintingAnim");

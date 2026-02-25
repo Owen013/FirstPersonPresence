@@ -16,7 +16,7 @@ public class HandSwayController : MonoBehaviour
 
     private void OnConfigured()
     {
-        enabled = Config.EnableHandSway;
+        enabled = Config.EnableViewmodelSway;
     }
 
     private void Awake()
@@ -71,7 +71,7 @@ public class HandSwayController : MonoBehaviour
         // calculate and apply the final offset
         var offset = new Vector3(_handSway.x, _handSway.y, localZOffset);
         offset += globalZOffset * _cameraController.transform.InverseTransformDirection(_playerController.transform.forward);
-        offset *= Config.HandSwayStrength * 0.25f;
+        offset *= Config.ViewmodelSwayStrength * 0.25f;
         _offsetManager.AddToolOffsets(offset);
 
         // decay tool sway
