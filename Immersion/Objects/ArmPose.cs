@@ -38,7 +38,7 @@ public class ArmPose
             ModMain.Log($"Loading default Arm Poses...", MessageType.Info);
         }
         else
-            // other mods can load custom arm data for custom items or to replace ArmData for existing tools/items
+            // other mods can load custom arm poses for custom items or to replace arm poses for existing tools/items
             ModMain.Log($"Loading arm poses from \"{jsonPath}\"...", MessageType.Info);
 
         var newArmPoses = JsonConvert.DeserializeObject<Dictionary<string, ArmPose>>(File.ReadAllText(jsonPath));
@@ -48,19 +48,19 @@ public class ArmPose
         {
             foreach (var pose in newArmPoses)
             {
-                // only write new arm data if there is no arm data at this key
+                // only write new arm pose if there is no arm pose at this key
                 if (!s_armPoses.ContainsKey(pose.Key))
                     s_armPoses.Add(pose.Key, pose.Value);
             }
         }
         else
         {
-            foreach (var data in newArmPoses)
-                // overwrite arm data if this is a custom json
-                if (s_armPoses.ContainsKey(data.Key))
-                    s_armPoses[data.Key] = data.Value;
+            foreach (var pose in newArmPoses)
+                // overwrite arm poses if this is a custom json
+                if (s_armPoses.ContainsKey(pose.Key))
+                    s_armPoses[pose.Key] = pose.Value;
                 else
-                    s_armPoses.Add(data.Key, data.Value);
+                    s_armPoses.Add(pose.Key, pose.Value);
         }
 
         if (isLoadingDefaultArmPoses)
@@ -68,7 +68,7 @@ public class ArmPose
         ModMain.Log($"Arm poses loaded successfully!", MessageType.Success);
     }
 
-    public static bool ArmPoseExists(string armPoseID)
+    public static bool Exists(string armPoseID)
     {
         if (string.IsNullOrEmpty(armPoseID)) return false;
 
@@ -78,9 +78,9 @@ public class ArmPose
         return s_armPoses.ContainsKey(armPoseID);
     }
 
-    public static ArmPose GetArmPose(string armPoseID)
+    public static ArmPose Find(string armPoseID)
     {
-        if (ArmPoseExists(armPoseID))
+        if (Exists(armPoseID))
             return s_armPoses[armPoseID];
 
         ModMain.Log($"No Arm Pose found for {armPoseID}", MessageType.Error);

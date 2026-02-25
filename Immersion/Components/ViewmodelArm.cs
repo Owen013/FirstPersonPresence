@@ -50,7 +50,7 @@ public class ViewmodelArm : MonoBehaviour
 
     public void SetArmPose(string armPoseID)
     {
-        var armPose = ArmPose.GetArmPose(armPoseID);
+        var armPose = ArmPose.Find(armPoseID);
         if (armPose != null)
             SetArmPose(armPose);
     }
@@ -88,7 +88,7 @@ public class ViewmodelArm : MonoBehaviour
     internal static void OnEquipTool(PlayerTool tool)
     {
         // don't try to add viewmodel arm if disabled in config
-        if (!Config.EnableViewmodelArms || !ArmPose.ArmPoseExists(tool.name)) return;
+        if (!Config.EnableViewmodelArms || !ArmPose.Exists(tool.name)) return;
 
         // check for existing arm and enable if found (PlayerTool has no event for tool being equipped, so this is required)
         var existingArm = tool.transform.Find("ViewmodelArm");
@@ -103,7 +103,7 @@ public class ViewmodelArm : MonoBehaviour
 
     internal static void OnPickUpItem(OWItem item)
     {
-        if (!Config.EnableViewmodelArms || !ArmPose.ArmPoseExists(ArmPose.TryGetArmPoseID(item))) return;
+        if (!Config.EnableViewmodelArms || !ArmPose.Exists(ArmPose.TryGetArmPoseID(item))) return;
 
         ApplyItemAdjustments(item);
         if (item.transform.Find("ViewmodelArm") == null)
