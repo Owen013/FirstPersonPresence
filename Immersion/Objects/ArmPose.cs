@@ -11,19 +11,19 @@ namespace Immersion.Objects;
 public class ArmPose
 {
     [JsonProperty("arm_offset_pos")]
-    public Vector3 armOffsetPos;
+    public readonly Vector3 armOffsetPos;
 
     [JsonProperty("arm_offset_rot")]
-    public Vector3 armOffsetRot;
+    public readonly Vector3 armOffsetRot;
 
     [JsonProperty("arm_scale")]
-    public float armScale;
+    public readonly float armScale;
 
     [JsonProperty("arm_shader")]
-    public string armShader;
+    public readonly string armShader;
 
     [JsonProperty("bone_eulers")]
-    public Dictionary<string, Vector3> boneEulers;
+    public readonly Dictionary<string, Vector3> boneEulers;
 
     private static Dictionary<string, ArmPose> s_armPoses;
 
