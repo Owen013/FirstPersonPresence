@@ -25,11 +25,17 @@ public static class Config
 
     public static bool EnableBreathingAnim { get; private set; }
 
+    public static bool EnableLandingAnim { get; private set; }
+
+    public static float MaxLandingAnimDistance { get; private set; }
+
+    public static float MaxLandingAnimRecoverySpeed { get; private set; }
+
+    public static float LandingAnimRecoverySmoothness { get; private set; }
+
     public static float BreathingAnimStrength { get; private set; }
 
     public static bool EnableScoutAnim { get; private set; }
-
-    public static bool EnableLandingAnim { get; private set; }
 
     public static bool EnableSprintingAnim { get; private set; }
 
@@ -58,6 +64,12 @@ public static class Config
         EnableViewmodelSway = config.GetSettingsValue<bool>("EnableViewmodelSway");
         ViewmodelSwayStrength = config.GetSettingsValue<float>("ViewmodelSwayStrength");
 
+        // landing anim
+        EnableLandingAnim = config.GetSettingsValue<bool>("EnableLandingAnim");
+        MaxLandingAnimDistance = config.GetSettingsValue<float>("MaxLandingAnimDistance");
+        MaxLandingAnimRecoverySpeed = config.GetSettingsValue<float>("MaxLandingAnimRecoverySpeed");
+        LandingAnimRecoverySmoothness = config.GetSettingsValue<float>("LandingAnimRecoverySmoothness");
+
         // breathing anim
         EnableBreathingAnim = config.GetSettingsValue<bool>("EnableBreathingAnim");
         BreathingAnimStrength = config.GetSettingsValue<float>("BreathingAnimStrength");
@@ -65,7 +77,6 @@ public static class Config
         // misc
         FixViewmodelClipping = config.GetSettingsValue<bool>("FixViewmodelClipping");
         EnableScoutAnim = config.GetSettingsValue<bool>("EnableScoutAnim");
-        EnableLandingAnim = config.GetSettingsValue<bool>("EnableLandingAnim");
         EnableSprintingAnim = config.GetSettingsValue<bool>("EnableSprintingAnim");
         HideStowedItems = config.GetSettingsValue<bool>("HideStowedItems");
 

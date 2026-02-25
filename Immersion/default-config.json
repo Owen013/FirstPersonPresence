@@ -79,6 +79,40 @@
       "min": 0,
       "max": 2
     },
+    
+    "Landing Animation": {
+      "type": "separator"
+    },
+    "EnableLandingAnim": {
+      "title": "Enable Landing Animation",
+      "tooltip": "Makes the camera move downward a bit when you land with some speed.",
+      "type": "toggle",
+      "value": true
+    },
+    "MaxLandingAnimDistance": {
+      "title": "Max Landing Animation Distance",
+      "tooltip": "How far the camera will move downward before bottoming out.",
+      "type": "slider",
+      "value": 1,
+      "min": 0,
+      "max": 2
+    },
+    "MaxLandingAnimRecoverySpeed": {
+      "title": "Max Landing Animation Recovery Speed",
+      "tooltip": "The maximum speed with which the camera can move back upwards.",
+      "type": "slider",
+      "value": 1,
+      "min": 0,
+      "max": 2
+    },
+    "LandingAnimRecoverySmoothness": {
+      "title": "Landing Animation Recovery Smoothness",
+      "tooltip": "How smoothly the camera will move back upwards.",
+      "type": "slider",
+      "value": 1,
+      "min": 0,
+      "max": 2
+    },
 
     "Breathing Animation": {
       "type": "separator"
@@ -93,7 +127,7 @@
       "title": "Breathing Animation Strength",
       "tooltip": "The strength of the breathing effect.",
       "type": "slider",
-      "value": true,
+      "value": 1,
       "min": 0,
       "max": 2
     },
@@ -104,12 +138,6 @@
     "EnableScoutAnim": {
       "title": "Enable Scout Launcher Fire Animation",
       "tooltip": "Makes the camera and scout launcher recoil when you launch a scout.",
-      "type": "toggle",
-      "value": true
-    },
-    "EnableLandingAnim": {
-      "title": "Enable Landing Animation",
-      "tooltip": "Makes the camera move downward a bit when you land with some speed.",
       "type": "toggle",
       "value": true
     },
