@@ -62,10 +62,10 @@ public class LandingAnimController : MonoBehaviour
                 // update camera height based on landing speed
                 float playerScale = ModMain.SmolHatchlingAPI != null ? ModMain.SmolHatchlingAPI.GetPlayerScale() : 1f;
                 _landingAnimPos = Mathf.Min(_landingAnimPos - _lastLandedSpeed * playerScale * Time.deltaTime, 0f);
-                if (_landingAnimPos <= -0.25f)
+                if (_landingAnimPos <= -0.3f)
                 {
-                    // landing anim bottoms out at -0.25
-                    _landingAnimPos = -0.25f;
+                    // landing anim bottoms out at -0.3
+                    _landingAnimPos = -0.3f;
                     _isLandingAnimActive = false;
                 }
             }
