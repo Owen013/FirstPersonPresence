@@ -85,7 +85,7 @@
     },
     "EnableBreathingAnim": {
       "title": "Enable Breathing Animation",
-      "tooltip": "Makes the held item/tool move very subtley while you're standing still.",
+      "tooltip": "Makes the held item/tool move very subtly while you're standing still.",
       "type": "toggle",
       "value": true
     },
