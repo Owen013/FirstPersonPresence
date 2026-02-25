@@ -32,6 +32,10 @@ public class HideStowedItemsController : MonoBehaviour
             _addedStowDegrees = Mathf.MoveTowards(_addedStowDegrees, 45f, 135f * Time.deltaTime);
             _offsetManager.ItemToolOffsetRoot.AddOffset(Quaternion.Euler(_addedStowDegrees, 0f, 0f));
         }
+        else
+        {
+            _addedStowDegrees = 0f;
+        }
     }
 
     private void OnDisable()
