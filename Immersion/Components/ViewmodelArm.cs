@@ -42,11 +42,11 @@ public class ViewmodelArm : MonoBehaviour
 
     public void SetArmPose(ArmPose armPose)
     {
-        transform.localPosition = armPose.armOffsetPos;
-        transform.localEulerAngles = armPose.armOffsetRot;
+        transform.localPosition = armPose.armLocalPosition;
+        transform.localEulerAngles = armPose.armLocalEulerAngles;
         transform.localScale = 0.1f * armPose.armScale * Vector3.one;
         SetShader(armPose.armShader);
-        SetBoneEulers(armPose.boneEulers);
+        SetBonesEulerAngles(armPose.bonesLocalEulerAngles);
     }
 
     public void SetArmPose(string armPoseID)
@@ -61,12 +61,12 @@ public class ViewmodelArm : MonoBehaviour
         string output = "  [ARM POSE ID HERE] {\n";
 
         var armPos = transform.localPosition;
-        output += "    \"arm_offset_pos\": { " + $"\"x\": {armPos.x}, \"y\":  {armPos.y}, \"z\": {armPos.z}" + " },\n";
+        output += "    \"arm_local_position\": { " + $"\"x\": {armPos.x}, \"y\": {armPos.y}, \"z\": {armPos.z}" + " },\n";
         var armRot = transform.localEulerAngles;
-        output += "    \"arm_offset_rot\": { " + $"\"x\": {armRot.x}, \"y\":  {armRot.y}, \"z\": {armRot.z}" + " },\n";
+        output += "    \"arm_local_euler_angles\": { " + $"\"x\": {armRot.x}, \"y\": {armRot.y}, \"z\": {armRot.z}" + " },\n";
         output += $"    \"arm_scale\": {10f * transform.localScale.x},\n";
         output += $"    \"arm_shader\": \"{_armMeshNoSuit.material.shader.name}\",\n";
-        output += "    \"bone_eulers\": {\n";
+        output += "    \"bones_local_euler_angles\": {\n";
 
         foreach (var keyValuePair in _bones)
         {
@@ -128,6 +128,7 @@ public class ViewmodelArm : MonoBehaviour
         viewmodelArm.transform.parent = parent;
         viewmodelArm.transform.localPosition = Vector3.zero;
         viewmodelArm.transform.localRotation = Quaternion.identity;
+        viewmodelArm.SetShader("Standard");
 
         return viewmodelArm;
     }
@@ -153,10 +154,10 @@ public class ViewmodelArm : MonoBehaviour
         }
     }
 
-    private void SetBoneEulers(Dictionary<string, Vector3> boneEulersDict)
+    private void SetBonesEulerAngles(Dictionary<string, Vector3> bonesEulerAngles)
     {
-        foreach (var boneEulers in boneEulersDict)
-            _bones[boneEulers.Key].localEulerAngles = boneEulers.Value;
+        foreach (var boneEulerAngles in bonesEulerAngles)
+            _bones[boneEulerAngles.Key].localEulerAngles = boneEulerAngles.Value;
     }
 
     private void Awake()
@@ -164,21 +165,21 @@ public class ViewmodelArm : MonoBehaviour
         // grab the bones that matter
         _bones = new Dictionary<string, Transform>
         {
-            ["Shoulder"] = _armMeshNoSuit.bones[5],
-            ["Elbow"] = _armMeshNoSuit.bones[6],
-            ["Wrist"] = _armMeshNoSuit.bones[7],
-            ["Finger_01_01"] = _armMeshNoSuit.bones[8],
-            ["Finger_01_02"] = _armMeshNoSuit.bones[9],
-            ["Finger_01_03"] = _armMeshNoSuit.bones[10],
-            ["Finger_01_04"] = _armMeshNoSuit.bones[11],
-            ["Finger_02_01"] = _armMeshNoSuit.bones[12],
-            ["Finger_02_02"] = _armMeshNoSuit.bones[13],
-            ["Finger_02_03"] = _armMeshNoSuit.bones[14],
-            ["Finger_02_04"] = _armMeshNoSuit.bones[15],
-            ["Thumb_01"] = _armMeshNoSuit.bones[16],
-            ["Thumb_02"] = _armMeshNoSuit.bones[17],
-            ["Thumb_03"] = _armMeshNoSuit.bones[18],
-            ["Thumb_04"] = _armMeshNoSuit.bones[19]
+            ["shoulder"] = _armMeshNoSuit.bones[5],
+            ["elbow"] = _armMeshNoSuit.bones[6],
+            ["wrist"] = _armMeshNoSuit.bones[7],
+            ["finger_01_01"] = _armMeshNoSuit.bones[8],
+            ["finger_01_02"] = _armMeshNoSuit.bones[9],
+            ["finger_01_03"] = _armMeshNoSuit.bones[10],
+            ["finger_01_04"] = _armMeshNoSuit.bones[11],
+            ["finger_02_01"] = _armMeshNoSuit.bones[12],
+            ["finger_02_02"] = _armMeshNoSuit.bones[13],
+            ["finger_02_03"] = _armMeshNoSuit.bones[14],
+            ["finger_02_04"] = _armMeshNoSuit.bones[15],
+            ["thumb_01"] = _armMeshNoSuit.bones[16],
+            ["thumb_02"] = _armMeshNoSuit.bones[17],
+            ["thumb_03"] = _armMeshNoSuit.bones[18],
+            ["thumb_04"] = _armMeshNoSuit.bones[19]
         };
     }
 
