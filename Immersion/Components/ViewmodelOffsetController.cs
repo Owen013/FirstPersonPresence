@@ -2,7 +2,7 @@
 
 namespace Immersion.Components;
 
-public class HandHeightOffsetController : MonoBehaviour
+public class ViewmodelOffsetController : MonoBehaviour
 {
     private OffsetManager _offsetManager;
 

@@ -2,7 +2,7 @@
 
 namespace Immersion.Components;
 
-public class HandSwayController : MonoBehaviour
+public class ViewmodelSwayController : MonoBehaviour
 {
     private OffsetManager _offsetManager;
 
@@ -32,21 +32,20 @@ public class HandSwayController : MonoBehaviour
         float degreesY = _cameraController.GetDegreesY();
 
         // only add new sway if player is in ground movement mode and the game is unpaused
-        if (Time.deltaTime != 0f && OWInput.IsInputMode(InputMode.Character) && !(PlayerState.InZeroG() && PlayerState.IsWearingSuit()))
+        float deltaTime = OWTime.IsPaused(OWTime.PauseType.Reading) ? Time.unscaledDeltaTime : Time.deltaTime;
+        if (deltaTime != 0f && OWInput.IsInputMode(InputMode.Character) && !(PlayerState.InZeroG() && PlayerState.IsWearingSuit()))
         {
             // get look input
             Vector2 lookInput = OWInput.GetAxisValue(InputLibrary.look);
             lookInput *= _cameraController._playerCamera.fieldOfView / _cameraController._initFOV;
-            lookInput *= InputUtil.IsMouseMoveAxis(InputLibrary.look.AxisID) ? 0.01666667f : Time.deltaTime;
+            lookInput *= InputUtil.IsMouseMoveAxis(InputLibrary.look.AxisID) ? 0.01666667f : deltaTime;
             bool isAlarmWakingPlayer = Locator.GetAlarmSequenceController() != null && Locator.GetAlarmSequenceController().IsAlarmWakingPlayer();
             if (_cameraController._zoomed || isAlarmWakingPlayer)
                 lookInput *= PlayerCameraController.ZOOM_SCALAR;
 
             // player can't turn left or right if turning is locked
             if (_playerController._isTurningLocked)
-            {
                 lookInput.x = 0f;
-            }
 
             // horizontal sway is reduced the more up/down player is looking
             lookInput.x *= (Mathf.Cos(degreesY / 90f * Mathf.PI) + 1f) * 0.5f;
@@ -73,7 +72,7 @@ public class HandSwayController : MonoBehaviour
         _offsetManager.AddToolOffsets(offset);
 
         // decay tool sway
-        _handSway = Vector2.SmoothDamp(_handSway, Vector2.zero, ref _handSwayDampVel, 0.2f);
+        _handSway = Vector2.SmoothDamp(_handSway, Vector2.zero, ref _handSwayDampVel, 0.2f, Mathf.Infinity, deltaTime);
     }
 
     private void OnDisable()

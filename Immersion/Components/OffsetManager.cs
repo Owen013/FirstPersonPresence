@@ -65,8 +65,8 @@ public class OffsetManager : MonoBehaviour
         TranslatorOffsetRoot = OffsetRoot.NewOffsetRoot("OffsetRoot_NomaiTranslatorProp", toolModeSwapper.GetTranslator().gameObject);
 
         gameObject.AddComponent<ViewbobController>();
-        gameObject.AddComponent<HandHeightOffsetController>();
-        gameObject.AddComponent<HandSwayController>();
+        gameObject.AddComponent<ViewmodelOffsetController>();
+        gameObject.AddComponent<ViewmodelSwayController>();
         gameObject.AddComponent<BreathingAnimController>();
         gameObject.AddComponent<ScoutAnimController>();
         gameObject.AddComponent<LandingAnimController>();
