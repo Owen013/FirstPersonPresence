@@ -36,21 +36,21 @@ public class ArmPose
         {
             isDefaultArmPoses = true;
             jsonPath = $"{Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location)}/Data/viewmodel-arm-poses.json";
-            ModMain.Log($"Loading default arm poses...", MessageType.Info);
+            ModMain.Log($"Loading default Arm Poses...", MessageType.Info);
         }
         else
         {
-            // other mods can load custom arm data for custom items or to replace ArmData for existing tools/items
+            // other mods can load custom arm data for custom items or to replace arm poses for existing tools/items
             isDefaultArmPoses = false;
-            ModMain.Log($"Loading arm poses from \"{jsonPath}\"...", MessageType.Info);
+            ModMain.Log($"Loading Arm Poses from \"{jsonPath}\"...", MessageType.Info);
         }
 
-        var newArmData = JsonConvert.DeserializeObject<Dictionary<string, ArmPose>>(File.ReadAllText(jsonPath));
+        var newArmPoses = JsonConvert.DeserializeObject<Dictionary<string, ArmPose>>(File.ReadAllText(jsonPath));
         if (s_armPoses == null)
-            s_armPoses = newArmData;
+            s_armPoses = newArmPoses;
         else if (isDefaultArmPoses)
         {
-            foreach (var data in newArmData)
+            foreach (var data in newArmPoses)
             {
                 // only write new arm data if there is no arm data at this key
                 if (!s_armPoses.ContainsKey(data.Key))
@@ -59,7 +59,7 @@ public class ArmPose
         }
         else
         {
-            foreach (var data in newArmData)
+            foreach (var data in newArmPoses)
                 // overwrite arm data if this is a custom json
                 if (s_armPoses.ContainsKey(data.Key))
                     s_armPoses[data.Key] = data.Value;
@@ -69,25 +69,25 @@ public class ArmPose
 
         if (isDefaultArmPoses)
             s_isDefaultArmPosesLoaded = true;
-        ModMain.Log($"Arm poses loaded successfully!", MessageType.Success);
+        ModMain.Log($"Arm Poses loaded successfully!", MessageType.Success);
     }
 
-    public static bool ArmPoseExists(string armDataID)
+    public static bool ArmPoseExists(string armPoseID)
     {
-        if (string.IsNullOrEmpty(armDataID)) return false;
+        if (string.IsNullOrEmpty(armPoseID)) return false;
 
-        if ((s_armPoses == null || !s_armPoses.ContainsKey(armDataID)) && !s_isDefaultArmPosesLoaded)
+        if ((s_armPoses == null || !s_armPoses.ContainsKey(armPoseID)) && !s_isDefaultArmPosesLoaded)
             LoadArmPoses();
 
-        return s_armPoses.ContainsKey(armDataID);
+        return s_armPoses.ContainsKey(armPoseID);
     }
 
-    public static ArmPose GetArmPose(string armDataID)
+    public static ArmPose GetArmPose(string armPoseID)
     {
-        if (ArmPoseExists(armDataID))
-            return s_armPoses[armDataID];
+        if (ArmPoseExists(armPoseID))
+            return s_armPoses[armPoseID];
 
-        ModMain.Log($"No ArmData found for {armDataID}", MessageType.Error);
+        ModMain.Log($"No Arm Pose found for {armPoseID}", MessageType.Error);
         return null;
     }
 

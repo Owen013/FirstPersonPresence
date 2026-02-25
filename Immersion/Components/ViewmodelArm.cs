@@ -50,9 +50,9 @@ public class ViewmodelArm : MonoBehaviour
 
     public void SetArmPose(string armPoseID)
     {
-        var armData = ArmPose.GetArmPose(armPoseID);
-        if (armData != null)
-            SetArmPose(armData);
+        var armPose = ArmPose.GetArmPose(armPoseID);
+        if (armPose != null)
+            SetArmPose(armPose);
     }
 
     public void OutputArmPose()
@@ -192,9 +192,9 @@ public class ViewmodelArm : MonoBehaviour
             _owItem.onPickedUp.AddListener((_) => gameObject.SetActive(true));
             _itemCarryTool = Locator.GetToolModeSwapper().GetItemCarryTool();
 
-            string armDataID = ArmPose.TryGetArmPoseID(_owItem);
-            if (armDataID != null)
-                SetArmPose(armDataID);
+            string armPoseID = ArmPose.TryGetArmPoseID(_owItem);
+            if (armPoseID != null)
+                SetArmPose(armPoseID);
         }
         _playerModelArmNoSuit = Locator.GetPlayerBody().transform.Find("Traveller_HEA_Player_v2/player_mesh_noSuit:Traveller_HEA_Player/player_mesh_noSuit:Player_RightArm").gameObject;
         _playerModelArmSuit = Locator.GetPlayerBody().transform.Find("Traveller_HEA_Player_v2/Traveller_Mesh_v01:Traveller_Geo/Traveller_Mesh_v01:PlayerSuit_RightArm").gameObject;
