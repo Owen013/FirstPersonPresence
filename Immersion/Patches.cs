@@ -37,6 +37,14 @@ internal static class Patches
     }
 
     [HarmonyPostfix]
+    [HarmonyPatch(typeof(PlayerAnimController), nameof(PlayerAnimController.LateUpdate))]
+    private static void PlayerAnimController_LateUpdate_Postfix(PlayerAnimController __instance)
+    {
+        if (LandingAnimController.Instance != null)
+            __instance._animator.SetLayerWeight(1, Mathf.Max(__instance._animator.GetLayerWeight(1), LandingAnimController.Instance.LandingAnimPosition / -0.3f));
+    }
+
+    [HarmonyPostfix]
     [HarmonyPatch(typeof(PlayerCameraController), nameof(PlayerCameraController.Start))]
     private static void PlayerCameraController_Start_Postfix(PlayerCameraController __instance)
     {
