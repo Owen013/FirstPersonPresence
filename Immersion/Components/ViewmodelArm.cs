@@ -208,7 +208,7 @@ public class ViewmodelArm : MonoBehaviour
             return;
         }
 
-        if ((_playerTool != null && !_playerTool.IsEquipped() && !_playerTool.IsPuttingAway()) || OWInput.IsInputMode(InputMode.ShipCockpit))
+        if (_playerTool != null && ((!_playerTool.IsEquipped() && !_playerTool.IsPuttingAway()) || OWInput.IsInputMode(InputMode.ShipCockpit)))
         {
             gameObject.SetActive(false);
             return;
