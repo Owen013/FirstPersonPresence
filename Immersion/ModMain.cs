@@ -16,8 +16,6 @@ public class ModMain : ModBehaviour
 
     public static IHikersMod HikersModAPI { get; private set; }
 
-    public static bool IsTheStrangerTheyAreInstalled { get; private set; }
-
     public static void Log(string message, MessageType type = MessageType.Message) =>
         Instance.ModHelper.Console.WriteLine(message, type);
 
@@ -41,7 +39,6 @@ public class ModMain : ModBehaviour
         // check for other mods
         SmolHatchlingAPI = ModHelper.Interaction.TryGetModApi<ISmolHatchling>("Owen013.TeenyHatchling");
         HikersModAPI = ModHelper.Interaction.TryGetModApi<IHikersMod>("Owen013.MovementMod");
-        IsTheStrangerTheyAreInstalled = ModHelper.Interaction.ModExists("AnonymousStrangerOW.TheStrangerTheyAre");
 
         // load assets
         ViewmodelArm.LoadAsset();
