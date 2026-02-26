@@ -34,25 +34,25 @@ public class ViewmodelArm : MonoBehaviour
     private GameObject _playerModelArmSuit;
 
     /// <summary>
-    /// Creates a new ViewmodelArm for the given PlayerTool
+    /// Creates a new ViewmodelArm for the given PlayerTool.
     /// </summary>
-    /// <param name="playerTool">The PlayerTool to add a ViewmodelArm to</param>
-    /// <returns>The new ViewmodelArm</returns>
+    /// <param name="playerTool">The PlayerTool to add a ViewmodelArm to.</param>
+    /// <returns>The new ViewmodelArm.</returns>
     public static ViewmodelArm NewViewmodelArm(PlayerTool playerTool) =>
         NewViewmodelArm(playerTool.transform);
 
     /// <summary>
-    /// Creates a new ViewmodelArm for the given OWItem
+    /// Creates a new ViewmodelArm for the given OWItem.
     /// </summary>
-    /// <param name="owItem">The OWItem to add a ViewmodelArm to</param>
-    /// <returns>The new ViewmodelArm</returns>
+    /// <param name="owItem">The OWItem to add a ViewmodelArm to.</param>
+    /// <returns>The new ViewmodelArm.</returns>
     public static ViewmodelArm NewViewmodelArm(OWItem owItem) =>
         NewViewmodelArm(owItem.transform);
 
     /// <summary>
-    /// Applies a position, rotation, scale, shader, and pose from an ArmData to this ViewmodelArm
+    /// Applies a position, rotation, scale, shader, and pose from an ArmData to this ViewmodelArm.
     /// </summary>
-    /// <param name="armData">The ArmData to apply to this ViewmodelArm</param>
+    /// <param name="armData">The ArmData to apply to this ViewmodelArm.</param>
     public void SetArmData(ArmData armData)
     {
         transform.localPosition = armData.armLocalPosition;
@@ -63,9 +63,9 @@ public class ViewmodelArm : MonoBehaviour
     }
 
     /// <summary>
-    /// Applies a position, rotation, scale, shader, and pose from an ArmData to this ViewmodelArm
+    /// Applies a position, rotation, scale, shader, and pose from an ArmData to this ViewmodelArm.
     /// </summary>
-    /// <param name="armDataID">The ID of the ArmData to apply to this ViewmodelArm</param>
+    /// <param name="armDataID">The ID of the ArmData to apply to this ViewmodelArm.</param>
     public void SetArmData(string armDataID)
     {
         var armData = ArmData.Find(armDataID);
@@ -74,7 +74,7 @@ public class ViewmodelArm : MonoBehaviour
     }
 
     /// <summary>
-    /// Outputs this ViewmodelArm's information in JSON format
+    /// Outputs this ViewmodelArm's information in JSON format.
     /// </summary>
     public void OutputArmData()
     {
@@ -100,6 +100,9 @@ public class ViewmodelArm : MonoBehaviour
         ModMain.Log(output);
     }
 
+    /// <summary>
+    /// Loads the Viewmodel Arm asset from the asset bundle.
+    /// </summary>
     internal static void LoadAsset()
     {
         var assetBundle = ModMain.Instance.ModHelper.Assets.LoadBundle("AssetBundles/viewmodelarm");
@@ -120,6 +123,12 @@ public class ViewmodelArm : MonoBehaviour
 
     private void SetShader(string shaderName)
     {
+        if (string.IsNullOrEmpty(shaderName))
+        {
+            ModMain.Log("No shaderName provided for ViewmodelArm.SetShader", MessageType.Error);
+            return;
+        }
+
         var shader = Shader.Find(shaderName);
         _armMeshNoSuit.materials[0].shader = shader;
         _armMeshNoSuit.materials[1].shader = shader;

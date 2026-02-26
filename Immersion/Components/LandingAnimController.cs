@@ -73,7 +73,7 @@ public class LandingAnimController : MonoBehaviour
                 }
             }
             else
-                LandingAnimPosition = Mathf.SmoothDamp(LandingAnimPosition, 0f, ref _landingAnimDampVel, 0.15f * Config.LandingAnimRecoverySmoothness, 1.5f * Config.MaxLandingAnimRecoverySpeed, deltaTime);
+                LandingAnimPosition = Mathf.SmoothDamp(LandingAnimPosition, 0f, ref _landingAnimDampVel, 0.15f * Config.LandingAnimSmoothness, 1.5f * Config.MaxLandingAnimRecoverySpeed, deltaTime);
         }
 
         // apply offsets

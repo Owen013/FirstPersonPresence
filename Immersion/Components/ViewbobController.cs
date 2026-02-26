@@ -33,6 +33,7 @@ public class ViewbobController : MonoBehaviour
     {
         if (!_playerController._isMovementLocked)
         {
+            // if time is frozen during gameplay, smoothly transition viewbob strength to zero
             if (OWTime.IsPaused(OWTime.PauseType.Reading))
                 _viewbobScale = Mathf.SmoothDamp(_viewbobScale, 0f, ref _viewbobDampVel, 0.05f, Mathf.Infinity, Time.unscaledDeltaTime);
             else if (Time.deltaTime != 0f)
