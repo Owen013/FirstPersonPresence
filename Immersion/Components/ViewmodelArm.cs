@@ -55,7 +55,7 @@ public class ViewmodelArm : MonoBehaviour
             SetArmData(armData);
     }
 
-    public void OutputArmDate()
+    public void OutputArmData()
     {
         var armPos = transform.localPosition;
         var armRot = transform.localEulerAngles;
