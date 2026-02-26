@@ -14,8 +14,22 @@ internal static class Patches
     private static void OWItem_PickUpItem_Postfix(OWItem __instance)
     {
         // try to create a ViewmodelArm for the item
-        if (Config.EnableViewmodelArms && ArmData.Exists(ArmData.TryGetArmDataID(__instance)) && __instance.transform.Find("ViewmodelArm") == null)
-            ViewmodelArm.NewViewmodelArm(__instance);
+        if (Config.EnableViewmodelArms)
+        {
+            if (ArmData.Exists(ArmData.TryGetArmDataID(__instance)) && __instance.transform.Find("ViewmodelArm") == null)
+                ViewmodelArm.NewViewmodelArm(__instance);
+
+            // some items need to be adjusted
+            switch (__instance.GetItemType().GetName())
+            {
+                case "Lantern":
+                    __instance.transform.localEulerAngles = new Vector3(0f, 327f, 0f);
+                    break;
+                case "GhostbirdSkull":
+                    ModMain.Instance.ModHelper.Events.Unity.FireOnNextUpdate(() => __instance.transform.localScale = 0.6f * Vector3.one);
+                    break;
+            }
+        }
 
         // TSTA skull renderer has weird bounds, so it can stop rendering when near the edges of the screen
         // normally isn't a problem, since its held position is not close enough to the edge of screen for this to be an issue

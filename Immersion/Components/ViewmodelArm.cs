@@ -1,6 +1,5 @@
 ﻿using Immersion.Objects;
 using OWML.Common;
-using OWML.Utils;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -154,15 +153,7 @@ public class ViewmodelArm : MonoBehaviour
             return;
         }
 
-        switch (_owItem.GetItemType().GetName())
-        {
-            case "Lantern":
-                _owItem.transform.localEulerAngles = new Vector3(0f, 327f, 0f);
-                return;
-            case "GhostbirdSkull":
-                ModMain.Instance.ModHelper.Events.Unity.FireOnNextUpdate(() => _owItem.transform.localScale = 0.6f * Vector3.one);
-                return;
-        }
+        
     }
 
     private void Awake()
