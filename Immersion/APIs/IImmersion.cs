@@ -12,10 +12,10 @@ public interface IImmersion
     public bool AreViewmodelArmsEnabled();
 
     /// <summary>
-    /// Loads Arm Poses from JSON.
+    /// Loads Arm Data from JSON.
     /// </summary>
-    /// <param name="jsonPath">The path to the JSON containing the custom ArmPose information</param>
-    public void LoadArmPoses(string jsonPath);
+    /// <param name="jsonPath">The path to the JSON containing the custom ArmData information</param>
+    public void LoadArmData(string jsonPath);
 
     /// <summary>
     /// Creates a Viewmodel Arm on a PlayerTool
@@ -32,15 +32,9 @@ public interface IImmersion
     public GameObject CreateViewmodelArm(OWItem item);
 
     /// <summary>
-    /// Sets the Arm Pose for a Viewmodel Arm
+    /// Sets the Arm Data for a Viewmodel Arm
     /// </summary>
     /// <param name="viewmodelArmObject">The GameObject of the ViewmodelArm</param>
     /// <param name="itemName">The name (from the JSON) of the Arm Data information</param>
-    public void SetArmPose(GameObject viewmodelArmObject, string itemName);
-
-    [Obsolete("Use LoadArmPoses instead")]
-    public void LoadArmData(string jsonPath);
-
-    [Obsolete("Use SetArmPose instead")]
     public void SetArmData(GameObject viewmodelArmObject, string itemName);
 }

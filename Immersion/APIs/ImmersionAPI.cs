@@ -22,24 +22,15 @@ public class ImmersionAPI
         return ViewmodelArm.NewViewmodelArm(item).gameObject;
     }
 
-    public void LoadArmPoses(string jsonPath)
+    public void LoadArmData(string jsonPath)
     {
-        ArmPose.LoadArmPoses(jsonPath);
+        ArmData.LoadArmData(jsonPath);
     }
 
-    public void SetArmPose(GameObject viewmodelArmObject, string armPoseID)
+    public void SetArmData(GameObject viewmodelArmObject, string armDataID)
     {
-        viewmodelArmObject.GetComponent<ViewmodelArm>()?.SetArmPose(armPoseID);
+        viewmodelArmObject.GetComponent<ViewmodelArm>()?.SetArmData(armDataID);
     }
-
-    [Obsolete("Use LoadArmPoses instead")]
-    public void LoadArmData(string jsonPath) =>
-        LoadArmPoses(jsonPath);
-
-
-    [Obsolete("Use SetArmPose instead")]
-    public void SetArmData(GameObject viewmodelArmObject, string itemName) =>
-        SetArmPose(viewmodelArmObject, itemName);
 
     [Obsolete("Immersion no longer changes AnimSpeed.")]
     public float GetAnimSpeed()

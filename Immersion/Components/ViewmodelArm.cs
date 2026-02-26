@@ -39,23 +39,23 @@ public class ViewmodelArm : MonoBehaviour
     public static ViewmodelArm NewViewmodelArm(OWItem owItem) =>
         NewViewmodelArm(owItem.transform);
 
-    public void SetArmPose(ArmPose armPose)
+    public void SetArmData(ArmData armData)
     {
-        transform.localPosition = armPose.armLocalPosition;
-        transform.localEulerAngles = armPose.armLocalEulerAngles;
-        transform.localScale = 0.1f * armPose.armScale * Vector3.one;
-        SetShader(armPose.armShader);
-        SetBonesEulerAngles(armPose.bonesLocalEulerAngles);
+        transform.localPosition = armData.armLocalPosition;
+        transform.localEulerAngles = armData.armLocalEulerAngles;
+        transform.localScale = 0.1f * armData.armScale * Vector3.one;
+        SetShader(armData.armShader);
+        SetBonesEulerAngles(armData.bonesLocalEulerAngles);
     }
 
-    public void SetArmPose(string armPoseID)
+    public void SetArmData(string armDataID)
     {
-        var armPose = ArmPose.Find(armPoseID);
-        if (armPose != null)
-            SetArmPose(armPose);
+        var armData = ArmData.Find(armDataID);
+        if (armData != null)
+            SetArmData(armData);
     }
 
-    public void OutputArmPose()
+    public void OutputArmDate()
     {
         var armPos = transform.localPosition;
         var armRot = transform.localEulerAngles;
@@ -67,7 +67,7 @@ public class ViewmodelArm : MonoBehaviour
             boneEulers += $"      \"{keyValuePair.Key}\": {{ \"x\": {eulers.x}, \"y\": {eulers.y}, \"z\": {eulers.z} }},\n";
         }
 
-        string output = "  [ARM POSE ID HERE] {\n" +
+        string output = "  [ARM DATA ID HERE] {\n" +
             $"    \"arm_local_position\": {{ \"x\": {armPos.x}, \"y\": {armPos.y}, \"z\": {armPos.z} }},\n" +
             $"    \"arm_local_euler_angles\": {{ \"x\": {armRot.x}, \"y\": {armRot.y}, \"z\": {armRot.z} }},\n" +
             $"    \"arm_scale\": {10f * transform.localScale.x},\n" +
@@ -88,7 +88,7 @@ public class ViewmodelArm : MonoBehaviour
     internal static void OnEquipTool(PlayerTool tool)
     {
         // don't try to add viewmodel arm if disabled in config
-        if (!Config.EnableViewmodelArms || !ArmPose.Exists(tool.name)) return;
+        if (!Config.EnableViewmodelArms || !ArmData.Exists(tool.name)) return;
 
         // check for existing arm and enable if found (PlayerTool has no event for tool being equipped, so this is required)
         var existingArm = tool.transform.Find("ViewmodelArm");
@@ -103,7 +103,7 @@ public class ViewmodelArm : MonoBehaviour
 
     internal static void OnPickUpItem(OWItem item)
     {
-        if (!Config.EnableViewmodelArms || !ArmPose.Exists(ArmPose.TryGetArmPoseID(item))) return;
+        if (!Config.EnableViewmodelArms || !ArmData.Exists(ArmData.TryGetArmDataID(item))) return;
 
         ApplyItemAdjustments(item);
         if (item.transform.Find("ViewmodelArm") == null)
@@ -189,16 +189,16 @@ public class ViewmodelArm : MonoBehaviour
     {
         _playerTool = transform.parent.GetComponent<PlayerTool>();
         if (_playerTool != null)
-            SetArmPose(_playerTool.name);
+            SetArmData(_playerTool.name);
         else
         {
             _owItem = transform.parent.GetComponent<OWItem>();
             _owItem.onPickedUp.AddListener((_) => gameObject.SetActive(true));
             _itemCarryTool = Locator.GetToolModeSwapper().GetItemCarryTool();
 
-            string armPoseID = ArmPose.TryGetArmPoseID(_owItem);
-            if (armPoseID != null)
-                SetArmPose(armPoseID);
+            string armDataID = ArmData.TryGetArmDataID(_owItem);
+            if (armDataID != null)
+                SetArmData(armDataID);
         }
         _playerModelArmNoSuit = Locator.GetPlayerBody().transform.Find("Traveller_HEA_Player_v2/player_mesh_noSuit:Traveller_HEA_Player/player_mesh_noSuit:Player_RightArm").gameObject;
         _playerModelArmSuit = Locator.GetPlayerBody().transform.Find("Traveller_HEA_Player_v2/Traveller_Mesh_v01:Traveller_Geo/Traveller_Mesh_v01:PlayerSuit_RightArm").gameObject;
