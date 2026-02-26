@@ -1,5 +1,6 @@
 ﻿using Immersion.Objects;
 using OWML.Common;
+using OWML.Utils;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -65,10 +66,10 @@ public class ViewmodelArm : MonoBehaviour
     /// <summary>
     /// Applies a position, rotation, scale, shader, and pose from an ArmData to this ViewmodelArm.
     /// </summary>
-    /// <param name="armDataID">The ID of the ArmData to apply to this ViewmodelArm.</param>
-    public void SetArmData(string armDataID)
+    /// <param name="armDataId">The ID of the ArmData to apply to this ViewmodelArm.</param>
+    public void SetArmData(string armDataId)
     {
-        var armData = ArmData.Find(armDataID);
+        var armData = ArmData.Find(armDataId);
         if (armData != null)
             SetArmData(armData);
     }
@@ -100,13 +101,42 @@ public class ViewmodelArm : MonoBehaviour
         ModMain.Log(output);
     }
 
-    /// <summary>
-    /// Loads the Viewmodel Arm asset from the asset bundle.
-    /// </summary>
     internal static void LoadAsset()
     {
         var assetBundle = ModMain.Instance.ModHelper.Assets.LoadBundle("AssetBundles/viewmodelarm");
         s_viewmodelArmAsset = assetBundle.LoadAsset<GameObject>("Assets/ViewmodelArm.prefab");
+    }
+
+    internal static void OnEquipTool(PlayerTool playerTool)
+    {
+        if (!Config.EnableViewmodelArms && !ArmData.Exists(playerTool.name)) return;
+
+        // check for existing arm and enable if found (PlayerTool has no event for being equipped, so this is required)
+        var existingArm = playerTool.transform.Find("ViewmodelArm");
+        if (existingArm != null)
+        {
+            existingArm.gameObject.SetActive(true);
+            return;
+        }
+
+        ViewmodelArm.NewViewmodelArm(playerTool);
+    }
+
+    internal static void OnPickUpItem(OWItem owItem)
+    {
+        if (Config.EnableViewmodelArms && ArmData.Exists(ArmData.FindArmDataIdOfItem(owItem)) && owItem.transform.Find("ViewmodelArm") == null)
+            NewViewmodelArm(owItem);
+
+        // some items need to be adjusted
+        switch (owItem.GetItemType().GetName())
+        {
+            case "Lantern":
+                owItem.transform.localEulerAngles = new Vector3(0f, 327f, 0f);
+                break;
+            case "GhostbirdSkull":
+                ModMain.Instance.ModHelper.Events.Unity.FireOnNextUpdate(() => owItem.transform.localScale = 0.6f * Vector3.one);
+                break;
+        }
     }
 
     private static ViewmodelArm NewViewmodelArm(Transform parent)
@@ -188,9 +218,9 @@ public class ViewmodelArm : MonoBehaviour
             _owItem.onPickedUp.AddListener((_) => gameObject.SetActive(true));
             _itemCarryTool = Locator.GetToolModeSwapper().GetItemCarryTool();
 
-            string armDataID = ArmData.TryGetArmDataID(_owItem);
-            if (armDataID != null)
-                SetArmData(armDataID);
+            string armDataId = ArmData.FindArmDataIdOfItem(_owItem);
+            if (armDataId != null)
+                SetArmData(armDataId);
         }
 
         _playerModelArmNoSuit = Locator.GetPlayerBody().transform.Find("Traveller_HEA_Player_v2/player_mesh_noSuit:Traveller_HEA_Player/player_mesh_noSuit:Player_RightArm").gameObject;

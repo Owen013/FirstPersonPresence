@@ -50,9 +50,9 @@ public class ImmersionAPI
     /// </summary>
     /// <param name="viewmodelArmObject">The GameObject of the ViewmodelArm.</param>
     /// <param name="itemName">The name (from the JSON) of the Arm Data information.</param>
-    public void SetArmData(GameObject viewmodelArmObject, string armDataID)
+    public void SetArmData(GameObject viewmodelArmObject, string armDataId)
     {
-        viewmodelArmObject.GetComponent<ViewmodelArm>()?.SetArmData(armDataID);
+        viewmodelArmObject.GetComponent<ViewmodelArm>()?.SetArmData(armDataId);
     }
 
     [Obsolete("Immersion no longer changes AnimSpeed.")]

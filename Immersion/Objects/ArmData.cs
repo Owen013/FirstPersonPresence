@@ -34,24 +34,24 @@ public class ArmData
     /// <summary>
     /// Returns whether or not there is a corresponding ArmData for a given ID
     /// </summary>
-    /// <param name="armDataID">The ID of the desired ArmData</param>
+    /// <param name="armDataId">The ID of the desired ArmData</param>
     /// <returns>True if there is an ArmData for the given ID, false if there isn't one</returns>
-    public static bool Exists(string armDataID)
+    public static bool Exists(string armDataId)
     {
-        return !string.IsNullOrEmpty(armDataID) && s_armData != null && s_armData.ContainsKey(armDataID);
+        return !string.IsNullOrEmpty(armDataId) && s_armData != null && s_armData.ContainsKey(armDataId);
     }
 
     /// <summary>
     /// Returns the ArmData linked to the given ID, if it exists
     /// </summary>
-    /// <param name="armDataID">The ID of the desired ArmData</param>
+    /// <param name="armDataId">The ID of the desired ArmData</param>
     /// <returns>The corresponding ArmData, if it exists</returns>
-    public static ArmData Find(string armDataID)
+    public static ArmData Find(string armDataId)
     {
-        if (Exists(armDataID))
-            return s_armData[armDataID];
+        if (Exists(armDataId))
+            return s_armData[armDataId];
 
-        ModMain.Log($"No Arm Data found for {armDataID}", MessageType.Error);
+        ModMain.Log($"No Arm Data found for {armDataId}", MessageType.Error);
         return null;
     }
 
@@ -60,7 +60,7 @@ public class ArmData
     /// </summary>
     /// <param name="item">The item to try to get the ArmData ID for</param>
     /// <returns>The ID of the corresponding ArmData if it exists, null if it doesn't</returns>
-    public static string TryGetArmDataID(OWItem item)
+    public static string FindArmDataIdOfItem(OWItem item)
     {
         var itemTypeName = item.GetItemType().GetName();
         return itemTypeName switch

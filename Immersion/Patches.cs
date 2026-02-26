@@ -1,6 +1,5 @@
 ﻿using HarmonyLib;
 using Immersion.Components;
-using Immersion.Objects;
 using OWML.Utils;
 using UnityEngine;
 
@@ -13,23 +12,7 @@ internal static class Patches
     [HarmonyPatch(typeof(OWItem), nameof(OWItem.PickUpItem))]
     private static void OWItem_PickUpItem_Postfix(OWItem __instance)
     {
-        // try to create a ViewmodelArm for the item
-        if (Config.EnableViewmodelArms)
-        {
-            if (ArmData.Exists(ArmData.TryGetArmDataID(__instance)) && __instance.transform.Find("ViewmodelArm") == null)
-                ViewmodelArm.NewViewmodelArm(__instance);
-
-            // some items need to be adjusted
-            switch (__instance.GetItemType().GetName())
-            {
-                case "Lantern":
-                    __instance.transform.localEulerAngles = new Vector3(0f, 327f, 0f);
-                    break;
-                case "GhostbirdSkull":
-                    ModMain.Instance.ModHelper.Events.Unity.FireOnNextUpdate(() => __instance.transform.localScale = 0.6f * Vector3.one);
-                    break;
-            }
-        }
+        ViewmodelArm.OnPickUpItem(__instance);
 
         // TSTA skull renderer has weird bounds, so it can stop rendering when near the edges of the screen
         // normally isn't a problem, since its held position is not close enough to the edge of screen for this to be an issue
@@ -56,11 +39,8 @@ internal static class Patches
 
     [HarmonyPostfix]
     [HarmonyPatch(typeof(PlayerAnimController), nameof(PlayerAnimController.LateUpdate))]
-    private static void PlayerAnimController_LateUpdate_Postfix(PlayerAnimController __instance)
-    {
-        if (Config.UseLandingCrouchAnim && LandingAnimController.Instance != null)
-            __instance._animator.SetLayerWeight(1, Mathf.Max(__instance._animator.GetLayerWeight(1), Mathf.Clamp01(LandingAnimController.Instance.LandingAnimPosition / -0.3f)));
-    }
+    private static void PlayerAnimController_LateUpdate_Postfix(PlayerAnimController __instance) =>
+        LandingAnimController.Instance?.UpdateLandingCrouchAnim(__instance._animator);
 
     [HarmonyPostfix]
     [HarmonyPatch(typeof(PlayerCameraController), nameof(PlayerCameraController.Start))]
@@ -72,19 +52,6 @@ internal static class Patches
 
     [HarmonyPostfix]
     [HarmonyPatch(typeof(PlayerTool), nameof(PlayerTool.EquipTool))]
-    private static void PlayerTool_EquipTool_Postfix(PlayerTool __instance)
-    {
-        // try to create a ViewmodelArm
-        if (!Config.EnableViewmodelArms || !ArmData.Exists(__instance.name)) return;
-
-        // check for existing arm and enable if found (PlayerTool has no event for being equipped, so this is required)
-        var existingArm = __instance.transform.Find("ViewmodelArm");
-        if (existingArm != null)
-        {
-            existingArm.gameObject.SetActive(true);
-            return;
-        }
-
-        ViewmodelArm.NewViewmodelArm(__instance);
-    }
+    private static void PlayerTool_EquipTool_Postfix(PlayerTool __instance) =>
+        ViewmodelArm.OnEquipTool(__instance);
 }

@@ -20,6 +20,12 @@ public class LandingAnimController : MonoBehaviour
 
     private float _landingAnimDampVel;
 
+    internal void UpdateLandingCrouchAnim(Animator playerAnimator)
+    {
+        if (enabled && Config.UseLandingCrouchAnim)
+            playerAnimator.SetLayerWeight(1, Mathf.Max(playerAnimator.GetLayerWeight(1), Mathf.Clamp01(LandingAnimPosition / -0.3f)));
+    }
+
     private void OnConfigured() =>
         enabled = Config.EnableCameraLandingAnim || Config.EnableViewmodelLandingAnim;
 
