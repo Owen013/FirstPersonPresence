@@ -1,4 +1,5 @@
 ﻿using Immersion.Objects;
+using OWML.Common;
 using OWML.Utils;
 using System.Collections.Generic;
 using UnityEngine;
@@ -33,12 +34,26 @@ public class ViewmodelArm : MonoBehaviour
 
     private GameObject _playerModelArmSuit;
 
+    /// <summary>
+    /// Creates a new ViewmodelArm for the given PlayerTool
+    /// </summary>
+    /// <param name="playerTool">The PlayerTool to add a ViewmodelArm to</param>
+    /// <returns>The new ViewmodelArm</returns>
     public static ViewmodelArm NewViewmodelArm(PlayerTool playerTool) =>
         NewViewmodelArm(playerTool.transform);
 
+    /// <summary>
+    /// Creates a new ViewmodelArm for the given OWItem
+    /// </summary>
+    /// <param name="owItem">The OWItem to add a ViewmodelArm to</param>
+    /// <returns>The new ViewmodelArm</returns>
     public static ViewmodelArm NewViewmodelArm(OWItem owItem) =>
         NewViewmodelArm(owItem.transform);
 
+    /// <summary>
+    /// Applies a position, rotation, scale, shader, and pose from an ArmData to this ViewmodelArm
+    /// </summary>
+    /// <param name="armData">The ArmData to apply to this ViewmodelArm</param>
     public void SetArmData(ArmData armData)
     {
         transform.localPosition = armData.armLocalPosition;
@@ -48,6 +63,10 @@ public class ViewmodelArm : MonoBehaviour
         SetBonesEulerAngles(armData.bonesLocalEulerAngles);
     }
 
+    /// <summary>
+    /// Applies a position, rotation, scale, shader, and pose from an ArmData to this ViewmodelArm
+    /// </summary>
+    /// <param name="armDataID">The ID of the ArmData to apply to this ViewmodelArm</param>
     public void SetArmData(string armDataID)
     {
         var armData = ArmData.Find(armDataID);
@@ -55,6 +74,9 @@ public class ViewmodelArm : MonoBehaviour
             SetArmData(armData);
     }
 
+    /// <summary>
+    /// Outputs this ViewmodelArm's information in JSON format
+    /// </summary>
     public void OutputArmData()
     {
         var armPos = transform.localPosition;
@@ -83,44 +105,6 @@ public class ViewmodelArm : MonoBehaviour
     {
         var assetBundle = ModMain.Instance.ModHelper.Assets.LoadBundle("AssetBundles/viewmodelarm");
         s_viewmodelArmAsset = assetBundle.LoadAsset<GameObject>("Assets/ViewmodelArm.prefab");
-    }
-
-    internal static void OnEquipTool(PlayerTool tool)
-    {
-        // don't try to add viewmodel arm if disabled in config
-        if (!Config.EnableViewmodelArms || !ArmData.Exists(tool.name)) return;
-
-        // check for existing arm and enable if found (PlayerTool has no event for tool being equipped, so this is required)
-        var existingArm = tool.transform.Find("ViewmodelArm");
-        if (existingArm != null)
-        {
-            existingArm.gameObject.SetActive(true);
-            return;
-        }
-
-        NewViewmodelArm(tool);
-    }
-
-    internal static void OnPickUpItem(OWItem item)
-    {
-        if (!Config.EnableViewmodelArms || !ArmData.Exists(ArmData.TryGetArmDataID(item))) return;
-
-        ApplyItemAdjustments(item);
-        if (item.transform.Find("ViewmodelArm") == null)
-            NewViewmodelArm(item);
-    }
-
-    private static void ApplyItemAdjustments(OWItem item)
-    {
-        switch (item.GetItemType().GetName())
-        {
-            case "Lantern":
-                item.transform.localEulerAngles = new Vector3(0f, 327f, 0f);
-                return;
-            case "GhostbirdSkull":
-                ModMain.Instance.ModHelper.Events.Unity.FireOnNextUpdate(() => item.transform.localScale = 0.6f * Vector3.one);
-                return;
-        }
     }
 
     private static ViewmodelArm NewViewmodelArm(Transform parent)
@@ -162,6 +146,25 @@ public class ViewmodelArm : MonoBehaviour
             _bones[boneEulerAngles.Key].localEulerAngles = boneEulerAngles.Value;
     }
 
+    private void ApplyItemAdjustments()
+    {
+        if (_owItem == null)
+        {
+            ModMain.Log($"Cannot apply item adjustments to ViewmodelArm that is not linked to an OWItem.", MessageType.Error);
+            return;
+        }
+
+        switch (_owItem.GetItemType().GetName())
+        {
+            case "Lantern":
+                _owItem.transform.localEulerAngles = new Vector3(0f, 327f, 0f);
+                return;
+            case "GhostbirdSkull":
+                ModMain.Instance.ModHelper.Events.Unity.FireOnNextUpdate(() => _owItem.transform.localScale = 0.6f * Vector3.one);
+                return;
+        }
+    }
+
     private void Awake()
     {
         // grab the bones that matter
@@ -193,13 +196,18 @@ public class ViewmodelArm : MonoBehaviour
         else
         {
             _owItem = transform.parent.GetComponent<OWItem>();
-            _owItem.onPickedUp.AddListener((_) => gameObject.SetActive(true));
+            _owItem.onPickedUp.AddListener((_) =>
+            {
+                gameObject.SetActive(true);
+                ApplyItemAdjustments();
+            });
             _itemCarryTool = Locator.GetToolModeSwapper().GetItemCarryTool();
 
             string armDataID = ArmData.TryGetArmDataID(_owItem);
             if (armDataID != null)
                 SetArmData(armDataID);
         }
+
         _playerModelArmNoSuit = Locator.GetPlayerBody().transform.Find("Traveller_HEA_Player_v2/player_mesh_noSuit:Traveller_HEA_Player/player_mesh_noSuit:Player_RightArm").gameObject;
         _playerModelArmSuit = Locator.GetPlayerBody().transform.Find("Traveller_HEA_Player_v2/Traveller_Mesh_v01:Traveller_Geo/Traveller_Mesh_v01:PlayerSuit_RightArm").gameObject;
     }

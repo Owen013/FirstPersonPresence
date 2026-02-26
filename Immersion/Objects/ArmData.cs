@@ -31,11 +31,21 @@ public class ArmData
 
     private static List<string> s_jsonsPathsToLoad;
 
+    /// <summary>
+    /// Returns whether or not there is a corresponding ArmData for a given ID
+    /// </summary>
+    /// <param name="armDataID">The ID of the desired ArmData</param>
+    /// <returns>True if there is an ArmData for the given ID, false if there isn't one</returns>
     public static bool Exists(string armDataID)
     {
         return !string.IsNullOrEmpty(armDataID) && s_armData != null && s_armData.ContainsKey(armDataID);
     }
 
+    /// <summary>
+    /// Returns the ArmData linked to the given ID, if it exists
+    /// </summary>
+    /// <param name="armDataID">The ID of the desired ArmData</param>
+    /// <returns>The corresponding ArmData, if it exists</returns>
     public static ArmData Find(string armDataID)
     {
         if (Exists(armDataID))
@@ -45,6 +55,11 @@ public class ArmData
         return null;
     }
 
+    /// <summary>
+    /// Returns the ID of the ArmData that cooresponds to the given item, if it exists
+    /// </summary>
+    /// <param name="item">The item to try to get the ArmData ID for</param>
+    /// <returns>The ID of the corresponding ArmData if it exists, null if it doesn't</returns>
     public static string TryGetArmDataID(OWItem item)
     {
         var itemTypeName = item.GetItemType().GetName();
@@ -80,11 +95,15 @@ public class ArmData
             // TSTA items
             "CloakMineral" or "StrangerSeal" or "GhostbirdSkull" => $"TSTA_{itemTypeName}",
 
-            // nothing found
+            // no arm data ID for the given item
             _ => null,
         };
     }
 
+    /// <summary>
+    /// Loads ArmData from a custom JSON
+    /// </summary>
+    /// <param name="jsonPath">The path to the JSON with the custom ArmData info</param>
     public static void LoadCustomArmData(string jsonPath)
     {
         if (!s_isDefaultArmDataLoaded)
