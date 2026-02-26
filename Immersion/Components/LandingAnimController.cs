@@ -57,13 +57,14 @@ public class LandingAnimController : MonoBehaviour
 
     private void Update()
     {
-        if (Time.deltaTime != 0f)
+        float deltaTime = OWTime.IsPaused(OWTime.PauseType.Reading) ? Time.unscaledDeltaTime : Time.deltaTime;
+        if (deltaTime != 0f)
         {
             if (_isLandingAnimActive)
             {
                 // update camera height based on landing speed
                 float playerScale = ModMain.SmolHatchlingAPI != null ? ModMain.SmolHatchlingAPI.GetPlayerScale() : 1f;
-                LandingAnimPosition = Mathf.Min(LandingAnimPosition - _lastLandedSpeed * playerScale * Time.deltaTime, 0f);
+                LandingAnimPosition = Mathf.Min(LandingAnimPosition - _lastLandedSpeed * playerScale * deltaTime, 0f);
                 if (LandingAnimPosition <= -0.3f * Config.MaxLandingAnimDistance)
                 {
                     // landing anim bottoms out
@@ -72,7 +73,7 @@ public class LandingAnimController : MonoBehaviour
                 }
             }
             else
-                LandingAnimPosition = Mathf.SmoothDamp(LandingAnimPosition, 0f, ref _landingAnimDampVel, 0.15f * Config.LandingAnimRecoverySmoothness, 1.5f * Config.MaxLandingAnimRecoverySpeed);
+                LandingAnimPosition = Mathf.SmoothDamp(LandingAnimPosition, 0f, ref _landingAnimDampVel, 0.15f * Config.LandingAnimRecoverySmoothness, 1.5f * Config.MaxLandingAnimRecoverySpeed, deltaTime);
         }
 
         // apply offsets
