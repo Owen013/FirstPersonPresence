@@ -16,18 +16,35 @@ public class OffsetManager : MonoBehaviour
 
     public OffsetRoot TranslatorOffsetRoot { get; private set; }
 
+    /// <summary>
+    /// Applies a translational offset to the player camera.
+    /// </summary>
+    /// <param name="position">The local position of the offset.</param>
     public void AddCameraOffset(Vector3 position) =>
         CameraOffsetRoot.AddOffset(position);
 
+    /// <summary>
+    /// Applies a rotational offset to the player camera.
+    /// </summary>
+    /// <param name="rotation">The local rotation of the offset.</param>
     public void AddCameraOffset(Quaternion rotation) =>
         CameraOffsetRoot.AddOffset(rotation);
 
+    /// <summary>
+    /// Applies a translational and rotational offset to the player camera.
+    /// </summary>
+    /// <param name="position">The local position of the offset.</param>
+    /// <param name="rotation">The local rotation of the offset.</param>
     public void AddCameraOffset(Vector3 position, Quaternion rotation)
     {
         AddCameraOffset(position);
         AddCameraOffset(rotation);
     }
 
+    /// <summary>
+    /// Applies a translational offset to all tools that is scaled to match the tool scale.
+    /// </summary>
+    /// <param name="position">The local position of the offset.</param>
     public void AddToolOffsets(Vector3 position)
     {
         // apply different scaling factors for different tools
@@ -37,6 +54,10 @@ public class OffsetManager : MonoBehaviour
         TranslatorOffsetRoot.AddOffset(3f * position);
     }
 
+    /// <summary>
+    /// Applies a rotational offset to all tools.
+    /// </summary>
+    /// <param name="rotation">The local rotation of the offset.</param>
     public void AddToolOffsets(Quaternion rotation)
     {
         // apply same rotation offset for all tools
@@ -46,6 +67,11 @@ public class OffsetManager : MonoBehaviour
         TranslatorOffsetRoot.AddOffset(rotation);
     }
 
+    /// <summary>
+    /// Applies a translational offset (rescaling it so that it looks the same on all tools) and a rotational offset to all tools.
+    /// </summary>
+    /// <param name="position">The local position of the offset.</param>
+    /// <param name="rotation">The local rotation of the offset.</param>
     public void AddToolOffsets(Vector3 position, Quaternion rotation)
     {
         AddToolOffsets(position);

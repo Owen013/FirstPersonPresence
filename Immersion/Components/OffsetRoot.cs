@@ -11,11 +11,11 @@ public class OffsetRoot : MonoBehaviour
     private Quaternion nextLocalRotation;
 
     /// <summary>
-    /// Creates a new OffsetRoot for the specified GameObject
+    /// Creates a new OffsetRoot for the specified GameObject.
     /// </summary>
-    /// <param name="name">The name of the OffsetRoot GameObject</param>
-    /// <param name="offsetObject">The GameObject that this OffsetRoot is offsetting</param>
-    /// <returns>The new OffsetRoot</returns>
+    /// <param name="name">The name of the OffsetRoot GameObject.</param>
+    /// <param name="offsetObject">The GameObject that this OffsetRoot is offsetting.</param>
+    /// <returns>The new OffsetRoot.</returns>
     public static OffsetRoot NewOffsetRoot(string name, GameObject offsetObject)
     {
         var offsetRoot = new GameObject(name).AddComponent<OffsetRoot>();
@@ -28,24 +28,24 @@ public class OffsetRoot : MonoBehaviour
     }
 
     /// <summary>
-    /// Adds a translational offset to be applied on the next LateUpdate
+    /// Adds a translational offset to be applied on the next LateUpdate.
     /// </summary>
-    /// <param name="position">The translational component of the offset</param>
+    /// <param name="position">The translational component of the offset.</param>
     public void AddOffset(Vector3 position) =>
         nextLocalPosition += position;
 
     /// <summary>
-    /// Adds a rotational offset to be applied on the next LateUpdate
+    /// Adds a rotational offset to be applied on the next LateUpdate.
     /// </summary>
-    /// <param name="rotation">The rotational component of the offset</param>
+    /// <param name="rotation">The rotational component of the offset.</param>
     public void AddOffset(Quaternion rotation) =>
         nextLocalRotation *= rotation;
 
     /// <summary>
-    /// Adds an offset to be applied on the next LateUpdate
+    /// Adds an offset to be applied on the next LateUpdate.
     /// </summary>
-    /// <param name="position">The translational component of the offset</param>
-    /// <param name="rotation">The rotational component of the offset</param>
+    /// <param name="position">The translational component of the offset.</param>
+    /// <param name="rotation">The rotational component of the offset.</param>
     public void AddOffset(Vector3 position, Quaternion rotation)
     {
         AddOffset(position);

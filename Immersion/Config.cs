@@ -33,7 +33,7 @@ public static class Config
 
     public static float MaxLandingAnimRecoverySpeed { get; private set; }
 
-    public static float LandingAnimRecoverySmoothness { get; private set; }
+    public static float LandingAnimSmoothness { get; private set; }
 
     public static bool UseLandingCrouchAnim = false;
 
@@ -73,7 +73,7 @@ public static class Config
         EnableViewmodelLandingAnim = config.GetSettingsValue<bool>("EnableViewmodelLandingAnim");
         MaxLandingAnimDistance = config.GetSettingsValue<float>("MaxLandingAnimDistance");
         MaxLandingAnimRecoverySpeed = config.GetSettingsValue<float>("MaxLandingAnimRecoverySpeed");
-        LandingAnimRecoverySmoothness = config.GetSettingsValue<float>("LandingAnimRecoverySmoothness");
+        LandingAnimSmoothness = config.GetSettingsValue<float>("LandingAnimSmoothness");
 
         // breathing anim
         EnableBreathingAnim = config.GetSettingsValue<bool>("EnableBreathingAnim");
