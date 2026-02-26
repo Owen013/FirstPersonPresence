@@ -38,12 +38,13 @@ public class ScoutAnimController : MonoBehaviour
     {
         if (_isScoutAnimActive)
         {
-            if (Time.deltaTime != 0f)
+            float deltaTime = OWTime.IsPaused(OWTime.PauseType.Reading) ? Time.unscaledDeltaTime : Time.deltaTime;
+            if (deltaTime != 0f)
             {
                 float targetRecoil = Mathf.Max(_lastScoutLaunchTime + 0.5f - Time.time, 0f) * 2f;
                 // damp moves quickly during the initial recoil, and slowly during the recovery
                 float dampTime = targetRecoil > _scoutAnimStrength ? 0.05f : 0.1f;
-                _scoutAnimStrength = Mathf.SmoothDamp(_scoutAnimStrength, targetRecoil, ref _scoutAnimVel, dampTime);
+                _scoutAnimStrength = Mathf.SmoothDamp(_scoutAnimStrength, targetRecoil, ref _scoutAnimVel, dampTime, Mathf.Infinity, deltaTime);
             }
 
             if (_scoutAnimStrength != 0f)
