@@ -33,7 +33,9 @@ public class ViewbobController : MonoBehaviour
     {
         if (!_playerController._isMovementLocked)
         {
-            if (Time.deltaTime != 0f)
+            if (OWTime.IsPaused(OWTime.PauseType.Reading))
+                _viewbobScale = Mathf.SmoothDamp(_viewbobScale, 0f, ref _viewbobDampVel, 0.05f, Mathf.Infinity, Time.unscaledDeltaTime);
+            else if (Time.deltaTime != 0f)
             {
                 // viewbob cycle increases based on player ground speed
                 // viewbob time and viewbob strength are used by both camera and tool bobbing
