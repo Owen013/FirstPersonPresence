@@ -33,6 +33,8 @@ public static class Config
 
     public static float LandingAnimRecoverySmoothness { get; private set; }
 
+    public static bool UseLandingCrouchAnim = false;
+
     public static float BreathingAnimStrength { get; private set; }
 
     public static bool EnableScoutAnim { get; private set; }
