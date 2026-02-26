@@ -77,6 +77,8 @@ public class LandingAnimController : MonoBehaviour
 
         // apply offset
         _offsetManager.AddCameraOffset(new Vector3(0f, LandingAnimPosition, 0f));
+        _offsetManager.AddToolOffsets(0.1f * LandingAnimPosition * _offsetManager.transform.InverseTransformDirection(_playerController.transform.up));
+        _offsetManager.AddToolOffsets(Quaternion.Euler(_landingAnimDampVel, 0f, 0f));
 
         // keep track of player velocity
         _lastPlayerVel = _playerController.GetAttachedOWRigidbody().GetVelocity();

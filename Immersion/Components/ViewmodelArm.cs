@@ -145,17 +145,6 @@ public class ViewmodelArm : MonoBehaviour
             _bones[boneEulerAngles.Key].localEulerAngles = boneEulerAngles.Value;
     }
 
-    private void ApplyItemAdjustments()
-    {
-        if (_owItem == null)
-        {
-            ModMain.Log($"Cannot apply item adjustments to ViewmodelArm that is not linked to an OWItem.", MessageType.Error);
-            return;
-        }
-
-        
-    }
-
     private void Awake()
     {
         // grab the bones that matter
@@ -187,11 +176,7 @@ public class ViewmodelArm : MonoBehaviour
         else
         {
             _owItem = transform.parent.GetComponent<OWItem>();
-            _owItem.onPickedUp.AddListener((_) =>
-            {
-                gameObject.SetActive(true);
-                ApplyItemAdjustments();
-            });
+            _owItem.onPickedUp.AddListener((_) => gameObject.SetActive(true));
             _itemCarryTool = Locator.GetToolModeSwapper().GetItemCarryTool();
 
             string armDataID = ArmData.TryGetArmDataID(_owItem);
