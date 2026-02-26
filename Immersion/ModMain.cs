@@ -42,7 +42,7 @@ public class ModMain : ModBehaviour
 
         // load viewmodel arm stuff
         ViewmodelArm.LoadAsset();
-        ArmData.LoadArmData();
+        ArmData.LoadDefaultArmData();
 
         // ready
         ModHelper.Console.WriteLine($"Immersion is ready to go!", MessageType.Success);

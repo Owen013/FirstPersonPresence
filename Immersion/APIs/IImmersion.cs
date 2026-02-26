@@ -15,7 +15,7 @@ public interface IImmersion
     /// Loads Arm Data from JSON.
     /// </summary>
     /// <param name="jsonPath">The path to the JSON containing the custom ArmData information</param>
-    public void LoadArmData(string jsonPath);
+    public void LoadCustomArmData(string jsonPath);
 
     /// <summary>
     /// Creates a Viewmodel Arm on a PlayerTool

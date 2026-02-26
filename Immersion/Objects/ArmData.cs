@@ -29,53 +29,11 @@ public class ArmData
 
     private static bool s_isDefaultArmDataLoaded;
 
-    public static void LoadArmData(string jsonPath = "")
-    {
-        bool isLoadingDefaultArmData = string.IsNullOrEmpty(jsonPath);
-        if (isLoadingDefaultArmData)
-        {
-            jsonPath = $"{Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location)}/Data/viewmodel-arm-data.json";
-            ModMain.Log($"Loading default Arm Data...", MessageType.Info);
-        }
-        else
-            // other mods can load custom arm data for custom items or to replace arm data for existing tools/items
-            ModMain.Log($"Loading arm data from \"{jsonPath}\"...", MessageType.Info);
-
-        var newArmData = JsonConvert.DeserializeObject<Dictionary<string, ArmData>>(File.ReadAllText(jsonPath));
-        if (s_armData == null)
-            s_armData = newArmData;
-        else if (isLoadingDefaultArmData)
-        {
-            foreach (var data in newArmData)
-            {
-                // only write new arm data if there is no arm data at this key
-                if (!s_armData.ContainsKey(data.Key))
-                    s_armData.Add(data.Key, data.Value);
-            }
-        }
-        else
-        {
-            foreach (var data in newArmData)
-                // overwrite arm data if this is a custom json
-                if (s_armData.ContainsKey(data.Key))
-                    s_armData[data.Key] = data.Value;
-                else
-                    s_armData.Add(data.Key, data.Value);
-        }
-
-        if (isLoadingDefaultArmData)
-            s_isDefaultArmDataLoaded = true;
-        ModMain.Log($"Arm Data loaded successfully!", MessageType.Success);
-    }
+    private static List<string> s_jsonsPathsToLoad;
 
     public static bool Exists(string armDataID)
     {
-        if (string.IsNullOrEmpty(armDataID)) return false;
-
-        if ((s_armData == null || !s_armData.ContainsKey(armDataID)) && !s_isDefaultArmDataLoaded)
-            LoadArmData();
-
-        return s_armData.ContainsKey(armDataID);
+        return !string.IsNullOrEmpty(armDataID) && s_armData != null && s_armData.ContainsKey(armDataID);
     }
 
     public static ArmData Find(string armDataID)
@@ -125,5 +83,61 @@ public class ArmData
             // nothing found
             _ => null,
         };
+    }
+
+    public static void LoadCustomArmData(string jsonPath)
+    {
+        if (!s_isDefaultArmDataLoaded)
+        {
+            // add to list to be loaded right after default arm data
+            s_jsonsPathsToLoad ??= [];
+            s_jsonsPathsToLoad.Add(jsonPath);
+            return;
+        }
+
+        ModMain.Log($"Loading Arm Data from \"{jsonPath}\"...", MessageType.Info);
+        LoadArmData(jsonPath);
+    }
+
+    internal static void LoadDefaultArmData()
+    {
+        if (s_isDefaultArmDataLoaded)
+        {
+            ModMain.Log("Default Arm Data is already loaded.", MessageType.Error);
+            return;
+        }
+
+        ModMain.Log($"Loading default Arm Data...", MessageType.Info);
+        LoadArmData($"{Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location)}/Data/viewmodel-arm-data.json");
+        s_isDefaultArmDataLoaded = true;
+
+        if (s_jsonsPathsToLoad != null)
+        {
+            // load any custom arm data that was waiting for default arm data to be loaded
+            foreach (var jsonPath in s_jsonsPathsToLoad)
+                LoadArmData(jsonPath);
+
+            s_jsonsPathsToLoad = null;
+        }
+    }
+
+    private static void LoadArmData(string jsonPath)
+    {
+        var newArmData = JsonConvert.DeserializeObject<Dictionary<string, ArmData>>(File.ReadAllText(jsonPath));
+        if (s_armData == null)
+            s_armData = newArmData;
+        else
+        {
+            foreach (var armData in newArmData)
+            {
+                // overwrite existing arm data
+                if (s_armData.ContainsKey(armData.Key))
+                    s_armData[armData.Key] = armData.Value;
+                else
+                    s_armData.Add(armData.Key, armData.Value);
+            }
+        }
+
+        ModMain.Log($"Arm Data loaded successfully!", MessageType.Success);
     }
 }

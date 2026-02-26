@@ -22,9 +22,9 @@ public class ImmersionAPI
         return ViewmodelArm.NewViewmodelArm(item).gameObject;
     }
 
-    public void LoadArmData(string jsonPath)
+    public void LoadCustomArmData(string jsonPath)
     {
-        ArmData.LoadArmData(jsonPath);
+        ArmData.LoadCustomArmData(jsonPath);
     }
 
     public void SetArmData(GameObject viewmodelArmObject, string armDataID)
