@@ -25,7 +25,9 @@ public static class Config
 
     public static bool EnableBreathingAnim { get; private set; }
 
-    public static bool EnableLandingAnim { get; private set; }
+    public static bool EnableCameraLandingAnim { get; private set; }
+
+    public static bool EnableViewmodelLandingAnim { get; private set; }
 
     public static float MaxLandingAnimDistance { get; private set; }
 
@@ -67,7 +69,8 @@ public static class Config
         ViewmodelSwayStrength = config.GetSettingsValue<float>("ViewmodelSwayStrength");
 
         // landing anim
-        EnableLandingAnim = config.GetSettingsValue<bool>("EnableLandingAnim");
+        EnableCameraLandingAnim = config.GetSettingsValue<bool>("EnableCameraLandingAnim");
+        EnableViewmodelLandingAnim = config.GetSettingsValue<bool>("EnableViewmodelLandingAnim");
         MaxLandingAnimDistance = config.GetSettingsValue<float>("MaxLandingAnimDistance");
         MaxLandingAnimRecoverySpeed = config.GetSettingsValue<float>("MaxLandingAnimRecoverySpeed");
         LandingAnimRecoverySmoothness = config.GetSettingsValue<float>("LandingAnimRecoverySmoothness");

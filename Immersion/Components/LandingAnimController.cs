@@ -21,7 +21,7 @@ public class LandingAnimController : MonoBehaviour
     private float _landingAnimDampVel;
 
     private void OnConfigured() =>
-        enabled = Config.EnableLandingAnim;
+        enabled = Config.EnableCameraLandingAnim || Config.EnableViewmodelLandingAnim;
 
     private void Awake()
     {
@@ -75,10 +75,14 @@ public class LandingAnimController : MonoBehaviour
                 LandingAnimPosition = Mathf.SmoothDamp(LandingAnimPosition, 0f, ref _landingAnimDampVel, 0.15f * Config.LandingAnimRecoverySmoothness, 1.5f * Config.MaxLandingAnimRecoverySpeed);
         }
 
-        // apply offset
-        _offsetManager.AddCameraOffset(new Vector3(0f, LandingAnimPosition, 0f));
-        _offsetManager.AddToolOffsets(0.1f * LandingAnimPosition * _offsetManager.transform.InverseTransformDirection(_playerController.transform.up));
-        _offsetManager.AddToolOffsets(Quaternion.Euler(_landingAnimDampVel, 0f, 0f));
+        // apply offsets
+        if (Config.EnableCameraLandingAnim)
+            _offsetManager.AddCameraOffset(new Vector3(0f, LandingAnimPosition, 0f));
+        if (Config.EnableViewmodelLandingAnim)
+        {
+            _offsetManager.AddToolOffsets(0.1f * LandingAnimPosition * _offsetManager.transform.InverseTransformDirection(_playerController.transform.up));
+            _offsetManager.AddToolOffsets(Quaternion.Euler(_landingAnimDampVel, 0f, 0f));
+        }
 
         // keep track of player velocity
         _lastPlayerVel = _playerController.GetAttachedOWRigidbody().GetVelocity();

@@ -83,9 +83,15 @@
     "Landing Animation": {
       "type": "separator"
     },
-    "EnableLandingAnim": {
-      "title": "Enable Landing Animation",
+    "EnableCameraLandingAnim": {
+      "title": "Enable Camera Landing Animation",
       "tooltip": "Makes the camera move downward a bit when you land with some speed.",
+      "type": "toggle",
+      "value": true
+    },
+    "EnableViewmodelLandingAnim": {
+      "title": "Enable Viewmodel Landing Animation",
+      "tooltip": "Makes the held item/tool move downward a bit when you land with some speed.",
       "type": "toggle",
       "value": true
     },
