@@ -109,17 +109,18 @@ public class ViewmodelArm : MonoBehaviour
 
     internal static void OnEquipTool(PlayerTool playerTool)
     {
-        if (!Config.EnableViewmodelArms && !ArmData.Exists(playerTool.name)) return;
-
-        // check for existing arm and enable if found (PlayerTool has no event for being equipped, so this is required)
-        var existingArm = playerTool.transform.Find("ViewmodelArm");
-        if (existingArm != null)
+        if (Config.EnableViewmodelArms && ArmData.Exists(playerTool.name))
         {
-            existingArm.gameObject.SetActive(true);
-            return;
-        }
+            // check for existing arm and enable if found (PlayerTool has no event for being equipped, so this is required)
+            var existingArm = playerTool.transform.Find("ViewmodelArm");
+            if (existingArm != null)
+            {
+                existingArm.gameObject.SetActive(true);
+                return;
+            }
 
-        ViewmodelArm.NewViewmodelArm(playerTool);
+            NewViewmodelArm(playerTool);
+        }
     }
 
     internal static void OnPickUpItem(OWItem owItem)
