@@ -63,41 +63,63 @@ public class ArmData
     public static string FindArmDataIdOfItem(OWItem item)
     {
         var itemTypeName = item.GetItemType().GetName();
-        return itemTypeName switch
+        switch (itemTypeName)
         {
             // vanilla items
-            "SharedStone" or "SlideReel" or "Lantern" or "VisionTorch" => itemTypeName,
+            case "SharedStone":
+            case "SlideReel":
+            case "Lantern":
+            case "VisionTorch":
+                return itemTypeName;
 
             // vanilla items with variants
-            "Scroll" => item.name switch
-            {
-                "Prefab_NOM_Scroll_egg" => "Scroll_Egg",
-                "Prefab_NOM_Scroll_Jeff" => "Scroll_Jeff",
-                _ => "Scroll"
-            },
-            "ConversationStone" => (item as NomaiConversationStone).GetWord() switch
-            {
-                NomaiWord.Identify or NomaiWord.Explain => "ConversationStone_Big",
-                _ => "ConversationStone"
-            },
-            "WarpCore" => (item as WarpCoreItem).GetWarpCoreType() switch
-            {
-                WarpCoreType.Vessel or WarpCoreType.VesselBroken => "WarpCore",
-                _ => "WarpCore_Simple"
-            },
-            "DreamLantern" => (item as DreamLanternItem).GetLanternType() switch
-            {
-                DreamLanternType.Nonfunctioning => "DreamLantern_Nonfunctioning",
-                DreamLanternType.Malfunctioning => "DreamLantern_Malfunctioning",
-                _ => "DreamLantern"
-            },
+            case "Scroll":
+                return item.name switch
+                {
+                    "Prefab_NOM_Scroll_egg" => "Scroll_Egg",
+                    "Prefab_NOM_Scroll_Jeff" => "Scroll_Jeff",
+                    _ => "Scroll"
+                };
+            case "ConversationStone":
+                if (item is NomaiConversationStone conversationStone)
+                {
+                    return conversationStone.GetWord() switch
+                    {
+                        NomaiWord.Identify or NomaiWord.Explain => "ConversationStone_Big",
+                        _ => "ConversationStone"
+                    };
+                }
+                return null;
+            case "WarpCore":
+                if (item is WarpCoreItem warpCore)
+                {
+                    return warpCore.GetWarpCoreType() switch
+                    {
+                        WarpCoreType.Vessel or WarpCoreType.VesselBroken => "WarpCore",
+                        _ => "WarpCore_Simple"
+                    };
+                }
+                return null;
+            case "DreamLantern": 
+                if (item is DreamLanternItem dreamLantern)
+                {
+                    return dreamLantern.GetLanternType() switch
+                    {
+                        DreamLanternType.Nonfunctioning => "DreamLantern_Nonfunctioning",
+                        DreamLanternType.Malfunctioning => "DreamLantern_Malfunctioning",
+                        _ => "DreamLantern"
+                    };
+                }
+                return null;
 
             // TSTA items
-            "CloakMineral" or "StrangerSeal" or "GhostbirdSkull" => $"TSTA_{itemTypeName}",
-
-            // no arm data ID for the given item
-            _ => null,
+            case "CloakMineral":
+            case "StrangerSeal":
+            case "GhostbirdSkull":
+                return $"TSTA_{itemTypeName}";
         };
+
+        return null;
     }
 
     /// <summary>
