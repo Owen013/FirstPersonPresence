@@ -6,7 +6,7 @@ using System.IO;
 using System.Reflection;
 using UnityEngine;
 
-namespace Immersion.Objects;
+namespace Immersion.Scripts;
 
 public class ArmData
 {
@@ -149,7 +149,7 @@ public class ArmData
         }
 
         ModMain.Log($"Loading default Arm Data...", MessageType.Info);
-        LoadArmData($"{Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location)}/Data/viewmodel-arm-data.json");
+        LoadArmData($"{Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location)}/viewmodel-arm-data.json");
         s_isDefaultArmDataLoaded = true;
 
         if (s_jsonsPathsToLoad != null)

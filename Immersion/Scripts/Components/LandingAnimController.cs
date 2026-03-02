@@ -1,6 +1,6 @@
 ﻿using UnityEngine;
 
-namespace Immersion.Components;
+namespace Immersion.Scripts.Components;
 
 public class LandingAnimController : MonoBehaviour
 {

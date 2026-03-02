@@ -1,10 +1,9 @@
-﻿using Immersion.Objects;
-using OWML.Common;
+﻿using OWML.Common;
 using OWML.Utils;
 using System.Collections.Generic;
 using UnityEngine;
 
-namespace Immersion.Components;
+namespace Immersion.Scripts.Components;
 
 public class ViewmodelArm : MonoBehaviour
 {
