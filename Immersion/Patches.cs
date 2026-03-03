@@ -12,6 +12,7 @@ internal static class Patches
     [HarmonyPatch(typeof(OWItem), nameof(OWItem.PickUpItem))]
     private static void OWItem_PickUpItem_Postfix(OWItem __instance)
     {
+        OffsetManager.OnPickUpItem(__instance);
         ViewmodelArm.OnPickUpItem(__instance);
 
         // TSTA skull renderer has weird bounds, so it can stop rendering when near the edges of the screen

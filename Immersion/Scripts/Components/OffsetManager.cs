@@ -1,4 +1,6 @@
-﻿using UnityEngine;
+﻿using OWML.Utils;
+using System.Collections.Generic;
+using UnityEngine;
 
 namespace Immersion.Scripts.Components;
 
@@ -15,6 +17,14 @@ public class OffsetManager : MonoBehaviour
     public OffsetRoot ProbeLauncherOffsetRoot { get; private set; }
 
     public OffsetRoot TranslatorOffsetRoot { get; private set; }
+
+    private static readonly Dictionary<string, float> s_itemOffsetScales = new Dictionary<string, float>
+    {
+        ["GhostbirdSkull"] = 0.5f,
+        ["Compass"] = 0.6f
+    };
+
+    private float _currentItemOffsetScale = 1f;
 
     /// <summary>
     /// Applies a translational offset to the player camera.
@@ -48,7 +58,7 @@ public class OffsetManager : MonoBehaviour
     public void AddToolOffsets(Vector3 position)
     {
         // apply different scaling factors for different tools
-        ItemToolOffsetRoot.AddOffset(position);
+        ItemToolOffsetRoot.AddOffset(_currentItemOffsetScale * position);
         SignalscopeOffsetRoot.AddOffset(position);
         ProbeLauncherOffsetRoot.AddOffset(3f * position);
         TranslatorOffsetRoot.AddOffset(3f * position);
@@ -78,7 +88,16 @@ public class OffsetManager : MonoBehaviour
         AddToolOffsets(rotation);
     }
 
-    private void Awake()
+    internal static void OnPickUpItem(OWItem item)
+    {
+        string itemTypeName = item.GetItemType().GetName();
+        if (s_itemOffsetScales.ContainsKey(itemTypeName))
+            Instance._currentItemOffsetScale = s_itemOffsetScales[itemTypeName];
+        else
+            Instance._currentItemOffsetScale = 1f;
+    }
+
+    private void Start()
     {
         Instance = this;
 
