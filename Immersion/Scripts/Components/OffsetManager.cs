@@ -20,8 +20,10 @@ public class OffsetManager : MonoBehaviour
 
     private static readonly Dictionary<string, float> s_itemOffsetScales = new Dictionary<string, float>
     {
-        ["GhostbirdSkull"] = 0.5f,
-        ["Compass"] = 0.6f
+        ["CloakMineral"] = 0.8f,
+        ["StrangerSeal"] = 0.8f,
+        ["GhostbirdSkull"] = 0.8f,
+        ["Compass"] = 0.8f
     };
 
     private float _currentItemOffsetScale = 1f;
@@ -58,7 +60,7 @@ public class OffsetManager : MonoBehaviour
     public void AddToolOffsets(Vector3 position)
     {
         // apply different scaling factors for different tools
-        ItemToolOffsetRoot.AddOffset(_currentItemOffsetScale * position);
+        ItemToolOffsetRoot.AddOffset(0.8f * _currentItemOffsetScale * position);
         SignalscopeOffsetRoot.AddOffset(position);
         ProbeLauncherOffsetRoot.AddOffset(3f * position);
         TranslatorOffsetRoot.AddOffset(3f * position);
