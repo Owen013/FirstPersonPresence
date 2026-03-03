@@ -10,9 +10,9 @@ public class ViewmodelSwayController : MonoBehaviour
 
     private PlayerCharacterController _playerController;
 
-    private Vector2 _handSway;
+    private Vector2 _currentSway;
 
-    private Vector2 _handSwayDampVel;
+    private Vector2 _swayVelocity;
 
     private void OnConfigured() =>
         enabled = Config.EnableViewmodelSway;
@@ -56,30 +56,30 @@ public class ViewmodelSwayController : MonoBehaviour
             if (degreesY <= PlayerCameraController._minDegreesYNormal)
                 lookInput.y = Mathf.Max(0f, lookInput.y);
 
-            // decay already existing tool sway and then add new tool sway
-            _handSway -= lookInput * (1f - Mathf.Min((_handSway - lookInput).magnitude, 1));
+            // decay tool sway
+            _currentSway = Vector2.SmoothDamp(_currentSway, Vector2.zero, ref _swayVelocity, 0.2f, Mathf.Infinity, deltaTime);
+
+            // add new tool sway
+            _currentSway += -lookInput * (0.5f * Mathf.Cos(Mathf.PI * _currentSway.magnitude) + 0.5f);
         }
 
         // x sway is less pronounced the more up/down the player is looking
         // sway is split into local (relative to camera) and global (relative to player)
-        float localZOffset = -Mathf.Pow(_handSway.y, 2f);
-        float globalZOffset = -Mathf.Pow(_handSway.x, 2f);
+        var inwardOffset = Vector3.forward * (Mathf.Sqrt(Mathf.Clamp01(1f - _currentSway.y * _currentSway.y)) - 1f);
+        var relativePlayerForward = _cameraController.transform.InverseTransformDirection(_playerController.transform.forward);
+        var backwardOffset = relativePlayerForward * (Mathf.Sqrt(Mathf.Clamp01(1f - _currentSway.x * _currentSway.x)) - 1f);
 
         // calculate and apply the final offset
-        var offset = new Vector3(_handSway.x, _handSway.y, localZOffset);
-        offset += globalZOffset * _cameraController.transform.InverseTransformDirection(_playerController.transform.forward);
-        offset *= Config.ViewmodelSwayStrength * 0.25f;
+        var offset = new Vector3(_currentSway.x, _currentSway.y, 0f) + inwardOffset + backwardOffset;
+        offset *= 0.25f * Config.ViewmodelSwayStrength;
         _offsetManager.AddToolOffsets(offset);
-
-        // decay tool sway
-        _handSway = Vector2.SmoothDamp(_handSway, Vector2.zero, ref _handSwayDampVel, 0.2f, Mathf.Infinity, deltaTime);
     }
 
     private void OnDisable()
     {
         // if tool sway is disabled, reset tool sway parameters
-        _handSway = Vector3.zero;
-        _handSwayDampVel = Vector3.zero;
+        _currentSway = Vector3.zero;
+        _swayVelocity = Vector3.zero;
     }
 
     private void OnDestroy() =>
