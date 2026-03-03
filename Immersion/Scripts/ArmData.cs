@@ -117,6 +117,10 @@ public class ArmData
             case "StrangerSeal":
             case "GhostbirdSkull":
                 return $"TSTA_{itemTypeName}";
+
+            // Dreambound compass
+            case "Compass":
+                return "Dreambound_Compass";
         };
 
         return null;

@@ -454,6 +454,30 @@
       "thumb_03": { "x": 0, "y": 0, "z": 345 },
       "thumb_04": { "x": 0, "y": 0, "z": 0 },
     }
+  },
+
+  "Dreambound_Compass": {
+    "arm_local_position": { "x": -0.04000003, "y": 0.295, "z": -0.8000003 },
+    "arm_local_euler_angles": { "x": 16.92655, "y": 353.8939, "z": 357.7708 },
+    "arm_scale": 1,
+    "arm_shader": "Standard",
+    "bones_local_euler_angles": {
+      "shoulder": { "x": 270, "y": 90, "z": 0 },
+      "elbow": { "x": 0, "y": 15, "z": 0 },
+      "wrist": { "x": 0, "y": 0, "z": 0 },
+      "finger_01_01": { "x": 0, "y": 0, "z": 45 },
+      "finger_01_02": { "x": 0, "y": 0, "z": 45 },
+      "finger_01_03": { "x": 0, "y": 0, "z": 45 },
+      "finger_01_04": { "x": 0, "y": 0, "z": 0 },
+      "finger_02_01": { "x": 0, "y": 0, "z": 45 },
+      "finger_02_02": { "x": 0, "y": 0, "z": 60 },
+      "finger_02_03": { "x": 0, "y": 0, "z": 60 },
+      "finger_02_04": { "x": 0, "y": 0, "z": 0 },
+      "thumb_01": { "x": 90, "y": 15, "z": 0 },
+      "thumb_02": { "x": 0, "y": 0, "z": 30 },
+      "thumb_03": { "x": 0, "y": 0, "z": 30 },
+      "thumb_04": { "x": 0, "y": 0, "z": 0 },
+    }
   }
 
 }
