@@ -132,6 +132,9 @@ public class ViewmodelArm : MonoBehaviour
         // some items need to be adjusted
         switch (owItem.GetItemType().GetName())
         {
+            case "ConversationStone":
+                owItem.transform.localPosition += 0.1f * Vector3.forward;
+                break;
             case "Lantern":
                 owItem.transform.localEulerAngles = new Vector3(0f, 327f, 0f);
                 break;
