@@ -62,8 +62,8 @@ public class ViewmodelSwayController : MonoBehaviour
 
         // x sway is less pronounced the more up/down the player is looking
         // sway is split into local (relative to camera) and global (relative to player)
-        float localZOffset = 0.15f * (Mathf.Cos(Mathf.PI * _handSway.y) - 1f);
-        float globalZOffset = 0.15f * (Mathf.Cos(Mathf.PI * _handSway.x) - 1f);
+        float localZOffset = -Mathf.Pow(_handSway.y, 2f);
+        float globalZOffset = -Mathf.Pow(_handSway.x, 2f);
 
         // calculate and apply the final offset
         var offset = new Vector3(_handSway.x, _handSway.y, localZOffset);
