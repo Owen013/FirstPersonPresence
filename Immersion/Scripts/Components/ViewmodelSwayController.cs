@@ -71,7 +71,7 @@ public class ViewmodelSwayController : MonoBehaviour
 
         // calculate and apply the final offset
         var offset = new Vector3(_currentSway.x, _currentSway.y, 0f) + inwardOffset + backwardOffset;
-        offset *= 0.25f * Config.ViewmodelSwayStrength;
+        offset *= 0.2f * Config.ViewmodelSwayStrength;
         _offsetManager.AddToolOffsets(offset);
     }
 
