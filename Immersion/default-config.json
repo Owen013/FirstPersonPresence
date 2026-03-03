@@ -1,169 +1,169 @@
 {
-  "$schema": "https://raw.githubusercontent.com/ow-mods/owml/master/schemas/config_schema.json",
-  "enabled": true,
-  "settings": {
-    "Viewmodel Arms": {
-      "type": "separator"
-    },
-    "EnableViewmodelArms": {
-      "title": "Enable Viewmodel Arms",
-      "tooltip": "Adds an arm model to every item/tool you can hold.",
-      "type": "toggle",
-      "value": true
-    },
+    "$schema": "https://raw.githubusercontent.com/ow-mods/owml/master/schemas/config_schema.json",
+    "enabled": true,
+    "settings": {
+        "Viewmodel Arms": {
+            "type": "separator"
+        },
+        "EnableViewmodelArms": {
+            "title": "Enable Viewmodel Arms",
+            "tooltip": "Adds an arm model to every item/tool you can hold.",
+            "type": "toggle",
+            "value": true
+        },
 
-    "View Bobbing": {
-      "type": "separator"
-    },
-    "EnableHeadBob": {
-      "title": "Enable Head Bobbing",
-      "tooltip": "Makes the camera bob while you're moving.",
-      "type": "toggle",
-      "value": true
-    },
-    "HeadBobStrength": {
-      "title": "Head Bob Strength",
-      "tooltip": "The strength of the Head Bob effect.",
-      "type": "slider",
-      "value": 1,
-      "min": 0,
-      "max": 2
-    },
-    "EnableViewmodelBob": {
-      "title": "Enable Viewmodel Bobbing",
-      "tooltip": "Makes your held item/tool bob while you're moving.",
-      "type": "toggle",
-      "value": true
-    },
-    "ViewmodelBobStrength": {
-      "title": "Viewmodel Bob Strength",
-      "tooltip": "The strength of the Viewmodel Bob effect.",
-      "type": "slider",
-      "value": 1,
-      "min": 0,
-      "max": 2
-    },
+        "View Bobbing": {
+            "type": "separator"
+        },
+        "EnableHeadBob": {
+            "title": "Enable Head Bobbing",
+            "tooltip": "Makes the camera bob while you're moving.",
+            "type": "toggle",
+            "value": true
+        },
+        "HeadBobStrength": {
+            "title": "Head Bob Strength",
+            "tooltip": "The strength of the Head Bob effect.",
+            "type": "slider",
+            "value": 1,
+            "min": 0,
+            "max": 2
+        },
+        "EnableViewmodelBob": {
+            "title": "Enable Viewmodel Bobbing",
+            "tooltip": "Makes your held item/tool bob while you're moving.",
+            "type": "toggle",
+            "value": true
+        },
+        "ViewmodelBobStrength": {
+            "title": "Viewmodel Bob Strength",
+            "tooltip": "The strength of the Viewmodel Bob effect.",
+            "type": "slider",
+            "value": 1,
+            "min": 0,
+            "max": 2
+        },
 
-    "Viewmodel Offset": {
-      "type": "separator"
-    },
-    "EnableViewmodelOffset": {
-      "title": "Enable Viewmodel Offset",
-      "tooltip": "Makes your held item/tool move up/down based on how far up/down you are looking.",
-      "type": "toggle",
-      "value": true
-    },
-    "ViewmodelOffsetStrength": {
-      "title": "Viewmodel Offset Strength",
-      "tooltip": "The strength of the Viewmodel Offset effect.",
-      "type": "slider",
-      "value": 1,
-      "min": 0,
-      "max": 2
-    },
+        "Viewmodel Offset": {
+            "type": "separator"
+        },
+        "EnableViewmodelOffset": {
+            "title": "Enable Viewmodel Offset",
+            "tooltip": "Makes your held item/tool move up/down based on how far up/down you are looking.",
+            "type": "toggle",
+            "value": true
+        },
+        "ViewmodelOffsetStrength": {
+            "title": "Viewmodel Offset Strength",
+            "tooltip": "The strength of the Viewmodel Offset effect.",
+            "type": "slider",
+            "value": 1,
+            "min": 0,
+            "max": 2
+        },
 
-    "Viewmodel Sway": {
-      "type": "separator"
-    },
-    "EnableViewmodelSway": {
-      "title": "Enable Viewmodel Sway",
-      "tooltip": "Makes your held item/tool lag behind the camera as you look around.",
-      "type": "toggle",
-      "value": true
-    },
-    "ViewmodelSwayStrength": {
-      "title": "Viewmodel Sway Strength",
-      "tooltip": "The strength of the Viewmodel Sway effect.",
-      "type": "slider",
-      "value": 1,
-      "min": 0,
-      "max": 2
-    },
-    
-    "Landing Animation": {
-      "type": "separator"
-    },
-    "EnableCameraLandingAnim": {
-      "title": "Enable Camera Landing Animation",
-      "tooltip": "Makes the camera move downward a bit when you land with some speed.",
-      "type": "toggle",
-      "value": true
-    },
-    "EnableViewmodelLandingAnim": {
-      "title": "Enable Viewmodel Landing Animation",
-      "tooltip": "Makes the held item/tool move downward a bit when you land with some speed.",
-      "type": "toggle",
-      "value": true
-    },
-    "MaxLandingAnimDistance": {
-      "title": "Max Landing Animation Distance",
-      "tooltip": "How far the camera will move downward before bottoming out.",
-      "type": "slider",
-      "value": 1,
-      "min": 0,
-      "max": 2
-    },
-    "MaxLandingAnimRecoverySpeed": {
-      "title": "Max Landing Animation Recovery Speed",
-      "tooltip": "The maximum speed with which the camera can move back upwards.",
-      "type": "slider",
-      "value": 1,
-      "min": 0,
-      "max": 2
-    },
-    "LandingAnimSmoothness": {
-      "title": "Landing Animation Smoothness",
-      "tooltip": "How smoothly the camera will move back upwards.",
-      "type": "slider",
-      "value": 1,
-      "min": 0,
-      "max": 2
-    },
+        "Viewmodel Sway": {
+            "type": "separator"
+        },
+        "EnableViewmodelSway": {
+            "title": "Enable Viewmodel Sway",
+            "tooltip": "Makes your held item/tool lag behind the camera as you look around.",
+            "type": "toggle",
+            "value": true
+        },
+        "ViewmodelSwayStrength": {
+            "title": "Viewmodel Sway Strength",
+            "tooltip": "The strength of the Viewmodel Sway effect.",
+            "type": "slider",
+            "value": 1,
+            "min": 0,
+            "max": 2
+        },
 
-    "Breathing Animation": {
-      "type": "separator"
-    },
-    "EnableBreathingAnim": {
-      "title": "Enable Breathing Animation",
-      "tooltip": "Makes the held item/tool move very subtly while you're standing still.",
-      "type": "toggle",
-      "value": true
-    },
-    "BreathingAnimStrength": {
-      "title": "Breathing Animation Strength",
-      "tooltip": "The strength of the breathing effect.",
-      "type": "slider",
-      "value": 1,
-      "min": 0,
-      "max": 2
-    },
+        "Landing Animation": {
+            "type": "separator"
+        },
+        "EnableCameraLandingAnim": {
+            "title": "Enable Camera Landing Animation",
+            "tooltip": "Makes the camera move downward a bit when you land with some speed.",
+            "type": "toggle",
+            "value": true
+        },
+        "EnableViewmodelLandingAnim": {
+            "title": "Enable Viewmodel Landing Animation",
+            "tooltip": "Makes the held item/tool move downward a bit when you land with some speed.",
+            "type": "toggle",
+            "value": true
+        },
+        "MaxLandingAnimDistance": {
+            "title": "Max Landing Animation Distance",
+            "tooltip": "How far the camera will move downward before bottoming out.",
+            "type": "slider",
+            "value": 1,
+            "min": 0,
+            "max": 2
+        },
+        "MaxLandingAnimRecoverySpeed": {
+            "title": "Max Landing Animation Recovery Speed",
+            "tooltip": "The maximum speed with which the camera can move back upwards.",
+            "type": "slider",
+            "value": 1,
+            "min": 0,
+            "max": 2
+        },
+        "LandingAnimSmoothness": {
+            "title": "Landing Animation Smoothness",
+            "tooltip": "How smoothly the camera will move back upwards.",
+            "type": "slider",
+            "value": 1,
+            "min": 0,
+            "max": 2
+        },
 
-    "Miscellaneous": {
-      "type": "separator"
-    },
-    "EnableScoutAnim": {
-      "title": "Enable Scout Launcher Fire Animation",
-      "tooltip": "Makes the camera and scout launcher recoil when you launch a scout.",
-      "type": "toggle",
-      "value": true
-    },
-    "EnableSprintingAnim": {
-      "title": "Enable Sprinting Animation",
-      "tooltip": "(REQUIRES HIKER'S MOD) Makes the held item/tool move downward while you're sprinting.",
-      "type": "toggle",
-      "value": true
-    },
-    "FixViewmodelClipping": {
-      "title": "Fix Viewmodel Clipping",
-      "tooltip": "Changes the camera's near clip plane to prevent held items and viewmodel arms from clipping into the camera. May cause other less noticeable visual bugs.",
-      "type": "toggle",
-      "value": true
-    },
-    "HideStowedItems": {
-      "title": "Hide Stowed Items",
-      "tooltip": "Makes held items move fully offscreen when they are stowed (i.e. while piloting the ship, roasting marshmallows, or holding another tool).",
-      "type": "toggle",
-      "value": true
+        "Breathing Animation": {
+            "type": "separator"
+        },
+        "EnableBreathingAnim": {
+            "title": "Enable Breathing Animation",
+            "tooltip": "Makes the held item/tool move very subtly while you're standing still.",
+            "type": "toggle",
+            "value": true
+        },
+        "BreathingAnimStrength": {
+            "title": "Breathing Animation Strength",
+            "tooltip": "The strength of the breathing effect.",
+            "type": "slider",
+            "value": 1,
+            "min": 0,
+            "max": 2
+        },
+
+        "Miscellaneous": {
+            "type": "separator"
+        },
+        "EnableScoutAnim": {
+            "title": "Enable Scout Launcher Fire Animation",
+            "tooltip": "Makes the camera and scout launcher recoil when you launch a scout.",
+            "type": "toggle",
+            "value": true
+        },
+        "EnableSprintingAnim": {
+            "title": "Enable Sprinting Animation",
+            "tooltip": "(REQUIRES HIKER'S MOD) Makes the held item/tool move downward while you're sprinting.",
+            "type": "toggle",
+            "value": true
+        },
+        "FixViewmodelClipping": {
+            "title": "Fix Viewmodel Clipping",
+            "tooltip": "Changes the camera's near clip plane to prevent held items and viewmodel arms from clipping into the camera. May cause other less noticeable visual bugs.",
+            "type": "toggle",
+            "value": true
+        },
+        "HideStowedItems": {
+            "title": "Hide Stowed Items",
+            "tooltip": "Makes held items move fully offscreen when they are stowed (i.e. while piloting the ship, roasting marshmallows, or holding another tool).",
+            "type": "toggle",
+            "value": true
+        }
     }
-  }
 }

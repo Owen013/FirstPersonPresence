@@ -45,6 +45,6 @@ public class ModMain : ModBehaviour
         ArmData.LoadDefaultArmData();
 
         // ready
-        ModHelper.Console.WriteLine($"Immersion is ready to go!", MessageType.Success);
+        Log($"Immersion is ready to go!", MessageType.Success);
     }
 }

@@ -1,5 +1,4 @@
 {
-  
   "Signalscope": {
     "arm_local_position": { "x": 0.12, "y": -0.025, "z": -0.04 },
     "arm_local_euler_angles": { "x": 0, "y": 0, "z": 0 },

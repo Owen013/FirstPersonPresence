@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using OWML.Utils;
+using UnityEngine;
 
 namespace Immersion.Scripts.Components;
 
@@ -25,7 +26,10 @@ public class HideStowedItemsController : MonoBehaviour
     private void Update()
     {
         var itemCarryTool = _toolModeSwapper.GetItemCarryTool();
-        if (itemCarryTool.GetHeldItem() != null && !itemCarryTool.IsPuttingAway() && _toolModeSwapper.GetToolMode() != ToolMode.Item)
+        var heldItem = itemCarryTool.GetHeldItem();
+        // compass item is not supposed to be stowed when at the cockpit
+        bool isCompassAndAtShip = heldItem.GetItemType().GetName() == "Compass" && OWInput.IsInputMode(InputMode.ShipCockpit);
+        if (heldItem != null && !isCompassAndAtShip && !itemCarryTool.IsPuttingAway() && _toolModeSwapper.GetToolMode() != ToolMode.Item)
         {
             // tilt item carry tool further offscreen once its vanilla stow animation finishes
             float deltaTime = OWTime.IsPaused(OWTime.PauseType.Reading) ? Time.unscaledDeltaTime : Time.deltaTime;
