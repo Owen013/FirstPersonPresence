@@ -35,7 +35,7 @@ public class ViewmodelSwayController : MonoBehaviour
         float deltaTime = OWTime.IsPaused(OWTime.PauseType.Reading) ? Time.unscaledDeltaTime : Time.deltaTime;
         if (deltaTime != 0f)
         {
-            // decay tool sway
+            // decay sway
             _currentSway = Vector2.SmoothDamp(_currentSway, Vector2.zero, ref _swayVelocity, 0.2f, Mathf.Infinity, deltaTime);
 
             if (OWInput.IsInputMode(InputMode.Character) && !(PlayerState.InZeroG() && PlayerState.IsWearingSuit()))
@@ -44,43 +44,44 @@ public class ViewmodelSwayController : MonoBehaviour
                 Vector2 lookInput = OWInput.GetAxisValue(InputLibrary.look);
                 lookInput *= _cameraController._playerCamera.fieldOfView / _cameraController._initFOV;
                 lookInput *= InputUtil.IsMouseMoveAxis(InputLibrary.look.AxisID) ? 0.01666667f : deltaTime;
-                bool isAlarmWakingPlayer = Locator.GetAlarmSequenceController() != null && Locator.GetAlarmSequenceController().IsAlarmWakingPlayer();
+                var alarmController = Locator.GetAlarmSequenceController();
+                bool isAlarmWakingPlayer = alarmController != null && alarmController.IsAlarmWakingPlayer();
                 if (_cameraController._zoomed || isAlarmWakingPlayer)
                     lookInput *= PlayerCameraController.ZOOM_SCALAR;
 
                 // player can't turn left or right if turning is locked
                 if (_playerController._isTurningLocked)
                     lookInput.x = 0f;
+                else
+                    // horizontal sway is reduced the more up/down player is looking
+                    lookInput.x *= (Mathf.Cos(degreesY / 90f * Mathf.PI) + 1f) * 0.5f;
 
-                // horizontal sway is reduced the more up/down player is looking
-                lookInput.x *= (Mathf.Cos(degreesY / 90f * Mathf.PI) + 1f) * 0.5f;
+                // player can't look up/down if at max/min degrees
+                if (degreesY >= PlayerCameraController._maxDegreesYNormal && lookInput.y > 0f)
+                    lookInput.y = 0f;
+                else if (degreesY <= PlayerCameraController._minDegreesYNormal && lookInput.y < 0f)
+                    lookInput.y = 0f;
 
-                // cancel out vertical sway if player is at max or min vertical look angle and is trying to turn more in that direction
-                if (degreesY >= PlayerCameraController._maxDegreesYNormal)
-                    lookInput.y = Mathf.Min(0f, lookInput.y);
-                if (degreesY <= PlayerCameraController._minDegreesYNormal)
-                    lookInput.y = Mathf.Max(0f, lookInput.y);
-
-                // add new tool sway
+                // add new sway
                 _currentSway += -lookInput * (0.5f * Mathf.Cos(Mathf.PI * _currentSway.magnitude) + 0.5f);
             }
         }
 
-        // x sway is less pronounced the more up/down the player is looking
-        // sway is split into local (relative to camera) and global (relative to player)
-        var inwardOffset = Vector3.forward * (Mathf.Sqrt(Mathf.Clamp01(1f - _currentSway.y * _currentSway.y)) - 1f);
-        var relativePlayerForward = _cameraController.transform.InverseTransformDirection(_playerController.transform.forward);
-        var backwardOffset = relativePlayerForward * (Mathf.Sqrt(Mathf.Clamp01(1f - _currentSway.x * _currentSway.x)) - 1f);
+        float xScale = Mathf.Sqrt(Mathf.Clamp01(1f - _currentSway.x * _currentSway.x));
+        float yScale = Mathf.Sqrt(Mathf.Clamp01(1f - _currentSway.y * _currentSway.y));
+        var swayX = Vector3.right * _currentSway.x * xScale;
+        var swayY = Vector3.up * _currentSway.y * yScale;
+        var swayCameraZ = Vector3.forward * (yScale - 1f);
+        var swayPlayerZ = _cameraController.transform.InverseTransformDirection(_playerController.transform.forward) * (xScale - 1f);
 
         // calculate and apply the final offset
-        var offset = new Vector3(_currentSway.x, _currentSway.y, 0f) + inwardOffset + backwardOffset;
-        offset *= 0.2f * Config.ViewmodelSwayStrength;
+        var offset = swayX + swayY + swayCameraZ + swayPlayerZ;
+        offset *= 0.25f * Config.ViewmodelSwayStrength;
         _offsetManager.AddToolOffsets(offset);
     }
 
     private void OnDisable()
     {
-        // if tool sway is disabled, reset tool sway parameters
         _currentSway = Vector3.zero;
         _swayVelocity = Vector3.zero;
     }
