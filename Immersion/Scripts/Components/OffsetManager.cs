@@ -20,6 +20,8 @@ public class OffsetManager : MonoBehaviour
 
     private static readonly Dictionary<string, float> s_itemOffsetScales = new Dictionary<string, float>
     {
+        ["DreamLantern"] = 1.2f,
+        ["DreamLantern_Malfunctioning"] = 1.2f,
         ["CloakMineral"] = 0.8f,
         ["StrangerSeal"] = 0.8f,
         ["GhostbirdSkull"] = 0.8f,
@@ -92,9 +94,14 @@ public class OffsetManager : MonoBehaviour
 
     internal static void OnPickUpItem(OWItem item)
     {
-        string itemTypeName = item.GetItemType().GetName();
-        if (s_itemOffsetScales.ContainsKey(itemTypeName))
-            Instance._currentItemOffsetScale = s_itemOffsetScales[itemTypeName];
+        string itemId = item.GetItemType().GetName();
+
+        // some items require special treatment
+        if (itemId == "DreamLantern" && item is DreamLanternItem dreamLantern && dreamLantern.GetLanternType() != DreamLanternType.Functioning)
+            itemId += $"_{dreamLantern.GetLanternType().GetName()}";
+
+        if (s_itemOffsetScales.ContainsKey(itemId))
+            Instance._currentItemOffsetScale = s_itemOffsetScales[itemId];
         else
             Instance._currentItemOffsetScale = 1f;
     }

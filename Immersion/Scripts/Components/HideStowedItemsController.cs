@@ -27,17 +27,21 @@ public class HideStowedItemsController : MonoBehaviour
     {
         var itemCarryTool = _toolModeSwapper.GetItemCarryTool();
         var heldItem = itemCarryTool.GetHeldItem();
-        // compass item is not supposed to be stowed when at the cockpit
-        bool isCompassAndAtShip = heldItem.GetItemType().GetName() == "Compass" && OWInput.IsInputMode(InputMode.ShipCockpit);
-        if (heldItem != null && !isCompassAndAtShip && !itemCarryTool.IsPuttingAway() && _toolModeSwapper.GetToolMode() != ToolMode.Item)
+        if (heldItem != null)
         {
-            // tilt item carry tool further offscreen once its vanilla stow animation finishes
-            float deltaTime = OWTime.IsPaused(OWTime.PauseType.Reading) ? Time.unscaledDeltaTime : Time.deltaTime;
-            _addedStowDegrees = Mathf.MoveTowards(_addedStowDegrees, 45f, 135f * deltaTime);
-            _offsetManager.ItemToolOffsetRoot.AddOffset(Quaternion.Euler(_addedStowDegrees, 0f, 0f));
+            // compass item is not supposed to be stowed when at the cockpit
+            bool isCompassAndAtShip = heldItem.GetItemType().GetName() == "Compass" && OWInput.IsInputMode(InputMode.ShipCockpit);
+            if (!isCompassAndAtShip && !itemCarryTool.IsPuttingAway() && _toolModeSwapper.GetToolMode() != ToolMode.Item)
+            {
+                // tilt item carry tool further offscreen once its vanilla stow animation finishes
+                float deltaTime = OWTime.IsPaused(OWTime.PauseType.Reading) ? Time.unscaledDeltaTime : Time.deltaTime;
+                _addedStowDegrees = Mathf.MoveTowards(_addedStowDegrees, 45f, 135f * deltaTime);
+                _offsetManager.ItemToolOffsetRoot.AddOffset(Quaternion.Euler(_addedStowDegrees, 0f, 0f));
+                return;
+            }
         }
-        else
-            _addedStowDegrees = 0f;
+
+        _addedStowDegrees = 0f;
     }
 
     private void OnDisable() =>
