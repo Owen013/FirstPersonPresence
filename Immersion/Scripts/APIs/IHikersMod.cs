@@ -1,8 +1,9 @@
-﻿namespace Immersion.Scripts.APIs;
-
-public interface IHikersMod
+﻿namespace Immersion.Scripts.APIs
 {
-    public bool IsSprinting();
+    public interface IHikersMod
+    {
+        public bool IsSprinting();
 
-    public void UpdateConfig();
+        public void UpdateConfig();
+    }
 }

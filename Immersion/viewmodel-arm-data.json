@@ -457,7 +457,7 @@
   },
 
   "Dreambound_Compass": {
-    "arm_local_position": { "x": -0.04000003, "y": 0.295, "z": -0.8000003 },
+    "arm_local_position": { "x": -0.04, "y": 0.295, "z": -0.8 },
     "arm_local_euler_angles": { "x": 16.92655, "y": 353.8939, "z": 357.7708 },
     "arm_scale": 1,
     "arm_shader": "Standard",
