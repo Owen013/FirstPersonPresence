@@ -21,8 +21,10 @@ namespace Immersion
             Instance.ModHelper.Console.WriteLine(message, type);
         }
 
-        public override object GetApi() =>
-            new ImmersionAPI();
+        public override object GetApi()
+        {
+            return new ImmersionAPI();
+        }
 
         public override void Configure(IModConfig config)
         {
