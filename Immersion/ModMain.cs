@@ -12,14 +12,15 @@ namespace Immersion
     {
         public static ModMain Instance { get; private set; }
 
+        public static IModAssets Assets => Instance.ModHelper.Assets;
+
+        public static IModEvents Events => Instance.ModHelper.Events;
+
+        public static IModConsole Console => Instance.ModHelper.Console;
+
         public static ISmolHatchling SmolHatchlingAPI { get; private set; }
 
         public static IHikersMod HikersModAPI { get; private set; }
-
-        public static void Log(string message, MessageType type = MessageType.Message)
-        {
-            Instance.ModHelper.Console.WriteLine(message, type);
-        }
 
         public override object GetApi()
         {
@@ -49,7 +50,7 @@ namespace Immersion
             ArmData.LoadDefaultArmData();
 
             // ready
-            Log($"Immersion is ready to go!", MessageType.Success);
+            Console.WriteLine($"Immersion is ready to go!", MessageType.Success);
         }
     }
 }

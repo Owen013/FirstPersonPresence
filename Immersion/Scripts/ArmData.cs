@@ -49,7 +49,9 @@ namespace Immersion.Scripts
         public static ArmData Find(string armDataId)
         {
             if (Exists(armDataId))
+            {
                 return s_armData[armDataId];
+            }
 
             ModMain.Log($"No Arm Data found for {armDataId}", MessageType.Error);
             return null;
@@ -161,7 +163,9 @@ namespace Immersion.Scripts
             {
                 // load any custom arm data that was waiting for default arm data to be loaded
                 foreach (var jsonPath in s_jsonsPathsToLoad)
+                {
                     LoadArmData(jsonPath);
+                }
 
                 s_jsonsPathsToLoad = null;
             }
@@ -171,16 +175,22 @@ namespace Immersion.Scripts
         {
             var newArmData = JsonConvert.DeserializeObject<Dictionary<string, ArmData>>(File.ReadAllText(jsonPath));
             if (s_armData == null)
+            {
                 s_armData = newArmData;
+            }
             else
             {
                 foreach (var armData in newArmData)
                 {
                     // overwrite existing arm data
                     if (s_armData.ContainsKey(armData.Key))
+                    {
                         s_armData[armData.Key] = armData.Value;
+                    }
                     else
+                    {
                         s_armData.Add(armData.Key, armData.Value);
+                    }
                 }
             }
 

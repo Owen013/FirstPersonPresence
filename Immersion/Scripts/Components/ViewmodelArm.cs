@@ -105,12 +105,12 @@ namespace Immersion.Scripts.Components
                 boneEulersString +
                 "    }\n  }";
 
-            ModMain.Log(output);
+            ModMain.Console.WriteLine(output);
         }
 
         internal static void LoadAsset()
         {
-            var assetBundle = ModMain.Instance.ModHelper.Assets.LoadBundle("AssetBundles/viewmodelarm");
+            var assetBundle = ModMain.Assets.LoadBundle("AssetBundles/viewmodelarm");
             s_viewmodelArmAsset = assetBundle.LoadAsset<GameObject>("Assets/ViewmodelArm.prefab");
         }
 
@@ -147,7 +147,10 @@ namespace Immersion.Scripts.Components
                     owItem.transform.localEulerAngles = new Vector3(0f, 327f, 0f);
                     break;
                 case "GhostbirdSkull":
-                    ModMain.Instance.ModHelper.Events.Unity.FireOnNextUpdate(() => owItem.transform.localScale = 0.6f * Vector3.one);
+                    ModMain.Events.Unity.FireOnNextUpdate(() =>
+                    {
+                        owItem.transform.localScale = 0.6f * Vector3.one;
+                    });
                     break;
             }
         }
@@ -168,7 +171,7 @@ namespace Immersion.Scripts.Components
         {
             if (string.IsNullOrEmpty(shaderName))
             {
-                ModMain.Log("No shaderName provided for ViewmodelArm.SetShader", MessageType.Error);
+                ModMain.Console.WriteLine("No shaderName provided for ViewmodelArm.SetShader", MessageType.Error);
                 return;
             }
 
