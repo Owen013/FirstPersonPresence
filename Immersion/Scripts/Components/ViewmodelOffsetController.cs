@@ -29,7 +29,7 @@ namespace Immersion.Scripts.Components
             // trig is used for circular motion
             // tool moves down+back when looking up, and up+back when looking down
             // tool is not offset when looking straight ahead
-            toolOffset.z = Mathf.Cos(verticalLookAmount * Mathf.PI / 3f) - 1;
+            toolOffset.z = Mathf.Cos(verticalLookAmount * Mathf.PI / 3f) - 1f;
             toolOffset.y = -Mathf.Sin(verticalLookAmount * Mathf.PI / 3f);
             _offsetManager.AddToolOffsets(Config.ViewmodelOffsetStrength * 0.05f * toolOffset);
         }

@@ -17,7 +17,7 @@ namespace Immersion
 
             // TSTA skull renderer has weird bounds, so it can stop rendering when near the edges of the screen
             // normally isn't a problem, since its held position is not close enough to the edge of screen for this to be an issue
-            // with Immersion installed, hand sway / hand height offset can cause skull to move far enough away to disappear
+            // with Immersion installed, viewmodel sway/offset can cause skull to move far enough away to disappear
             // so set the renderers to update when "offscreen" while the skull is held
             if (__instance.GetItemType().GetName() == "GhostbirdSkull")
             {

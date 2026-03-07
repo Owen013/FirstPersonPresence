@@ -12,7 +12,7 @@ namespace Immersion.Scripts.Components
 
         private Vector2 _currentSway;
 
-        private Vector2 _swayVelocity;
+        private Vector2 _velocity;
 
         private void OnConfigured()
         {
@@ -38,7 +38,7 @@ namespace Immersion.Scripts.Components
             if (deltaTime != 0f)
             {
                 // decay sway
-                _currentSway = Vector2.SmoothDamp(_currentSway, Vector2.zero, ref _swayVelocity, 0.2f, Mathf.Infinity, deltaTime);
+                _currentSway = Vector2.SmoothDamp(_currentSway, Vector2.zero, ref _velocity, 0.2f, Mathf.Infinity, deltaTime);
 
                 if (OWInput.IsInputMode(InputMode.Character) && !(PlayerState.InZeroG() && PlayerState.IsWearingSuit()))
                 {
@@ -95,7 +95,7 @@ namespace Immersion.Scripts.Components
         private void OnDisable()
         {
             _currentSway = Vector3.zero;
-            _swayVelocity = Vector3.zero;
+            _velocity = Vector3.zero;
         }
 
         private void OnDestroy()

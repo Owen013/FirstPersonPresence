@@ -10,11 +10,11 @@ namespace Immersion.Scripts.Components
 
         private PlayerAnimController _animController;
 
-        private float _viewbobTime;
+        private float _time;
 
-        private float _viewbobScale;
+        private float _strength;
 
-        private float _viewbobDampVel;
+        private float _velocity;
 
         private void OnConfigured()
         {
@@ -38,13 +38,13 @@ namespace Immersion.Scripts.Components
                 // if time is frozen during gameplay, smoothly transition viewbob strength to zero
                 if (OWTime.IsPaused(OWTime.PauseType.Reading))
                 {
-                    _viewbobScale = Mathf.SmoothDamp(_viewbobScale, 0f, ref _viewbobDampVel, 0.05f, Mathf.Infinity, Time.unscaledDeltaTime);
+                    _strength = Mathf.SmoothDamp(_strength, 0f, ref _velocity, 0.05f, Mathf.Infinity, Time.unscaledDeltaTime);
                 }
                 else if (Time.deltaTime != 0f)
                 {
                     // viewbob cycle increases based on player ground speed
                     // viewbob time and viewbob strength are used by both camera and tool bobbing
-                    _viewbobTime += _animController._animator.speed * Time.deltaTime;
+                    _time += _animController._animator.speed * Time.deltaTime;
                     if (_playerController.IsGrounded())
                     {
                         // change viewbob strength quickly if on ground
@@ -69,17 +69,17 @@ namespace Immersion.Scripts.Components
                             }
                         }
 
-                        _viewbobScale = Mathf.SmoothDamp(_viewbobScale, Mathf.Min(groundVel.magnitude / 6f, 2f), ref _viewbobDampVel, 0.05f);
+                        _strength = Mathf.SmoothDamp(_strength, Mathf.Min(groundVel.magnitude / 6f, 2f), ref _velocity, 0.05f);
                     }
                     else
                     {
                         // decay viewbob strength slowly if in air
-                        _viewbobScale = Mathf.SmoothDamp(_viewbobScale, 0f, ref _viewbobDampVel, 1f);
+                        _strength = Mathf.SmoothDamp(_strength, 0f, ref _velocity, 1f);
                     }
                 }
 
                 // trig is used for a circular viewbob motion
-                var viewBob = _viewbobScale * new Vector2(Mathf.Sin(_viewbobTime * 2f * Mathf.PI), Mathf.Cos(_viewbobTime * 4f * Mathf.PI));
+                var viewBob = _strength * new Vector2(Mathf.Sin(_time * 2f * Mathf.PI), Mathf.Cos(_time * 4f * Mathf.PI));
 
                 // apply camera offset if camera bob is enabled
                 if (Config.EnableHeadBob)
@@ -91,23 +91,23 @@ namespace Immersion.Scripts.Components
                 if (Config.EnableViewmodelBob)
                 {
                     var offsetPos = Config.ViewmodelBobStrength * new Vector3(0.02f * viewBob.x, 0.003f * viewBob.y);
-                    var offsetRot = Quaternion.Euler(Config.ViewmodelBobStrength * _viewbobScale * -0.75f * Mathf.Sin(_viewbobTime * 4f * Mathf.PI), 0f, 0f);
+                    var offsetRot = Quaternion.Euler(Config.ViewmodelBobStrength * _strength * -0.75f * Mathf.Sin(_time * 4f * Mathf.PI), 0f, 0f);
                     _offsetManager.AddToolOffsets(offsetPos, offsetRot);
                 }
             }
             else
             {
-                _viewbobTime = 0f;
-                _viewbobScale = 0f;
-                _viewbobDampVel = 0f;
+                _time = 0f;
+                _strength = 0f;
+                _velocity = 0f;
             }
         }
 
         private void OnDisable()
         {
-            _viewbobTime = 0f;
-            _viewbobScale = 0f;
-            _viewbobDampVel = 0f;
+            _time = 0f;
+            _strength = 0f;
+            _velocity = 0f;
         }
 
         private void OnDestroy()

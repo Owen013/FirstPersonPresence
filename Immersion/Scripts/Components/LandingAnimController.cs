@@ -6,25 +6,25 @@ namespace Immersion.Scripts.Components
     {
         public static LandingAnimController Instance { get; private set; }
 
-        public float LandingAnimPosition { get; private set; }
+        public float Position { get; private set; }
 
         private OffsetManager _offsetManager;
 
         private PlayerCharacterController _playerController;
 
-        private Vector3 _lastPlayerVel;
+        private Vector3 _lastPlayerVelocity;
 
-        private bool _isLandingAnimActive;
+        private bool _isActive;
 
         private float _lastLandedSpeed;
 
-        private float _landingAnimDampVel;
+        private float _velocity;
 
         internal void UpdateLandingCrouchAnim(Animator playerAnimator)
         {
             if (enabled && Config.UseLandingCrouchAnim)
             {
-                playerAnimator.SetLayerWeight(1, Mathf.Max(playerAnimator.GetLayerWeight(1), Mathf.Clamp01(LandingAnimPosition / -0.3f)));
+                playerAnimator.SetLayerWeight(1, Mathf.Max(playerAnimator.GetLayerWeight(1), Mathf.Clamp01(Position / -0.3f)));
             }
         }
 
@@ -46,8 +46,9 @@ namespace Immersion.Scripts.Components
             _playerController.OnBecomeGrounded += () =>
             {
                 // if the player lands with a downward speed of at least 5, play landing anim
-                Vector3 landingVel = _lastPlayerVel - _playerController.GetGroundBody().GetPointVelocity(_playerController.GetGroundContactPoint());
-                float landingSpeed = -_playerController.transform.InverseTransformVector(landingVel).y;
+                Vector3 groundPointVelocity = _playerController.GetGroundBody().GetPointVelocity(_playerController.GetGroundContactPoint());
+                Vector3 landingVelocity = groundPointVelocity - _lastPlayerVelocity;
+                float landingSpeed = _playerController.transform.InverseTransformVector(landingVelocity).y;
 
                 if (ModMain.SmolHatchlingAPI != null)
                 {
@@ -62,7 +63,7 @@ namespace Immersion.Scripts.Components
                 if (landingSpeed >= 5f)
                 {
                     _lastLandedSpeed = landingSpeed;
-                    _isLandingAnimActive = true;
+                    _isActive = true;
                 }
             };
         }
@@ -72,46 +73,46 @@ namespace Immersion.Scripts.Components
             float deltaTime = OWTime.IsPaused(OWTime.PauseType.Reading) ? Time.unscaledDeltaTime : Time.deltaTime;
             if (deltaTime != 0f)
             {
-                if (_isLandingAnimActive)
+                if (_isActive)
                 {
                     // update camera height based on landing speed
                     float playerScale = ModMain.SmolHatchlingAPI != null ? ModMain.SmolHatchlingAPI.GetPlayerScale() : 1f;
-                    LandingAnimPosition = Mathf.Min(LandingAnimPosition - _lastLandedSpeed * playerScale * deltaTime, 0f);
-                    if (LandingAnimPosition <= -0.3f * Config.MaxLandingAnimDistance)
+                    Position = Mathf.Min(Position - _lastLandedSpeed * playerScale * deltaTime, 0f);
+                    if (Position <= -0.3f * Config.MaxLandingAnimDistance)
                     {
                         // landing anim bottoms out
-                        LandingAnimPosition = -0.3f * Config.MaxLandingAnimDistance;
-                        _isLandingAnimActive = false;
+                        Position = -0.3f * Config.MaxLandingAnimDistance;
+                        _isActive = false;
                     }
                 }
                 else
                 {
-                    LandingAnimPosition = Mathf.SmoothDamp(LandingAnimPosition, 0f, ref _landingAnimDampVel, 0.15f * Config.LandingAnimSmoothness, 1.5f * Config.MaxLandingAnimRecoverySpeed, deltaTime);
+                    Position = Mathf.SmoothDamp(Position, 0f, ref _velocity, 0.15f * Config.LandingAnimSmoothness, 1.5f * Config.MaxLandingAnimRecoverySpeed, deltaTime);
                 }
             }
 
             // apply offsets
             if (Config.EnableCameraLandingAnim)
             {
-                _offsetManager.AddCameraOffset(new Vector3(0f, LandingAnimPosition, 0f));
+                _offsetManager.AddCameraOffset(new Vector3(0f, Position, 0f));
             }
             if (Config.EnableViewmodelLandingAnim)
             {
-                _offsetManager.AddToolOffsets(0.1f * LandingAnimPosition * _offsetManager.transform.InverseTransformDirection(_playerController.transform.up));
-                _offsetManager.AddToolOffsets(Quaternion.Euler(_landingAnimDampVel, 0f, 0f));
+                _offsetManager.AddToolOffsets(0.1f * Position * _offsetManager.transform.InverseTransformDirection(_playerController.transform.up));
+                _offsetManager.AddToolOffsets(Quaternion.Euler(_velocity, 0f, 0f));
             }
 
             // keep track of player velocity
-            _lastPlayerVel = _playerController.GetAttachedOWRigidbody().GetVelocity();
+            _lastPlayerVelocity = _playerController.GetAttachedOWRigidbody().GetVelocity();
         }
 
         private void OnDisable()
         {
             // reset landing anim parameters if feature is disabled
-            _lastPlayerVel = Vector3.zero;
-            LandingAnimPosition = 0f;
-            _landingAnimDampVel = 0f;
-            _isLandingAnimActive = false;
+            _lastPlayerVelocity = Vector3.zero;
+            Position = 0f;
+            _velocity = 0f;
+            _isActive = false;
         }
 
         private void OnDestroy()

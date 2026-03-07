@@ -10,10 +10,10 @@ namespace Immersion.Scripts.Components
         private static GameObject s_viewmodelArmAsset;
 
         [SerializeField]
-        private SkinnedMeshRenderer _armMeshNoSuit;
+        private SkinnedMeshRenderer _noSuitMesh;
 
         [SerializeField]
-        private SkinnedMeshRenderer _armMeshSuit;
+        private SkinnedMeshRenderer _suitMesh;
 
         [SerializeField]
         private SkinnedMeshRenderer _prePassNoSuit;
@@ -29,9 +29,9 @@ namespace Immersion.Scripts.Components
 
         private ItemTool _itemCarryTool;
 
-        private GameObject _playerModelArmNoSuit;
+        private GameObject _playerNoSuitMesh;
 
-        private GameObject _playerModelArmSuit;
+        private GameObject _playerSuitMesh;
 
         /// <summary>
         /// Creates a new ViewmodelArm for the given PlayerTool.
@@ -100,7 +100,7 @@ namespace Immersion.Scripts.Components
                 $"    \"arm_local_position\": {{ \"x\": {armPos.x}, \"y\": {armPos.y}, \"z\": {armPos.z} }},\n" +
                 $"    \"arm_local_euler_angles\": {{ \"x\": {armRot.x}, \"y\": {armRot.y}, \"z\": {armRot.z} }},\n" +
                 $"    \"arm_scale\": {10f * transform.localScale.x},\n" +
-                $"    \"arm_shader\": \"{_armMeshNoSuit.material.shader.name}\",\n" +
+                $"    \"arm_shader\": \"{_noSuitMesh.material.shader.name}\",\n" +
                 "    \"bones_local_euler_angles\": {\n" +
                 boneEulersString +
                 "    }\n  }";
@@ -176,9 +176,9 @@ namespace Immersion.Scripts.Components
             }
 
             var shader = Shader.Find(shaderName);
-            _armMeshNoSuit.materials[0].shader = shader;
-            _armMeshNoSuit.materials[1].shader = shader;
-            _armMeshSuit.material.shader = shader;
+            _noSuitMesh.materials[0].shader = shader;
+            _noSuitMesh.materials[1].shader = shader;
+            _suitMesh.material.shader = shader;
 
             // if using the viewmodel shader, the prepass meshes must be enabled to prevent viewmodel arms from appearing behind things
             bool isViewmodel = shaderName == "Outer Wilds/Utility/View Model" || shaderName == "Outer Wilds/Utility/View Model (Cutoff)";
@@ -207,21 +207,21 @@ namespace Immersion.Scripts.Components
             // grab the bones that matter
             _bones = new Dictionary<string, Transform>
             {
-                ["shoulder"] = _armMeshNoSuit.bones[5],
-                ["elbow"] = _armMeshNoSuit.bones[6],
-                ["wrist"] = _armMeshNoSuit.bones[7],
-                ["finger_01_01"] = _armMeshNoSuit.bones[8],
-                ["finger_01_02"] = _armMeshNoSuit.bones[9],
-                ["finger_01_03"] = _armMeshNoSuit.bones[10],
-                ["finger_01_04"] = _armMeshNoSuit.bones[11],
-                ["finger_02_01"] = _armMeshNoSuit.bones[12],
-                ["finger_02_02"] = _armMeshNoSuit.bones[13],
-                ["finger_02_03"] = _armMeshNoSuit.bones[14],
-                ["finger_02_04"] = _armMeshNoSuit.bones[15],
-                ["thumb_01"] = _armMeshNoSuit.bones[16],
-                ["thumb_02"] = _armMeshNoSuit.bones[17],
-                ["thumb_03"] = _armMeshNoSuit.bones[18],
-                ["thumb_04"] = _armMeshNoSuit.bones[19]
+                ["shoulder"] = _noSuitMesh.bones[5],
+                ["elbow"] = _noSuitMesh.bones[6],
+                ["wrist"] = _noSuitMesh.bones[7],
+                ["finger_01_01"] = _noSuitMesh.bones[8],
+                ["finger_01_02"] = _noSuitMesh.bones[9],
+                ["finger_01_03"] = _noSuitMesh.bones[10],
+                ["finger_01_04"] = _noSuitMesh.bones[11],
+                ["finger_02_01"] = _noSuitMesh.bones[12],
+                ["finger_02_02"] = _noSuitMesh.bones[13],
+                ["finger_02_03"] = _noSuitMesh.bones[14],
+                ["finger_02_04"] = _noSuitMesh.bones[15],
+                ["thumb_01"] = _noSuitMesh.bones[16],
+                ["thumb_02"] = _noSuitMesh.bones[17],
+                ["thumb_03"] = _noSuitMesh.bones[18],
+                ["thumb_04"] = _noSuitMesh.bones[19]
             };
         }
 
@@ -245,8 +245,8 @@ namespace Immersion.Scripts.Components
                 }
             }
 
-            _playerModelArmNoSuit = Locator.GetPlayerBody().transform.Find("Traveller_HEA_Player_v2/player_mesh_noSuit:Traveller_HEA_Player/player_mesh_noSuit:Player_RightArm").gameObject;
-            _playerModelArmSuit = Locator.GetPlayerBody().transform.Find("Traveller_HEA_Player_v2/Traveller_Mesh_v01:Traveller_Geo/Traveller_Mesh_v01:PlayerSuit_RightArm").gameObject;
+            _playerNoSuitMesh = Locator.GetPlayerBody().transform.Find("Traveller_HEA_Player_v2/player_mesh_noSuit:Traveller_HEA_Player/player_mesh_noSuit:Player_RightArm").gameObject;
+            _playerSuitMesh = Locator.GetPlayerBody().transform.Find("Traveller_HEA_Player_v2/Traveller_Mesh_v01:Traveller_Geo/Traveller_Mesh_v01:PlayerSuit_RightArm").gameObject;
         }
 
         private void LateUpdate()
@@ -268,8 +268,8 @@ namespace Immersion.Scripts.Components
                 return;
             }
 
-            _armMeshNoSuit.gameObject.SetActive(_playerModelArmNoSuit.activeInHierarchy);
-            _armMeshSuit.gameObject.SetActive(_playerModelArmSuit.activeInHierarchy);
+            _noSuitMesh.gameObject.SetActive(_playerNoSuitMesh.activeInHierarchy);
+            _suitMesh.gameObject.SetActive(_playerSuitMesh.activeInHierarchy);
         }
     }
 }
