@@ -6,18 +6,6 @@ namespace Immersion.Scripts.Components
 {
     public class OffsetManager : MonoBehaviour
     {
-        public static OffsetManager Instance { get; private set; }
-
-        public OffsetRoot CameraOffsetRoot { get; private set; }
-
-        public OffsetRoot ItemToolOffsetRoot { get; private set; }
-
-        public OffsetRoot SignalscopeOffsetRoot { get; private set; }
-
-        public OffsetRoot ProbeLauncherOffsetRoot { get; private set; }
-
-        public OffsetRoot TranslatorOffsetRoot { get; private set; }
-
         private static readonly Dictionary<string, float> s_itemOffsetScales = new Dictionary<string, float>
         {
             ["DreamLantern"] = 1.2f,
@@ -29,6 +17,18 @@ namespace Immersion.Scripts.Components
         };
 
         private float _currentItemOffsetScale = 1f;
+
+        public static OffsetManager Instance { get; private set; }
+
+        public OffsetRoot CameraOffsetRoot { get; private set; }
+
+        public OffsetRoot ItemToolOffsetRoot { get; private set; }
+
+        public OffsetRoot SignalscopeOffsetRoot { get; private set; }
+
+        public OffsetRoot ProbeLauncherOffsetRoot { get; private set; }
+
+        public OffsetRoot TranslatorOffsetRoot { get; private set; }
 
         /// <summary>
         /// Applies a translational offset to the player camera.

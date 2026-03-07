@@ -14,6 +14,8 @@ namespace Immersion.Scripts.Components
 
         private Vector2 _velocity;
 
+        private float MaxDisplacement => 0.25f * Config.ViewmodelSwayScale;
+
         private void OnConfigured()
         {
             enabled = Config.EnableViewmodelSway;
@@ -86,9 +88,7 @@ namespace Immersion.Scripts.Components
             var swayCameraZ = Vector3.forward * (yScale - 1f);
             var swayPlayerZ = _cameraController.transform.InverseTransformDirection(_playerController.transform.forward) * (xScale - 1f);
 
-            // calculate and apply the final offset
-            var offset = swayX + swayY + swayCameraZ + swayPlayerZ;
-            offset *= 0.25f * Config.ViewmodelSwayStrength;
+            var offset = MaxDisplacement * (swayX + swayY + swayCameraZ + swayPlayerZ);
             _offsetManager.AddToolOffsets(offset);
         }
 

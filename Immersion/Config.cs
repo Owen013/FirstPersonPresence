@@ -13,15 +13,15 @@ namespace Immersion
 
         public static bool EnableViewmodelBob { get; private set; }
 
-        public static float ViewmodelBobStrength { get; private set; }
+        public static float ViewmodelBobScale { get; private set; }
 
         public static bool EnableViewmodelOffset { get; private set; }
 
-        public static float ViewmodelOffsetStrength { get; private set; }
+        public static float ViewmodelOffsetScale { get; private set; }
 
         public static bool EnableViewmodelSway { get; private set; }
 
-        public static float ViewmodelSwayStrength { get; private set; }
+        public static float ViewmodelSwayScale { get; private set; }
 
         public static bool EnableBreathingAnim { get; private set; }
 
@@ -58,15 +58,15 @@ namespace Immersion
             EnableHeadBob = config.GetSettingsValue<bool>("EnableHeadBob");
             HeadBobStrength = config.GetSettingsValue<float>("HeadBobStrength");
             EnableViewmodelBob = config.GetSettingsValue<bool>("EnableViewmodelBob");
-            ViewmodelBobStrength = config.GetSettingsValue<float>("ViewmodelBobStrength");
+            ViewmodelBobScale = config.GetSettingsValue<float>("ViewmodelBobScale");
 
             // dynamic tool pos
             EnableViewmodelOffset = config.GetSettingsValue<bool>("EnableViewmodelOffset");
-            ViewmodelOffsetStrength = config.GetSettingsValue<float>("ViewmodelOffsetStrength");
+            ViewmodelOffsetScale = config.GetSettingsValue<float>("ViewmodelOffsetScale");
 
             // tool sway
             EnableViewmodelSway = config.GetSettingsValue<bool>("EnableViewmodelSway");
-            ViewmodelSwayStrength = config.GetSettingsValue<float>("ViewmodelSwayStrength");
+            ViewmodelSwayScale = config.GetSettingsValue<float>("ViewmodelSwayScale");
 
             // landing anim
             EnableCameraLandingAnim = config.GetSettingsValue<bool>("EnableCameraLandingAnim");

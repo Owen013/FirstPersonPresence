@@ -1,10 +1,10 @@
 {
-  "$schema": "https://raw.githubusercontent.com/ow-mods/owml/master/schemas/manifest_schema.json",
-  "filename": "Immersion.dll",
-  "author": "Owen_013",
-  "name": "Immersion",
-  "uniqueName": "Owen_013.FirstPersonPresence",
-  "version": "1.5.8_d",
-  "owmlVersion": "2.15.5",
-  "dependencies": []
+    "$schema": "https://raw.githubusercontent.com/ow-mods/owml/master/schemas/manifest_schema.json",
+    "filename": "Immersion.dll",
+    "author": "Owen_013",
+    "name": "Immersion",
+    "uniqueName": "Owen_013.FirstPersonPresence",
+    "version": "1.5.8_d",
+    "owmlVersion": "2.15.5",
+    "dependencies": []
 }

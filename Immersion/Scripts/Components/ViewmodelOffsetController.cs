@@ -8,6 +8,8 @@ namespace Immersion.Scripts.Components
 
         private PlayerCameraController _cameraController;
 
+        private float MaxDisplacement => 0.05f * Config.ViewmodelOffsetScale;
+
         private void OnConfigured()
         {
             enabled = Config.EnableViewmodelOffset;
@@ -25,13 +27,10 @@ namespace Immersion.Scripts.Components
         private void Update()
         {
             float verticalLookAmount = _cameraController.GetDegreesY() / 90f;
-            Vector3 toolOffset = Vector3.zero;
-            // trig is used for circular motion
-            // tool moves down+back when looking up, and up+back when looking down
-            // tool is not offset when looking straight ahead
-            toolOffset.z = Mathf.Cos(verticalLookAmount * Mathf.PI / 3f) - 1f;
-            toolOffset.y = -Mathf.Sin(verticalLookAmount * Mathf.PI / 3f);
-            _offsetManager.AddToolOffsets(Config.ViewmodelOffsetStrength * 0.05f * toolOffset);
+            var offset = Vector3.zero;
+            offset.y = -Mathf.Sin(verticalLookAmount * Mathf.PI / 3f);
+            offset.z = Mathf.Cos(verticalLookAmount * Mathf.PI / 3f) - 1f;
+            _offsetManager.AddToolOffsets(MaxDisplacement * offset);
         }
 
         private void OnDestroy()

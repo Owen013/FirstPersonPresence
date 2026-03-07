@@ -53,7 +53,7 @@ namespace Immersion.Scripts
                 return s_armData[armDataId];
             }
 
-            ModMain.Log($"No Arm Data found for {armDataId}", MessageType.Error);
+            ModMain.Console.WriteLine($"No Arm Data found for {armDataId}", MessageType.Error);
             return null;
         }
 
@@ -143,7 +143,7 @@ namespace Immersion.Scripts
                 return;
             }
 
-            ModMain.Log($"Loading Arm Data from \"{jsonPath}\"...", MessageType.Info);
+            ModMain.Console.WriteLine($"Loading Arm Data from \"{jsonPath}\"...", MessageType.Info);
             LoadArmData(jsonPath);
         }
 
@@ -151,11 +151,11 @@ namespace Immersion.Scripts
         {
             if (s_isDefaultArmDataLoaded)
             {
-                ModMain.Log("Default Arm Data is already loaded.", MessageType.Error);
+                ModMain.Console.WriteLine("Default Arm Data is already loaded.", MessageType.Error);
                 return;
             }
 
-            ModMain.Log($"Loading default Arm Data...", MessageType.Info);
+            ModMain.Console.WriteLine($"Loading default Arm Data...", MessageType.Info);
             LoadArmData($"{Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location)}/viewmodel-arm-data.json");
             s_isDefaultArmDataLoaded = true;
 
@@ -194,7 +194,7 @@ namespace Immersion.Scripts
                 }
             }
 
-            ModMain.Log($"Arm Data loaded successfully!", MessageType.Success);
+            ModMain.Console.WriteLine($"Arm Data loaded successfully!", MessageType.Success);
         }
     }
 }

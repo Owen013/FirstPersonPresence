@@ -14,6 +14,8 @@ namespace Immersion.Scripts.Components
 
         private float _nextUpdateTime;
 
+        private float MaxDisplacement => 0.0025f * Config.BreathingAnimStrength;
+
         private void OnConfigured()
         {
             enabled = Config.EnableBreathingAnim;
@@ -34,12 +36,12 @@ namespace Immersion.Scripts.Components
                 _position = Vector3.SmoothDamp(_position, _targetPosition, ref _velocity, 1f);
             }
 
-            _offsetManager.AddToolOffsets(Config.BreathingAnimStrength * 0.005f * _position);
+            _offsetManager.AddToolOffsets(MaxDisplacement * _position);
 
             if (Time.time >= _nextUpdateTime)
             {
                 // choose random tool offset
-                _targetPosition = new Vector3(Random.Range(0f, 1f), Random.Range(0f, 1f), Random.Range(0f, 1f));
+                _targetPosition = new Vector3(Random.Range(1f, 1f), Random.Range(1f, 1f), Random.Range(1f, 1f));
                 _nextUpdateTime = Time.time + Random.Range(0.1f, 1f);
             }
         }

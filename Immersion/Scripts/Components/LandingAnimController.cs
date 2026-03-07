@@ -4,11 +4,7 @@ namespace Immersion.Scripts.Components
 {
     public class LandingAnimController : MonoBehaviour
     {
-        public static LandingAnimController Instance { get; private set; }
-
-        public float Position { get; private set; }
-
-        private OffsetManager _offsetManager;
+       private OffsetManager _offsetManager;
 
         private PlayerCharacterController _playerController;
 
@@ -19,6 +15,12 @@ namespace Immersion.Scripts.Components
         private float _lastLandedSpeed;
 
         private float _velocity;
+
+        public static LandingAnimController Instance { get; private set; }
+
+        public float Position { get; private set; }
+
+        private float MinPosition => -0.3f * Config.MaxLandingAnimDistance;
 
         internal void UpdateLandingCrouchAnim(Animator playerAnimator)
         {
@@ -78,10 +80,10 @@ namespace Immersion.Scripts.Components
                     // update camera height based on landing speed
                     float playerScale = ModMain.SmolHatchlingAPI != null ? ModMain.SmolHatchlingAPI.GetPlayerScale() : 1f;
                     Position = Mathf.Min(Position - _lastLandedSpeed * playerScale * deltaTime, 0f);
-                    if (Position <= -0.3f * Config.MaxLandingAnimDistance)
+                    if (Position <= MinPosition)
                     {
                         // landing anim bottoms out
-                        Position = -0.3f * Config.MaxLandingAnimDistance;
+                        Position = MinPosition;
                         _isActive = false;
                     }
                 }

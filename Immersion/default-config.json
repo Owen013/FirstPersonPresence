@@ -22,8 +22,8 @@
             "value": true
         },
         "HeadBobStrength": {
-            "title": "Head Bob Strength",
-            "tooltip": "The strength of the Head Bob effect.",
+            "title": "Head Bob Scale",
+            "tooltip": "The scale of the Head Bob effect.",
             "type": "slider",
             "value": 1,
             "min": 0,
@@ -35,9 +35,9 @@
             "type": "toggle",
             "value": true
         },
-        "ViewmodelBobStrength": {
-            "title": "Viewmodel Bob Strength",
-            "tooltip": "The strength of the Viewmodel Bob effect.",
+        "ViewmodelBobScale": {
+            "title": "Viewmodel Bob Scale",
+            "tooltip": "The scale of the Viewmodel Bob effect.",
             "type": "slider",
             "value": 1,
             "min": 0,
@@ -53,9 +53,9 @@
             "type": "toggle",
             "value": true
         },
-        "ViewmodelOffsetStrength": {
-            "title": "Viewmodel Offset Strength",
-            "tooltip": "The strength of the Viewmodel Offset effect.",
+        "ViewmodelOffsetScale": {
+            "title": "Viewmodel Offset Scale",
+            "tooltip": "The scale of the Viewmodel Offset effect.",
             "type": "slider",
             "value": 1,
             "min": 0,
@@ -71,9 +71,9 @@
             "type": "toggle",
             "value": true
         },
-        "ViewmodelSwayStrength": {
-            "title": "Viewmodel Sway Strength",
-            "tooltip": "The strength of the Viewmodel Sway effect.",
+        "ViewmodelSwayScale": {
+            "title": "Viewmodel Sway Scale",
+            "tooltip": "The scale of the Viewmodel Sway effect.",
             "type": "slider",
             "value": 1,
             "min": 0,

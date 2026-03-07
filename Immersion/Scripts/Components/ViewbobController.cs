@@ -10,11 +10,17 @@ namespace Immersion.Scripts.Components
 
         private PlayerAnimController _animController;
 
-        private float _time;
+        private float _timePosition;
 
         private float _strength;
 
         private float _velocity;
+
+        private float MaxHeadBobDisplacement => 0.02f * Config.HeadBobStrength;
+
+        private float MaxViewmodelBobDisplacement => 0.02f * Config.ViewmodelBobScale;
+
+        private float MaxViewmodelBobAngle => 0.75f * Config.ViewmodelBobScale;
 
         private void OnConfigured()
         {
@@ -44,7 +50,7 @@ namespace Immersion.Scripts.Components
                 {
                     // viewbob cycle increases based on player ground speed
                     // viewbob time and viewbob strength are used by both camera and tool bobbing
-                    _time += _animController._animator.speed * Time.deltaTime;
+                    _timePosition += _animController._animator.speed * Time.deltaTime;
                     if (_playerController.IsGrounded())
                     {
                         // change viewbob strength quickly if on ground
@@ -79,25 +85,25 @@ namespace Immersion.Scripts.Components
                 }
 
                 // trig is used for a circular viewbob motion
-                var viewBob = _strength * new Vector2(Mathf.Sin(_time * 2f * Mathf.PI), Mathf.Cos(_time * 4f * Mathf.PI));
+                var viewBob = _strength * new Vector2(Mathf.Sin(_timePosition * 2f * Mathf.PI), Mathf.Cos(_timePosition * 4f * Mathf.PI));
 
                 // apply camera offset if camera bob is enabled
                 if (Config.EnableHeadBob)
                 {
-                    _offsetManager.AddCameraOffset(Config.HeadBobStrength * 0.02f * new Vector3(viewBob.x, viewBob.y));
+                    _offsetManager.AddCameraOffset(MaxHeadBobDisplacement * new Vector3(viewBob.x, viewBob.y));
                 }
 
                 // apply tool offset if tool bob is enabled
                 if (Config.EnableViewmodelBob)
                 {
-                    var offsetPos = Config.ViewmodelBobStrength * new Vector3(0.02f * viewBob.x, 0.003f * viewBob.y);
-                    var offsetRot = Quaternion.Euler(Config.ViewmodelBobStrength * _strength * -0.75f * Mathf.Sin(_time * 4f * Mathf.PI), 0f, 0f);
-                    _offsetManager.AddToolOffsets(offsetPos, offsetRot);
+                    var offsetPos = MaxViewmodelBobDisplacement * new Vector3(viewBob.x, 0.15f * viewBob.y);
+                    float offsetAngle = MaxViewmodelBobAngle * _strength * -Mathf.Sin(_timePosition * 4f * Mathf.PI);
+                    _offsetManager.AddToolOffsets(offsetPos, Quaternion.AngleAxis(offsetAngle, Vector3.right));
                 }
             }
             else
             {
-                _time = 0f;
+                _timePosition = 0f;
                 _strength = 0f;
                 _velocity = 0f;
             }
@@ -105,7 +111,7 @@ namespace Immersion.Scripts.Components
 
         private void OnDisable()
         {
-            _time = 0f;
+            _timePosition = 0f;
             _strength = 0f;
             _velocity = 0f;
         }
