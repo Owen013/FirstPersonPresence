@@ -14,7 +14,7 @@ namespace Immersion.Scripts.Components
 
         private float _velocity;
 
-        protected override void OnConfigured()
+        protected override void UpdateEnabled()
         {
             enabled = Config.EnableScoutAnim;
         }

@@ -22,7 +22,7 @@ namespace Immersion.Scripts.Components
 
         private float MaxViewmodelBobAngle => 0.75f * Config.ViewmodelBobScale;
 
-        protected override void OnConfigured()
+        protected override void UpdateEnabled()
         {
             enabled = Config.EnableHeadBob || Config.EnableViewmodelBob;
         }

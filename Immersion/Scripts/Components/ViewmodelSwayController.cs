@@ -16,7 +16,7 @@ namespace Immersion.Scripts.Components
 
         private float MaxDisplacement => 0.25f * Config.ViewmodelSwayScale;
 
-        protected override void OnConfigured()
+        protected override void UpdateEnabled()
         {
             enabled = Config.EnableViewmodelSway;
         }

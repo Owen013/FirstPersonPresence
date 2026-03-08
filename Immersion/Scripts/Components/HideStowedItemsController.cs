@@ -11,7 +11,7 @@ namespace Immersion.Scripts.Components
 
         private float _addedStowDegrees;
 
-        protected override void OnConfigured()
+        protected override void UpdateEnabled()
         {
             enabled = Config.HideStowedItems;
         }
