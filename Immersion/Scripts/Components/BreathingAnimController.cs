@@ -14,7 +14,7 @@ namespace Immersion.Scripts.Components
 
         private float _nextUpdateTime;
 
-        private float MaxDisplacement => 0.0025f * Config.BreathingAnimScale;
+        private float MaxDisplacement => 0.005f * Config.BreathingAnimScale;
 
         private void OnConfigured()
         {
@@ -33,7 +33,7 @@ namespace Immersion.Scripts.Components
             // if delta time is zero when using SmoothDamp, all hell breaks loose, so don't do it
             if (Time.deltaTime != 0f)
             {
-                _position = Vector3.SmoothDamp(_position, _targetPosition, ref _velocity, 1f);
+                _position = Vector3.SmoothDamp(_position, _targetPosition, ref _velocity, 2f);
             }
 
             _offsetManager.AddToolOffsets(MaxDisplacement * _position);
@@ -41,7 +41,7 @@ namespace Immersion.Scripts.Components
             if (Time.time >= _nextUpdateTime)
             {
                 // choose random tool offset
-                _targetPosition = new Vector3(Random.Range(-1f, 1f), Random.Range(-1f, 1f), Random.Range(-1f, 1f));
+                _targetPosition = new Vector3(Random.Range(-1f, 1f), Random.Range(-1f, 1f), 0f);
                 _nextUpdateTime = Time.time + Random.Range(0.1f, 1f);
             }
         }
