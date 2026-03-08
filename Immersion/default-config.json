@@ -129,9 +129,9 @@
             "type": "toggle",
             "value": true
         },
-        "BreathingAnimStrength": {
-            "title": "Breathing Animation Strength",
-            "tooltip": "The strength of the breathing effect.",
+        "BreathingAnimScale": {
+            "title": "Breathing Animation Scale",
+            "tooltip": "The scale of the breathing effect.",
             "type": "slider",
             "value": 1,
             "min": 0,

@@ -37,7 +37,7 @@ namespace Immersion
 
         public static bool UseLandingCrouchAnim = false;
 
-        public static float BreathingAnimStrength { get; private set; }
+        public static float BreathingAnimScale { get; private set; }
 
         public static bool EnableScoutAnim { get; private set; }
 
@@ -77,7 +77,7 @@ namespace Immersion
 
             // breathing anim
             EnableBreathingAnim = config.GetSettingsValue<bool>("EnableBreathingAnim");
-            BreathingAnimStrength = config.GetSettingsValue<float>("BreathingAnimStrength");
+            BreathingAnimScale = config.GetSettingsValue<float>("BreathingAnimScale");
 
             // misc
             FixViewmodelClipping = config.GetSettingsValue<bool>("FixViewmodelClipping");

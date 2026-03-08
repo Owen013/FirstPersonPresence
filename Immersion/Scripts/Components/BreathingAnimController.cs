@@ -14,7 +14,7 @@ namespace Immersion.Scripts.Components
 
         private float _nextUpdateTime;
 
-        private float MaxDisplacement => 0.0025f * Config.BreathingAnimStrength;
+        private float MaxDisplacement => 0.0025f * Config.BreathingAnimScale;
 
         private void OnConfigured()
         {
@@ -41,7 +41,7 @@ namespace Immersion.Scripts.Components
             if (Time.time >= _nextUpdateTime)
             {
                 // choose random tool offset
-                _targetPosition = new Vector3(Random.Range(1f, 1f), Random.Range(1f, 1f), Random.Range(1f, 1f));
+                _targetPosition = new Vector3(Random.Range(-1f, 1f), Random.Range(-1f, 1f), Random.Range(-1f, 1f));
                 _nextUpdateTime = Time.time + Random.Range(0.1f, 1f);
             }
         }
