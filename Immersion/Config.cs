@@ -9,7 +9,7 @@ namespace Immersion
 
         public static bool EnableHeadBob { get; private set; }
 
-        public static float HeadBobStrength { get; private set; }
+        public static float HeadBobScale { get; private set; }
 
         public static bool EnableViewmodelBob { get; private set; }
 
@@ -56,7 +56,7 @@ namespace Immersion
 
             // viewbob
             EnableHeadBob = config.GetSettingsValue<bool>("EnableHeadBob");
-            HeadBobStrength = config.GetSettingsValue<float>("HeadBobStrength");
+            HeadBobScale = config.GetSettingsValue<float>("HeadBobScale");
             EnableViewmodelBob = config.GetSettingsValue<bool>("EnableViewmodelBob");
             ViewmodelBobScale = config.GetSettingsValue<float>("ViewmodelBobScale");
 

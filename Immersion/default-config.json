@@ -21,7 +21,7 @@
             "type": "toggle",
             "value": true
         },
-        "HeadBobStrength": {
+        "HeadBobScale": {
             "title": "Head Bob Scale",
             "tooltip": "The scale of the Head Bob effect.",
             "type": "slider",

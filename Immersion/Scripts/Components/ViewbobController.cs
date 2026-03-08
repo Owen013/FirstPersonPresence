@@ -16,7 +16,7 @@ namespace Immersion.Scripts.Components
 
         private float _velocity;
 
-        private float MaxHeadBobDisplacement => 0.02f * Config.HeadBobStrength;
+        private float MaxHeadBobDisplacement => 0.02f * Config.HeadBobScale;
 
         private float MaxViewmodelBobDisplacement => 0.02f * Config.ViewmodelBobScale;
 
