@@ -2,7 +2,7 @@
 
 namespace Immersion.Scripts.Components
 {
-    public class SprintingAnimController : MonoBehaviour
+    public class SprintingAnimController : ToggleableBehaviour
     {
         private OffsetManager _offsetManager;
 
@@ -10,16 +10,15 @@ namespace Immersion.Scripts.Components
 
         private float _velocity;
 
-        private void OnConfigured()
+        protected override void OnConfigured()
         {
             enabled = Config.EnableSprintingAnim;
         }
 
-        private void Awake()
+        protected override void Awake()
         {
+            base.Awake();
             _offsetManager = OffsetManager.Instance;
-            Config.OnConfigured += OnConfigured;
-            OnConfigured();
         }
 
         private void Update()
@@ -37,11 +36,6 @@ namespace Immersion.Scripts.Components
         {
             _strength = 0f;
             _velocity = 0f;
-        }
-
-        private void OnDestroy()
-        {
-            Config.OnConfigured -= OnConfigured;
         }
     }
 }

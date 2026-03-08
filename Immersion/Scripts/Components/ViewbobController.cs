@@ -2,7 +2,7 @@
 
 namespace Immersion.Scripts.Components
 {
-    public class ViewbobController : MonoBehaviour
+    public class ViewbobController : ToggleableBehaviour
     {
         private OffsetManager _offsetManager;
 
@@ -22,19 +22,17 @@ namespace Immersion.Scripts.Components
 
         private float MaxViewmodelBobAngle => 0.75f * Config.ViewmodelBobScale;
 
-        private void OnConfigured()
+        protected override void OnConfigured()
         {
             enabled = Config.EnableHeadBob || Config.EnableViewmodelBob;
         }
 
-        private void Awake()
+        protected override void Awake()
         {
+            base.Awake();
             _offsetManager = OffsetManager.Instance;
             _playerController = Locator.GetPlayerController();
             _animController = _playerController.GetComponentInChildren<PlayerAnimController>();
-
-            Config.OnConfigured += OnConfigured;
-            OnConfigured();
         }
 
         private void Update()
@@ -114,11 +112,6 @@ namespace Immersion.Scripts.Components
             _timePosition = 0f;
             _strength = 0f;
             _velocity = 0f;
-        }
-
-        private void OnDestroy()
-        {
-            Config.OnConfigured -= OnConfigured;
         }
     }
 }

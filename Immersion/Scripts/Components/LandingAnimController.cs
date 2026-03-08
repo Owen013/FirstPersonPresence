@@ -2,7 +2,7 @@
 
 namespace Immersion.Scripts.Components
 {
-    public class LandingAnimController : MonoBehaviour
+    public class LandingAnimController : ToggleableBehaviour
     {
        private OffsetManager _offsetManager;
 
@@ -30,20 +30,17 @@ namespace Immersion.Scripts.Components
             }
         }
 
-        private void OnConfigured()
+        protected override void OnConfigured()
         {
             enabled = Config.EnableCameraLandingAnim || Config.EnableViewmodelLandingAnim;
         }
 
-        private void Awake()
+        protected override void Awake()
         {
+            base.Awake();
             Instance = this;
-
             _offsetManager = OffsetManager.Instance;
             _playerController = Locator.GetPlayerController();
-
-            Config.OnConfigured += OnConfigured;
-            OnConfigured();
 
             _playerController.OnBecomeGrounded += () =>
             {
@@ -115,11 +112,6 @@ namespace Immersion.Scripts.Components
             Position = 0f;
             _velocity = 0f;
             _isActive = false;
-        }
-
-        private void OnDestroy()
-        {
-            Config.OnConfigured -= OnConfigured;
         }
     }
 }
