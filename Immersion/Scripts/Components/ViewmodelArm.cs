@@ -35,39 +35,6 @@ namespace Immersion.Scripts.Components
         private GameObject _playerSuitMesh;
 
         /// <summary>
-        /// Creates a new ViewmodelArm for the given PlayerTool.
-        /// </summary>
-        /// <param name="playerTool">The PlayerTool to add a ViewmodelArm to.</param>
-        /// <returns>The new ViewmodelArm.</returns>
-        public static ViewmodelArm New(PlayerTool playerTool)
-        {
-            return ViewmodelArm.New(playerTool.transform);
-        }
-
-        /// <summary>
-        /// Creates a new ViewmodelArm for the given OWItem.
-        /// </summary>
-        /// <param name="owItem">The OWItem to add a ViewmodelArm to.</param>
-        /// <returns>The new ViewmodelArm.</returns>
-        public static ViewmodelArm New(OWItem owItem)
-        {
-            return ViewmodelArm.New(owItem.transform);
-        }
-
-        /// <summary>
-        /// Applies a position, rotation, scale, shader, and pose from an ArmData to this ViewmodelArm.
-        /// </summary>
-        /// <param name="armDataId">The ID of the ArmData to apply to this ViewmodelArm.</param>
-        public void SetArmData(string armDataId)
-        {
-            var armData = ArmData.Find(armDataId);
-            if (armData != null)
-            {
-                SetArmData(armData);
-            }
-        }
-
-        /// <summary>
         /// Outputs this ViewmodelArm's information in JSON format.
         /// </summary>
         public void OutputArmData()
@@ -116,7 +83,7 @@ namespace Immersion.Scripts.Components
                     return;
                 }
 
-                New(playerTool);
+                New(playerTool.transform);
             }
         }
 
@@ -124,7 +91,7 @@ namespace Immersion.Scripts.Components
         {
             if (Config.EnableViewmodelArms && ArmData.Exists(ArmData.FindArmDataIdOfItem(owItem)) && owItem.transform.Find("ViewmodelArm") == null)
             {
-                New(owItem);
+                New(owItem.transform);
             }
 
             // some items need to be adjusted
@@ -192,13 +159,17 @@ namespace Immersion.Scripts.Components
             }
         }
 
-        private void SetArmData(ArmData armData)
+        private void SetArmData(string armDataId)
         {
-            transform.localPosition = armData.armPosition;
-            transform.localEulerAngles = armData.armRotation;
-            transform.localScale = 0.1f * armData.armScale * Vector3.one;
-            SetShader(armData.armShader);
-            SetBoneEulers(armData.boneEulers);
+            var armData = ArmData.Find(armDataId);
+            if (armData != null)
+            {
+                transform.localPosition = armData.armPosition;
+                transform.localEulerAngles = armData.armRotation;
+                transform.localScale = 0.1f * armData.armScale * Vector3.one;
+                SetShader(armData.armShader);
+                SetBoneEulers(armData.boneEulers);
+            }
         }
 
         private void Awake()
