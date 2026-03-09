@@ -116,7 +116,7 @@ namespace Immersion.Scripts.Components
                     return;
                 }
 
-                New(playerTool);
+                ViewmodelArm.New(playerTool);
             }
         }
 
@@ -124,7 +124,7 @@ namespace Immersion.Scripts.Components
         {
             if (Config.EnableViewmodelArms && ArmData.Exists(ArmData.FindArmDataIdOfItem(owItem)) && owItem.transform.Find("ViewmodelArm") == null)
             {
-                New(owItem);
+                ViewmodelArm.New(owItem);
             }
 
             // some items need to be adjusted
