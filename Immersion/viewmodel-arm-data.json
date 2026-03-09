@@ -1,10 +1,10 @@
 {
     "Signalscope": {
-        "arm_local_position": { "x": 0.12, "y": -0.025, "z": -0.04 },
-        "arm_local_euler_angles": { "x": 0, "y": 0, "z": 0 },
+        "arm_position": { "x": 0.12, "y": -0.025, "z": -0.04 },
+        "arm_rotation": { "x": 0, "y": 0, "z": 0 },
         "arm_scale": 0.5,
         "arm_shader": "Outer Wilds/Utility/View Model (Cutoff)",
-        "bones_local_euler_angles": {
+        "bone_eulers": {
             "shoulder": { "x": 270, "y": 90, "z": 0 },
             "elbow": { "x": 0, "y": 15, "z": 0 },
             "wrist": { "x": 0, "y": 0, "z": 0 },
@@ -24,11 +24,11 @@
     },
 
     "NomaiTranslatorProp": {
-        "arm_local_position": { "x": 0.36, "y": -0.012, "z": -0.37 },
-        "arm_local_euler_angles": { "x": 0, "y": 0, "z": 0 },
+        "arm_position": { "x": 0.36, "y": -0.012, "z": -0.37 },
+        "arm_rotation": { "x": 0, "y": 0, "z": 0 },
         "arm_scale": 2,
         "arm_shader": "Outer Wilds/Utility/View Model (Cutoff)",
-        "bones_local_euler_angles": {
+        "bone_eulers": {
             "shoulder": { "x": 270, "y": 90, "z": 0 },
             "elbow": { "x": 0, "y": 15, "z": 0 },
             "wrist": { "x": 0, "y": 0, "z": 0 },
@@ -49,11 +49,11 @@
 
 
     "SharedStone": {
-        "arm_local_position": { "x": 0.06, "y": 0.495, "z": -0.53 },
-        "arm_local_euler_angles": { "x": 22.9192, "y": 357.4393, "z": 352.8304 },
+        "arm_position": { "x": 0.06, "y": 0.495, "z": -0.53 },
+        "arm_rotation": { "x": 22.9192, "y": 357.4393, "z": 352.8304 },
         "arm_scale": 1,
         "arm_shader": "Standard",
-        "bones_local_euler_angles": {
+        "bone_eulers": {
             "shoulder": { "x": 270, "y": 90, "z": 0 },
             "elbow": { "x": 0, "y": 30, "z": 0 },
             "wrist": { "x": 0, "y": 0, "z": 15 },
@@ -73,11 +73,11 @@
     },
 
     "Scroll": {
-        "arm_local_position": { "x": -0.58, "y": 0.195, "z": -0.25 },
-        "arm_local_euler_angles": { "x": 13.7909, "y": 107.9709, "z": 60.3106 },
+        "arm_position": { "x": -0.58, "y": 0.195, "z": -0.25 },
+        "arm_rotation": { "x": 13.7909, "y": 107.9709, "z": 60.3106 },
         "arm_scale": 1,
         "arm_shader": "Standard",
-        "bones_local_euler_angles": {
+        "bone_eulers": {
             "shoulder": { "x": 270, "y": 90, "z": 0 },
             "elbow": { "x": 0, "y": 30, "z": 0 },
             "wrist": { "x": 0, "y": 0, "z": 0 },
@@ -97,11 +97,11 @@
     },
 
     "Scroll_Egg": {
-        "arm_local_position": { "x": -0.58, "y": 0.195, "z": -0.25 },
-        "arm_local_euler_angles": { "x": 13.7909, "y": 107.9709, "z": 60.3106 },
+        "arm_position": { "x": -0.58, "y": 0.195, "z": -0.25 },
+        "arm_rotation": { "x": 13.7909, "y": 107.9709, "z": 60.3106 },
         "arm_scale": 1,
         "arm_shader": "Standard",
-        "bones_local_euler_angles": {
+        "bone_eulers": {
             "shoulder": { "x": 270, "y": 90, "z": 0 },
             "elbow": { "x": 0, "y": 30, "z": 0 },
             "wrist": { "x": 0, "y": 0, "z": 0 },
@@ -121,11 +121,11 @@
     },
 
     "Scroll_Jeff": {
-        "arm_local_position": { "x": 0.61, "y": 0.185, "z": -0.38 },
-        "arm_local_euler_angles": { "x": 13.7909, "y": 287.9709, "z": 60.3106 },
+        "arm_position": { "x": 0.61, "y": 0.185, "z": -0.38 },
+        "arm_rotation": { "x": 13.7909, "y": 287.9709, "z": 60.3106 },
         "arm_scale": 1,
         "arm_shader": "Standard",
-        "bones_local_euler_angles": {
+        "bone_eulers": {
             "shoulder": { "x": 270, "y": 90, "z": 0 },
             "elbow": { "x": 0, "y": 30, "z": 0 },
             "wrist": { "x": 0, "y": 0, "z": 0 },
@@ -145,11 +145,11 @@
     },
 
     "ConversationStone": {
-        "arm_local_position": { "x": -0.05, "y": 0.275, "z": -0.58 },
-        "arm_local_euler_angles": { "x": 22.9192, "y": 357.4393, "z": 352.8304 },
+        "arm_position": { "x": -0.05, "y": 0.275, "z": -0.58 },
+        "arm_rotation": { "x": 22.9192, "y": 357.4393, "z": 352.8304 },
         "arm_scale": 1,
         "arm_shader": "Standard",
-        "bones_local_euler_angles": {
+        "bone_eulers": {
             "shoulder": { "x": 270, "y": 90, "z": 0 },
             "elbow": { "x": 0, "y": 45, "z": 0 },
             "wrist": { "x": 330, "y": 0, "z": 0 },
@@ -169,11 +169,11 @@
     },
 
     "ConversationStone_Big": {
-        "arm_local_position": { "x": -0.07, "y": 0.275, "z": -0.65 },
-        "arm_local_euler_angles": { "x": 22.9192, "y": 357.4393, "z": 352.8304 },
+        "arm_position": { "x": -0.07, "y": 0.275, "z": -0.65 },
+        "arm_rotation": { "x": 22.9192, "y": 357.4393, "z": 352.8304 },
         "arm_scale": 1,
         "arm_shader": "Standard",
-        "bones_local_euler_angles": {
+        "bone_eulers": {
             "shoulder": { "x": 270, "y": 90, "z": 0 },
             "elbow": { "x": 0, "y": 45, "z": 0 },
             "wrist": { "x": 330, "y": 0, "z": 0 },
@@ -193,11 +193,11 @@
     },
 
     "WarpCore": {
-        "arm_local_position": { "x": 0.31, "y": 0.285, "z": -0.6 },
-        "arm_local_euler_angles": { "x": 353.9485, "y": 346.0866, "z": 349.0536 },
+        "arm_position": { "x": 0.31, "y": 0.285, "z": -0.6 },
+        "arm_rotation": { "x": 353.9485, "y": 346.0866, "z": 349.0536 },
         "arm_scale": 1,
         "arm_shader": "Standard",
-        "bones_local_euler_angles": {
+        "bone_eulers": {
             "shoulder": { "x": 270, "y": 90, "z": 0 },
             "elbow": { "x": 0, "y": 0, "z": 0 },
             "wrist": { "x": 15, "y": 15, "z": 30 },
@@ -217,11 +217,11 @@
     },
 
     "WarpCore_Simple": {
-        "arm_local_position": { "x": -0.61, "y": 0.035, "z": 0.06 },
-        "arm_local_euler_angles": { "x": 343.8428, "y": 97.7163, "z": 357.7892 },
+        "arm_position": { "x": -0.61, "y": 0.035, "z": 0.06 },
+        "arm_rotation": { "x": 343.8428, "y": 97.7163, "z": 357.7892 },
         "arm_scale": 1,
         "arm_shader": "Standard",
-        "bones_local_euler_angles": {
+        "bone_eulers": {
             "shoulder": { "x": 270, "y": 90, "z": 0 },
             "elbow": { "x": 0, "y": 30, "z": 0 },
             "wrist": { "x": 0, "y": 0, "z": 0 },
@@ -241,11 +241,11 @@
     },
 
     "SlideReel": {
-        "arm_local_position": { "x": -0.3700001, "y": 0.3749999, "z": 0.48 },
-        "arm_local_euler_angles": { "x": 4.003094, "y": 145.1852, "z": 86.24213 },
+        "arm_position": { "x": -0.3700001, "y": 0.3749999, "z": 0.48 },
+        "arm_rotation": { "x": 4.003094, "y": 145.1852, "z": 86.24213 },
         "arm_scale": 1,
         "arm_shader": "Standard",
-        "bones_local_euler_angles": {
+        "bone_eulers": {
             "shoulder": { "x": 270, "y": 90, "z": 0 },
             "elbow": { "x": 0, "y": 30, "z": 0 },
             "wrist": { "x": 0, "y": 330, "z": 45 },
@@ -265,11 +265,11 @@
     },
 
     "Lantern": {
-        "arm_local_position": { "x": -0.14, "y": 1.01, "z": -0.6 },
-        "arm_local_euler_angles": { "x": 0, "y": 0, "z": 0 },
+        "arm_position": { "x": -0.14, "y": 1.01, "z": -0.6 },
+        "arm_rotation": { "x": 0, "y": 0, "z": 0 },
         "arm_scale": 1,
         "arm_shader": "Standard",
-        "bones_local_euler_angles": {
+        "bone_eulers": {
             "shoulder": { "x": 0, "y": 90, "z": 330 },
             "elbow": { "x": 0, "y": 15, "z": 0 },
             "wrist": { "x": 0, "y": 345, "z": 30 },
@@ -289,11 +289,11 @@
     },
 
     "DreamLantern": {
-        "arm_local_position": { "x": -0.16, "y": 1.145, "z": -0.49 },
-        "arm_local_euler_angles": { "x": 0, "y": 0, "z": 0 },
+        "arm_position": { "x": -0.16, "y": 1.145, "z": -0.49 },
+        "arm_rotation": { "x": 0, "y": 0, "z": 0 },
         "arm_scale": 1,
         "arm_shader": "Outer Wilds/Utility/View Model",
-        "bones_local_euler_angles": {
+        "bone_eulers": {
             "shoulder": { "x": 315, "y": 45, "z": 0 },
             "elbow": { "x": 0, "y": 60, "z": 0 },
             "wrist": { "x": 30, "y": 345, "z": 30 },
@@ -313,11 +313,11 @@
     },
 
     "DreamLantern_Malfunctioning": {
-        "arm_local_position": { "x": -0.16, "y": 1.175, "z": -0.49 },
-        "arm_local_euler_angles": { "x": 0, "y": 0, "z": 0 },
+        "arm_position": { "x": -0.16, "y": 1.175, "z": -0.49 },
+        "arm_rotation": { "x": 0, "y": 0, "z": 0 },
         "arm_scale": 1,
         "arm_shader": "Outer Wilds/Utility/View Model",
-        "bones_local_euler_angles": {
+        "bone_eulers": {
             "shoulder": { "x": 315, "y": 45, "z": 0 },
             "elbow": { "x": 0, "y": 60, "z": 0 },
             "wrist": { "x": 30, "y": 345, "z": 30 },
@@ -337,11 +337,11 @@
     },
 
     "DreamLantern_Nonfunctioning": {
-        "arm_local_position": { "x": -0.15, "y": 1.11, "z": -0.6 },
-        "arm_local_euler_angles": { "x": 0, "y": 0, "z": 0 },
+        "arm_position": { "x": -0.15, "y": 1.11, "z": -0.6 },
+        "arm_rotation": { "x": 0, "y": 0, "z": 0 },
         "arm_scale": 1,
         "arm_shader": "Standard",
-        "bones_local_euler_angles": {
+        "bone_eulers": {
             "shoulder": { "x": 0, "y": 90, "z": 330 },
             "elbow": { "x": 0, "y": 15, "z": 0 },
             "wrist": { "x": 0, "y": 345, "z": 30 },
@@ -361,11 +361,11 @@
     },
 
     "VisionTorch": {
-        "arm_local_position": { "x": -0.22, "y": 0.445, "z": -0.65 },
-        "arm_local_euler_angles": { "x": 0, "y": 0, "z": 0 },
+        "arm_position": { "x": -0.22, "y": 0.445, "z": -0.65 },
+        "arm_rotation": { "x": 0, "y": 0, "z": 0 },
         "arm_scale": 1,
         "arm_shader": "Standard",
-        "bones_local_euler_angles": {
+        "bone_eulers": {
             "shoulder": { "x": 270, "y": 90, "z": 0 },
             "elbow": { "x": 0, "y": 15, "z": 0 },
             "wrist": { "x": 0, "y": 0, "z": 0 },
@@ -385,11 +385,11 @@
     },
     
     "TSTA_CloakMineral": {
-        "arm_local_position": { "x": 0.073, "y": 0.025, "z": -0.66 },
-        "arm_local_euler_angles": { "x": 0, "y": 0, "z": 345 },
+        "arm_position": { "x": 0.073, "y": 0.025, "z": -0.66 },
+        "arm_rotation": { "x": 0, "y": 0, "z": 345 },
         "arm_scale": 1,
         "arm_shader": "Standard",
-        "bones_local_euler_angles": {
+        "bone_eulers": {
             "shoulder": { "x": 270, "y": 90, "z": 0 },
             "elbow": { "x": 0, "y": 30, "z": 0 },
             "wrist": { "x": 15, "y": 0, "z": 15 },
@@ -409,11 +409,11 @@
     },
     
     "TSTA_StrangerSeal": {
-        "arm_local_position": { "x": 0.08, "y": 0.515, "z": -0.57 },
-        "arm_local_euler_angles": { "x": 22.9192, "y": 357.4393, "z": 352.8304 },
+        "arm_position": { "x": 0.08, "y": 0.515, "z": -0.57 },
+        "arm_rotation": { "x": 22.9192, "y": 357.4393, "z": 352.8304 },
         "arm_scale": 1,
         "arm_shader": "Standard",
-        "bones_local_euler_angles": {
+        "bone_eulers": {
             "shoulder": { "x": 270, "y": 90, "z": 0 },
             "elbow": { "x": 0, "y": 30, "z": 0 },
             "wrist": { "x": 0, "y": 345, "z": 15 },
@@ -433,11 +433,11 @@
     },
 
     "TSTA_GhostbirdSkull": {
-        "arm_local_position": { "x": -0.04, "y": 0.315, "z": -0.92 },
-        "arm_local_euler_angles": { "x": 0, "y": 0, "z": 345 },
+        "arm_position": { "x": -0.04, "y": 0.315, "z": -0.92 },
+        "arm_rotation": { "x": 0, "y": 0, "z": 345 },
         "arm_scale": 1,
         "arm_shader": "Standard",
-        "bones_local_euler_angles": {
+        "bone_eulers": {
             "shoulder": { "x": 270, "y": 90, "z": 0 },
             "elbow": { "x": 0, "y": 30, "z": 0 },
             "wrist": { "x": 0, "y": 0, "z": 0 },
@@ -457,11 +457,11 @@
     },
 
     "Dreambound_Compass": {
-        "arm_local_position": { "x": -0.04, "y": 0.295, "z": -0.8 },
-        "arm_local_euler_angles": { "x": 16.92655, "y": 353.8939, "z": 357.7708 },
+        "arm_position": { "x": -0.04, "y": 0.295, "z": -0.8 },
+        "arm_rotation": { "x": 16.92655, "y": 353.8939, "z": 357.7708 },
         "arm_scale": 1,
         "arm_shader": "Standard",
-        "bones_local_euler_angles": {
+        "bone_eulers": {
             "shoulder": { "x": 270, "y": 90, "z": 0 },
             "elbow": { "x": 0, "y": 15, "z": 0 },
             "wrist": { "x": 0, "y": 0, "z": 0 },

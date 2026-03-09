@@ -33,6 +33,23 @@ namespace Immersion.Scripts.Components
 
         private GameObject _playerSuitMesh;
 
+        private ArmData ArmData
+        {
+            get
+            {
+                return field;
+            }
+            set
+            {
+                field = value;
+                transform.localPosition = value.armPosition;
+                transform.localEulerAngles = value.armRotation;
+                transform.localScale = 0.1f * value.armScale * Vector3.one;
+                SetShader(value.armShader);
+                SetBoneEulers(value.boneEulers);
+            }
+        }
+
         /// <summary>
         /// Creates a new ViewmodelArm for the given PlayerTool.
         /// </summary>
@@ -56,26 +73,13 @@ namespace Immersion.Scripts.Components
         /// <summary>
         /// Applies a position, rotation, scale, shader, and pose from an ArmData to this ViewmodelArm.
         /// </summary>
-        /// <param name="armData">The ArmData to apply to this ViewmodelArm.</param>
-        public void SetArmData(ArmData armData)
-        {
-            transform.localPosition = armData.armLocalPosition;
-            transform.localEulerAngles = armData.armLocalEulerAngles;
-            transform.localScale = 0.1f * armData.armScale * Vector3.one;
-            SetShader(armData.armShader);
-            SetBonesEulerAngles(armData.bonesLocalEulerAngles);
-        }
-
-        /// <summary>
-        /// Applies a position, rotation, scale, shader, and pose from an ArmData to this ViewmodelArm.
-        /// </summary>
         /// <param name="armDataId">The ID of the ArmData to apply to this ViewmodelArm.</param>
         public void SetArmData(string armDataId)
         {
             var armData = ArmData.Find(armDataId);
             if (armData != null)
             {
-                SetArmData(armData);
+                this.ArmData = armData;
             }
         }
 
@@ -196,11 +200,11 @@ namespace Immersion.Scripts.Components
             }
         }
 
-        private void SetBonesEulerAngles(Dictionary<string, Vector3> bonesEulerAngles)
+        private void SetBoneEulers(Dictionary<string, Vector3> boneEulers)
         {
-            foreach (var boneEulerAngles in bonesEulerAngles)
+            foreach (var boneEuler in boneEulers)
             {
-                _bones[boneEulerAngles.Key].localEulerAngles = boneEulerAngles.Value;
+                _bones[boneEuler.Key].localEulerAngles = boneEuler.Value;
             }
         }
 

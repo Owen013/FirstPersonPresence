@@ -10,11 +10,11 @@ namespace Immersion.Scripts
 {
     public class ArmData
     {
-        [JsonProperty("arm_local_position")]
-        public readonly Vector3 armLocalPosition;
+        [JsonProperty("arm_position")]
+        public readonly Vector3 armPosition;
 
-        [JsonProperty("arm_local_euler_angles")]
-        public readonly Vector3 armLocalEulerAngles;
+        [JsonProperty("arm_rotation")]
+        public readonly Vector3 armRotation;
 
         [JsonProperty("arm_scale")]
         public readonly float armScale;
@@ -22,8 +22,8 @@ namespace Immersion.Scripts
         [JsonProperty("arm_shader")]
         public readonly string armShader;
 
-        [JsonProperty("bones_local_euler_angles")]
-        public readonly Dictionary<string, Vector3> bonesLocalEulerAngles;
+        [JsonProperty("bone_eulers")]
+        public readonly Dictionary<string, Vector3> boneEulers;
 
         private static Dictionary<string, ArmData> s_armData;
 
