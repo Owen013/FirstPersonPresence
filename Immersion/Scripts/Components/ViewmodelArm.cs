@@ -1,4 +1,5 @@
-﻿using OWML.Common;
+﻿using Newtonsoft.Json.Linq;
+using OWML.Common;
 using OWML.Utils;
 using System.Collections.Generic;
 using UnityEngine;
@@ -33,23 +34,6 @@ namespace Immersion.Scripts.Components
 
         private GameObject _playerSuitMesh;
 
-        private ArmData ArmData
-        {
-            get
-            {
-                return field;
-            }
-            set
-            {
-                field = value;
-                transform.localPosition = value.armPosition;
-                transform.localEulerAngles = value.armRotation;
-                transform.localScale = 0.1f * value.armScale * Vector3.one;
-                SetShader(value.armShader);
-                SetBoneEulers(value.boneEulers);
-            }
-        }
-
         /// <summary>
         /// Creates a new ViewmodelArm for the given PlayerTool.
         /// </summary>
@@ -79,7 +63,7 @@ namespace Immersion.Scripts.Components
             var armData = ArmData.Find(armDataId);
             if (armData != null)
             {
-                this.ArmData = armData;
+                SetArmData(armData);
             }
         }
 
@@ -206,6 +190,15 @@ namespace Immersion.Scripts.Components
             {
                 _bones[boneEuler.Key].localEulerAngles = boneEuler.Value;
             }
+        }
+
+        private void SetArmData(ArmData armData)
+        {
+            transform.localPosition = armData.armPosition;
+            transform.localEulerAngles = armData.armRotation;
+            transform.localScale = 0.1f * armData.armScale * Vector3.one;
+            SetShader(armData.armShader);
+            SetBoneEulers(armData.boneEulers);
         }
 
         private void Awake()
