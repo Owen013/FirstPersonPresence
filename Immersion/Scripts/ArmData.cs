@@ -27,10 +27,6 @@ namespace Immersion.Scripts
 
         private static Dictionary<string, ArmData> s_armData;
 
-        private static bool s_isDefaultArmDataLoaded;
-
-        private static List<string> s_jsonsPathsToLoad;
-
         /// <summary>
         /// Returns whether or not there is a corresponding ArmData for a given ID
         /// </summary>
@@ -129,71 +125,11 @@ namespace Immersion.Scripts
             return null;
         }
 
-        /// <summary>
-        /// Loads ArmData from a custom JSON
-        /// </summary>
-        /// <param name="jsonPath">The path to the JSON with the custom ArmData info</param>
-        public static void LoadCustomArmData(string jsonPath)
+        internal static void Load()
         {
-            if (!s_isDefaultArmDataLoaded)
-            {
-                // add to list to be loaded right after default arm data
-                s_jsonsPathsToLoad ??= [];
-                s_jsonsPathsToLoad.Add(jsonPath);
-                return;
-            }
-
-            ModMain.Console.WriteLine($"Loading Arm Data from \"{jsonPath}\"...", MessageType.Info);
-            LoadArmData(jsonPath);
-        }
-
-        internal static void LoadDefaultArmData()
-        {
-            if (s_isDefaultArmDataLoaded)
-            {
-                ModMain.Console.WriteLine("Default Arm Data is already loaded.", MessageType.Error);
-                return;
-            }
-
-            ModMain.Console.WriteLine($"Loading default Arm Data...", MessageType.Info);
-            LoadArmData($"{Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location)}/viewmodel-arm-data.json");
-            s_isDefaultArmDataLoaded = true;
-
-            if (s_jsonsPathsToLoad != null)
-            {
-                // load any custom arm data that was waiting for default arm data to be loaded
-                foreach (var jsonPath in s_jsonsPathsToLoad)
-                {
-                    LoadArmData(jsonPath);
-                }
-
-                s_jsonsPathsToLoad = null;
-            }
-        }
-
-        private static void LoadArmData(string jsonPath)
-        {
-            var newArmData = JsonConvert.DeserializeObject<Dictionary<string, ArmData>>(File.ReadAllText(jsonPath));
-            if (s_armData == null)
-            {
-                s_armData = newArmData;
-            }
-            else
-            {
-                foreach (var armData in newArmData)
-                {
-                    // overwrite existing arm data
-                    if (s_armData.ContainsKey(armData.Key))
-                    {
-                        s_armData[armData.Key] = armData.Value;
-                    }
-                    else
-                    {
-                        s_armData.Add(armData.Key, armData.Value);
-                    }
-                }
-            }
-
+            ModMain.Console.WriteLine($"Loading Arm Data...", MessageType.Info);
+            string json = File.ReadAllText($"{Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location)}/viewmodel-arm-data.json");
+            s_armData = JsonConvert.DeserializeObject<Dictionary<string, ArmData>>(json);
             ModMain.Console.WriteLine($"Arm Data loaded successfully!", MessageType.Success);
         }
     }

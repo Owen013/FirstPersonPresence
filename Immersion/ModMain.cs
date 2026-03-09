@@ -22,11 +22,6 @@ namespace Immersion
 
         public static IHikersMod HikersModAPI { get; private set; }
 
-        public override object GetApi()
-        {
-            return new ImmersionAPI();
-        }
-
         public override void Configure(IModConfig config)
         {
             Config.Configure(config);
@@ -46,8 +41,8 @@ namespace Immersion
             HikersModAPI = ModHelper.Interaction.TryGetModApi<IHikersMod>("Owen013.MovementMod");
 
             // load viewmodel arm stuff
+            ArmData.Load();
             ViewmodelArm.LoadAsset();
-            ArmData.LoadDefaultArmData();
 
             // ready
             Console.WriteLine($"Immersion is ready to go!", MessageType.Success);
