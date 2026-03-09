@@ -38,9 +38,9 @@ namespace Immersion.Scripts.Components
         /// </summary>
         /// <param name="playerTool">The PlayerTool to add a ViewmodelArm to.</param>
         /// <returns>The new ViewmodelArm.</returns>
-        public static ViewmodelArm NewViewmodelArm(PlayerTool playerTool)
+        public static ViewmodelArm New(PlayerTool playerTool)
         {
-            return NewViewmodelArm(playerTool.transform);
+            return ViewmodelArm.New(playerTool.transform);
         }
 
         /// <summary>
@@ -48,9 +48,9 @@ namespace Immersion.Scripts.Components
         /// </summary>
         /// <param name="owItem">The OWItem to add a ViewmodelArm to.</param>
         /// <returns>The new ViewmodelArm.</returns>
-        public static ViewmodelArm NewViewmodelArm(OWItem owItem)
+        public static ViewmodelArm New(OWItem owItem)
         {
-            return NewViewmodelArm(owItem.transform);
+            return ViewmodelArm.New(owItem.transform);
         }
 
         /// <summary>
@@ -128,7 +128,7 @@ namespace Immersion.Scripts.Components
                     return;
                 }
 
-                NewViewmodelArm(playerTool);
+                New(playerTool);
             }
         }
 
@@ -136,7 +136,7 @@ namespace Immersion.Scripts.Components
         {
             if (Config.EnableViewmodelArms && ArmData.Exists(ArmData.FindArmDataIdOfItem(owItem)) && owItem.transform.Find("ViewmodelArm") == null)
             {
-                NewViewmodelArm(owItem);
+                New(owItem);
             }
 
             // some items need to be adjusted
@@ -157,7 +157,7 @@ namespace Immersion.Scripts.Components
             }
         }
 
-        private static ViewmodelArm NewViewmodelArm(Transform parent)
+        private static ViewmodelArm New(Transform parent)
         {
             var viewmodelArm = Instantiate(s_viewmodelArmAsset).GetComponent<ViewmodelArm>();
             viewmodelArm.name = "ViewmodelArm";

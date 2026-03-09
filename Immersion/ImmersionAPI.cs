@@ -32,7 +32,7 @@ namespace Immersion
         /// <returns>The Viewmodel Arm's GameObject.</returns>
         public GameObject CreateViewmodelArm(PlayerTool tool)
         {
-            return ViewmodelArm.NewViewmodelArm(tool).gameObject;
+            return ViewmodelArm.New(tool).gameObject;
         }
 
         /// <summary>
@@ -42,7 +42,7 @@ namespace Immersion
         /// <returns>The Viewmodel Arm's GameObject.</returns>
         public GameObject CreateViewmodelArm(OWItem item)
         {
-            return ViewmodelArm.NewViewmodelArm(item).gameObject;
+            return ViewmodelArm.New(item).gameObject;
         }
 
         /// <summary>
