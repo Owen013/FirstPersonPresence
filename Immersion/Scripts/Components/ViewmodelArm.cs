@@ -40,7 +40,7 @@ namespace Immersion.Scripts.Components
         /// <returns>The new ViewmodelArm.</returns>
         public static ViewmodelArm New(PlayerTool playerTool)
         {
-            return ViewmodelArm.New(playerTool.transform);
+            return NewViewmodelArm(playerTool.transform);
         }
 
         /// <summary>
@@ -50,7 +50,7 @@ namespace Immersion.Scripts.Components
         /// <returns>The new ViewmodelArm.</returns>
         public static ViewmodelArm New(OWItem owItem)
         {
-            return ViewmodelArm.New(owItem.transform);
+            return NewViewmodelArm(owItem.transform);
         }
 
         /// <summary>
@@ -105,7 +105,7 @@ namespace Immersion.Scripts.Components
 
         internal static void OnEquipTool(PlayerTool playerTool)
         {
-            if (Config.EnableViewmodelArms && ArmData.Exists(playerTool.name))
+            if (Config.EnableViewmodelArms && ArmData.Exists(playerTool))
             {
                 // check for existing arm and enable if found (PlayerTool has no event for being equipped, so this is required)
                 var existingArm = playerTool.transform.Find("ViewmodelArm");
@@ -115,15 +115,15 @@ namespace Immersion.Scripts.Components
                     return;
                 }
 
-                ViewmodelArm.New(playerTool);
+                NewViewmodelArm(playerTool.transform, ArmData.Find(playerTool));
             }
         }
 
         internal static void OnPickUpItem(OWItem owItem)
         {
-            if (Config.EnableViewmodelArms && ArmData.Exists(ArmData.FindArmDataIdOfItem(owItem)) && owItem.transform.Find("ViewmodelArm") == null)
+            if (Config.EnableViewmodelArms && ArmData.Exists(owItem) && owItem.transform.Find("ViewmodelArm") == null)
             {
-                ViewmodelArm.New(owItem);
+                NewViewmodelArm(owItem.transform, ArmData.Find(owItem));
             }
 
             // some items need to be adjusted
@@ -144,7 +144,7 @@ namespace Immersion.Scripts.Components
             }
         }
 
-        private static ViewmodelArm New(Transform parent)
+        private static ViewmodelArm NewViewmodelArm(Transform parent, ArmData armData = null)
         {
             var viewmodelArm = Instantiate(s_viewmodelArmAsset).GetComponent<ViewmodelArm>();
             viewmodelArm.name = "ViewmodelArm";
@@ -158,6 +158,11 @@ namespace Immersion.Scripts.Components
             viewmodelArm._prePassNoSuit.materials[0].shader = prepassShader;
             viewmodelArm._prePassNoSuit.materials[1].shader = prepassShader;
             viewmodelArm._prePassSuit.material.shader = prepassShader;
+
+            if (armData != null)
+            {
+                viewmodelArm.SetArmData(armData);
+            }
 
             return viewmodelArm;
         }
@@ -223,23 +228,12 @@ namespace Immersion.Scripts.Components
 
         private void Start()
         {
-            string armDataId;
             _playerTool = transform.parent.GetComponent<PlayerTool>();
-            if (_playerTool != null)
-            {
-                armDataId = _playerTool.name;
-            }
-            else
+            if (_playerTool == null)
             {
                 _owItem = transform.parent.GetComponent<OWItem>();
                 _owItem.onPickedUp.AddListener((_) => gameObject.SetActive(true));
                 _itemCarryTool = Locator.GetToolModeSwapper().GetItemCarryTool();
-                armDataId = ArmData.FindArmDataIdOfItem(_owItem);
-            }
-
-            if (ArmData.Exists(armDataId))
-            {
-                SetArmData(armDataId);
             }
 
             var playerBody = Locator.GetPlayerBody();
