@@ -42,13 +42,33 @@ namespace Immersion.Scripts
         }
 
         /// <summary>
+        /// Returns whether or not there is a corresponding ArmData for a given PlayerTool
+        /// </summary>
+        /// <param name="playerTool">The PlayerTool of the desired ArmData</param>
+        /// <returns>True if there is an ArmData for the given PlayerTool, false if there isn't one</returns>
+        public static bool Exists(PlayerTool playerTool)
+        {
+            return ArmData.Exists(FindId(playerTool));
+        }
+
+        /// <summary>
+        /// Returns whether or not there is a corresponding ArmData for a given OWItem
+        /// </summary>
+        /// <param name="owItem">The OWItem of the desired ArmData</param>
+        /// <returns>True if there is an ArmData for the given OWItem, false if there isn't one</returns>
+        public static bool Exists(OWItem owItem)
+        {
+            return ArmData.Exists(FindId(owItem));
+        }
+
+        /// <summary>
         /// Returns the ArmData linked to the given ID, if it exists
         /// </summary>
         /// <param name="armDataId">The ID of the desired ArmData</param>
         /// <returns>The corresponding ArmData, if it exists</returns>
         public static ArmData Find(string armDataId)
         {
-            if (Exists(armDataId))
+            if (ArmData.Exists(armDataId))
             {
                 return s_armData[armDataId];
             }
@@ -57,14 +77,48 @@ namespace Immersion.Scripts
             return null;
         }
 
-        /// <summary>
-        /// Returns the ID of the ArmData that cooresponds to the given item, if it exists
-        /// </summary>
-        /// <param name="item">The item to try to get the ArmData ID for</param>
-        /// <returns>The ID of the corresponding ArmData if it exists, null if it doesn't</returns>
-        public static string FindArmDataIdOfItem(OWItem item)
+        public static ArmData Find(PlayerTool playerTool)
         {
-            var itemTypeName = item.GetItemType().GetName();
+            if (!ArmData.Exists(playerTool))
+            {
+                ModMain.Console.WriteLine($"No ArmData exists for PlayerTool \"{playerTool.name}\"");
+                return null;
+            }
+
+            string armDataId = ArmData.FindId(playerTool);
+            return ArmData.Find(armDataId);
+        }
+
+        public static ArmData Find(OWItem owItem)
+        {
+            if (!ArmData.Exists(owItem))
+            {
+                ModMain.Console.WriteLine($"No ArmData exists for OWItem \"{owItem.name}\"");
+                return null;
+            }
+
+            string armDataId = ArmData.FindId(owItem);
+            return ArmData.Find(armDataId);
+        }
+
+        /// <summary>
+        /// Returns the ID of the ArmData that cooresponds to the given PlayerTool, if it exists
+        /// </summary>
+        /// <param name="playerTool">The PlayerTool to try to get the ArmData ID for</param>
+        /// <returns>The ID of the corresponding ArmData if it exists, null if it doesn't</returns>
+        public static string FindId(PlayerTool playerTool)
+        {
+            return playerTool.name;
+        }
+
+        /// <summary>
+        /// Returns the ID of the ArmData that cooresponds to the given OWItem, if it exists
+        /// </summary>
+        /// <param name="owItem">The OWItem to try to get the ArmData ID for</param>
+        /// <returns>The ID of the corresponding ArmData if it exists, null if it doesn't</returns>
+        public static string FindId(OWItem owItem)
+        {
+            var itemTypeName = owItem.GetItemType().GetName();
             switch (itemTypeName)
             {
                 // vanilla items
@@ -76,14 +130,14 @@ namespace Immersion.Scripts
 
                 // vanilla items with variants
                 case "Scroll":
-                    return item.name switch
+                    return owItem.name switch
                     {
                         "Prefab_NOM_Scroll_egg" => "Scroll_Egg",
                         "Prefab_NOM_Scroll_Jeff" => "Scroll_Jeff",
                         _ => "Scroll"
                     };
                 case "ConversationStone":
-                    if (item is NomaiConversationStone conversationStone)
+                    if (owItem is NomaiConversationStone conversationStone)
                     {
                         return conversationStone.GetWord() switch
                         {
@@ -93,7 +147,7 @@ namespace Immersion.Scripts
                     }
                     return null;
                 case "WarpCore":
-                    if (item is WarpCoreItem warpCore)
+                    if (owItem is WarpCoreItem warpCore)
                     {
                         return warpCore.GetWarpCoreType() switch
                         {
@@ -103,7 +157,7 @@ namespace Immersion.Scripts
                     }
                     return null;
                 case "DreamLantern":
-                    if (item is DreamLanternItem dreamLantern)
+                    if (owItem is DreamLanternItem dreamLantern)
                     {
                         return dreamLantern.GetLanternType() switch
                         {
@@ -124,7 +178,6 @@ namespace Immersion.Scripts
                 case "Compass":
                     return "Dreambound_Compass";
             }
-            ;
 
             return null;
         }
