@@ -1,5 +1,4 @@
-﻿using Newtonsoft.Json.Linq;
-using OWML.Common;
+﻿using OWML.Common;
 using OWML.Utils;
 using System.Collections.Generic;
 using UnityEngine;
@@ -119,20 +118,26 @@ namespace Immersion.Scripts.Components
             viewmodelArm.transform.parent = parent;
             viewmodelArm.transform.localPosition = Vector3.zero;
             viewmodelArm.transform.localRotation = Quaternion.identity;
+
+            // get the ingame shaders
             viewmodelArm.SetShader("Standard");
+            var prepassShader = Shader.Find("Outer Wilds/Utility/View Model Prepass");
+            viewmodelArm._prePassNoSuit.materials[0].shader = prepassShader;
+            viewmodelArm._prePassNoSuit.materials[1].shader = prepassShader;
+            viewmodelArm._prePassSuit.material.shader = prepassShader;
 
             return viewmodelArm;
         }
 
         private void SetShader(string shaderName)
         {
-            if (string.IsNullOrEmpty(shaderName))
+            var shader = Shader.Find(shaderName);
+            if (shader == null)
             {
-                ModMain.Console.WriteLine("No shaderName provided for ViewmodelArm.SetShader", MessageType.Error);
+                ModMain.Console.WriteLine($"\"{shaderName}\" is not a valid shader.", MessageType.Error);
                 return;
             }
 
-            var shader = Shader.Find(shaderName);
             _noSuitMesh.materials[0].shader = shader;
             _noSuitMesh.materials[1].shader = shader;
             _suitMesh.material.shader = shader;
@@ -141,14 +146,6 @@ namespace Immersion.Scripts.Components
             bool isViewmodel = shaderName == "Outer Wilds/Utility/View Model" || shaderName == "Outer Wilds/Utility/View Model (Cutoff)";
             _prePassNoSuit.gameObject.SetActive(isViewmodel);
             _prePassSuit.gameObject.SetActive(isViewmodel);
-            if (isViewmodel)
-            {
-                // grab the ingame viewmodel prepass shader (the prefab one can't work properly)
-                var prepassShader = Shader.Find("Outer Wilds/Utility/View Model Prepass");
-                _prePassNoSuit.materials[0].shader = prepassShader;
-                _prePassNoSuit.materials[1].shader = prepassShader;
-                _prePassSuit.material.shader = prepassShader;
-            }
         }
 
         private void SetBoneEulers(Dictionary<string, Vector3> boneEulers)
@@ -197,26 +194,28 @@ namespace Immersion.Scripts.Components
 
         private void Start()
         {
+            string armDataId;
             _playerTool = transform.parent.GetComponent<PlayerTool>();
             if (_playerTool != null)
             {
-                SetArmData(_playerTool.name);
+                armDataId = _playerTool.name;
             }
             else
             {
                 _owItem = transform.parent.GetComponent<OWItem>();
                 _owItem.onPickedUp.AddListener((_) => gameObject.SetActive(true));
                 _itemCarryTool = Locator.GetToolModeSwapper().GetItemCarryTool();
-
-                string armDataId = ArmData.FindArmDataIdOfItem(_owItem);
-                if (armDataId != null)
-                {
-                    SetArmData(armDataId);
-                }
+                armDataId = ArmData.FindArmDataIdOfItem(_owItem);
             }
 
-            _playerNoSuitMesh = Locator.GetPlayerBody().transform.Find("Traveller_HEA_Player_v2/player_mesh_noSuit:Traveller_HEA_Player/player_mesh_noSuit:Player_RightArm").gameObject;
-            _playerSuitMesh = Locator.GetPlayerBody().transform.Find("Traveller_HEA_Player_v2/Traveller_Mesh_v01:Traveller_Geo/Traveller_Mesh_v01:PlayerSuit_RightArm").gameObject;
+            if (ArmData.Exists(armDataId))
+            {
+                SetArmData(armDataId);
+            }
+
+            var playerBody = Locator.GetPlayerBody();
+            _playerNoSuitMesh = playerBody.transform.Find("Traveller_HEA_Player_v2/player_mesh_noSuit:Traveller_HEA_Player/player_mesh_noSuit:Player_RightArm").gameObject;
+            _playerSuitMesh = playerBody.transform.Find("Traveller_HEA_Player_v2/Traveller_Mesh_v01:Traveller_Geo/Traveller_Mesh_v01:PlayerSuit_RightArm").gameObject;
         }
 
         private void LateUpdate()
