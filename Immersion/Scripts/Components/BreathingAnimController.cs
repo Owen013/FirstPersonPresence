@@ -2,7 +2,7 @@
 
 namespace Immersion.Scripts.Components
 {
-    public class BreathingAnimController : MonoBehaviour
+    public class BreathingAnimController : ToggleableBehaviour
     {
         private OffsetManager _offsetManager;
 
@@ -16,16 +16,15 @@ namespace Immersion.Scripts.Components
 
         private float MaxDisplacement => 0.005f * Config.BreathingAnimScale;
 
-        private void OnConfigured()
+        protected override void UpdateEnabled()
         {
             enabled = Config.EnableBreathingAnim;
         }
 
-        private void Awake()
+        protected override void Awake()
         {
+            base.Awake();
             _offsetManager = OffsetManager.Instance;
-            Config.OnConfigured += OnConfigured;
-            OnConfigured();
         }
 
         private void Update()
@@ -44,11 +43,6 @@ namespace Immersion.Scripts.Components
                 _targetPosition = new Vector3(Random.Range(-1f, 1f), Random.Range(-1f, 1f), 0f);
                 _nextUpdateTime = Time.time + Random.Range(0.1f, 1f);
             }
-        }
-
-        private void OnDestroy()
-        {
-            Config.OnConfigured -= OnConfigured;
         }
     }
 }

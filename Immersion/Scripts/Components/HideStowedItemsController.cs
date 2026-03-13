@@ -3,7 +3,7 @@ using UnityEngine;
 
 namespace Immersion.Scripts.Components
 {
-    public class HideStowedItemsController : MonoBehaviour
+    public class HideStowedItemsController : ToggleableBehaviour
     {
         private OffsetManager _offsetManager;
 
@@ -11,18 +11,16 @@ namespace Immersion.Scripts.Components
 
         private float _addedStowDegrees;
 
-        private void OnConfigured()
+        protected override void UpdateEnabled()
         {
             enabled = Config.HideStowedItems;
         }
 
-        private void Awake()
+        protected override void Awake()
         {
+            base.Awake();
             _offsetManager = OffsetManager.Instance;
             _toolModeSwapper = Locator.GetToolModeSwapper();
-
-            Config.OnConfigured += OnConfigured;
-            OnConfigured();
         }
 
         private void Update()
@@ -49,11 +47,6 @@ namespace Immersion.Scripts.Components
         private void OnDisable()
         {
             _addedStowDegrees = 0f;
-        }
-
-        private void OnDestroy()
-        {
-            Config.OnConfigured -= OnConfigured;
         }
     }
 }
