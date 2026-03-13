@@ -44,7 +44,8 @@ namespace Immersion.Scripts
         /// <returns>True if there is an ArmData for the given PlayerTool, false if there isn't one</returns>
         public static bool Exists(PlayerTool playerTool)
         {
-            return ArmData.Exists(FindId(playerTool));
+            string armDataId = FindId(playerTool);
+            return ArmData.Exists(armDataId);
         }
 
         /// <summary>
@@ -54,7 +55,8 @@ namespace Immersion.Scripts
         /// <returns>True if there is an ArmData for the given OWItem, false if there isn't one</returns>
         public static bool Exists(OWItem owItem)
         {
-            return ArmData.Exists(FindId(owItem));
+            string armDataId = FindId(owItem);
+            return ArmData.Exists(armDataId);
         }
 
         /// <summary>

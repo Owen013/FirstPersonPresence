@@ -161,16 +161,21 @@ namespace Immersion.Scripts.Components
             }
         }
 
+        private void SetArmData(ArmData armData)
+        {
+            transform.localPosition = armData.armPosition;
+            transform.localEulerAngles = armData.armRotation;
+            transform.localScale = 0.1f * armData.armScale * Vector3.one;
+            SetShader(armData.armShader);
+            SetBoneEulers(armData.boneEulers);
+        }
+
         private void SetArmData(string armDataId)
         {
             var armData = ArmData.Find(armDataId);
             if (armData != null)
             {
-                transform.localPosition = armData.armPosition;
-                transform.localEulerAngles = armData.armRotation;
-                transform.localScale = 0.1f * armData.armScale * Vector3.one;
-                SetShader(armData.armShader);
-                SetBoneEulers(armData.boneEulers);
+                SetArmData(armData);
             }
         }
 
