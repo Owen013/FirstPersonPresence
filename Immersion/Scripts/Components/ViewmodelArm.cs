@@ -38,7 +38,7 @@ namespace Immersion.Scripts.Components
         /// </summary>
         /// <param name="playerTool">The PlayerTool to add a ViewmodelArm to.</param>
         /// <returns>The new ViewmodelArm.</returns>
-        public static ViewmodelArm NewViewmodelArm(PlayerTool playerTool)
+        public static ViewmodelArm New(PlayerTool playerTool)
         {
             return NewViewmodelArm(playerTool.transform);
         }
@@ -48,22 +48,9 @@ namespace Immersion.Scripts.Components
         /// </summary>
         /// <param name="owItem">The OWItem to add a ViewmodelArm to.</param>
         /// <returns>The new ViewmodelArm.</returns>
-        public static ViewmodelArm NewViewmodelArm(OWItem owItem)
+        public static ViewmodelArm New(OWItem owItem)
         {
             return NewViewmodelArm(owItem.transform);
-        }
-
-        /// <summary>
-        /// Applies a position, rotation, scale, shader, and pose from an ArmData to this ViewmodelArm.
-        /// </summary>
-        /// <param name="armData">The ArmData to apply to this ViewmodelArm.</param>
-        public void SetArmData(ArmData armData)
-        {
-            transform.localPosition = armData.armLocalPosition;
-            transform.localEulerAngles = armData.armLocalEulerAngles;
-            transform.localScale = 0.1f * armData.armScale * Vector3.one;
-            SetShader(armData.armShader);
-            SetBonesEulerAngles(armData.bonesLocalEulerAngles);
         }
 
         /// <summary>
@@ -118,7 +105,7 @@ namespace Immersion.Scripts.Components
 
         internal static void OnEquipTool(PlayerTool playerTool)
         {
-            if (Config.EnableViewmodelArms && ArmData.Exists(playerTool.name))
+            if (Config.EnableViewmodelArms && ArmData.Exists(playerTool))
             {
                 // check for existing arm and enable if found (PlayerTool has no event for being equipped, so this is required)
                 var existingArm = playerTool.transform.Find("ViewmodelArm");
@@ -128,15 +115,15 @@ namespace Immersion.Scripts.Components
                     return;
                 }
 
-                NewViewmodelArm(playerTool);
+                NewViewmodelArm(playerTool.transform, ArmData.Find(playerTool));
             }
         }
 
         internal static void OnPickUpItem(OWItem owItem)
         {
-            if (Config.EnableViewmodelArms && ArmData.Exists(ArmData.FindArmDataIdOfItem(owItem)) && owItem.transform.Find("ViewmodelArm") == null)
+            if (Config.EnableViewmodelArms && ArmData.Exists(owItem) && owItem.transform.Find("ViewmodelArm") == null)
             {
-                NewViewmodelArm(owItem);
+                NewViewmodelArm(owItem.transform, ArmData.Find(owItem));
             }
 
             // some items need to be adjusted
@@ -157,27 +144,38 @@ namespace Immersion.Scripts.Components
             }
         }
 
-        private static ViewmodelArm NewViewmodelArm(Transform parent)
+        private static ViewmodelArm NewViewmodelArm(Transform parent, ArmData armData = null)
         {
             var viewmodelArm = Instantiate(s_viewmodelArmAsset).GetComponent<ViewmodelArm>();
             viewmodelArm.name = "ViewmodelArm";
             viewmodelArm.transform.parent = parent;
             viewmodelArm.transform.localPosition = Vector3.zero;
             viewmodelArm.transform.localRotation = Quaternion.identity;
+
+            // get the ingame shaders
             viewmodelArm.SetShader("Standard");
+            var prepassShader = Shader.Find("Outer Wilds/Utility/View Model Prepass");
+            viewmodelArm._prePassNoSuit.materials[0].shader = prepassShader;
+            viewmodelArm._prePassNoSuit.materials[1].shader = prepassShader;
+            viewmodelArm._prePassSuit.material.shader = prepassShader;
+
+            if (armData != null)
+            {
+                viewmodelArm.SetArmData(armData);
+            }
 
             return viewmodelArm;
         }
 
         private void SetShader(string shaderName)
         {
-            if (string.IsNullOrEmpty(shaderName))
+            var shader = Shader.Find(shaderName);
+            if (shader == null)
             {
-                ModMain.Console.WriteLine("No shaderName provided for ViewmodelArm.SetShader", MessageType.Error);
+                ModMain.Console.WriteLine($"\"{shaderName}\" is not a valid shader.", MessageType.Error);
                 return;
             }
 
-            var shader = Shader.Find(shaderName);
             _noSuitMesh.materials[0].shader = shader;
             _noSuitMesh.materials[1].shader = shader;
             _suitMesh.material.shader = shader;
@@ -186,22 +184,23 @@ namespace Immersion.Scripts.Components
             bool isViewmodel = shaderName == "Outer Wilds/Utility/View Model" || shaderName == "Outer Wilds/Utility/View Model (Cutoff)";
             _prePassNoSuit.gameObject.SetActive(isViewmodel);
             _prePassSuit.gameObject.SetActive(isViewmodel);
-            if (isViewmodel)
+        }
+
+        private void SetBoneEulers(Dictionary<string, Vector3> boneEulers)
+        {
+            foreach (var boneEuler in boneEulers)
             {
-                // grab the ingame viewmodel prepass shader (the prefab one can't work properly)
-                var prepassShader = Shader.Find("Outer Wilds/Utility/View Model Prepass");
-                _prePassNoSuit.materials[0].shader = prepassShader;
-                _prePassNoSuit.materials[1].shader = prepassShader;
-                _prePassSuit.material.shader = prepassShader;
+                _bones[boneEuler.Key].localEulerAngles = boneEuler.Value;
             }
         }
 
-        private void SetBonesEulerAngles(Dictionary<string, Vector3> bonesEulerAngles)
+        private void SetArmData(ArmData armData)
         {
-            foreach (var boneEulerAngles in bonesEulerAngles)
-            {
-                _bones[boneEulerAngles.Key].localEulerAngles = boneEulerAngles.Value;
-            }
+            transform.localPosition = armData.armPosition;
+            transform.localEulerAngles = armData.armRotation;
+            transform.localScale = 0.1f * armData.armScale * Vector3.one;
+            SetShader(armData.armShader);
+            SetBoneEulers(armData.boneEulers);
         }
 
         private void Awake()
@@ -230,25 +229,16 @@ namespace Immersion.Scripts.Components
         private void Start()
         {
             _playerTool = transform.parent.GetComponent<PlayerTool>();
-            if (_playerTool != null)
-            {
-                SetArmData(_playerTool.name);
-            }
-            else
+            if (_playerTool == null)
             {
                 _owItem = transform.parent.GetComponent<OWItem>();
                 _owItem.onPickedUp.AddListener((_) => gameObject.SetActive(true));
                 _itemCarryTool = Locator.GetToolModeSwapper().GetItemCarryTool();
-
-                string armDataId = ArmData.FindArmDataIdOfItem(_owItem);
-                if (armDataId != null)
-                {
-                    SetArmData(armDataId);
-                }
             }
 
-            _playerNoSuitMesh = Locator.GetPlayerBody().transform.Find("Traveller_HEA_Player_v2/player_mesh_noSuit:Traveller_HEA_Player/player_mesh_noSuit:Player_RightArm").gameObject;
-            _playerSuitMesh = Locator.GetPlayerBody().transform.Find("Traveller_HEA_Player_v2/Traveller_Mesh_v01:Traveller_Geo/Traveller_Mesh_v01:PlayerSuit_RightArm").gameObject;
+            var playerBody = Locator.GetPlayerBody();
+            _playerNoSuitMesh = playerBody.transform.Find("Traveller_HEA_Player_v2/player_mesh_noSuit:Traveller_HEA_Player/player_mesh_noSuit:Player_RightArm").gameObject;
+            _playerSuitMesh = playerBody.transform.Find("Traveller_HEA_Player_v2/Traveller_Mesh_v01:Traveller_Geo/Traveller_Mesh_v01:PlayerSuit_RightArm").gameObject;
         }
 
         private void LateUpdate()
