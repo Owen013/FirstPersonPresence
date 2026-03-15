@@ -13,13 +13,13 @@ namespace Immersion.Scripts.Components
         private SkinnedMeshRenderer _noSuitMesh;
 
         [SerializeField]
+        private SkinnedMeshRenderer _noSuitMeshPrepass;
+
+        [SerializeField]
         private SkinnedMeshRenderer _suitMesh;
 
         [SerializeField]
-        private SkinnedMeshRenderer _prePassNoSuit;
-
-        [SerializeField]
-        private SkinnedMeshRenderer _prePassSuit;
+        private SkinnedMeshRenderer _suitMeshPrepass;
 
         private Dictionary<string, Transform> _bones;
 
@@ -122,9 +122,9 @@ namespace Immersion.Scripts.Components
             // get the ingame shaders
             viewmodelArm.SetShader("Standard");
             var prepassShader = Shader.Find("Outer Wilds/Utility/View Model Prepass");
-            viewmodelArm._prePassNoSuit.materials[0].shader = prepassShader;
-            viewmodelArm._prePassNoSuit.materials[1].shader = prepassShader;
-            viewmodelArm._prePassSuit.material.shader = prepassShader;
+            viewmodelArm._noSuitMeshPrepass.materials[0].shader = prepassShader;
+            viewmodelArm._noSuitMeshPrepass.materials[1].shader = prepassShader;
+            viewmodelArm._suitMeshPrepass.material.shader = prepassShader;
 
             if (armData != null)
             {
@@ -149,8 +149,8 @@ namespace Immersion.Scripts.Components
 
             // if using the viewmodel shader, the prepass meshes must be enabled to prevent viewmodel arms from appearing behind things
             bool isViewmodel = shaderName == "Outer Wilds/Utility/View Model" || shaderName == "Outer Wilds/Utility/View Model (Cutoff)";
-            _prePassNoSuit.gameObject.SetActive(isViewmodel);
-            _prePassSuit.gameObject.SetActive(isViewmodel);
+            _noSuitMeshPrepass.gameObject.SetActive(isViewmodel);
+            _suitMeshPrepass.gameObject.SetActive(isViewmodel);
         }
 
         private void SetBoneEulers(Dictionary<string, Vector3> boneEulers)
