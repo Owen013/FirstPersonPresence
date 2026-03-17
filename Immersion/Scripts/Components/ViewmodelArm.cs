@@ -74,32 +74,104 @@ namespace Immersion.Scripts.Components
         }
 
         /// <summary>
-        /// Outputs this ViewmodelArm's information in JSON format.
+        /// Changes the Shaders of the Viewmodel Arm meshes.
         /// </summary>
-        public void OutputArmData()
+        /// <param name="shader">The Shader to use for the Viewmodel Arm meshes.</param>
+        public void SetShader(Shader shader)
         {
-            string indent = "    ";
+            _noSuitMesh.materials[0].shader = shader;
+            _noSuitMesh.materials[1].shader = shader;
+            _suitMesh.material.shader = shader;
 
+            // if using the viewmodel shader, the prepass meshes must be enabled to prevent viewmodel arms from appearing behind things
+            bool isViewmodel = shader.name == "Outer Wilds/Utility/View Model" || shader.name == "Outer Wilds/Utility/View Model (Cutoff)";
+            _noSuitMeshPrepass.gameObject.SetActive(isViewmodel);
+            _suitMeshPrepass.gameObject.SetActive(isViewmodel);
+        }
+
+        /// <summary>
+        /// Changes the Shaders of the Viewmodel Arm meshes.
+        /// </summary>
+        /// <param name="shaderName">The name of the Shader to use for the Viewmodel Arm meshes.</param>
+        public void SetShader(string shaderName)
+        {
+            var shader = Shader.Find(shaderName);
+            if (shader == null)
+            {
+                ModMain.Console.WriteLine($"\"{shaderName}\" is not a valid shader.", MessageType.Error);
+                return;
+            }
+
+            SetShader(shader);
+        }
+
+        /// <summary>
+        /// Sets the euler angles of the Viewmodel Arm's bones.
+        /// </summary>
+        /// <param name="boneEulers">A dictionary of Vector3 values keyed on the names of the bones.</param>
+        public void SetBoneEulers(Dictionary<string, Vector3> boneEulers)
+        {
+            foreach (var boneEuler in boneEulers)
+            {
+                _bones[boneEuler.Key].localEulerAngles = boneEuler.Value;
+            }
+        }
+
+        /// <summary>
+        /// Sets the position, rotation, scale, shader, and bone eulers of the Viewmodel Arm to those defined by an ArmData object.
+        /// </summary>
+        /// <param name="armData">The ArmData to apply to this ViewmodelArm.</param>
+        public void ApplyArmData(ArmData armData)
+        {
+            transform.localPosition = armData.armPosition;
+            transform.localEulerAngles = armData.armRotation;
+            transform.localScale = 0.1f * armData.armScale * Vector3.one;
+            SetShader(armData.armShader);
+            SetBoneEulers(armData.boneEulers);
+        }
+
+        /// <summary>
+        /// Sets the position, rotation, scale, shader, and bone eulers of the Viewmodel Arm to those defined by an ArmData object.
+        /// </summary>
+        /// <param name="armDataId">The ID of the ArmData to apply to this ViewmodelArm.</param>
+        public void ApplyArmData(string armDataId)
+        {
+            var armData = ArmData.Find(armDataId);
+            if (armData != null)
+            {
+                ApplyArmData(armData);
+            }
+        }
+
+        /// <summary>
+        /// Outputs this ViewmodelArm's information in a format that can be used in the ArmData JSON.
+        /// </summary>
+        public void OutputArmDataJSON()
+        {
             var armPos = transform.localPosition;
             var armRot = transform.localEulerAngles;
 
-            string boneEulersString = "";
+            string output = $"    \"[ARM DATA ID HERE]\" {{\n" +
+                $"        \"arm_local_position\": {{ \"x\": {armPos.x}, \"y\": {armPos.y}, \"z\": {armPos.z} }},\n" +
+                $"        \"arm_local_euler_angles\": {{ \"x\": {armRot.x}, \"y\": {armRot.y}, \"z\": {armRot.z} }},\n" +
+                $"        \"arm_scale\": {10f * transform.localScale.x},\n" +
+                $"        \"arm_shader\": \"{_noSuitMesh.material.shader.name}\",\n" +
+                $"        \"bones_local_euler_angles\": {{\n";
+
             int i = 0;
             foreach (var keyValuePair in _bones)
             {
                 var eulers = keyValuePair.Value.localEulerAngles;
-                boneEulersString += $"{indent}{indent}{indent}\"{keyValuePair.Key}\": {{ \"x\": {eulers.x}, \"y\": {eulers.y}, \"z\": {eulers.z} }}{(i < _bones.Count - 1 ? ",\n" : "\n")}";
+                output += $"            \"{keyValuePair.Key}\": {{ \"x\": {eulers.x}, \"y\": {eulers.y}, \"z\": {eulers.z} }}";
+                if (i < _bones.Count - 1)
+                {
+                    output += ',';
+                }
+                output += '\n';
                 i++;
             }
 
-            string output = $"{indent}\"[ARM DATA ID HERE]\" {{\n" +
-                $"{indent}{indent}\"arm_local_position\": {{ \"x\": {armPos.x}, \"y\": {armPos.y}, \"z\": {armPos.z} }},\n" +
-                $"{indent}{indent}\"arm_local_euler_angles\": {{ \"x\": {armRot.x}, \"y\": {armRot.y}, \"z\": {armRot.z} }},\n" +
-                $"{indent}{indent}\"arm_scale\": {10f * transform.localScale.x},\n" +
-                $"{indent}{indent}\"arm_shader\": \"{_noSuitMesh.material.shader.name}\",\n" +
-                $"{indent}{indent}\"bones_local_euler_angles\": {{\n" +
-                boneEulersString +
-                $"{indent}{indent}}}\n{indent}}}";
+            output += $"        }}\n    }}";
 
             ModMain.Console.WriteLine(output);
         }
@@ -168,55 +240,10 @@ namespace Immersion.Scripts.Components
 
             if (armData != null)
             {
-                viewmodelArm.SetArmData(armData);
+                viewmodelArm.ApplyArmData(armData);
             }
 
             return viewmodelArm;
-        }
-
-        private void SetShader(string shaderName)
-        {
-            var shader = Shader.Find(shaderName);
-            if (shader == null)
-            {
-                ModMain.Console.WriteLine($"\"{shaderName}\" is not a valid shader.", MessageType.Error);
-                return;
-            }
-
-            _noSuitMesh.materials[0].shader = shader;
-            _noSuitMesh.materials[1].shader = shader;
-            _suitMesh.material.shader = shader;
-
-            // if using the viewmodel shader, the prepass meshes must be enabled to prevent viewmodel arms from appearing behind things
-            bool isViewmodel = shaderName == "Outer Wilds/Utility/View Model" || shaderName == "Outer Wilds/Utility/View Model (Cutoff)";
-            _noSuitMeshPrepass.gameObject.SetActive(isViewmodel);
-            _suitMeshPrepass.gameObject.SetActive(isViewmodel);
-        }
-
-        private void SetBoneEulers(Dictionary<string, Vector3> boneEulers)
-        {
-            foreach (var boneEuler in boneEulers)
-            {
-                _bones[boneEuler.Key].localEulerAngles = boneEuler.Value;
-            }
-        }
-
-        private void SetArmData(ArmData armData)
-        {
-            transform.localPosition = armData.armPosition;
-            transform.localEulerAngles = armData.armRotation;
-            transform.localScale = 0.1f * armData.armScale * Vector3.one;
-            SetShader(armData.armShader);
-            SetBoneEulers(armData.boneEulers);
-        }
-
-        private void SetArmData(string armDataId)
-        {
-            var armData = ArmData.Find(armDataId);
-            if (armData != null)
-            {
-                SetArmData(armData);
-            }
         }
 
         private void Awake()
