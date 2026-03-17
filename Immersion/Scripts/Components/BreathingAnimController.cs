@@ -16,7 +16,7 @@ namespace Immersion.Scripts.Components
 
         private float MaxDisplacement => 0.005f * Config.BreathingAnimScale;
 
-        protected override void UpdateEnabled()
+        protected override void OnConfigured()
         {
             enabled = Config.EnableBreathingAnim;
         }

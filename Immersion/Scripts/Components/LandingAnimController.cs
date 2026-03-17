@@ -30,7 +30,7 @@ namespace Immersion.Scripts.Components
             }
         }
 
-        protected override void UpdateEnabled()
+        protected override void OnConfigured()
         {
             enabled = Config.EnableCameraLandingAnim || Config.EnableViewmodelLandingAnim;
         }

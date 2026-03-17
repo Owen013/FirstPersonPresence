@@ -28,20 +28,20 @@ namespace Immersion.Scripts
         private static Dictionary<string, ArmData> s_armData;
 
         /// <summary>
-        /// Returns whether or not there is a corresponding ArmData for a given ID
+        /// Determines if there is an ArmData of a certain ID.
         /// </summary>
-        /// <param name="armDataId">The ID of the desired ArmData</param>
-        /// <returns>True if there is an ArmData for the given ID, false if there isn't one</returns>
+        /// <param name="armDataId">The ID to determine if there is ArmData for.</param>
+        /// <returns>True if there is an ArmData of this ID, False if there is not.</returns>
         public static bool Exists(string armDataId)
         {
             return !string.IsNullOrEmpty(armDataId) && s_armData != null && s_armData.ContainsKey(armDataId);
         }
 
         /// <summary>
-        /// Returns whether or not there is a corresponding ArmData for a given PlayerTool
+        /// Determines if there is an ArmData for a certain PlayerTool.
         /// </summary>
-        /// <param name="playerTool">The PlayerTool of the desired ArmData</param>
-        /// <returns>True if there is an ArmData for the given PlayerTool, false if there isn't one</returns>
+        /// <param name="playerTool">The PlayerTool to determine if there is ArmData for.</param>
+        /// <returns>True if there is an ArmData for this PlayerTool, False if there is not.</returns>
         public static bool Exists(PlayerTool playerTool)
         {
             string armDataId = FindId(playerTool);
@@ -49,10 +49,10 @@ namespace Immersion.Scripts
         }
 
         /// <summary>
-        /// Returns whether or not there is a corresponding ArmData for a given OWItem
+        /// Determines if there is an ArmData for a certain OWItem.
         /// </summary>
-        /// <param name="owItem">The OWItem of the desired ArmData</param>
-        /// <returns>True if there is an ArmData for the given OWItem, false if there isn't one</returns>
+        /// <param name="owItem">The OWItem to determine if there is ArmData for.</param>
+        /// <returns>True if there is an ArmData for this OWItem, False if there is not.</returns>
         public static bool Exists(OWItem owItem)
         {
             string armDataId = FindId(owItem);
@@ -60,10 +60,10 @@ namespace Immersion.Scripts
         }
 
         /// <summary>
-        /// Returns the ArmData linked to the given ID, if it exists
+        /// Returns the ArmData linked to the given ID, if it exists.
         /// </summary>
-        /// <param name="armDataId">The ID of the desired ArmData</param>
-        /// <returns>The corresponding ArmData, if it exists</returns>
+        /// <param name="armDataId">The ID of the desired ArmData.</param>
+        /// <returns>The ArmData of this ID, or null if there is no ArmData of this ID.</returns>
         public static ArmData Find(string armDataId)
         {
             if (ArmData.Exists(armDataId))
@@ -75,6 +75,11 @@ namespace Immersion.Scripts
             return null;
         }
 
+        /// <summary>
+        /// Returns the ArmData for a PlayerTool, if it exists.
+        /// </summary>
+        /// <param name="playerTool">The PlayerTool to find ArmData for.</param>
+        /// <returns>The ArmData for the PlayerTool, or null if there is no ArmData for that tool.</returns>
         public static ArmData Find(PlayerTool playerTool)
         {
             if (!ArmData.Exists(playerTool))
@@ -87,6 +92,11 @@ namespace Immersion.Scripts
             return ArmData.Find(armDataId);
         }
 
+        /// <summary>
+        /// Returns the ArmData for an OWItem, if it exists.
+        /// </summary>
+        /// <param name="playerTool">The OWItem to find ArmData for.</param>
+        /// <returns>The ArmData for the OWItem, or null if there is no ArmData for that tool.</returns>
         public static ArmData Find(OWItem owItem)
         {
             if (!ArmData.Exists(owItem))
@@ -100,20 +110,20 @@ namespace Immersion.Scripts
         }
 
         /// <summary>
-        /// Returns the ID of the ArmData that cooresponds to the given PlayerTool, if it exists
+        /// Returns the ID of the ArmData for a PlayerTool, if it exists.
         /// </summary>
-        /// <param name="playerTool">The PlayerTool to try to get the ArmData ID for</param>
-        /// <returns>The ID of the corresponding ArmData if it exists, null if it doesn't</returns>
+        /// <param name="playerTool">The PlayerTool to find the ArmData ID for.</param>
+        /// <returns>The ID of the ArmData for the PlayerTool, or null if there is no ArmData for that tool.</returns>
         public static string FindId(PlayerTool playerTool)
         {
             return playerTool.name;
         }
 
         /// <summary>
-        /// Returns the ID of the ArmData that cooresponds to the given OWItem, if it exists
+        /// Returns the ID of the ArmData for a OWItem, if it exists.
         /// </summary>
-        /// <param name="owItem">The OWItem to try to get the ArmData ID for</param>
-        /// <returns>The ID of the corresponding ArmData if it exists, null if it doesn't</returns>
+        /// <param name="owItem">The OWItem to find the ArmData ID for.</param>
+        /// <returns>The ID of the ArmData for the OWItem, or null if there is no ArmData for that tool.</returns>
         public static string FindId(OWItem owItem)
         {
             var itemTypeName = owItem.GetItemType().GetName();

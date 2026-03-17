@@ -10,7 +10,7 @@ namespace Immersion.Scripts.Components
 
         private float MaxDisplacement => 0.05f * Config.ViewmodelOffsetScale;
 
-        protected override void UpdateEnabled()
+        protected override void OnConfigured()
         {
             enabled = Config.EnableViewmodelOffset;
         }

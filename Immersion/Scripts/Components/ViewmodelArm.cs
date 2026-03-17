@@ -23,6 +23,8 @@ namespace Immersion.Scripts.Components
 
         private Dictionary<string, Transform> _bones;
 
+        private ViewmodelArmType _type;
+
         private PlayerTool _playerTool;
 
         private OWItem _owItem;
@@ -32,6 +34,44 @@ namespace Immersion.Scripts.Components
         private GameObject _playerNoSuitMesh;
 
         private GameObject _playerSuitMesh;
+
+        private enum ViewmodelArmType
+        {
+            Invalid = 0,
+            PlayerTool = 1,
+            OWItem = 2
+        }
+
+        /// <summary>
+        /// Creates a new Viewmodel Arm for a PlayerTool.
+        /// </summary>
+        /// <param name="playerTool">The PlayerTool to attach the new Viewmodel Arm to.</param>
+        /// <returns>The new ViewmodelArm.</returns>
+        public static ViewmodelArm New(PlayerTool playerTool)
+        {
+            var newViewmodelArm = NewViewmodelArm(playerTool.transform, ArmData.Find(playerTool));
+            newViewmodelArm._type = ViewmodelArmType.PlayerTool;
+            newViewmodelArm._playerTool = playerTool;
+            return newViewmodelArm;
+        }
+
+        /// <summary>
+        /// Creates a new Viewmodel Arm for an OWItem.
+        /// </summary>
+        /// <param name="owItem">The OWItem to attach the new Viewmodel Arm to.</param>
+        /// <returns>The new ViewmodelArm.</returns>
+        public static ViewmodelArm New(OWItem owItem)
+        {
+            var newViewmodelArm = NewViewmodelArm(owItem.transform, ArmData.Find(owItem));
+            newViewmodelArm._type = ViewmodelArmType.OWItem;
+            newViewmodelArm._owItem = owItem;
+
+            newViewmodelArm._owItem = newViewmodelArm.transform.parent.GetComponent<OWItem>();
+            newViewmodelArm._owItem.onPickedUp.AddListener((_) => newViewmodelArm.gameObject.SetActive(true));
+            newViewmodelArm._itemCarryTool = Locator.GetToolModeSwapper().GetItemCarryTool();
+
+            return newViewmodelArm;
+        }
 
         /// <summary>
         /// Outputs this ViewmodelArm's information in JSON format.
@@ -82,7 +122,7 @@ namespace Immersion.Scripts.Components
                     return;
                 }
 
-                NewViewmodelArm(playerTool.transform, ArmData.Find(playerTool));
+                ViewmodelArm.New(playerTool);
             }
         }
 
@@ -90,7 +130,7 @@ namespace Immersion.Scripts.Components
         {
             if (Config.EnableViewmodelArms && ArmData.Exists(owItem) && owItem.transform.Find("ViewmodelArm") == null)
             {
-                NewViewmodelArm(owItem.transform, ArmData.Find(owItem));
+                ViewmodelArm.New(owItem);
             }
 
             // some items need to be adjusted
@@ -204,14 +244,6 @@ namespace Immersion.Scripts.Components
 
         private void Start()
         {
-            _playerTool = transform.parent.GetComponent<PlayerTool>();
-            if (_playerTool == null)
-            {
-                _owItem = transform.parent.GetComponent<OWItem>();
-                _owItem.onPickedUp.AddListener((_) => gameObject.SetActive(true));
-                _itemCarryTool = Locator.GetToolModeSwapper().GetItemCarryTool();
-            }
-
             var playerBody = Locator.GetPlayerBody();
             _playerNoSuitMesh = playerBody.transform.Find("Traveller_HEA_Player_v2/player_mesh_noSuit:Traveller_HEA_Player/player_mesh_noSuit:Player_RightArm").gameObject;
             _playerSuitMesh = playerBody.transform.Find("Traveller_HEA_Player_v2/Traveller_Mesh_v01:Traveller_Geo/Traveller_Mesh_v01:PlayerSuit_RightArm").gameObject;
@@ -225,15 +257,23 @@ namespace Immersion.Scripts.Components
                 return;
             }
 
-            if (_playerTool != null && ((!_playerTool.IsEquipped() && !_playerTool.IsPuttingAway()) || OWInput.IsInputMode(InputMode.ShipCockpit)))
+            switch (_type)
             {
-                gameObject.SetActive(false);
-                return;
-            }
-            else if (_owItem != null && _itemCarryTool.GetHeldItem() != _owItem)
-            {
-                gameObject.SetActive(false);
-                return;
+                case ViewmodelArmType.PlayerTool:
+                    if ((!_playerTool.IsEquipped() && !_playerTool.IsPuttingAway()) || OWInput.IsInputMode(InputMode.ShipCockpit))
+                    {
+                        gameObject.SetActive(false);
+                        return;
+                    }
+                    break;
+
+                case ViewmodelArmType.OWItem:
+                    if (_itemCarryTool.GetHeldItem() != _owItem)
+                    {
+                        gameObject.SetActive(false);
+                        return;
+                    }
+                    break;
             }
 
             _noSuitMesh.gameObject.SetActive(_playerNoSuitMesh.activeInHierarchy);

@@ -4,17 +4,17 @@ namespace Immersion.Scripts.Components
 {
     public abstract class ToggleableBehaviour : MonoBehaviour
     {
-        protected abstract void UpdateEnabled();
+        protected abstract void OnConfigured();
 
         protected virtual void Awake()
         {
-            Config.OnConfigured += UpdateEnabled;
-            UpdateEnabled();
+            Config.OnConfigured += OnConfigured;
+            OnConfigured();
         }
 
         protected virtual void OnDestroy()
         {
-            Config.OnConfigured -= UpdateEnabled;
+            Config.OnConfigured -= OnConfigured;
         }
     }
 }
