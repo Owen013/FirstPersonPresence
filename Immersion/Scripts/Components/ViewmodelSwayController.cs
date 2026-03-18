@@ -87,7 +87,7 @@ namespace Immersion.Scripts.Components
             var swayPlayerZ = _cameraController.transform.InverseTransformDirection(_playerController.transform.forward) * (xScale - 1f);
 
             var offset = MaxDisplacement * (swayX + swayY + swayCameraZ + swayPlayerZ);
-            _offsetManager.AddToolOffsets(offset);
+            _offsetManager.AddToolOffset(offset, Tools.All);
         }
 
         private void OnDisable()

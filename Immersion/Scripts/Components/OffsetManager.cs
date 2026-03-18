@@ -30,17 +30,6 @@ namespace Immersion.Scripts.Components
 
         private float _currentItemOffsetScale = 1f;
 
-        [Flags]
-        public enum Tool
-        {
-            None = 0,
-            ItemTool = 1,
-            Signalscope = 2,
-            ProbeLauncher = 4,
-            Translator = 8,
-            All = ItemTool | Signalscope | ProbeLauncher | Translator
-        }
-
         public static OffsetManager Instance { get; private set; }
 
         /// <summary>
@@ -77,22 +66,22 @@ namespace Immersion.Scripts.Components
         /// </summary>
         /// <param name="position">The local position of the offset.</param>
         /// <param name="toolsToOffset">The tools to apply the offset to.</param>
-        public void AddToolOffsets(Vector3 position, Tool toolsToOffset = Tool.All)
+        public void AddToolOffset(Vector3 position, Tools toolsToOffset)
         {
             // apply different scaling factors for different tools
-            if (toolsToOffset.HasFlag(Tool.ItemTool))
+            if (toolsToOffset.HasFlag(Tools.ItemTool))
             {
                 _itemToolOffsetRoot.AddOffset(0.8f * _currentItemOffsetScale * position);
             }
-            if (toolsToOffset.HasFlag(Tool.Signalscope))
+            if (toolsToOffset.HasFlag(Tools.Signalscope))
             {
                 _signalscopeOffsetRoot.AddOffset(position);
             }
-            if (toolsToOffset.HasFlag(Tool.ProbeLauncher))
+            if (toolsToOffset.HasFlag(Tools.ProbeLauncher))
             {
                 _probeLauncherOffsetRoot.AddOffset(3f * position);
             }
-            if (toolsToOffset.HasFlag(Tool.Translator))
+            if (toolsToOffset.HasFlag(Tools.Translator))
             {
                 _translatorOffsetRoot.AddOffset(3f * position);
             }
@@ -103,22 +92,22 @@ namespace Immersion.Scripts.Components
         /// </summary>
         /// <param name="rotation">The local rotation of the offset.</param>
         /// <param name="toolsToOffset">The tools to apply the offset to.</param>
-        public void AddToolOffsets(Quaternion rotation, Tool toolsToOffset = Tool.All)
+        public void AddToolOffset(Quaternion rotation, Tools toolsToOffset)
         {
             // apply different scaling factors for different tools
-            if (toolsToOffset.HasFlag(Tool.ItemTool))
+            if (toolsToOffset.HasFlag(Tools.ItemTool))
             {
                 _itemToolOffsetRoot.AddOffset(rotation);
             }
-            if (toolsToOffset.HasFlag(Tool.Signalscope))
+            if (toolsToOffset.HasFlag(Tools.Signalscope))
             {
                 _signalscopeOffsetRoot.AddOffset(rotation);
             }
-            if (toolsToOffset.HasFlag(Tool.ProbeLauncher))
+            if (toolsToOffset.HasFlag(Tools.ProbeLauncher))
             {
                 _probeLauncherOffsetRoot.AddOffset(rotation);
             }
-            if (toolsToOffset.HasFlag(Tool.Translator))
+            if (toolsToOffset.HasFlag(Tools.Translator))
             {
                 _translatorOffsetRoot.AddOffset(rotation);
             }
@@ -130,10 +119,10 @@ namespace Immersion.Scripts.Components
         /// <param name="position">The local position of the offset.</param>
         /// <param name="rotation">The local rotation of the offset.</param>
         /// <param name="toolsToOffset">The tools to apply the offset to.</param>
-        public void AddToolOffsets(Vector3 position, Quaternion rotation, Tool toolsToOffset = Tool.All)
+        public void AddToolOffset(Vector3 position, Quaternion rotation, Tools toolsToOffset)
         {
-            AddToolOffsets(position, toolsToOffset);
-            AddToolOffsets(rotation, toolsToOffset);
+            AddToolOffset(position, toolsToOffset);
+            AddToolOffset(rotation, toolsToOffset);
         }
 
         internal static void OnPickUpItem(OWItem item)

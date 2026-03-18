@@ -37,7 +37,7 @@ namespace Immersion.Scripts.Components
                     float deltaTime = OWTime.IsPaused(OWTime.PauseType.Reading) ? Time.unscaledDeltaTime : Time.deltaTime;
                     _addedStowDegrees = Mathf.MoveTowards(_addedStowDegrees, 45f, 135f * deltaTime);
                     var offsetRotation = Quaternion.AngleAxis(_addedStowDegrees, Vector3.right);
-                    _offsetManager.AddToolOffsets(offsetRotation, OffsetManager.Tool.ItemTool);
+                    _offsetManager.AddToolOffset(offsetRotation, Tools.ItemTool);
                     return;
                 }
             }

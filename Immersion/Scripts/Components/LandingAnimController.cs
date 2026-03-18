@@ -97,8 +97,10 @@ namespace Immersion.Scripts.Components
             }
             if (Config.EnableViewmodelLandingAnim)
             {
-                _offsetManager.AddToolOffsets(0.1f * Position * _offsetManager.transform.InverseTransformDirection(_playerController.transform.up));
-                _offsetManager.AddToolOffsets(Quaternion.Euler(_velocity, 0f, 0f));
+                var offsetPosition = 0.1f * Position * _offsetManager.transform.InverseTransformDirection(_playerController.transform.up);
+                var offsetRotation = Quaternion.Euler(_velocity, 0f, 0f);
+                _offsetManager.AddToolOffset(offsetPosition, Tools.All);
+                _offsetManager.AddToolOffset(offsetRotation, Tools.All);
             }
 
             // keep track of player velocity

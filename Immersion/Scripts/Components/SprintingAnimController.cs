@@ -29,7 +29,7 @@ namespace Immersion.Scripts.Components
                 _strength = Mathf.SmoothDamp(_strength, ModMain.HikersModAPI.IsSprinting() ? 1f : 0f, ref _velocity, 0.2f, Mathf.Infinity, deltaTime);
             }
 
-            _offsetManager.AddToolOffsets(Quaternion.Euler(15f * _strength, 0f, 0f));
+            _offsetManager.AddToolOffset(Quaternion.Euler(15f * _strength, 0f, 0f), Tools.All);
         }
 
         private void OnDisable()

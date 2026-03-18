@@ -96,7 +96,7 @@ namespace Immersion.Scripts.Components
                 {
                     var offsetPos = MaxViewmodelBobDisplacement * new Vector3(viewBob.x, 0.15f * viewBob.y);
                     float offsetAngle = MaxViewmodelBobAngle * _strength * -Mathf.Sin(_timePosition * 4f * Mathf.PI);
-                    _offsetManager.AddToolOffsets(offsetPos, Quaternion.AngleAxis(offsetAngle, Vector3.right));
+                    _offsetManager.AddToolOffset(offsetPos, Quaternion.AngleAxis(offsetAngle, Vector3.right), Tools.All);
                 }
             }
             else

@@ -35,7 +35,7 @@ namespace Immersion.Scripts.Components
                 _position = Vector3.SmoothDamp(_position, _targetPosition, ref _velocity, 2f);
             }
 
-            _offsetManager.AddToolOffsets(MaxDisplacement * _position);
+            _offsetManager.AddToolOffset(MaxDisplacement * _position, Tools.All);
 
             if (Time.time >= _nextUpdateTime)
             {
