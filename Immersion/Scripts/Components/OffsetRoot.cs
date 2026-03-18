@@ -70,7 +70,8 @@ namespace Immersion.Scripts.Components
             nextLocalRotation.ToAngleAxis(out float angle, out Vector3 axis);
             transform.RotateAround(offsetObject.transform.position, offsetObject.transform.TransformDirection(axis), angle);
 
-            (nextLocalPosition, nextLocalRotation) = (Vector3.zero, Quaternion.identity);
+            nextLocalPosition = Vector3.zero;
+            nextLocalRotation = Quaternion.identity;
         }
 
         private void LateUpdate()
