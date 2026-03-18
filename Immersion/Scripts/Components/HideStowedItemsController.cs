@@ -36,7 +36,8 @@ namespace Immersion.Scripts.Components
                     // tilt item carry tool further offscreen once its vanilla stow animation finishes
                     float deltaTime = OWTime.IsPaused(OWTime.PauseType.Reading) ? Time.unscaledDeltaTime : Time.deltaTime;
                     _addedStowDegrees = Mathf.MoveTowards(_addedStowDegrees, 45f, 135f * deltaTime);
-                    _offsetManager.ItemToolOffsetRoot.AddOffset(Quaternion.Euler(_addedStowDegrees, 0f, 0f));
+                    var offsetRotation = Quaternion.AngleAxis(_addedStowDegrees, Vector3.right);
+                    _offsetManager.AddToolOffsets(offsetRotation, OffsetManager.Tool.ItemTool);
                     return;
                 }
             }

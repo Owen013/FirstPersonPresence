@@ -51,8 +51,11 @@ namespace Immersion.Scripts.Components
                 if (_strength != 0f)
                 {
                     // apply recoils to camera and scout launcher
-                    _offsetManager.AddCameraOffset(Quaternion.Euler(_strength * new Vector3(-5f, 0f, -5f)));
-                    _offsetManager.ProbeLauncherOffsetRoot.AddOffset(new Vector3(0.25f, -0.25f, -0.5f) * _strength, Quaternion.Euler(new Vector3(-15f, 0f, -15f) * _strength));
+                    var cameraOffsetRotation = Quaternion.Euler(_strength * new Vector3(-5f, 0f, -5f));
+                    var probeLauncherOffsetPosition = new Vector3(0.25f, -0.25f, -0.5f) * _strength;
+                    var probeLauncherOffsetRotation = Quaternion.Euler(new Vector3(-15f, 0f, -15f) * _strength);
+                    _offsetManager.AddCameraOffset(cameraOffsetRotation);
+                    _offsetManager.AddToolOffsets(probeLauncherOffsetPosition, probeLauncherOffsetRotation, OffsetManager.Tool.ProbeLauncher);
                 }
                 else
                 {
