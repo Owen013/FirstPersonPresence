@@ -25,8 +25,8 @@ namespace Immersion.Scripts.Components
         private void Update()
         {
             float verticalLookAmount = _cameraController.GetDegreesY() / 90f;
-            float offsetY = -Mathf.Sin(0.25f * verticalLookAmount * Mathf.PI);
-            float offsetZ = Mathf.Cos(0.25f * verticalLookAmount * Mathf.PI) - 1f;
+            float offsetY = -Mathf.Sin(verticalLookAmount * Mathf.PI / 3f);
+            float offsetZ = Mathf.Cos(verticalLookAmount * Mathf.PI / 3f) - 1f;
             _offsetManager.AddToolOffset(MaxDisplacement * new Vector3(0f, offsetY, offsetZ), Tools.All);
         }
     }
