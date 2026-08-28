@@ -23,7 +23,7 @@ namespace Immersion.Scripts.Components
 
         private Dictionary<string, Transform> _bones;
 
-        private ViewmodelArmType _type;
+        private Type _type;
 
         private PlayerTool _playerTool;
 
@@ -35,7 +35,7 @@ namespace Immersion.Scripts.Components
 
         private GameObject _playerSuitMesh;
 
-        private enum ViewmodelArmType
+        private enum Type
         {
             Invalid = 0,
             PlayerTool = 1,
@@ -50,7 +50,7 @@ namespace Immersion.Scripts.Components
         public static ViewmodelArm New(PlayerTool playerTool)
         {
             var newViewmodelArm = NewViewmodelArm(playerTool.transform, ArmData.Find(playerTool));
-            newViewmodelArm._type = ViewmodelArmType.PlayerTool;
+            newViewmodelArm._type = Type.PlayerTool;
             newViewmodelArm._playerTool = playerTool;
             return newViewmodelArm;
         }
@@ -63,10 +63,10 @@ namespace Immersion.Scripts.Components
         public static ViewmodelArm New(OWItem owItem)
         {
             var newViewmodelArm = NewViewmodelArm(owItem.transform, ArmData.Find(owItem));
-            newViewmodelArm._type = ViewmodelArmType.OWItem;
+            newViewmodelArm._type = Type.OWItem;
             newViewmodelArm._owItem = owItem;
 
-            newViewmodelArm._owItem = newViewmodelArm.transform.parent.GetComponent<OWItem>();
+            newViewmodelArm._owItem = newViewmodelArm.transform.parent.GetComponent<OWItem>(); // why are we setting newViewmodelArm._owItem twice?
             newViewmodelArm._owItem.onPickedUp.AddListener((_) => newViewmodelArm.gameObject.SetActive(true));
             newViewmodelArm._itemCarryTool = Locator.GetToolModeSwapper().GetItemCarryTool();
 
@@ -286,15 +286,16 @@ namespace Immersion.Scripts.Components
 
             switch (_type)
             {
-                case ViewmodelArmType.PlayerTool:
-                    if ((!_playerTool.IsEquipped() && !_playerTool.IsPuttingAway()) || OWInput.IsInputMode(InputMode.ShipCockpit))
+                case Type.PlayerTool:
+                    bool isToolAway = !_playerTool.IsEquipped() && !_playerTool.IsPuttingAway();
+                    if (isToolAway || OWInput.IsInputMode(InputMode.ShipCockpit))
                     {
                         gameObject.SetActive(false);
                         return;
                     }
                     break;
 
-                case ViewmodelArmType.OWItem:
+                case Type.OWItem:
                     if (_itemCarryTool.GetHeldItem() != _owItem)
                     {
                         gameObject.SetActive(false);
