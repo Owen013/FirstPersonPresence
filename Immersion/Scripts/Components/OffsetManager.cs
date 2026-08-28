@@ -6,6 +6,8 @@ namespace Immersion.Scripts.Components
 {
     public class OffsetManager : MonoBehaviour
     {
+        public static OffsetManager Instance { get; private set; }
+
         private static readonly Dictionary<string, float> s_itemOffsetScales = new Dictionary<string, float>
         {
             ["DreamLantern"] = 1.2f,
@@ -27,8 +29,6 @@ namespace Immersion.Scripts.Components
         private OffsetRoot _translatorOffsetRoot;
 
         private float _currentItemOffsetScale = 1f;
-
-        public static OffsetManager Instance { get; private set; }
 
         /// <summary>
         /// Applies a translational offset to the player camera.
@@ -71,14 +71,17 @@ namespace Immersion.Scripts.Components
             {
                 _itemToolOffsetRoot.AddOffset(0.8f * _currentItemOffsetScale * position);
             }
+
             if (toolsToOffset.HasFlag(Tools.Signalscope))
             {
                 _signalscopeOffsetRoot.AddOffset(position);
             }
+
             if (toolsToOffset.HasFlag(Tools.ProbeLauncher))
             {
                 _probeLauncherOffsetRoot.AddOffset(3f * position);
             }
+
             if (toolsToOffset.HasFlag(Tools.Translator))
             {
                 _translatorOffsetRoot.AddOffset(3f * position);
@@ -97,14 +100,17 @@ namespace Immersion.Scripts.Components
             {
                 _itemToolOffsetRoot.AddOffset(rotation);
             }
+
             if (toolsToOffset.HasFlag(Tools.Signalscope))
             {
                 _signalscopeOffsetRoot.AddOffset(rotation);
             }
+
             if (toolsToOffset.HasFlag(Tools.ProbeLauncher))
             {
                 _probeLauncherOffsetRoot.AddOffset(rotation);
             }
+
             if (toolsToOffset.HasFlag(Tools.Translator))
             {
                 _translatorOffsetRoot.AddOffset(rotation);
