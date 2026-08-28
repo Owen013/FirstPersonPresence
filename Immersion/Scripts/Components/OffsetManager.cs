@@ -1,8 +1,6 @@
 ﻿using OWML.Utils;
-using System;
 using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.UIElements;
 
 namespace Immersion.Scripts.Components
 {
