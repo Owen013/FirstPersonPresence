@@ -65,8 +65,6 @@ namespace Immersion.Scripts.Components
             var newViewmodelArm = NewViewmodelArm(owItem.transform, ArmData.Find(owItem));
             newViewmodelArm._type = Type.OWItem;
             newViewmodelArm._owItem = owItem;
-
-            newViewmodelArm._owItem = newViewmodelArm.transform.parent.GetComponent<OWItem>(); // why are we setting newViewmodelArm._owItem twice?
             newViewmodelArm._owItem.onPickedUp.AddListener((_) => newViewmodelArm.gameObject.SetActive(true));
             newViewmodelArm._itemCarryTool = Locator.GetToolModeSwapper().GetItemCarryTool();
 
