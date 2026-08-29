@@ -8,11 +8,11 @@ namespace Immersion.Scripts.Components
 
         private float _lastScoutLaunchTime;
 
-        private bool _isActive;
+        private bool _isAnimPlaying;
 
-        private float _strength;
+        private float _animScale;
 
-        private float _velocity;
+        private float _animVelocity;
 
         protected override void OnConfigured()
         {
@@ -29,7 +29,7 @@ namespace Immersion.Scripts.Components
                 // play scout launcher animation if enabled
                 if (Config.EnableScoutAnim)
                 {
-                    _isActive = true;
+                    _isAnimPlaying = true;
                     _lastScoutLaunchTime = Time.time;
                 }
             };
@@ -37,29 +37,29 @@ namespace Immersion.Scripts.Components
 
         private void Update()
         {
-            if (_isActive)
+            if (_isAnimPlaying)
             {
                 float deltaTime = OWTime.IsPaused(OWTime.PauseType.Reading) ? Time.unscaledDeltaTime : Time.deltaTime;
                 if (deltaTime != 0f)
                 {
                     float targetRecoil = Mathf.Max(_lastScoutLaunchTime + 0.5f - Time.time, 0f) * 2f;
                     // damp moves quickly during the initial recoil, and slowly during the recovery
-                    float dampTime = targetRecoil > _strength ? 0.05f : 0.1f;
-                    _strength = Mathf.SmoothDamp(_strength, targetRecoil, ref _velocity, dampTime, Mathf.Infinity, deltaTime);
+                    float dampTime = targetRecoil > _animScale ? 0.05f : 0.1f;
+                    _animScale = Mathf.SmoothDamp(_animScale, targetRecoil, ref _animVelocity, dampTime, Mathf.Infinity, deltaTime);
                 }
 
-                if (_strength != 0f)
+                if (_animScale != 0f)
                 {
                     // apply recoils to camera and scout launcher
-                    var cameraOffsetRotation = Quaternion.Euler(_strength * new Vector3(-5f, 0f, -5f));
-                    var probeLauncherOffsetPosition = _strength * new Vector3(0.1f, -0.1f, -0.2f);
-                    var probeLauncherOffsetRotation = Quaternion.Euler(new Vector3(-15f, 0f, -15f) * _strength);
+                    var cameraOffsetRotation = Quaternion.Euler(_animScale * new Vector3(-5f, 0f, -5f));
+                    var probeLauncherOffsetPosition = _animScale * new Vector3(0.1f, -0.1f, -0.2f);
+                    var probeLauncherOffsetRotation = Quaternion.Euler(new Vector3(-15f, 0f, -15f) * _animScale);
                     _offsetManager.AddCameraOffset(cameraOffsetRotation);
                     _offsetManager.AddToolOffset(probeLauncherOffsetPosition, probeLauncherOffsetRotation, Tools.ProbeLauncher);
                 }
                 else
                 {
-                    _isActive = false;
+                    _isAnimPlaying = false;
                 }
             }
         }
@@ -67,9 +67,9 @@ namespace Immersion.Scripts.Components
         private void OnDisable()
         {
             // reset recoil parameters if disabled
-            _isActive = false;
-            _strength = 0f;
-            _velocity = 0f;
+            _isAnimPlaying = false;
+            _animScale = 0f;
+            _animVelocity = 0f;
         }
     }
 }

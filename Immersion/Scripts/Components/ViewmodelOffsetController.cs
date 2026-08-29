@@ -8,7 +8,7 @@ namespace Immersion.Scripts.Components
 
         private PlayerCameraController _cameraController;
 
-        private float MaxDisplacement => 0.05f * Config.ViewmodelOffsetScale;
+        private float MaxOffsetScale => 0.05f * Config.ViewmodelOffsetScale;
 
         protected override void OnConfigured()
         {
@@ -27,7 +27,7 @@ namespace Immersion.Scripts.Components
             float verticalLookAmount = _cameraController.GetDegreesY() / 90f;
             float offsetY = -Mathf.Sin(verticalLookAmount * Mathf.PI / 3f);
             float offsetZ = Mathf.Cos(verticalLookAmount * Mathf.PI / 3f) - 1f;
-            _offsetManager.AddToolOffset(MaxDisplacement * new Vector3(0f, offsetY, offsetZ), Tools.All);
+            _offsetManager.AddToolOffset(MaxOffsetScale * new Vector3(0f, offsetY, offsetZ), Tools.All);
         }
     }
 }

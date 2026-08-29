@@ -10,15 +10,15 @@ namespace Immersion.Scripts.Components
 
         private Vector3 _lastPlayerVelocity;
 
-        private bool _isActive;
+        private bool _isCrouching;
 
         private float _lastLandedSpeed;
 
-        private float _velocity;
+        private float _animVelocity;
 
         public static LandingAnimController Instance { get; private set; }
 
-        public float Position { get; private set; }
+        public float OffsetPosition { get; private set; }
 
         private float MinPosition => -0.3f * Config.MaxLandingAnimDistance;
 
@@ -26,7 +26,7 @@ namespace Immersion.Scripts.Components
         {
             if (enabled && Config.UseLandingCrouchAnim)
             {
-                playerAnimator.SetLayerWeight(1, Mathf.Max(playerAnimator.GetLayerWeight(1), Mathf.Clamp01(Position / -0.3f)));
+                playerAnimator.SetLayerWeight(1, Mathf.Max(playerAnimator.GetLayerWeight(1), Mathf.Clamp01(OffsetPosition / -0.3f)));
             }
         }
 
@@ -62,7 +62,7 @@ namespace Immersion.Scripts.Components
                 if (landingSpeed >= 5f)
                 {
                     _lastLandedSpeed = landingSpeed;
-                    _isActive = true;
+                    _isCrouching = true;
                 }
             };
         }
@@ -72,33 +72,33 @@ namespace Immersion.Scripts.Components
             float deltaTime = OWTime.IsPaused(OWTime.PauseType.Reading) ? Time.unscaledDeltaTime : Time.deltaTime;
             if (deltaTime != 0f)
             {
-                if (_isActive)
+                if (_isCrouching)
                 {
                     // update camera height based on landing speed
                     float playerScale = ModMain.SmolHatchlingAPI != null ? ModMain.SmolHatchlingAPI.GetPlayerScale() : 1f;
-                    Position = Mathf.Min(Position - _lastLandedSpeed * playerScale * deltaTime, 0f);
-                    if (Position <= MinPosition)
+                    OffsetPosition = Mathf.Min(OffsetPosition - _lastLandedSpeed * playerScale * deltaTime, 0f);
+                    if (OffsetPosition <= MinPosition)
                     {
                         // landing anim bottoms out
-                        Position = MinPosition;
-                        _isActive = false;
+                        OffsetPosition = MinPosition;
+                        _isCrouching = false;
                     }
                 }
                 else
                 {
-                    Position = Mathf.SmoothDamp(Position, 0f, ref _velocity, 0.15f * Config.LandingAnimSmoothness, 1.5f * Config.MaxLandingAnimRecoverySpeed, deltaTime);
+                    OffsetPosition = Mathf.SmoothDamp(OffsetPosition, 0f, ref _animVelocity, 0.15f * Config.LandingAnimSmoothness, 1.5f * Config.MaxLandingAnimRecoverySpeed, deltaTime);
                 }
             }
 
             // apply offsets
             if (Config.EnableCameraLandingAnim)
             {
-                _offsetManager.AddCameraOffset(new Vector3(0f, Position, 0f));
+                _offsetManager.AddCameraOffset(new Vector3(0f, OffsetPosition, 0f));
             }
             if (Config.EnableViewmodelLandingAnim)
             {
-                var offsetPosition = 0.1f * Position * _offsetManager.transform.InverseTransformDirection(_playerController.transform.up);
-                var offsetRotation = Quaternion.Euler(_velocity, 0f, 0f);
+                var offsetPosition = 0.1f * OffsetPosition * _offsetManager.transform.InverseTransformDirection(_playerController.transform.up);
+                var offsetRotation = Quaternion.Euler(_animVelocity, 0f, 0f);
                 _offsetManager.AddToolOffset(offsetPosition, Tools.All);
                 _offsetManager.AddToolOffset(offsetRotation, Tools.All);
             }
@@ -111,9 +111,9 @@ namespace Immersion.Scripts.Components
         {
             // reset landing anim parameters if feature is disabled
             _lastPlayerVelocity = Vector3.zero;
-            Position = 0f;
-            _velocity = 0f;
-            _isActive = false;
+            OffsetPosition = 0f;
+            _animVelocity = 0f;
+            _isCrouching = false;
         }
     }
 }

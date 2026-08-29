@@ -6,9 +6,9 @@ namespace Immersion.Scripts.Components
     {
         private OffsetManager _offsetManager;
 
-        private float _strength;
+        private float _animStrength;
 
-        private float _velocity;
+        private float _animVelocity;
 
         protected override void OnConfigured()
         {
@@ -26,16 +26,16 @@ namespace Immersion.Scripts.Components
             float deltaTime = OWTime.IsPaused(OWTime.PauseType.Reading) ? Time.unscaledDeltaTime : Time.deltaTime;
             if (deltaTime != 0f)
             {
-                _strength = Mathf.SmoothDamp(_strength, ModMain.HikersModAPI.IsSprinting() ? 1f : 0f, ref _velocity, 0.2f, Mathf.Infinity, deltaTime);
+                _animStrength = Mathf.SmoothDamp(_animStrength, ModMain.HikersModAPI.IsSprinting() ? 1f : 0f, ref _animVelocity, 0.2f, Mathf.Infinity, deltaTime);
             }
 
-            _offsetManager.AddToolOffset(Quaternion.Euler(15f * _strength, 0f, 0f), Tools.All);
+            _offsetManager.AddToolOffset(Quaternion.Euler(15f * _animStrength, 0f, 0f), Tools.All);
         }
 
         private void OnDisable()
         {
-            _strength = 0f;
-            _velocity = 0f;
+            _animStrength = 0f;
+            _animVelocity = 0f;
         }
     }
 }

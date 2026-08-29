@@ -6,11 +6,11 @@ namespace Immersion.Scripts.Components
     {
         private OffsetManager _offsetManager;
 
-        private Vector3 _position;
+        private Vector3 _animPosition;
 
-        private Vector3 _targetPosition;
+        private Vector3 _animTargetPosition;
 
-        private Vector3 _velocity;
+        private Vector3 _animVelocity;
 
         private float _nextUpdateTime;
 
@@ -32,15 +32,15 @@ namespace Immersion.Scripts.Components
             // if delta time is zero when using SmoothDamp, all hell breaks loose, so don't do it
             if (Time.deltaTime != 0f)
             {
-                _position = Vector3.SmoothDamp(_position, _targetPosition, ref _velocity, 2f);
+                _animPosition = Vector3.SmoothDamp(_animPosition, _animTargetPosition, ref _animVelocity, 2f);
             }
 
-            _offsetManager.AddToolOffset(MaxDisplacement * _position, Tools.All);
+            _offsetManager.AddToolOffset(MaxDisplacement * _animPosition, Tools.All);
 
             if (Time.time >= _nextUpdateTime)
             {
                 // choose random tool offset
-                _targetPosition = new Vector3(Random.Range(-1f, 1f), Random.Range(-1f, 1f), 0f);
+                _animTargetPosition = new Vector3(Random.Range(-1f, 1f), Random.Range(-1f, 1f), 0f);
                 _nextUpdateTime = Time.time + Random.Range(0.1f, 1f);
             }
         }
