@@ -5,11 +5,11 @@ namespace Immersion.Scripts.Components
 {
     public class HideStowedItemsController : ToggleableBehaviour
     {
-        private OffsetManager _offsetManager;
+        OffsetManager _offsetManager;
 
-        private ToolModeSwapper _toolModeSwapper;
+        ToolModeSwapper _toolModeSwapper;
 
-        private float _addedStowDegrees;
+        float _addedStowDegrees;
 
         protected override void OnConfigured()
         {
@@ -23,7 +23,7 @@ namespace Immersion.Scripts.Components
             _toolModeSwapper = Locator.GetToolModeSwapper();
         }
 
-        private void Update()
+        void Update()
         {
             var itemCarryTool = _toolModeSwapper.GetItemCarryTool();
             var heldItem = itemCarryTool.GetHeldItem();
@@ -45,7 +45,7 @@ namespace Immersion.Scripts.Components
             _addedStowDegrees = 0f;
         }
 
-        private void OnDisable()
+        void OnDisable()
         {
             _addedStowDegrees = 0f;
         }

@@ -4,23 +4,23 @@ namespace Immersion.Scripts.Components
 {
     public class ViewbobController : ToggleableBehaviour
     {
-        private OffsetManager _offsetManager;
+        OffsetManager _offsetManager;
 
-        private PlayerCharacterController _playerController;
+        PlayerCharacterController _playerController;
 
-        private PlayerAnimController _animController;
+        PlayerAnimController _animController;
 
-        private float _timePosition;
+        float _timePosition;
 
-        private float _strength;
+        float _strength;
 
-        private float _velocity;
+        float _velocity;
 
-        private float MaxHeadBobDisplacement => 0.02f * Config.HeadBobScale;
+        float MaxHeadBobDisplacement => 0.02f * Config.HeadBobScale;
 
-        private float MaxViewmodelBobDisplacement => 0.02f * Config.ViewmodelBobScale;
+        float MaxViewmodelBobDisplacement => 0.02f * Config.ViewmodelBobScale;
 
-        private float MaxViewmodelBobAngle => 0.75f * Config.ViewmodelBobScale;
+        float MaxViewmodelBobAngle => 0.75f * Config.ViewmodelBobScale;
 
         protected override void OnConfigured()
         {
@@ -35,7 +35,7 @@ namespace Immersion.Scripts.Components
             _animController = _playerController.GetComponentInChildren<PlayerAnimController>();
         }
 
-        private void Update()
+        void Update()
         {
             if (!_playerController._isMovementLocked)
             {
@@ -107,7 +107,7 @@ namespace Immersion.Scripts.Components
             }
         }
 
-        private void OnDisable()
+        void OnDisable()
         {
             _timePosition = 0f;
             _strength = 0f;

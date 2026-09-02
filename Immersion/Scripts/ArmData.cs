@@ -25,7 +25,7 @@ namespace Immersion.Scripts
         [JsonProperty("bone_eulers")]
         public readonly Dictionary<string, Vector3> boneEulers;
 
-        private static Dictionary<string, ArmData> s_armData;
+        static Dictionary<string, ArmData> s_armData;
 
         /// <summary>
         /// Determines if there is an ArmData of a certain ID.

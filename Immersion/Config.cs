@@ -5,47 +5,47 @@ namespace Immersion
 {
     public static class Config
     {
-        public static bool EnableViewmodelArms { get; private set; }
+        public static bool EnableViewmodelArms { get; set; }
 
-        public static bool EnableHeadBob { get; private set; }
+        public static bool EnableHeadBob { get; set; }
 
-        public static float HeadBobScale { get; private set; }
+        public static float HeadBobScale { get; set; }
 
-        public static bool EnableViewmodelBob { get; private set; }
+        public static bool EnableViewmodelBob { get; set; }
 
-        public static float ViewmodelBobScale { get; private set; }
+        public static float ViewmodelBobScale { get; set; }
 
-        public static bool EnableViewmodelOffset { get; private set; }
+        public static bool EnableViewmodelOffset { get; set; }
 
-        public static float ViewmodelOffsetScale { get; private set; }
+        public static float ViewmodelOffsetScale { get; set; }
 
-        public static bool EnableViewmodelSway { get; private set; }
+        public static bool EnableViewmodelSway { get; set; }
 
-        public static float ViewmodelSwayScale { get; private set; }
+        public static float ViewmodelSwayScale { get; set; }
 
-        public static bool EnableBreathingAnim { get; private set; }
+        public static bool EnableBreathingAnim { get; set; }
 
-        public static bool EnableCameraLandingAnim { get; private set; }
+        public static bool EnableCameraLandingAnim { get; set; }
 
-        public static bool EnableViewmodelLandingAnim { get; private set; }
+        public static bool EnableViewmodelLandingAnim { get; set; }
 
-        public static float MaxLandingAnimDistance { get; private set; }
+        public static float MaxLandingAnimDistance { get; set; }
 
-        public static float MaxLandingAnimRecoverySpeed { get; private set; }
+        public static float MaxLandingAnimRecoverySpeed { get; set; }
 
-        public static float LandingAnimSmoothness { get; private set; }
+        public static float LandingAnimSmoothness { get; set; }
 
         public static bool UseLandingCrouchAnim = false;
 
-        public static float BreathingAnimScale { get; private set; }
+        public static float BreathingAnimScale { get; set; }
 
-        public static bool EnableScoutAnim { get; private set; }
+        public static bool EnableScoutAnim { get; set; }
 
-        public static bool EnableSprintingAnim { get; private set; }
+        public static bool EnableSprintingAnim { get; set; }
 
-        public static bool FixViewmodelClipping { get; private set; }
+        public static bool FixViewmodelClipping { get; set; }
 
-        public static bool HideStowedItems { get; private set; }
+        public static bool HideStowedItems { get; set; }
 
         public static event Action OnConfigured;
 

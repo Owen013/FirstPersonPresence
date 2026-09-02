@@ -4,11 +4,11 @@ namespace Immersion.Scripts.Components
 {
     public class ViewmodelOffsetController : ToggleableBehaviour
     {
-        private OffsetManager _offsetManager;
+        OffsetManager _offsetManager;
 
-        private PlayerCameraController _cameraController;
+        PlayerCameraController _cameraController;
 
-        private float MaxOffsetScale => 0.05f * Config.ViewmodelOffsetScale;
+        float MaxOffsetScale => 0.05f * Config.ViewmodelOffsetScale;
 
         protected override void OnConfigured()
         {
@@ -22,7 +22,7 @@ namespace Immersion.Scripts.Components
             _cameraController = Locator.GetPlayerCameraController();
         }
 
-        private void Update()
+        void Update()
         {
             float verticalLookAmount = _cameraController.GetDegreesY() / 90f;
             float offsetY = -Mathf.Sin(verticalLookAmount * Mathf.PI / 3f);

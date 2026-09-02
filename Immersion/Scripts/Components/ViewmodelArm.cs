@@ -7,35 +7,35 @@ namespace Immersion.Scripts.Components
 {
     public class ViewmodelArm : MonoBehaviour
     {
-        private static GameObject s_viewmodelArmAsset;
+        static GameObject s_viewmodelArmAsset;
 
         [SerializeField]
-        private SkinnedMeshRenderer _noSuitMesh;
+        SkinnedMeshRenderer _noSuitMesh;
 
         [SerializeField]
-        private SkinnedMeshRenderer _noSuitMeshPrepass;
+        SkinnedMeshRenderer _noSuitMeshPrepass;
 
         [SerializeField]
-        private SkinnedMeshRenderer _suitMesh;
+        SkinnedMeshRenderer _suitMesh;
 
         [SerializeField]
-        private SkinnedMeshRenderer _suitMeshPrepass;
+        SkinnedMeshRenderer _suitMeshPrepass;
 
-        private Dictionary<string, Transform> _bones;
+        Dictionary<string, Transform> _bones;
 
-        private Type _type;
+        Type _type;
 
-        private PlayerTool _playerTool;
+        PlayerTool _playerTool;
 
-        private OWItem _owItem;
+        OWItem _owItem;
 
-        private ItemTool _itemCarryTool;
+        ItemTool _itemCarryTool;
 
-        private GameObject _playerNoSuitMesh;
+        GameObject _playerNoSuitMesh;
 
-        private GameObject _playerSuitMesh;
+        GameObject _playerSuitMesh;
 
-        private enum Type
+        enum Type
         {
             Invalid = 0,
             PlayerTool = 1,
@@ -221,7 +221,7 @@ namespace Immersion.Scripts.Components
             }
         }
 
-        private static ViewmodelArm NewViewmodelArm(Transform parent, ArmData armData = null)
+        static ViewmodelArm NewViewmodelArm(Transform parent, ArmData armData = null)
         {
             var viewmodelArm = Instantiate(s_viewmodelArmAsset).GetComponent<ViewmodelArm>();
             viewmodelArm.name = "ViewmodelArm";
@@ -244,7 +244,7 @@ namespace Immersion.Scripts.Components
             return viewmodelArm;
         }
 
-        private void Awake()
+        void Awake()
         {
             // grab the bones that matter
             _bones = new Dictionary<string, Transform>
@@ -267,14 +267,14 @@ namespace Immersion.Scripts.Components
             };
         }
 
-        private void Start()
+        void Start()
         {
             var playerBody = Locator.GetPlayerBody();
             _playerNoSuitMesh = playerBody.transform.Find("Traveller_HEA_Player_v2/player_mesh_noSuit:Traveller_HEA_Player/player_mesh_noSuit:Player_RightArm").gameObject;
             _playerSuitMesh = playerBody.transform.Find("Traveller_HEA_Player_v2/Traveller_Mesh_v01:Traveller_Geo/Traveller_Mesh_v01:PlayerSuit_RightArm").gameObject;
         }
 
-        private void LateUpdate()
+        void LateUpdate()
         {
             if (!Config.EnableViewmodelArms)
             {

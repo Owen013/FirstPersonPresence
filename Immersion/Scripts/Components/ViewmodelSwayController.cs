@@ -4,17 +4,17 @@ namespace Immersion.Scripts.Components
 {
     public class ViewmodelSwayController : ToggleableBehaviour
     {
-        private OffsetManager _offsetManager;
+        OffsetManager _offsetManager;
 
-        private PlayerCameraController _cameraController;
+        PlayerCameraController _cameraController;
 
-        private PlayerCharacterController _playerController;
+        PlayerCharacterController _playerController;
 
-        private Vector2 _currentSway;
+        Vector2 _currentSway;
 
-        private Vector2 _swayVelocity;
+        Vector2 _swayVelocity;
 
-        private float MaxDisplacement => 0.25f * Config.ViewmodelSwayScale;
+        float MaxDisplacement => 0.25f * Config.ViewmodelSwayScale;
 
         protected override void OnConfigured()
         {
@@ -29,7 +29,7 @@ namespace Immersion.Scripts.Components
             _playerController = Locator.GetPlayerController();
         }
 
-        private void Update()
+        void Update()
         {
             float degreesY = _cameraController.GetDegreesY();
 
@@ -90,7 +90,7 @@ namespace Immersion.Scripts.Components
             _offsetManager.AddToolOffset(offset, Tools.All);
         }
 
-        private void OnDisable()
+        void OnDisable()
         {
             _currentSway = Vector3.zero;
             _swayVelocity = Vector3.zero;

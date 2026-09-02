@@ -4,23 +4,23 @@ namespace Immersion.Scripts.Components
 {
     public class LandingAnimController : ToggleableBehaviour
     {
-       private OffsetManager _offsetManager;
+        public static LandingAnimController Instance { get; set; }
 
-        private PlayerCharacterController _playerController;
+        public float OffsetPosition { get; set; }
 
-        private Vector3 _lastPlayerVelocity;
+        OffsetManager _offsetManager;
 
-        private bool _isCrouching;
+        PlayerCharacterController _playerController;
 
-        private float _lastLandedSpeed;
+        Vector3 _lastPlayerVelocity;
 
-        private float _animVelocity;
+        bool _isCrouching;
 
-        public static LandingAnimController Instance { get; private set; }
+        float _lastLandedSpeed;
 
-        public float OffsetPosition { get; private set; }
+        float _animVelocity;
 
-        private float MinPosition => -0.3f * Config.MaxLandingAnimDistance;
+        float MinPosition => -0.3f * Config.MaxLandingAnimDistance;
 
         internal void UpdateLandingCrouchAnim(Animator playerAnimator)
         {
@@ -67,7 +67,7 @@ namespace Immersion.Scripts.Components
             };
         }
 
-        private void Update()
+        void Update()
         {
             float deltaTime = OWTime.IsPaused(OWTime.PauseType.Reading) ? Time.unscaledDeltaTime : Time.deltaTime;
             if (deltaTime != 0f)
@@ -107,7 +107,7 @@ namespace Immersion.Scripts.Components
             _lastPlayerVelocity = _playerController.GetAttachedOWRigidbody().GetVelocity();
         }
 
-        private void OnDisable()
+        void OnDisable()
         {
             // reset landing anim parameters if feature is disabled
             _lastPlayerVelocity = Vector3.zero;

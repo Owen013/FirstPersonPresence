@@ -10,7 +10,7 @@ namespace Immersion
 {
     public class ModMain : ModBehaviour
     {
-        public static ModMain Instance { get; private set; }
+        public static ModMain Instance { get; set; }
 
         public static IModAssets Assets => Instance.ModHelper.Assets;
 
@@ -18,9 +18,9 @@ namespace Immersion
 
         public static IModConsole Console => Instance.ModHelper.Console;
 
-        public static ISmolHatchling SmolHatchlingAPI { get; private set; }
+        public static ISmolHatchling SmolHatchlingAPI { get; set; }
 
-        public static IHikersMod HikersModAPI { get; private set; }
+        public static IHikersMod HikersModAPI { get; set; }
 
         public override void Configure(IModConfig config)
         {
@@ -28,13 +28,13 @@ namespace Immersion
             Locator.GetPlayerCamera()?.nearClipPlane = Config.FixViewmodelClipping ? 0.05f : 0.1f;
         }
 
-        private void Awake()
+        void Awake()
         {
             Instance = this;
             new Harmony("Owen_013.FirstPersonPresence").PatchAll(Assembly.GetExecutingAssembly());
         }
 
-        private void Start()
+        void Start()
         {
             // check for other mods
             SmolHatchlingAPI = ModHelper.Interaction.TryGetModApi<ISmolHatchling>("Owen013.TeenyHatchling");

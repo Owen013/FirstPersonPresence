@@ -6,9 +6,9 @@ namespace Immersion.Scripts.Components
 {
     public class OffsetManager : MonoBehaviour
     {
-        public static OffsetManager Instance { get; private set; }
+        public static OffsetManager Instance { get; set; }
 
-        private static readonly Dictionary<string, float> s_itemOffsetScales = new Dictionary<string, float>
+        static readonly Dictionary<string, float> s_itemOffsetScales = new Dictionary<string, float>
         {
             ["DreamLantern"] = 1.2f,
             ["DreamLantern_Malfunctioning"] = 1.2f,
@@ -18,17 +18,17 @@ namespace Immersion.Scripts.Components
             ["Compass"] = 0.8f
         };
 
-        private OffsetRoot _cameraOffsetRoot;
+        OffsetRoot _cameraOffsetRoot;
 
-        private OffsetRoot _itemToolOffsetRoot;
+        OffsetRoot _itemToolOffsetRoot;
 
-        private OffsetRoot _signalscopeOffsetRoot;
+        OffsetRoot _signalscopeOffsetRoot;
 
-        private OffsetRoot _probeLauncherOffsetRoot;
+        OffsetRoot _probeLauncherOffsetRoot;
 
-        private OffsetRoot _translatorOffsetRoot;
+        OffsetRoot _translatorOffsetRoot;
 
-        private float _currentItemOffsetScale = 1f;
+        float _currentItemOffsetScale = 1f;
 
         /// <summary>
         /// Applies a translational offset to the player camera.
@@ -149,7 +149,7 @@ namespace Immersion.Scripts.Components
             }
         }
 
-        private void Start()
+        void Start()
         {
             Instance = this;
 

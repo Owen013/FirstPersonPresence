@@ -4,17 +4,17 @@ namespace Immersion.Scripts.Components
 {
     public class BreathingAnimController : ToggleableBehaviour
     {
-        private OffsetManager _offsetManager;
+        OffsetManager _offsetManager;
 
-        private Vector3 _animPosition;
+        Vector3 _animPosition;
 
-        private Vector3 _animTargetPosition;
+        Vector3 _animTargetPosition;
 
-        private Vector3 _animVelocity;
+        Vector3 _animVelocity;
 
-        private float _nextUpdateTime;
+        float _nextUpdateTime;
 
-        private float MaxDisplacement => 0.005f * Config.BreathingAnimScale;
+        float MaxDisplacement => 0.005f * Config.BreathingAnimScale;
 
         protected override void OnConfigured()
         {
@@ -27,7 +27,7 @@ namespace Immersion.Scripts.Components
             _offsetManager = OffsetManager.Instance;
         }
 
-        private void Update()
+        void Update()
         {
             // if delta time is zero when using SmoothDamp, all hell breaks loose, so don't do it
             if (Time.deltaTime != 0f)

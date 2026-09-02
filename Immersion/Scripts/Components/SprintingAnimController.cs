@@ -4,11 +4,11 @@ namespace Immersion.Scripts.Components
 {
     public class SprintingAnimController : ToggleableBehaviour
     {
-        private OffsetManager _offsetManager;
+        OffsetManager _offsetManager;
 
-        private float _animStrength;
+        float _animStrength;
 
-        private float _animVelocity;
+        float _animVelocity;
 
         protected override void OnConfigured()
         {
@@ -21,7 +21,7 @@ namespace Immersion.Scripts.Components
             _offsetManager = OffsetManager.Instance;
         }
 
-        private void Update()
+        void Update()
         {
             float deltaTime = OWTime.IsPaused(OWTime.PauseType.Reading) ? Time.unscaledDeltaTime : Time.deltaTime;
             if (deltaTime != 0f)
@@ -32,7 +32,7 @@ namespace Immersion.Scripts.Components
             _offsetManager.AddToolOffset(Quaternion.Euler(15f * _animStrength, 0f, 0f), Tools.All);
         }
 
-        private void OnDisable()
+        void OnDisable()
         {
             _animStrength = 0f;
             _animVelocity = 0f;

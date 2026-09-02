@@ -4,15 +4,15 @@ namespace Immersion.Scripts.Components
 {
     public class ScoutAnimController : ToggleableBehaviour
     {
-        private OffsetManager _offsetManager;
+        OffsetManager _offsetManager;
 
-        private float _lastScoutLaunchTime;
+        float _lastScoutLaunchTime;
 
-        private bool _isAnimPlaying;
+        bool _isAnimPlaying;
 
-        private float _animScale;
+        float _animScale;
 
-        private float _animVelocity;
+        float _animVelocity;
 
         protected override void OnConfigured()
         {
@@ -35,7 +35,7 @@ namespace Immersion.Scripts.Components
             };
         }
 
-        private void Update()
+        void Update()
         {
             if (_isAnimPlaying)
             {
@@ -64,7 +64,7 @@ namespace Immersion.Scripts.Components
             }
         }
 
-        private void OnDisable()
+        void OnDisable()
         {
             // reset recoil parameters if disabled
             _isAnimPlaying = false;
