@@ -1,4 +1,5 @@
 ﻿using UnityEngine;
+using static Immersion.ModMain;
 
 namespace Immersion.Components;
 
@@ -53,11 +54,11 @@ class ViewbobController : ToggleableBehaviour
                     if (Mathf.Abs(groundVel.z) < 0.05f)
                         groundVel.z = 0f;
 
-                    if (ModMain.SmolHatchlingAPI != null)
+                    if (SmolHatchlingAPI != null)
                     {
-                        float playerScale = ModMain.SmolHatchlingAPI.GetPlayerScale();
+                        float playerScale = SmolHatchlingAPI.GetPlayerScale();
                         if (playerScale != 0f)
-                            groundVel /= ModMain.SmolHatchlingAPI.GetPlayerScale();
+                            groundVel /= SmolHatchlingAPI.GetPlayerScale();
                     }
 
                     _strength = Mathf.SmoothDamp(_strength, Mathf.Min(groundVel.magnitude / 6f, 2f), ref _velocity, 0.05f);

@@ -2,6 +2,7 @@
 using OWML.Utils;
 using System.Collections.Generic;
 using UnityEngine;
+using static Immersion.ModMain;
 
 namespace Immersion.Components;
 
@@ -97,7 +98,7 @@ class ViewmodelArm : MonoBehaviour
         var shader = Shader.Find(shaderName);
         if (shader == null)
         {
-            ModMain.Console.WriteLine($"\"{shaderName}\" is not a valid shader.", MessageType.Error);
+            ModConsole.WriteLine($"\"{shaderName}\" is not a valid shader.", MessageType.Error);
             return;
         }
 
@@ -166,12 +167,12 @@ class ViewmodelArm : MonoBehaviour
 
         output += $"        }}\n    }}";
 
-        ModMain.Console.WriteLine(output);
+        ModConsole.WriteLine(output);
     }
 
     public static void LoadAsset()
     {
-        var assetBundle = ModMain.Assets.LoadBundle("AssetBundles/viewmodelarm");
+        var assetBundle = ModAssets.LoadBundle("AssetBundles/viewmodelarm");
         s_viewmodelArmAsset = assetBundle.LoadAsset<GameObject>("Assets/ViewmodelArm.prefab");
     }
 
@@ -206,7 +207,7 @@ class ViewmodelArm : MonoBehaviour
                 owItem.transform.localEulerAngles = new Vector3(0f, 327f, 0f);
                 break;
             case "GhostbirdSkull":
-                ModMain.Events.Unity.FireOnNextUpdate(() =>
+                ModEvents.Unity.FireOnNextUpdate(() =>
                     owItem.transform.localScale = 0.6f * Vector3.one);
                 break;
         }

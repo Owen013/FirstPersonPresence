@@ -1,6 +1,7 @@
 ﻿using OWML.Utils;
 using System.Collections.Generic;
 using UnityEngine;
+using static Immersion.ModMain;
 
 namespace Immersion.Components;
 
@@ -145,7 +146,7 @@ class OffsetManager : MonoBehaviour
         gameObject.AddComponent<LandingAnimController>();
         gameObject.AddComponent<HideStowedItemsController>();
 
-        if (ModMain.HikersModAPI != null)
+        if (HikersModAPI != null)
             gameObject.AddComponent<SprintingAnimController>();
     }
 }

@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Reflection;
 using UnityEngine;
+using static Immersion.ModMain;
 
 namespace Immersion;
 
@@ -69,7 +70,7 @@ class ArmData
         if (ArmData.Exists(armDataId))
             return s_armData[armDataId];
 
-        ModMain.Console.WriteLine($"No Arm Data found for {armDataId}", MessageType.Error);
+        ModConsole.WriteLine($"No Arm Data found for {armDataId}", MessageType.Error);
         return null;
     }
 
@@ -82,7 +83,7 @@ class ArmData
     {
         if (!ArmData.Exists(playerTool))
         {
-            ModMain.Console.WriteLine($"No ArmData exists for PlayerTool \"{playerTool.name}\"");
+            ModConsole.WriteLine($"No ArmData exists for PlayerTool \"{playerTool.name}\"");
             return null;
         }
 
@@ -99,7 +100,7 @@ class ArmData
     {
         if (!ArmData.Exists(owItem))
         {
-            ModMain.Console.WriteLine($"No ArmData exists for OWItem \"{owItem.name}\"");
+            ModConsole.WriteLine($"No ArmData exists for OWItem \"{owItem.name}\"");
             return null;
         }
 
@@ -190,9 +191,9 @@ class ArmData
 
     public static void LoadArmData()
     {
-        ModMain.Console.WriteLine($"Loading Arm Data...", MessageType.Info);
+        ModConsole.WriteLine($"Loading Arm Data...", MessageType.Info);
         string json = File.ReadAllText($"{Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location)}/viewmodel-arm-data.json");
         s_armData = JsonConvert.DeserializeObject<Dictionary<string, ArmData>>(json);
-        ModMain.Console.WriteLine($"Arm Data loaded successfully!", MessageType.Success);
+        ModConsole.WriteLine($"Arm Data loaded successfully!", MessageType.Success);
     }
 }

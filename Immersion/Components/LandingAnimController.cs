@@ -1,4 +1,5 @@
 ﻿using UnityEngine;
+using static Immersion.ModMain;
 
 namespace Immersion.Components;
 
@@ -47,11 +48,11 @@ class LandingAnimController : ToggleableBehaviour
             Vector3 landingVelocity = groundPointVelocity - _lastPlayerVelocity;
             float landingSpeed = _playerController.transform.InverseTransformVector(landingVelocity).y;
 
-            if (ModMain.SmolHatchlingAPI != null)
+            if (SmolHatchlingAPI != null)
             {
-                float playerScale = ModMain.SmolHatchlingAPI.GetPlayerScale();
+                float playerScale = SmolHatchlingAPI.GetPlayerScale();
                 if (playerScale != 0f)
-                    landingSpeed /= ModMain.SmolHatchlingAPI.GetPlayerScale();
+                    landingSpeed /= SmolHatchlingAPI.GetPlayerScale();
             }
 
             if (landingSpeed >= 5f)
@@ -69,7 +70,7 @@ class LandingAnimController : ToggleableBehaviour
         {
             if (_isCrouching)
             {
-                float playerScale = ModMain.SmolHatchlingAPI != null ? ModMain.SmolHatchlingAPI.GetPlayerScale() : 1f;
+                float playerScale = SmolHatchlingAPI != null ? SmolHatchlingAPI.GetPlayerScale() : 1f;
                 OffsetPosition = Mathf.Min(OffsetPosition - _lastLandedSpeed * playerScale * deltaTime, 0f);
                 if (OffsetPosition <= MinPosition)
                 {

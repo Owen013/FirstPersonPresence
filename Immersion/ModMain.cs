@@ -11,11 +11,11 @@ public class ModMain : ModBehaviour
 {
     public static ModMain Instance { get; private set; }
 
-    public static IModAssets Assets => Instance.ModHelper.Assets;
+    public static IModAssets ModAssets => Instance.ModHelper.Assets;
 
-    public static IModEvents Events => Instance.ModHelper.Events;
+    public static IModEvents ModEvents => Instance.ModHelper.Events;
 
-    public static IModConsole Console => Instance.ModHelper.Console;
+    public static IModConsole ModConsole => Instance.ModHelper.Console;
 
     public static ISmolHatchling SmolHatchlingAPI { get; private set; }
 
@@ -44,6 +44,6 @@ public class ModMain : ModBehaviour
         ViewmodelArm.LoadAsset();
 
         // ready
-        Console.WriteLine($"Immersion is ready to go!", MessageType.Success);
+        ModConsole.WriteLine($"Immersion is ready to go!", MessageType.Success);
     }
 }
