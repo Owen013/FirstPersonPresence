@@ -1,53 +1,52 @@
 ﻿using OWML.Utils;
 using UnityEngine;
 
-namespace Immersion.Components
+namespace Immersion.Components;
+
+public class HideStowedItemsController : ToggleableBehaviour
 {
-    public class HideStowedItemsController : ToggleableBehaviour
+    OffsetManager _offsetManager;
+
+    ToolModeSwapper _toolModeSwapper;
+
+    float _addedStowDegrees;
+
+    protected override void OnConfigured()
     {
-        OffsetManager _offsetManager;
+        enabled = Config.HideStowedItems;
+    }
 
-        ToolModeSwapper _toolModeSwapper;
+    protected override void Awake()
+    {
+        base.Awake();
+        _offsetManager = OffsetManager.Instance;
+        _toolModeSwapper = Locator.GetToolModeSwapper();
+    }
 
-        float _addedStowDegrees;
-
-        protected override void OnConfigured()
+    void Update()
+    {
+        var itemCarryTool = _toolModeSwapper.GetItemCarryTool();
+        var heldItem = itemCarryTool.GetHeldItem();
+        if (heldItem != null)
         {
-            enabled = Config.HideStowedItems;
-        }
-
-        protected override void Awake()
-        {
-            base.Awake();
-            _offsetManager = OffsetManager.Instance;
-            _toolModeSwapper = Locator.GetToolModeSwapper();
-        }
-
-        void Update()
-        {
-            var itemCarryTool = _toolModeSwapper.GetItemCarryTool();
-            var heldItem = itemCarryTool.GetHeldItem();
-            if (heldItem != null)
+            // compass item is not supposed to be stowed when at the cockpit
+            bool holdingCompassInShip = heldItem.GetItemType().GetName() == "Compass" && OWInput.IsInputMode(InputMode.ShipCockpit);
+            if (!holdingCompassInShip && !itemCarryTool.IsPuttingAway() && _toolModeSwapper.GetToolMode() != ToolMode.Item)
             {
-                // compass item is not supposed to be stowed when at the cockpit
-                bool holdingCompassInShip = heldItem.GetItemType().GetName() == "Compass" && OWInput.IsInputMode(InputMode.ShipCockpit);
-                if (!holdingCompassInShip && !itemCarryTool.IsPuttingAway() && _toolModeSwapper.GetToolMode() != ToolMode.Item)
-                {
-                    // tilt item carry tool further offscreen once its vanilla stow animation finishes
-                    float deltaTime = OWTime.IsPaused(OWTime.PauseType.Reading) ? Time.unscaledDeltaTime : Time.deltaTime;
-                    _addedStowDegrees = Mathf.MoveTowards(_addedStowDegrees, 45f, 135f * deltaTime);
-                    var offsetRotation = Quaternion.AngleAxis(_addedStowDegrees, Vector3.right);
-                    _offsetManager.AddToolOffset(offsetRotation, Tools.ItemTool);
-                    return;
-                }
+                // tilt item carry tool further offscreen once its vanilla stow animation finishes
+                float deltaTime = OWTime.IsPaused(OWTime.PauseType.Reading) ? Time.unscaledDeltaTime : Time.deltaTime;
+                _addedStowDegrees = Mathf.MoveTowards(_addedStowDegrees, 45f, 135f * deltaTime);
+                var offsetRotation = Quaternion.AngleAxis(_addedStowDegrees, Vector3.right);
+                _offsetManager.AddToolOffset(offsetRotation, Tools.ItemTool);
+                return;
             }
-
-            _addedStowDegrees = 0f;
         }
 
-        void OnDisable()
-        {
-            _addedStowDegrees = 0f;
-        }
+        _addedStowDegrees = 0f;
+    }
+
+    void OnDisable()
+    {
+        _addedStowDegrees = 0f;
     }
 }

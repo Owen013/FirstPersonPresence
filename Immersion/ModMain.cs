@@ -5,46 +5,45 @@ using OWML.Common;
 using OWML.ModHelper;
 using System.Reflection;
 
-namespace Immersion
+namespace Immersion;
+
+public class ModMain : ModBehaviour
 {
-    public class ModMain : ModBehaviour
+    public static ModMain Instance { get; set; }
+
+    public static IModAssets Assets => Instance.ModHelper.Assets;
+
+    public static IModEvents Events => Instance.ModHelper.Events;
+
+    public static IModConsole Console => Instance.ModHelper.Console;
+
+    public static ISmolHatchling SmolHatchlingAPI { get; set; }
+
+    public static IHikersMod HikersModAPI { get; set; }
+
+    public override void Configure(IModConfig config)
     {
-        public static ModMain Instance { get; set; }
+        Config.Configure(config);
+        Locator.GetPlayerCamera()?.nearClipPlane = Config.FixViewmodelClipping ? 0.05f : 0.1f;
+    }
 
-        public static IModAssets Assets => Instance.ModHelper.Assets;
+    void Awake()
+    {
+        Instance = this;
+        new Harmony("Owen_013.FirstPersonPresence").PatchAll(Assembly.GetExecutingAssembly());
+    }
 
-        public static IModEvents Events => Instance.ModHelper.Events;
+    void Start()
+    {
+        // check for other mods
+        SmolHatchlingAPI = ModHelper.Interaction.TryGetModApi<ISmolHatchling>("Owen013.TeenyHatchling");
+        HikersModAPI = ModHelper.Interaction.TryGetModApi<IHikersMod>("Owen013.MovementMod");
 
-        public static IModConsole Console => Instance.ModHelper.Console;
+        // load viewmodel arm stuff
+        ArmData.Load();
+        ViewmodelArm.LoadAsset();
 
-        public static ISmolHatchling SmolHatchlingAPI { get; set; }
-
-        public static IHikersMod HikersModAPI { get; set; }
-
-        public override void Configure(IModConfig config)
-        {
-            Config.Configure(config);
-            Locator.GetPlayerCamera()?.nearClipPlane = Config.FixViewmodelClipping ? 0.05f : 0.1f;
-        }
-
-        void Awake()
-        {
-            Instance = this;
-            new Harmony("Owen_013.FirstPersonPresence").PatchAll(Assembly.GetExecutingAssembly());
-        }
-
-        void Start()
-        {
-            // check for other mods
-            SmolHatchlingAPI = ModHelper.Interaction.TryGetModApi<ISmolHatchling>("Owen013.TeenyHatchling");
-            HikersModAPI = ModHelper.Interaction.TryGetModApi<IHikersMod>("Owen013.MovementMod");
-
-            // load viewmodel arm stuff
-            ArmData.Load();
-            ViewmodelArm.LoadAsset();
-
-            // ready
-            Console.WriteLine($"Immersion is ready to go!", MessageType.Success);
-        }
+        // ready
+        Console.WriteLine($"Immersion is ready to go!", MessageType.Success);
     }
 }

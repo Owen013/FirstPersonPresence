@@ -1,75 +1,74 @@
 ﻿using UnityEngine;
 
-namespace Immersion.Components
+namespace Immersion.Components;
+
+public class ScoutAnimController : ToggleableBehaviour
 {
-    public class ScoutAnimController : ToggleableBehaviour
+    OffsetManager _offsetManager;
+
+    float _lastScoutLaunchTime;
+
+    bool _isAnimPlaying;
+
+    float _animScale;
+
+    float _animVelocity;
+
+    protected override void OnConfigured()
     {
-        OffsetManager _offsetManager;
+        enabled = Config.EnableScoutAnim;
+    }
 
-        float _lastScoutLaunchTime;
+    protected override void Awake()
+    {
+        base.Awake();
+        _offsetManager = OffsetManager.Instance;
 
-        bool _isAnimPlaying;
-
-        float _animScale;
-
-        float _animVelocity;
-
-        protected override void OnConfigured()
+        Locator.GetToolModeSwapper().GetProbeLauncher().OnLaunchProbe += (_) =>
         {
-            enabled = Config.EnableScoutAnim;
-        }
-
-        protected override void Awake()
-        {
-            base.Awake();
-            _offsetManager = OffsetManager.Instance;
-
-            Locator.GetToolModeSwapper().GetProbeLauncher().OnLaunchProbe += (_) =>
+            // play scout launcher animation if enabled
+            if (Config.EnableScoutAnim)
             {
-                // play scout launcher animation if enabled
-                if (Config.EnableScoutAnim)
-                {
-                    _isAnimPlaying = true;
-                    _lastScoutLaunchTime = Time.time;
-                }
-            };
-        }
+                _isAnimPlaying = true;
+                _lastScoutLaunchTime = Time.time;
+            }
+        };
+    }
 
-        void Update()
+    void Update()
+    {
+        if (_isAnimPlaying)
         {
-            if (_isAnimPlaying)
+            float deltaTime = OWTime.IsPaused(OWTime.PauseType.Reading) ? Time.unscaledDeltaTime : Time.deltaTime;
+            if (deltaTime != 0f)
             {
-                float deltaTime = OWTime.IsPaused(OWTime.PauseType.Reading) ? Time.unscaledDeltaTime : Time.deltaTime;
-                if (deltaTime != 0f)
-                {
-                    float targetRecoil = Mathf.Max(_lastScoutLaunchTime + 0.5f - Time.time, 0f) * 2f;
-                    // damp moves quickly during the initial recoil, and slowly during the recovery
-                    float dampTime = targetRecoil > _animScale ? 0.05f : 0.1f;
-                    _animScale = Mathf.SmoothDamp(_animScale, targetRecoil, ref _animVelocity, dampTime, Mathf.Infinity, deltaTime);
-                }
+                float targetRecoil = Mathf.Max(_lastScoutLaunchTime + 0.5f - Time.time, 0f) * 2f;
+                // damp moves quickly during the initial recoil, and slowly during the recovery
+                float dampTime = targetRecoil > _animScale ? 0.05f : 0.1f;
+                _animScale = Mathf.SmoothDamp(_animScale, targetRecoil, ref _animVelocity, dampTime, Mathf.Infinity, deltaTime);
+            }
 
-                if (_animScale != 0f)
-                {
-                    // apply recoils to camera and scout launcher
-                    var cameraOffsetRotation = Quaternion.Euler(_animScale * new Vector3(-5f, 0f, -5f));
-                    var probeLauncherOffsetPosition = _animScale * new Vector3(0.1f, -0.1f, -0.2f);
-                    var probeLauncherOffsetRotation = Quaternion.Euler(new Vector3(-15f, 0f, -15f) * _animScale);
-                    _offsetManager.AddCameraOffset(cameraOffsetRotation);
-                    _offsetManager.AddToolOffset(probeLauncherOffsetPosition, probeLauncherOffsetRotation, Tools.ProbeLauncher);
-                }
-                else
-                {
-                    _isAnimPlaying = false;
-                }
+            if (_animScale != 0f)
+            {
+                // apply recoils to camera and scout launcher
+                var cameraOffsetRotation = Quaternion.Euler(_animScale * new Vector3(-5f, 0f, -5f));
+                var probeLauncherOffsetPosition = _animScale * new Vector3(0.1f, -0.1f, -0.2f);
+                var probeLauncherOffsetRotation = Quaternion.Euler(new Vector3(-15f, 0f, -15f) * _animScale);
+                _offsetManager.AddCameraOffset(cameraOffsetRotation);
+                _offsetManager.AddToolOffset(probeLauncherOffsetPosition, probeLauncherOffsetRotation, Tools.ProbeLauncher);
+            }
+            else
+            {
+                _isAnimPlaying = false;
             }
         }
+    }
 
-        void OnDisable()
-        {
-            // reset recoil parameters if disabled
-            _isAnimPlaying = false;
-            _animScale = 0f;
-            _animVelocity = 0f;
-        }
+    void OnDisable()
+    {
+        // reset recoil parameters if disabled
+        _isAnimPlaying = false;
+        _animScale = 0f;
+        _animVelocity = 0f;
     }
 }

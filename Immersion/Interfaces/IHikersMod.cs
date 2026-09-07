@@ -1,9 +1,8 @@
-﻿namespace Immersion.Interfaces
-{
-    public interface IHikersMod
-    {
-        public bool IsSprinting();
+﻿namespace Immersion.Interfaces;
 
-        public void UpdateConfig();
-    }
+public interface IHikersMod
+{
+    public bool IsSprinting();
+
+    public void UpdateConfig();
 }

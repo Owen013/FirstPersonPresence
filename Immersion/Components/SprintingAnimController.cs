@@ -1,41 +1,40 @@
 ﻿using UnityEngine;
 
-namespace Immersion.Components
+namespace Immersion.Components;
+
+public class SprintingAnimController : ToggleableBehaviour
 {
-    public class SprintingAnimController : ToggleableBehaviour
+    OffsetManager _offsetManager;
+
+    float _animStrength;
+
+    float _animVelocity;
+
+    protected override void OnConfigured()
     {
-        OffsetManager _offsetManager;
+        enabled = Config.EnableSprintingAnim;
+    }
 
-        float _animStrength;
+    protected override void Awake()
+    {
+        base.Awake();
+        _offsetManager = OffsetManager.Instance;
+    }
 
-        float _animVelocity;
-
-        protected override void OnConfigured()
+    void Update()
+    {
+        float deltaTime = OWTime.IsPaused(OWTime.PauseType.Reading) ? Time.unscaledDeltaTime : Time.deltaTime;
+        if (deltaTime != 0f)
         {
-            enabled = Config.EnableSprintingAnim;
+            _animStrength = Mathf.SmoothDamp(_animStrength, ModMain.HikersModAPI.IsSprinting() ? 1f : 0f, ref _animVelocity, 0.2f, Mathf.Infinity, deltaTime);
         }
 
-        protected override void Awake()
-        {
-            base.Awake();
-            _offsetManager = OffsetManager.Instance;
-        }
+        _offsetManager.AddToolOffset(Quaternion.Euler(15f * _animStrength, 0f, 0f), Tools.All);
+    }
 
-        void Update()
-        {
-            float deltaTime = OWTime.IsPaused(OWTime.PauseType.Reading) ? Time.unscaledDeltaTime : Time.deltaTime;
-            if (deltaTime != 0f)
-            {
-                _animStrength = Mathf.SmoothDamp(_animStrength, ModMain.HikersModAPI.IsSprinting() ? 1f : 0f, ref _animVelocity, 0.2f, Mathf.Infinity, deltaTime);
-            }
-
-            _offsetManager.AddToolOffset(Quaternion.Euler(15f * _animStrength, 0f, 0f), Tools.All);
-        }
-
-        void OnDisable()
-        {
-            _animStrength = 0f;
-            _animVelocity = 0f;
-        }
+    void OnDisable()
+    {
+        _animStrength = 0f;
+        _animVelocity = 0f;
     }
 }

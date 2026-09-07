@@ -2,177 +2,176 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-namespace Immersion.Components
+namespace Immersion.Components;
+
+public class OffsetManager : MonoBehaviour
 {
-    public class OffsetManager : MonoBehaviour
+    public static OffsetManager Instance { get; set; }
+
+    static readonly Dictionary<string, float> s_itemOffsetScales = new Dictionary<string, float>
     {
-        public static OffsetManager Instance { get; set; }
+        ["DreamLantern"] = 1.2f,
+        ["DreamLantern_Malfunctioning"] = 1.2f,
+        ["CloakMineral"] = 0.8f,
+        ["StrangerSeal"] = 0.8f,
+        ["GhostbirdSkull"] = 0.8f,
+        ["Compass"] = 0.8f
+    };
 
-        static readonly Dictionary<string, float> s_itemOffsetScales = new Dictionary<string, float>
+    OffsetRoot _cameraOffsetRoot;
+
+    OffsetRoot _itemToolOffsetRoot;
+
+    OffsetRoot _signalscopeOffsetRoot;
+
+    OffsetRoot _probeLauncherOffsetRoot;
+
+    OffsetRoot _translatorOffsetRoot;
+
+    float _currentItemOffsetScale = 1f;
+
+    /// <summary>
+    /// Applies a translational offset to the player camera.
+    /// </summary>
+    /// <param name="position">The local position of the offset.</param>
+    public void AddCameraOffset(Vector3 position)
+    {
+        _cameraOffsetRoot.AddOffset(position);
+    }
+
+    /// <summary>
+    /// Applies a rotational offset to the player camera.
+    /// </summary>
+    /// <param name="rotation">The local rotation of the offset.</param>
+    public void AddCameraOffset(Quaternion rotation)
+    {
+        _cameraOffsetRoot.AddOffset(rotation);
+    }
+
+    /// <summary>
+    /// Applies a translational and rotational offset to the player camera.
+    /// </summary>
+    /// <param name="position">The local position of the offset.</param>
+    /// <param name="rotation">The local rotation of the offset.</param>
+    public void AddCameraOffset(Vector3 position, Quaternion rotation)
+    {
+        AddCameraOffset(position);
+        AddCameraOffset(rotation);
+    }
+
+    /// <summary>
+    /// Applies a translational offset to all tools that is scaled to match the tool scale.
+    /// </summary>
+    /// <param name="position">The local position of the offset.</param>
+    /// <param name="toolsToOffset">The tools to apply the offset to.</param>
+    public void AddToolOffset(Vector3 position, Tools toolsToOffset)
+    {
+        // apply different scaling factors for different tools
+        if (toolsToOffset.HasFlag(Tools.ItemTool))
         {
-            ["DreamLantern"] = 1.2f,
-            ["DreamLantern_Malfunctioning"] = 1.2f,
-            ["CloakMineral"] = 0.8f,
-            ["StrangerSeal"] = 0.8f,
-            ["GhostbirdSkull"] = 0.8f,
-            ["Compass"] = 0.8f
-        };
-
-        OffsetRoot _cameraOffsetRoot;
-
-        OffsetRoot _itemToolOffsetRoot;
-
-        OffsetRoot _signalscopeOffsetRoot;
-
-        OffsetRoot _probeLauncherOffsetRoot;
-
-        OffsetRoot _translatorOffsetRoot;
-
-        float _currentItemOffsetScale = 1f;
-
-        /// <summary>
-        /// Applies a translational offset to the player camera.
-        /// </summary>
-        /// <param name="position">The local position of the offset.</param>
-        public void AddCameraOffset(Vector3 position)
-        {
-            _cameraOffsetRoot.AddOffset(position);
+            _itemToolOffsetRoot.AddOffset(0.8f * _currentItemOffsetScale * position);
         }
 
-        /// <summary>
-        /// Applies a rotational offset to the player camera.
-        /// </summary>
-        /// <param name="rotation">The local rotation of the offset.</param>
-        public void AddCameraOffset(Quaternion rotation)
+        if (toolsToOffset.HasFlag(Tools.Signalscope))
         {
-            _cameraOffsetRoot.AddOffset(rotation);
+            _signalscopeOffsetRoot.AddOffset(position);
         }
 
-        /// <summary>
-        /// Applies a translational and rotational offset to the player camera.
-        /// </summary>
-        /// <param name="position">The local position of the offset.</param>
-        /// <param name="rotation">The local rotation of the offset.</param>
-        public void AddCameraOffset(Vector3 position, Quaternion rotation)
+        if (toolsToOffset.HasFlag(Tools.ProbeLauncher))
         {
-            AddCameraOffset(position);
-            AddCameraOffset(rotation);
+            _probeLauncherOffsetRoot.AddOffset(3f * position);
         }
 
-        /// <summary>
-        /// Applies a translational offset to all tools that is scaled to match the tool scale.
-        /// </summary>
-        /// <param name="position">The local position of the offset.</param>
-        /// <param name="toolsToOffset">The tools to apply the offset to.</param>
-        public void AddToolOffset(Vector3 position, Tools toolsToOffset)
+        if (toolsToOffset.HasFlag(Tools.Translator))
         {
-            // apply different scaling factors for different tools
-            if (toolsToOffset.HasFlag(Tools.ItemTool))
-            {
-                _itemToolOffsetRoot.AddOffset(0.8f * _currentItemOffsetScale * position);
-            }
+            _translatorOffsetRoot.AddOffset(3f * position);
+        }
+    }
 
-            if (toolsToOffset.HasFlag(Tools.Signalscope))
-            {
-                _signalscopeOffsetRoot.AddOffset(position);
-            }
-
-            if (toolsToOffset.HasFlag(Tools.ProbeLauncher))
-            {
-                _probeLauncherOffsetRoot.AddOffset(3f * position);
-            }
-
-            if (toolsToOffset.HasFlag(Tools.Translator))
-            {
-                _translatorOffsetRoot.AddOffset(3f * position);
-            }
+    /// <summary>
+    /// Applies a rotational offset to all tools.
+    /// </summary>
+    /// <param name="rotation">The local rotation of the offset.</param>
+    /// <param name="toolsToOffset">The tools to apply the offset to.</param>
+    public void AddToolOffset(Quaternion rotation, Tools toolsToOffset)
+    {
+        // apply different scaling factors for different tools
+        if (toolsToOffset.HasFlag(Tools.ItemTool))
+        {
+            _itemToolOffsetRoot.AddOffset(rotation);
         }
 
-        /// <summary>
-        /// Applies a rotational offset to all tools.
-        /// </summary>
-        /// <param name="rotation">The local rotation of the offset.</param>
-        /// <param name="toolsToOffset">The tools to apply the offset to.</param>
-        public void AddToolOffset(Quaternion rotation, Tools toolsToOffset)
+        if (toolsToOffset.HasFlag(Tools.Signalscope))
         {
-            // apply different scaling factors for different tools
-            if (toolsToOffset.HasFlag(Tools.ItemTool))
-            {
-                _itemToolOffsetRoot.AddOffset(rotation);
-            }
-
-            if (toolsToOffset.HasFlag(Tools.Signalscope))
-            {
-                _signalscopeOffsetRoot.AddOffset(rotation);
-            }
-
-            if (toolsToOffset.HasFlag(Tools.ProbeLauncher))
-            {
-                _probeLauncherOffsetRoot.AddOffset(rotation);
-            }
-
-            if (toolsToOffset.HasFlag(Tools.Translator))
-            {
-                _translatorOffsetRoot.AddOffset(rotation);
-            }
+            _signalscopeOffsetRoot.AddOffset(rotation);
         }
 
-        /// <summary>
-        /// Applies a translational offset (rescaling it so that it looks the same on all tools) and a rotational offset to all tools.
-        /// </summary>
-        /// <param name="position">The local position of the offset.</param>
-        /// <param name="rotation">The local rotation of the offset.</param>
-        /// <param name="toolsToOffset">The tools to apply the offset to.</param>
-        public void AddToolOffset(Vector3 position, Quaternion rotation, Tools toolsToOffset)
+        if (toolsToOffset.HasFlag(Tools.ProbeLauncher))
         {
-            AddToolOffset(position, toolsToOffset);
-            AddToolOffset(rotation, toolsToOffset);
+            _probeLauncherOffsetRoot.AddOffset(rotation);
         }
 
-        internal static void OnPickUpItem(OWItem item)
+        if (toolsToOffset.HasFlag(Tools.Translator))
         {
-            string itemId = item.GetItemType().GetName();
+            _translatorOffsetRoot.AddOffset(rotation);
+        }
+    }
 
-            // some items require special treatment
-            if (itemId == "DreamLantern" && item is DreamLanternItem dreamLantern && dreamLantern.GetLanternType() != DreamLanternType.Functioning)
-            {
-                itemId += $"_{dreamLantern.GetLanternType().GetName()}";
-            }
+    /// <summary>
+    /// Applies a translational offset (rescaling it so that it looks the same on all tools) and a rotational offset to all tools.
+    /// </summary>
+    /// <param name="position">The local position of the offset.</param>
+    /// <param name="rotation">The local rotation of the offset.</param>
+    /// <param name="toolsToOffset">The tools to apply the offset to.</param>
+    public void AddToolOffset(Vector3 position, Quaternion rotation, Tools toolsToOffset)
+    {
+        AddToolOffset(position, toolsToOffset);
+        AddToolOffset(rotation, toolsToOffset);
+    }
 
-            if (s_itemOffsetScales.ContainsKey(itemId))
-            {
-                Instance._currentItemOffsetScale = s_itemOffsetScales[itemId];
-            }
-            else
-            {
-                Instance._currentItemOffsetScale = 1f;
-            }
+    internal static void OnPickUpItem(OWItem item)
+    {
+        string itemId = item.GetItemType().GetName();
+
+        // some items require special treatment
+        if (itemId == "DreamLantern" && item is DreamLanternItem dreamLantern && dreamLantern.GetLanternType() != DreamLanternType.Functioning)
+        {
+            itemId += $"_{dreamLantern.GetLanternType().GetName()}";
         }
 
-        void Start()
+        if (s_itemOffsetScales.ContainsKey(itemId))
         {
-            Instance = this;
+            Instance._currentItemOffsetScale = s_itemOffsetScales[itemId];
+        }
+        else
+        {
+            Instance._currentItemOffsetScale = 1f;
+        }
+    }
 
-            // create offset roots
-            _cameraOffsetRoot = OffsetRoot.NewOffsetRoot("OffsetRoot_Camera", Locator.GetPlayerCamera().gameObject);
-            var toolModeSwapper = Locator.GetToolModeSwapper();
-            _itemToolOffsetRoot = OffsetRoot.NewOffsetRoot("OffsetRoot_ItemCarryTool", toolModeSwapper.GetItemCarryTool().gameObject);
-            _signalscopeOffsetRoot = OffsetRoot.NewOffsetRoot("OffsetRoot_Signalscope", toolModeSwapper.GetSignalScope().gameObject);
-            _probeLauncherOffsetRoot = OffsetRoot.NewOffsetRoot("OffsetRoot_ProbeLauncher", toolModeSwapper.GetProbeLauncher().gameObject);
-            _translatorOffsetRoot = OffsetRoot.NewOffsetRoot("OffsetRoot_NomaiTranslatorProp", toolModeSwapper.GetTranslator().gameObject);
+    void Start()
+    {
+        Instance = this;
 
-            gameObject.AddComponent<ViewbobController>();
-            gameObject.AddComponent<ViewmodelOffsetController>();
-            gameObject.AddComponent<ViewmodelSwayController>();
-            gameObject.AddComponent<BreathingAnimController>();
-            gameObject.AddComponent<ScoutAnimController>();
-            gameObject.AddComponent<LandingAnimController>();
-            gameObject.AddComponent<HideStowedItemsController>();
+        // create offset roots
+        _cameraOffsetRoot = OffsetRoot.NewOffsetRoot("OffsetRoot_Camera", Locator.GetPlayerCamera().gameObject);
+        var toolModeSwapper = Locator.GetToolModeSwapper();
+        _itemToolOffsetRoot = OffsetRoot.NewOffsetRoot("OffsetRoot_ItemCarryTool", toolModeSwapper.GetItemCarryTool().gameObject);
+        _signalscopeOffsetRoot = OffsetRoot.NewOffsetRoot("OffsetRoot_Signalscope", toolModeSwapper.GetSignalScope().gameObject);
+        _probeLauncherOffsetRoot = OffsetRoot.NewOffsetRoot("OffsetRoot_ProbeLauncher", toolModeSwapper.GetProbeLauncher().gameObject);
+        _translatorOffsetRoot = OffsetRoot.NewOffsetRoot("OffsetRoot_NomaiTranslatorProp", toolModeSwapper.GetTranslator().gameObject);
 
-            if (ModMain.HikersModAPI != null)
-            {
-                gameObject.AddComponent<SprintingAnimController>();
-            }
+        gameObject.AddComponent<ViewbobController>();
+        gameObject.AddComponent<ViewmodelOffsetController>();
+        gameObject.AddComponent<ViewmodelSwayController>();
+        gameObject.AddComponent<BreathingAnimController>();
+        gameObject.AddComponent<ScoutAnimController>();
+        gameObject.AddComponent<LandingAnimController>();
+        gameObject.AddComponent<HideStowedItemsController>();
+
+        if (ModMain.HikersModAPI != null)
+        {
+            gameObject.AddComponent<SprintingAnimController>();
         }
     }
 }
