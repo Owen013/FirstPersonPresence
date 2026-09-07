@@ -87,7 +87,6 @@ class OffsetManager : MonoBehaviour
     /// <param name="toolsToOffset">The tools to apply the offset to.</param>
     public void AddToolOffset(Quaternion rotation, Tools toolsToOffset)
     {
-        // apply different scaling factors for different tools
         if (toolsToOffset.HasFlag(Tools.ItemTool))
             _itemToolOffsetRoot.AddOffset(rotation);
 
@@ -117,7 +116,7 @@ class OffsetManager : MonoBehaviour
     {
         string itemId = item.GetItemType().GetName();
 
-        // some items require special treatment
+        // Dream Lanterns have different offset scales depending on the type.
         if (itemId == "DreamLantern" && item is DreamLanternItem dreamLantern && dreamLantern.GetLanternType() != DreamLanternType.Functioning)
             itemId += $"_{dreamLantern.GetLanternType().GetName()}";
 
@@ -131,7 +130,6 @@ class OffsetManager : MonoBehaviour
     {
         Instance = this;
 
-        // create offset roots
         _cameraOffsetRoot = OffsetRoot.NewOffsetRoot("OffsetRoot_Camera", Locator.GetPlayerCamera().gameObject);
         var toolModeSwapper = Locator.GetToolModeSwapper();
         _itemToolOffsetRoot = OffsetRoot.NewOffsetRoot("OffsetRoot_ItemCarryTool", toolModeSwapper.GetItemCarryTool().gameObject);

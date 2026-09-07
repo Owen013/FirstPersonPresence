@@ -29,11 +29,11 @@ class HideStowedItemsController : ToggleableBehaviour
         var heldItem = itemCarryTool.GetHeldItem();
         if (heldItem != null)
         {
-            // compass item is not supposed to be stowed when at the cockpit
+            // Compass item is not supposed to be stowed when at the cockpit.
             bool holdingCompassInShip = heldItem.GetItemType().GetName() == "Compass" && OWInput.IsInputMode(InputMode.ShipCockpit);
             if (!holdingCompassInShip && !itemCarryTool.IsPuttingAway() && _toolModeSwapper.GetToolMode() != ToolMode.Item)
             {
-                // tilt item carry tool further offscreen once its vanilla stow animation finishes
+                // Tilt item carry tool further offscreen once its vanilla stow animation finishes.
                 float deltaTime = OWTime.IsPaused(OWTime.PauseType.Reading) ? Time.unscaledDeltaTime : Time.deltaTime;
                 _addedStowDegrees = Mathf.MoveTowards(_addedStowDegrees, 45f, 135f * deltaTime);
                 var offsetRotation = Quaternion.AngleAxis(_addedStowDegrees, Vector3.right);

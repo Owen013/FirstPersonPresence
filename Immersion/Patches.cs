@@ -15,10 +15,8 @@ static class Patches
         OffsetManager.OnPickUpItem(__instance);
         ViewmodelArm.OnPickUpItem(__instance);
 
-        // TSTA skull renderer has weird bounds, so it can stop rendering when near the edges of the screen
-        // normally isn't a problem, since its held position is not close enough to the edge of screen for this to be an issue
-        // with Immersion installed, viewmodel sway/offset can cause skull to move far enough away to disappear
-        // so set the renderers to update when "offscreen" while the skull is held
+        // Immersion can cause TSTA skull to be frustrum culled while still onscreen, so make it render offscreen
+        // while held.
         if (__instance.GetItemType().GetName() == "GhostbirdSkull")
         {
             foreach (var renderer in __instance.GetComponentsInChildren<SkinnedMeshRenderer>())
@@ -30,7 +28,6 @@ static class Patches
     [HarmonyPatch(typeof(OWItem), nameof(OWItem.DropItem))]
     static void OWItem_DropItem_Postfix(OWItem __instance)
     {
-        // return TSTA skull mesh renderers to normal when dropped
         if (__instance.GetItemType().GetName() == "GhostbirdSkull")
         {
             foreach (var renderer in __instance.GetComponentsInChildren<SkinnedMeshRenderer>())

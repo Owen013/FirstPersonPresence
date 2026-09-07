@@ -81,7 +81,8 @@ class ViewmodelArm : MonoBehaviour
         _noSuitMesh.materials[1].shader = shader;
         _suitMesh.material.shader = shader;
 
-        // if using the viewmodel shader, the prepass meshes must be enabled to prevent viewmodel arms from appearing behind things
+        // If using the viewmodel shader, the prepass meshes must be enabled to prevent viewmodel arms from being drawn
+        // underneath other objects.
         bool isViewmodel = shader.name == "Outer Wilds/Utility/View Model" || shader.name == "Outer Wilds/Utility/View Model (Cutoff)";
         _noSuitMeshPrepass.gameObject.SetActive(isViewmodel);
         _suitMeshPrepass.gameObject.SetActive(isViewmodel);
@@ -178,7 +179,7 @@ class ViewmodelArm : MonoBehaviour
     {
         if (Config.EnableViewmodelArms && ArmData.Exists(playerTool))
         {
-            // check for existing arm and enable if found (PlayerTool has no event for being equipped, so this is required)
+            // If there is already a viewmodel arm on this tool, just enable it.
             var existingArm = playerTool.transform.Find("ViewmodelArm");
             if (existingArm != null)
             {
@@ -195,7 +196,7 @@ class ViewmodelArm : MonoBehaviour
         if (Config.EnableViewmodelArms && ArmData.Exists(owItem) && owItem.transform.Find("ViewmodelArm") == null)
             ViewmodelArm.New(owItem);
 
-        // some items need to be adjusted
+        // Certain items need to be moved slightly to reduce near-clipping of viewmodel arm.
         switch (owItem.GetItemType().GetName())
         {
             case "ConversationStone":
@@ -234,7 +235,6 @@ class ViewmodelArm : MonoBehaviour
 
     void Awake()
     {
-        // grab the bones that matter
         _bones = new Dictionary<string, Transform>
         {
             ["shoulder"] = _noSuitMesh.bones[5],

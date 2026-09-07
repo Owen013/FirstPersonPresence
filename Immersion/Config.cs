@@ -51,35 +51,35 @@ static class Config
 
     public static void Configure(IModConfig config)
     {
-        // viewmodel hands
+        // Viewmodel Hands Settings
         EnableViewmodelArms = config.GetSettingsValue<bool>("EnableViewmodelArms");
 
-        // viewbob
+        // View Bobbing Settings
         EnableHeadBob = config.GetSettingsValue<bool>("EnableHeadBob");
         HeadBobScale = config.GetSettingsValue<float>("HeadBobScale");
         EnableViewmodelBob = config.GetSettingsValue<bool>("EnableViewmodelBob");
         ViewmodelBobScale = config.GetSettingsValue<float>("ViewmodelBobScale");
 
-        // dynamic tool pos
+        // Viewmodel Offset Settings
         EnableViewmodelOffset = config.GetSettingsValue<bool>("EnableViewmodelOffset");
         ViewmodelOffsetScale = config.GetSettingsValue<float>("ViewmodelOffsetScale");
 
-        // tool sway
+        // Viewmodel Sway Settings
         EnableViewmodelSway = config.GetSettingsValue<bool>("EnableViewmodelSway");
         ViewmodelSwayScale = config.GetSettingsValue<float>("ViewmodelSwayScale");
 
-        // landing anim
+        // Landing Anim Settings
         EnableCameraLandingAnim = config.GetSettingsValue<bool>("EnableCameraLandingAnim");
         EnableViewmodelLandingAnim = config.GetSettingsValue<bool>("EnableViewmodelLandingAnim");
         MaxLandingAnimDistance = config.GetSettingsValue<float>("MaxLandingAnimDistance");
         MaxLandingAnimRecoverySpeed = config.GetSettingsValue<float>("MaxLandingAnimRecoverySpeed");
         LandingAnimSmoothness = config.GetSettingsValue<float>("LandingAnimSmoothness");
 
-        // breathing anim
+        // Breathing Anim Settings
         EnableBreathingAnim = config.GetSettingsValue<bool>("EnableBreathingAnim");
         BreathingAnimScale = config.GetSettingsValue<float>("BreathingAnimScale");
 
-        // misc
+        // Misc Settings
         FixViewmodelClipping = config.GetSettingsValue<bool>("FixViewmodelClipping");
         EnableScoutAnim = config.GetSettingsValue<bool>("EnableScoutAnim");
         EnableSprintingAnim = config.GetSettingsValue<bool>("EnableSprintingAnim");

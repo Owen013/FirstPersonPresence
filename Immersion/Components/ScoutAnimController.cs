@@ -26,7 +26,6 @@ class ScoutAnimController : ToggleableBehaviour
 
         Locator.GetToolModeSwapper().GetProbeLauncher().OnLaunchProbe += (_) =>
         {
-            // play scout launcher animation if enabled
             if (Config.EnableScoutAnim)
             {
                 _isAnimPlaying = true;
@@ -43,14 +42,12 @@ class ScoutAnimController : ToggleableBehaviour
             if (deltaTime != 0f)
             {
                 float targetRecoil = Mathf.Max(_lastScoutLaunchTime + 0.5f - Time.time, 0f) * 2f;
-                // damp moves quickly during the initial recoil, and slowly during the recovery
                 float dampTime = targetRecoil > _animScale ? 0.05f : 0.1f;
                 _animScale = Mathf.SmoothDamp(_animScale, targetRecoil, ref _animVelocity, dampTime, Mathf.Infinity, deltaTime);
             }
 
             if (_animScale != 0f)
             {
-                // apply recoils to camera and scout launcher
                 var cameraOffsetRotation = Quaternion.Euler(_animScale * new Vector3(-5f, 0f, -5f));
                 var probeLauncherOffsetPosition = _animScale * new Vector3(0.1f, -0.1f, -0.2f);
                 var probeLauncherOffsetRotation = Quaternion.Euler(new Vector3(-15f, 0f, -15f) * _animScale);
@@ -64,7 +61,6 @@ class ScoutAnimController : ToggleableBehaviour
 
     void OnDisable()
     {
-        // reset recoil parameters if disabled
         _isAnimPlaying = false;
         _animScale = 0f;
         _animVelocity = 0f;

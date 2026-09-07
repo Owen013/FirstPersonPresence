@@ -42,14 +42,13 @@ class LandingAnimController : ToggleableBehaviour
 
         _playerController.OnBecomeGrounded += () =>
         {
-            // if the player lands with a downward speed of at least 5, play landing anim
+            // If the player lands with a downward speed of at least 5, play landing anim.
             Vector3 groundPointVelocity = _playerController.GetGroundBody().GetPointVelocity(_playerController.GetGroundContactPoint());
             Vector3 landingVelocity = groundPointVelocity - _lastPlayerVelocity;
             float landingSpeed = _playerController.transform.InverseTransformVector(landingVelocity).y;
 
             if (ModMain.SmolHatchlingAPI != null)
             {
-                // avoid dividing by 0
                 float playerScale = ModMain.SmolHatchlingAPI.GetPlayerScale();
                 if (playerScale != 0f)
                     landingSpeed /= ModMain.SmolHatchlingAPI.GetPlayerScale();
@@ -70,12 +69,10 @@ class LandingAnimController : ToggleableBehaviour
         {
             if (_isCrouching)
             {
-                // update camera height based on landing speed
                 float playerScale = ModMain.SmolHatchlingAPI != null ? ModMain.SmolHatchlingAPI.GetPlayerScale() : 1f;
                 OffsetPosition = Mathf.Min(OffsetPosition - _lastLandedSpeed * playerScale * deltaTime, 0f);
                 if (OffsetPosition <= MinPosition)
                 {
-                    // landing anim bottoms out
                     OffsetPosition = MinPosition;
                     _isCrouching = false;
                 }
@@ -84,7 +81,6 @@ class LandingAnimController : ToggleableBehaviour
                 OffsetPosition = Mathf.SmoothDamp(OffsetPosition, 0f, ref _animVelocity, 0.15f * Config.LandingAnimSmoothness, 1.5f * Config.MaxLandingAnimRecoverySpeed, deltaTime);
         }
 
-        // apply offsets
         if (Config.EnableCameraLandingAnim)
             _offsetManager.AddCameraOffset(new Vector3(0f, OffsetPosition, 0f));
 
@@ -96,13 +92,11 @@ class LandingAnimController : ToggleableBehaviour
             _offsetManager.AddToolOffset(offsetRotation, Tools.All);
         }
 
-        // keep track of player velocity
         _lastPlayerVelocity = _playerController.GetAttachedOWRigidbody().GetVelocity();
     }
 
     void OnDisable()
     {
-        // reset landing anim parameters if feature is disabled
         _lastPlayerVelocity = Vector3.zero;
         OffsetPosition = 0f;
         _animVelocity = 0f;
