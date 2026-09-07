@@ -17,9 +17,9 @@ class ViewbobController : ToggleableBehaviour
 
     float _velocity;
 
-    float MaxHeadBobDisplacement => 0.02f * Config.HeadBobScale;
+    float HeadBobScale => 0.02f * Config.HeadBobScale;
 
-    float MaxViewmodelBobDisplacement => 0.02f * Config.ViewmodelBobScale;
+    float ViewmodelBobScale => 0.02f * Config.ViewmodelBobScale;
 
     float MaxViewmodelBobAngle => 0.75f * Config.ViewmodelBobScale;
 
@@ -53,28 +53,22 @@ class ViewbobController : ToggleableBehaviour
                         groundVel.x = 0f;
                     if (Mathf.Abs(groundVel.z) < 0.05f)
                         groundVel.z = 0f;
+                    groundVel /= SmolHatchlingAPI?.GetPlayerScale() ?? 1f;
 
-                    if (SmolHatchlingAPI != null)
-                    {
-                        float playerScale = SmolHatchlingAPI.GetPlayerScale();
-                        if (playerScale != 0f)
-                            groundVel /= SmolHatchlingAPI.GetPlayerScale();
-                    }
-
-                    _strength = Mathf.SmoothDamp(_strength, Mathf.Min(groundVel.magnitude / 6f, 2f), ref _velocity, 0.05f);
+                    float targetStrength = Mathf.Min(groundVel.magnitude / 6f, 2f);
+                    float smoothTime = 0.05f;
+                    _strength = Mathf.SmoothDamp(_strength, targetStrength, ref _velocity, smoothTime);
                 }
                 else
                     _strength = Mathf.SmoothDamp(_strength, 0f, ref _velocity, 1f);
             }
 
             var viewBob = _strength * new Vector2(Mathf.Sin(_timePosition * 2f * Mathf.PI), Mathf.Cos(_timePosition * 4f * Mathf.PI));
-
             if (Config.EnableHeadBob)
-                _offsetManager.AddCameraOffset(MaxHeadBobDisplacement * new Vector3(viewBob.x, viewBob.y));
-
+                _offsetManager.AddCameraOffset(HeadBobScale * new Vector3(viewBob.x, viewBob.y));
             if (Config.EnableViewmodelBob)
             {
-                var offsetPos = MaxViewmodelBobDisplacement * new Vector3(viewBob.x, 0.15f * viewBob.y);
+                var offsetPos = ViewmodelBobScale * new Vector3(viewBob.x, 0.15f * viewBob.y);
                 float offsetAngle = MaxViewmodelBobAngle * _strength * -Mathf.Sin(_timePosition * 4f * Mathf.PI);
                 _offsetManager.AddToolOffset(offsetPos, Quaternion.AngleAxis(offsetAngle, Vector3.right), Tools.All);
             }
