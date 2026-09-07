@@ -1,7 +1,6 @@
 ﻿using HarmonyLib;
-using Immersion.Scripts;
-using Immersion.Scripts.APIs;
-using Immersion.Scripts.Components;
+using Immersion.Components;
+using Immersion.Interfaces;
 using OWML.Common;
 using OWML.ModHelper;
 using System.Reflection;

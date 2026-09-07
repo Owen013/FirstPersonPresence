@@ -1,6 +1,6 @@
 ﻿using UnityEngine;
 
-namespace Immersion.Scripts.Components
+namespace Immersion.Components
 {
     public abstract class ToggleableBehaviour : MonoBehaviour
     {

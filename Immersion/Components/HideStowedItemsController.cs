@@ -1,7 +1,7 @@
 ﻿using OWML.Utils;
 using UnityEngine;
 
-namespace Immersion.Scripts.Components
+namespace Immersion.Components
 {
     public class HideStowedItemsController : ToggleableBehaviour
     {

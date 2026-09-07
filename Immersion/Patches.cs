@@ -1,5 +1,5 @@
 ﻿using HarmonyLib;
-using Immersion.Scripts.Components;
+using Immersion.Components;
 using OWML.Utils;
 using UnityEngine;
 

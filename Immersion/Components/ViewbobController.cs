@@ -1,6 +1,6 @@
 ﻿using UnityEngine;
 
-namespace Immersion.Scripts.Components
+namespace Immersion.Components
 {
     public class ViewbobController : ToggleableBehaviour
     {

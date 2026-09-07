@@ -3,7 +3,7 @@ using OWML.Utils;
 using System.Collections.Generic;
 using UnityEngine;
 
-namespace Immersion.Scripts.Components
+namespace Immersion.Components
 {
     public class ViewmodelArm : MonoBehaviour
     {

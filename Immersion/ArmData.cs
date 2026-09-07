@@ -6,7 +6,7 @@ using System.IO;
 using System.Reflection;
 using UnityEngine;
 
-namespace Immersion.Scripts
+namespace Immersion
 {
     public class ArmData
     {
