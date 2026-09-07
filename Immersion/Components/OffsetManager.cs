@@ -4,9 +4,9 @@ using UnityEngine;
 
 namespace Immersion.Components;
 
-public class OffsetManager : MonoBehaviour
+class OffsetManager : MonoBehaviour
 {
-    public static OffsetManager Instance { get; set; }
+    public static OffsetManager Instance { get; private set; }
 
     static readonly Dictionary<string, float> s_itemOffsetScales = new Dictionary<string, float>
     {
@@ -129,7 +129,7 @@ public class OffsetManager : MonoBehaviour
         AddToolOffset(rotation, toolsToOffset);
     }
 
-    internal static void OnPickUpItem(OWItem item)
+    public static void OnPickUpItem(OWItem item)
     {
         string itemId = item.GetItemType().GetName();
 

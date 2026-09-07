@@ -5,7 +5,7 @@ using UnityEngine;
 
 namespace Immersion.Components;
 
-public class ViewmodelArm : MonoBehaviour
+class ViewmodelArm : MonoBehaviour
 {
     static GameObject s_viewmodelArmAsset;
 
@@ -174,13 +174,13 @@ public class ViewmodelArm : MonoBehaviour
         ModMain.Console.WriteLine(output);
     }
 
-    internal static void LoadAsset()
+    public static void LoadAsset()
     {
         var assetBundle = ModMain.Assets.LoadBundle("AssetBundles/viewmodelarm");
         s_viewmodelArmAsset = assetBundle.LoadAsset<GameObject>("Assets/ViewmodelArm.prefab");
     }
 
-    internal static void OnEquipTool(PlayerTool playerTool)
+    public static void OnEquipTool(PlayerTool playerTool)
     {
         if (Config.EnableViewmodelArms && ArmData.Exists(playerTool))
         {
@@ -196,7 +196,7 @@ public class ViewmodelArm : MonoBehaviour
         }
     }
 
-    internal static void OnPickUpItem(OWItem owItem)
+    public static void OnPickUpItem(OWItem owItem)
     {
         if (Config.EnableViewmodelArms && ArmData.Exists(owItem) && owItem.transform.Find("ViewmodelArm") == null)
         {

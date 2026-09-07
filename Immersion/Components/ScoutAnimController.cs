@@ -2,7 +2,7 @@
 
 namespace Immersion.Components;
 
-public class ScoutAnimController : ToggleableBehaviour
+class ScoutAnimController : ToggleableBehaviour
 {
     OffsetManager _offsetManager;
 

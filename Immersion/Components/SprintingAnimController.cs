@@ -2,7 +2,7 @@
 
 namespace Immersion.Components;
 
-public class SprintingAnimController : ToggleableBehaviour
+class SprintingAnimController : ToggleableBehaviour
 {
     OffsetManager _offsetManager;
 

@@ -2,7 +2,7 @@
 
 namespace Immersion.Components;
 
-public class ViewbobController : ToggleableBehaviour
+class ViewbobController : ToggleableBehaviour
 {
     OffsetManager _offsetManager;
 

@@ -8,7 +8,7 @@ using UnityEngine;
 
 namespace Immersion;
 
-public class ArmData
+class ArmData
 {
     [JsonProperty("arm_position")]
     public readonly Vector3 armPosition;
@@ -190,7 +190,7 @@ public class ArmData
         return null;
     }
 
-    internal static void Load()
+    public static void LoadArmData()
     {
         ModMain.Console.WriteLine($"Loading Arm Data...", MessageType.Info);
         string json = File.ReadAllText($"{Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location)}/viewmodel-arm-data.json");

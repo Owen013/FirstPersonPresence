@@ -2,11 +2,11 @@
 
 namespace Immersion.Components;
 
-public class LandingAnimController : ToggleableBehaviour
+class LandingAnimController : ToggleableBehaviour
 {
-    public static LandingAnimController Instance { get; set; }
+    public static LandingAnimController Instance { get; private set; }
 
-    public float OffsetPosition { get; set; }
+    public float OffsetPosition { get; private set; }
 
     OffsetManager _offsetManager;
 
@@ -22,7 +22,7 @@ public class LandingAnimController : ToggleableBehaviour
 
     float MinPosition => -0.3f * Config.MaxLandingAnimDistance;
 
-    internal void UpdateLandingCrouchAnim(Animator playerAnimator)
+    public void UpdateLandingCrouchAnim(Animator playerAnimator)
     {
         if (enabled && Config.UseLandingCrouchAnim)
         {

@@ -2,7 +2,7 @@
 
 namespace Immersion.Components;
 
-public class ViewmodelOffsetController : ToggleableBehaviour
+class ViewmodelOffsetController : ToggleableBehaviour
 {
     OffsetManager _offsetManager;
 

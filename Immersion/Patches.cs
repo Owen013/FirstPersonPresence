@@ -6,7 +6,7 @@ using UnityEngine;
 namespace Immersion;
 
 [HarmonyPatch]
-internal static class Patches
+static class Patches
 {
     [HarmonyPostfix]
     [HarmonyPatch(typeof(OWItem), nameof(OWItem.PickUpItem))]

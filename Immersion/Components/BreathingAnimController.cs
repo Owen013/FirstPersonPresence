@@ -2,7 +2,7 @@
 
 namespace Immersion.Components;
 
-public class BreathingAnimController : ToggleableBehaviour
+class BreathingAnimController : ToggleableBehaviour
 {
     OffsetManager _offsetManager;
 

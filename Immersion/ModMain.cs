@@ -9,7 +9,7 @@ namespace Immersion;
 
 public class ModMain : ModBehaviour
 {
-    public static ModMain Instance { get; set; }
+    public static ModMain Instance { get; private set; }
 
     public static IModAssets Assets => Instance.ModHelper.Assets;
 
@@ -17,9 +17,9 @@ public class ModMain : ModBehaviour
 
     public static IModConsole Console => Instance.ModHelper.Console;
 
-    public static ISmolHatchling SmolHatchlingAPI { get; set; }
+    public static ISmolHatchling SmolHatchlingAPI { get; private set; }
 
-    public static IHikersMod HikersModAPI { get; set; }
+    public static IHikersMod HikersModAPI { get; private set; }
 
     public override void Configure(IModConfig config)
     {
@@ -40,7 +40,7 @@ public class ModMain : ModBehaviour
         HikersModAPI = ModHelper.Interaction.TryGetModApi<IHikersMod>("Owen013.MovementMod");
 
         // load viewmodel arm stuff
-        ArmData.Load();
+        ArmData.LoadArmData();
         ViewmodelArm.LoadAsset();
 
         // ready
