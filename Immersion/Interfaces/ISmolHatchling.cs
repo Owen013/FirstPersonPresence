@@ -2,58 +2,58 @@
 
 namespace Immersion.Interfaces;
 
-interface ISmolHatchling
+public interface ISmolHatchling
 {
     /// <summary>
     /// Returns the current scale of the player.
     /// </summary>
-    float GetPlayerScale();
+    public float GetPlayerScale();
 
     /// <summary>
     /// Returns the final scale that the player is easing towards.
     /// </summary>
-    float GetPlayerTargetScale();
+    public float GetPlayerTargetScale();
 
     /// <summary>
     /// Returns the animation speed multiplier.
     /// </summary>
-    float GetPlayerAnimSpeed();
+    public float GetPlayerAnimSpeed();
 
     /// <summary>
     /// The scale the player will be when they start.
     /// </summary>
     /// <param name="scale">The default scale the player should be.</param>
-    void SetPlayerDefaultScale(float scale);
+    public void SetPlayerDefaultScale(float scale);
 
     /// <summary>
     /// The scale anglerfish will be when they start.
     /// </summary>
     /// <param name="scale">The default scale anglerfish should be.</param>
-    void SetAnglerfishDefaultScale(float scale);
+    public void SetAnglerfishDefaultScale(float scale);
 
     /// <summary>
     /// The scale anglerfish will be when they start.
     /// </summary>
     /// <param name="scale">The default scale jellyfish should be.</param>
-    void SetJellyfishDefaultScale(float scale);
+    public void SetJellyfishDefaultScale(float scale);
 
     /// <summary>
     /// The scale inhabitants will be when they start.
     /// </summary>
     /// <param name="scale">The default scale inhabitants should be.</param>
-    void SetInhabitantDefaultScale(float scale);
+    public void SetInhabitantDefaultScale(float scale);
 
     /// <summary>
     /// Resizes a GameObject using its ScaleController. If the GameObject does not have a ScaleController, one will be created.
     /// </summary>
     /// <param name="gameObject">The GameObject to resize.</param>
     /// <param name="scale">The size you want the GameObject to be.</param>
-    void SetGameObjectScale(GameObject gameObject, float scale);
+    public void SetGameObjectScale(GameObject gameObject, float scale);
 
     /// <summary>
     /// Smoothly resizes a GameObject using its ScaleController. If the GameObject does not have a ScaleController, one will be created.
     /// </summary>
     /// <param name="gameObject">The GameObject to resize.</param>
     /// <param name="scale">The size you want the GameObject to be.</param>
-    void EaseGameObjectToScale(GameObject gameObject, float scale);
+    public void EaseGameObjectToScale(GameObject gameObject, float scale);
 }
