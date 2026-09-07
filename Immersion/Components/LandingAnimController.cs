@@ -25,9 +25,7 @@ class LandingAnimController : ToggleableBehaviour
     public void UpdateLandingCrouchAnim(Animator playerAnimator)
     {
         if (enabled && Config.UseLandingCrouchAnim)
-        {
             playerAnimator.SetLayerWeight(1, Mathf.Max(playerAnimator.GetLayerWeight(1), Mathf.Clamp01(OffsetPosition / -0.3f)));
-        }
     }
 
     protected override void OnConfigured()
@@ -54,9 +52,7 @@ class LandingAnimController : ToggleableBehaviour
                 // avoid dividing by 0
                 float playerScale = ModMain.SmolHatchlingAPI.GetPlayerScale();
                 if (playerScale != 0f)
-                {
                     landingSpeed /= ModMain.SmolHatchlingAPI.GetPlayerScale();
-                }
             }
 
             if (landingSpeed >= 5f)
@@ -85,16 +81,13 @@ class LandingAnimController : ToggleableBehaviour
                 }
             }
             else
-            {
                 OffsetPosition = Mathf.SmoothDamp(OffsetPosition, 0f, ref _animVelocity, 0.15f * Config.LandingAnimSmoothness, 1.5f * Config.MaxLandingAnimRecoverySpeed, deltaTime);
-            }
         }
 
         // apply offsets
         if (Config.EnableCameraLandingAnim)
-        {
             _offsetManager.AddCameraOffset(new Vector3(0f, OffsetPosition, 0f));
-        }
+
         if (Config.EnableViewmodelLandingAnim)
         {
             var offsetPosition = 0.1f * OffsetPosition * _offsetManager.transform.InverseTransformDirection(_playerController.transform.up);

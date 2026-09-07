@@ -22,9 +22,7 @@ static class Patches
         if (__instance.GetItemType().GetName() == "GhostbirdSkull")
         {
             foreach (var renderer in __instance.GetComponentsInChildren<SkinnedMeshRenderer>())
-            {
                 renderer.updateWhenOffscreen = true;
-            }
         }
     }
 
@@ -36,9 +34,7 @@ static class Patches
         if (__instance.GetItemType().GetName() == "GhostbirdSkull")
         {
             foreach (var renderer in __instance.GetComponentsInChildren<SkinnedMeshRenderer>())
-            {
                 renderer.updateWhenOffscreen = false;
-            }
         }
     }
 

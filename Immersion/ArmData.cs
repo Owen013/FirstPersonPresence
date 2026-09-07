@@ -67,9 +67,7 @@ class ArmData
     public static ArmData Find(string armDataId)
     {
         if (ArmData.Exists(armDataId))
-        {
             return s_armData[armDataId];
-        }
 
         ModMain.Console.WriteLine($"No Arm Data found for {armDataId}", MessageType.Error);
         return null;

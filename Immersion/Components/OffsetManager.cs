@@ -68,24 +68,16 @@ class OffsetManager : MonoBehaviour
     {
         // apply different scaling factors for different tools
         if (toolsToOffset.HasFlag(Tools.ItemTool))
-        {
             _itemToolOffsetRoot.AddOffset(0.8f * _currentItemOffsetScale * position);
-        }
 
         if (toolsToOffset.HasFlag(Tools.Signalscope))
-        {
             _signalscopeOffsetRoot.AddOffset(position);
-        }
 
         if (toolsToOffset.HasFlag(Tools.ProbeLauncher))
-        {
             _probeLauncherOffsetRoot.AddOffset(3f * position);
-        }
 
         if (toolsToOffset.HasFlag(Tools.Translator))
-        {
             _translatorOffsetRoot.AddOffset(3f * position);
-        }
     }
 
     /// <summary>
@@ -97,24 +89,16 @@ class OffsetManager : MonoBehaviour
     {
         // apply different scaling factors for different tools
         if (toolsToOffset.HasFlag(Tools.ItemTool))
-        {
             _itemToolOffsetRoot.AddOffset(rotation);
-        }
 
         if (toolsToOffset.HasFlag(Tools.Signalscope))
-        {
             _signalscopeOffsetRoot.AddOffset(rotation);
-        }
 
         if (toolsToOffset.HasFlag(Tools.ProbeLauncher))
-        {
             _probeLauncherOffsetRoot.AddOffset(rotation);
-        }
 
         if (toolsToOffset.HasFlag(Tools.Translator))
-        {
             _translatorOffsetRoot.AddOffset(rotation);
-        }
     }
 
     /// <summary>
@@ -135,18 +119,12 @@ class OffsetManager : MonoBehaviour
 
         // some items require special treatment
         if (itemId == "DreamLantern" && item is DreamLanternItem dreamLantern && dreamLantern.GetLanternType() != DreamLanternType.Functioning)
-        {
             itemId += $"_{dreamLantern.GetLanternType().GetName()}";
-        }
 
         if (s_itemOffsetScales.ContainsKey(itemId))
-        {
             Instance._currentItemOffsetScale = s_itemOffsetScales[itemId];
-        }
         else
-        {
             Instance._currentItemOffsetScale = 1f;
-        }
     }
 
     void Start()
@@ -170,8 +148,6 @@ class OffsetManager : MonoBehaviour
         gameObject.AddComponent<HideStowedItemsController>();
 
         if (ModMain.HikersModAPI != null)
-        {
             gameObject.AddComponent<SprintingAnimController>();
-        }
     }
 }

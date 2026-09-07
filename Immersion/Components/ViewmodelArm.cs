@@ -110,9 +110,7 @@ class ViewmodelArm : MonoBehaviour
     public void SetBoneEulers(Dictionary<string, Vector3> boneEulers)
     {
         foreach (var boneEuler in boneEulers)
-        {
             _bones[boneEuler.Key].localEulerAngles = boneEuler.Value;
-        }
     }
 
     /// <summary>
@@ -136,9 +134,7 @@ class ViewmodelArm : MonoBehaviour
     {
         var armData = ArmData.Find(armDataId);
         if (armData != null)
-        {
             ApplyArmData(armData);
-        }
     }
 
     /// <summary>
@@ -162,9 +158,7 @@ class ViewmodelArm : MonoBehaviour
             var eulers = keyValuePair.Value.localEulerAngles;
             output += $"            \"{keyValuePair.Key}\": {{ \"x\": {eulers.x}, \"y\": {eulers.y}, \"z\": {eulers.z} }}";
             if (i < _bones.Count - 1)
-            {
                 output += ',';
-            }
             output += '\n';
             i++;
         }
@@ -199,9 +193,7 @@ class ViewmodelArm : MonoBehaviour
     public static void OnPickUpItem(OWItem owItem)
     {
         if (Config.EnableViewmodelArms && ArmData.Exists(owItem) && owItem.transform.Find("ViewmodelArm") == null)
-        {
             ViewmodelArm.New(owItem);
-        }
 
         // some items need to be adjusted
         switch (owItem.GetItemType().GetName())
@@ -214,9 +206,7 @@ class ViewmodelArm : MonoBehaviour
                 break;
             case "GhostbirdSkull":
                 ModMain.Events.Unity.FireOnNextUpdate(() =>
-                {
-                    owItem.transform.localScale = 0.6f * Vector3.one;
-                });
+                    owItem.transform.localScale = 0.6f * Vector3.one);
                 break;
         }
     }
@@ -237,9 +227,7 @@ class ViewmodelArm : MonoBehaviour
         viewmodelArm._suitMeshPrepass.material.shader = prepassShader;
 
         if (armData != null)
-        {
             viewmodelArm.ApplyArmData(armData);
-        }
 
         return viewmodelArm;
     }

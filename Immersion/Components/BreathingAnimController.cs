@@ -31,9 +31,7 @@ class BreathingAnimController : ToggleableBehaviour
     {
         // if delta time is zero when using SmoothDamp, all hell breaks loose, so don't do it
         if (Time.deltaTime != 0f)
-        {
             _animPosition = Vector3.SmoothDamp(_animPosition, _animTargetPosition, ref _animVelocity, 2f);
-        }
 
         _offsetManager.AddToolOffset(MaxDisplacement * _animPosition, Tools.All);
 

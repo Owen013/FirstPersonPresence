@@ -49,30 +49,20 @@ class ViewmodelSwayController : ToggleableBehaviour
                 var alarmController = Locator.GetAlarmSequenceController();
                 bool isAlarmWakingPlayer = alarmController != null && alarmController.IsAlarmWakingPlayer();
                 if (_cameraController._zoomed || isAlarmWakingPlayer)
-                {
                     lookInput *= PlayerCameraController.ZOOM_SCALAR;
-                }
 
                 // player can't turn left or right if turning is locked
                 if (_playerController._isTurningLocked)
-                {
                     lookInput.x = 0f;
-                }
                 else
-                {
                     // horizontal sway is reduced the more up/down player is looking
                     lookInput.x *= (Mathf.Cos(degreesY / 90f * Mathf.PI) + 1f) * 0.5f;
-                }
 
                 // player can't look up/down if at max/min degrees
                 if (degreesY >= PlayerCameraController._maxDegreesYNormal && lookInput.y > 0f)
-                {
                     lookInput.y = 0f;
-                }
                 else if (degreesY <= PlayerCameraController._minDegreesYNormal && lookInput.y < 0f)
-                {
                     lookInput.y = 0f;
-                }
 
                 // add new sway
                 _currentSway += -lookInput * (0.5f * Mathf.Cos(Mathf.PI * _currentSway.magnitude) + 0.5f);

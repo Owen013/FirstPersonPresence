@@ -58,9 +58,7 @@ class ScoutAnimController : ToggleableBehaviour
                 _offsetManager.AddToolOffset(probeLauncherOffsetPosition, probeLauncherOffsetRotation, Tools.ProbeLauncher);
             }
             else
-            {
                 _isAnimPlaying = false;
-            }
         }
     }
 

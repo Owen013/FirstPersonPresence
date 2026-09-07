@@ -41,9 +41,7 @@ class ViewbobController : ToggleableBehaviour
         {
             // if time is frozen during gameplay, smoothly transition viewbob strength to zero
             if (OWTime.IsPaused(OWTime.PauseType.Reading))
-            {
                 _strength = Mathf.SmoothDamp(_strength, 0f, ref _velocity, 0.05f, Mathf.Infinity, Time.unscaledDeltaTime);
-            }
             else if (Time.deltaTime != 0f)
             {
                 // viewbob cycle increases based on player ground speed
@@ -55,31 +53,23 @@ class ViewbobController : ToggleableBehaviour
                     Vector3 groundVel = _playerController.GetRelativeGroundVelocity();
                     groundVel.y = 0f;
                     if (Mathf.Abs(groundVel.x) < 0.05f)
-                    {
                         groundVel.x = 0f;
-                    }
                     if (Mathf.Abs(groundVel.z) < 0.05f)
-                    {
                         groundVel.z = 0f;
-                    }
 
                     if (ModMain.SmolHatchlingAPI != null)
                     {
                         // avoid dividing by 0
                         float playerScale = ModMain.SmolHatchlingAPI.GetPlayerScale();
                         if (playerScale != 0f)
-                        {
                             groundVel /= ModMain.SmolHatchlingAPI.GetPlayerScale();
-                        }
                     }
 
                     _strength = Mathf.SmoothDamp(_strength, Mathf.Min(groundVel.magnitude / 6f, 2f), ref _velocity, 0.05f);
                 }
                 else
-                {
                     // decay viewbob strength slowly if in air
                     _strength = Mathf.SmoothDamp(_strength, 0f, ref _velocity, 1f);
-                }
             }
 
             // trig is used for a circular viewbob motion
@@ -87,9 +77,7 @@ class ViewbobController : ToggleableBehaviour
 
             // apply camera offset if camera bob is enabled
             if (Config.EnableHeadBob)
-            {
                 _offsetManager.AddCameraOffset(MaxHeadBobDisplacement * new Vector3(viewBob.x, viewBob.y));
-            }
 
             // apply tool offset if tool bob is enabled
             if (Config.EnableViewmodelBob)
