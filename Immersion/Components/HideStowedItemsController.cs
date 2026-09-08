@@ -26,23 +26,23 @@ class HideStowedItemsController : ToggleableBehaviour
     void Update()
     {
         var itemCarryTool = _toolModeSwapper.GetItemCarryTool();
-        var heldItem = itemCarryTool.GetHeldItem();
-        if (heldItem != null)
-        {
-            // Compass item is not supposed to be stowed when at the cockpit.
-            bool holdingCompassInShip = heldItem.GetItemType().GetName() == "Compass" && OWInput.IsInputMode(InputMode.ShipCockpit);
-            if (!holdingCompassInShip && !itemCarryTool.IsPuttingAway() && _toolModeSwapper.GetToolMode() != ToolMode.Item)
-            {
-                // Tilt item carry tool further offscreen once its vanilla stow animation finishes.
-                float deltaTime = OWTime.IsPaused(OWTime.PauseType.Reading) ? Time.unscaledDeltaTime : Time.deltaTime;
-                _addedStowDegrees = Mathf.MoveTowards(_addedStowDegrees, 45f, 135f * deltaTime);
-                var offsetRotation = Quaternion.AngleAxis(_addedStowDegrees, Vector3.right);
-                _offsetManager.AddToolOffset(offsetRotation, Tools.ItemTool);
-                return;
-            }
-        }
+        OWItem heldItem = itemCarryTool.GetHeldItem();
 
-        _addedStowDegrees = 0f;
+        // Compass item is not supposed to be stowed when at the cockpit.
+        bool isHoldingCompass = heldItem?.GetItemType().GetName() == "Compass";
+        bool isUsingCompassAtCockpit = isHoldingCompass && OWInput.IsInputMode(InputMode.ShipCockpit);
+
+        bool isItemStowed = _toolModeSwapper.GetToolMode() != ToolMode.Item && !itemCarryTool.IsPuttingAway();
+        if (!isUsingCompassAtCockpit && isItemStowed)
+        {
+            // Tilt item carry tool further offscreen once its vanilla stow animation finishes.
+            float deltaTime = OWTime.IsPaused(OWTime.PauseType.Reading) ? Time.unscaledDeltaTime : Time.deltaTime;
+            _addedStowDegrees = Mathf.MoveTowards(_addedStowDegrees, 45f, 135f * deltaTime);
+            var offsetRotation = Quaternion.AngleAxis(_addedStowDegrees, Vector3.right);
+            _offsetManager.AddToolOffset(offsetRotation, Tools.ItemTool);
+        }
+        else
+            _addedStowDegrees = 0f;
     }
 
     void OnDisable()

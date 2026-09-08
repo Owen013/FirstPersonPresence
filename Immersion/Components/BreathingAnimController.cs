@@ -14,8 +14,6 @@ class BreathingAnimController : ToggleableBehaviour
 
     float _nextUpdateTime;
 
-    float MaxDisplacement => 0.005f * Config.BreathingAnimScale;
-
     protected override void OnConfigured()
     {
         enabled = Config.EnableBreathingAnim;
@@ -32,7 +30,8 @@ class BreathingAnimController : ToggleableBehaviour
         if (Time.deltaTime != 0f)
             _animPosition = Vector3.SmoothDamp(_animPosition, _animTargetPosition, ref _animVelocity, 2f);
 
-        _offsetManager.AddToolOffset(MaxDisplacement * _animPosition, Tools.All);
+        float animScale = 0.005f * Config.BreathingAnimScale;
+        _offsetManager.AddToolOffset(animScale * _animPosition, Tools.All);
 
         if (Time.time >= _nextUpdateTime)
         {

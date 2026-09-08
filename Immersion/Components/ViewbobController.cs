@@ -17,12 +17,6 @@ class ViewbobController : ToggleableBehaviour
 
     float _velocity;
 
-    float HeadBobScale => 0.02f * Config.HeadBobScale;
-
-    float ViewmodelBobScale => 0.02f * Config.ViewmodelBobScale;
-
-    float MaxViewmodelBobAngle => 0.75f * Config.ViewmodelBobScale;
-
     protected override void OnConfigured()
     {
         enabled = Config.EnableHeadBob || Config.EnableViewmodelBob;
@@ -65,11 +59,18 @@ class ViewbobController : ToggleableBehaviour
 
             var viewBob = _strength * new Vector2(Mathf.Sin(_timePosition * 2f * Mathf.PI), Mathf.Cos(_timePosition * 4f * Mathf.PI));
             if (Config.EnableHeadBob)
-                _offsetManager.AddCameraOffset(HeadBobScale * new Vector3(viewBob.x, viewBob.y));
+            {
+                float headBobScale = 0.02f * Config.HeadBobScale;
+                _offsetManager.AddCameraOffset(headBobScale * new Vector3(viewBob.x, viewBob.y));
+            }
             if (Config.EnableViewmodelBob)
             {
-                var offsetPos = ViewmodelBobScale * new Vector3(viewBob.x, 0.15f * viewBob.y);
-                float offsetAngle = MaxViewmodelBobAngle * _strength * -Mathf.Sin(_timePosition * 4f * Mathf.PI);
+                float viewmodelBobScale = 0.02f * Config.ViewmodelBobScale;
+                var offsetPos = viewmodelBobScale * new Vector3(viewBob.x, 0.15f * viewBob.y);
+
+                float maxViewmodelBobAngle = 0.75f * Config.ViewmodelBobScale;
+                float offsetAngle = maxViewmodelBobAngle * _strength * -Mathf.Sin(_timePosition * 4f * Mathf.PI);
+
                 _offsetManager.AddToolOffset(offsetPos, Quaternion.AngleAxis(offsetAngle, Vector3.right), Tools.All);
             }
         }
