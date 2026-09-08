@@ -2,7 +2,7 @@
 
 namespace Immersion.Components;
 
-class ScoutAnimController : ToggleableBehaviour
+class ScoutAnimController : MonoBehaviour
 {
     OffsetManager _offsetManager;
 
@@ -14,14 +14,13 @@ class ScoutAnimController : ToggleableBehaviour
 
     float _animVelocity;
 
-    protected override void OnConfigured()
+    void OnConfigured()
     {
         enabled = Config.EnableScoutAnim;
     }
 
-    protected override void Awake()
+    void Awake()
     {
-        base.Awake();
         _offsetManager = OffsetManager.Instance;
 
         Locator.GetToolModeSwapper().GetProbeLauncher().OnLaunchProbe += (_) =>
@@ -32,6 +31,9 @@ class ScoutAnimController : ToggleableBehaviour
                 _lastScoutLaunchTime = Time.time;
             }
         };
+
+        Config.OnConfigured += OnConfigured;
+        OnConfigured();
     }
 
     void Update()
@@ -64,5 +66,10 @@ class ScoutAnimController : ToggleableBehaviour
         _isAnimPlaying = false;
         _animScale = 0f;
         _animVelocity = 0f;
+    }
+
+    void OnDestroy()
+    {
+        Config.OnConfigured -= OnConfigured;
     }
 }

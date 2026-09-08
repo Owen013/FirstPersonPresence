@@ -3,7 +3,7 @@ using static Immersion.ModMain;
 
 namespace Immersion.Components;
 
-class LandingAnimController : ToggleableBehaviour
+class LandingAnimController : MonoBehaviour
 {
     public static LandingAnimController Instance { get; private set; }
 
@@ -33,14 +33,13 @@ class LandingAnimController : ToggleableBehaviour
         }
     }
 
-    protected override void OnConfigured()
+    void OnConfigured()
     {
         enabled = Config.EnableCameraLandingAnim || Config.EnableViewmodelLandingAnim;
     }
 
-    protected override void Awake()
+    void Awake()
     {
-        base.Awake();
         Instance = this;
         _offsetManager = OffsetManager.Instance;
         _player = Locator.GetPlayerController();
@@ -59,6 +58,9 @@ class LandingAnimController : ToggleableBehaviour
                 _isCrouching = true;
             }
         };
+
+        Config.OnConfigured += OnConfigured;
+        OnConfigured();
     }
 
     void Update()
@@ -105,5 +107,10 @@ class LandingAnimController : ToggleableBehaviour
         AnimPos = 0f;
         _animVelocity = 0f;
         _isCrouching = false;
+    }
+
+    void OnDestroy()
+    {
+        Config.OnConfigured -= OnConfigured;
     }
 }

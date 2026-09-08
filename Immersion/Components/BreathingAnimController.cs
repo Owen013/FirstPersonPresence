@@ -2,7 +2,7 @@
 
 namespace Immersion.Components;
 
-class BreathingAnimController : ToggleableBehaviour
+class BreathingAnimController : MonoBehaviour
 {
     OffsetManager _offsetManager;
 
@@ -14,15 +14,17 @@ class BreathingAnimController : ToggleableBehaviour
 
     float _nextUpdateTime;
 
-    protected override void OnConfigured()
+    void OnConfigured()
     {
         enabled = Config.EnableBreathingAnim;
     }
 
-    protected override void Awake()
+    void Awake()
     {
-        base.Awake();
         _offsetManager = OffsetManager.Instance;
+
+        Config.OnConfigured += OnConfigured;
+        OnConfigured();
     }
 
     void Update()
@@ -38,5 +40,10 @@ class BreathingAnimController : ToggleableBehaviour
             _animTargetPosition = new Vector3(Random.Range(-1f, 1f), Random.Range(-1f, 1f), 0f);
             _nextUpdateTime = Time.time + Random.Range(0.1f, 1f);
         }
+    }
+
+    void OnDestroy()
+    {
+        Config.OnConfigured -= OnConfigured;
     }
 }

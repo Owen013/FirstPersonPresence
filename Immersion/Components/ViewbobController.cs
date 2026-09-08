@@ -3,7 +3,7 @@ using static Immersion.ModMain;
 
 namespace Immersion.Components;
 
-class ViewbobController : ToggleableBehaviour
+class ViewbobController : MonoBehaviour
 {
     OffsetManager _offsetManager;
 
@@ -17,17 +17,19 @@ class ViewbobController : ToggleableBehaviour
 
     float _velocity;
 
-    protected override void OnConfigured()
+    void OnConfigured()
     {
         enabled = Config.EnableHeadBob || Config.EnableViewmodelBob;
     }
 
-    protected override void Awake()
+    void Awake()
     {
-        base.Awake();
         _offsetManager = OffsetManager.Instance;
         _playerController = Locator.GetPlayerController();
         _animController = _playerController.GetComponentInChildren<PlayerAnimController>();
+
+        Config.OnConfigured += OnConfigured;
+        OnConfigured();
     }
 
     void Update()
@@ -87,5 +89,10 @@ class ViewbobController : ToggleableBehaviour
         _timePosition = 0f;
         _strength = 0f;
         _velocity = 0f;
+    }
+
+    void OnDestroy()
+    {
+        Config.OnConfigured -= OnConfigured;
     }
 }

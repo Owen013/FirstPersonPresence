@@ -3,7 +3,7 @@ using static Immersion.ModMain;
 
 namespace Immersion.Components;
 
-class SprintingAnimController : ToggleableBehaviour
+class SprintingAnimController : MonoBehaviour
 {
     OffsetManager _offsetManager;
 
@@ -11,15 +11,17 @@ class SprintingAnimController : ToggleableBehaviour
 
     float _animVelocity;
 
-    protected override void OnConfigured()
+    void OnConfigured()
     {
         enabled = Config.EnableSprintingAnim;
     }
 
-    protected override void Awake()
+    void Awake()
     {
-        base.Awake();
         _offsetManager = OffsetManager.Instance;
+
+        Config.OnConfigured += OnConfigured;
+        OnConfigured();
     }
 
     void Update()
@@ -35,5 +37,10 @@ class SprintingAnimController : ToggleableBehaviour
     {
         _animStrength = 0f;
         _animVelocity = 0f;
+    }
+
+    void OnDestroy()
+    {
+        Config.OnConfigured -= OnConfigured;
     }
 }

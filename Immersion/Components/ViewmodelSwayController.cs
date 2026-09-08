@@ -2,7 +2,7 @@
 
 namespace Immersion.Components;
 
-class ViewmodelSwayController : ToggleableBehaviour
+class ViewmodelSwayController : MonoBehaviour
 {
     OffsetManager _offsetManager;
 
@@ -16,17 +16,19 @@ class ViewmodelSwayController : ToggleableBehaviour
 
     float MaxDisplacement => 0.25f * Config.ViewmodelSwayScale;
 
-    protected override void OnConfigured()
+    void OnConfigured()
     {
         enabled = Config.EnableViewmodelSway;
     }
 
-    protected override void Awake()
+    void Awake()
     {
-        base.Awake();
         _offsetManager = OffsetManager.Instance;
         _cameraController = Locator.GetPlayerCameraController();
         _playerController = Locator.GetPlayerController();
+
+        Config.OnConfigured += OnConfigured;
+        OnConfigured();
     }
 
     void Update()
@@ -76,5 +78,10 @@ class ViewmodelSwayController : ToggleableBehaviour
     {
         _currentSway = Vector3.zero;
         _swayVelocity = Vector3.zero;
+    }
+
+    void OnDestroy()
+    {
+        Config.OnConfigured -= OnConfigured;
     }
 }

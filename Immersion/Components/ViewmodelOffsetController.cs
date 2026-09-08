@@ -2,7 +2,7 @@
 
 namespace Immersion.Components;
 
-class ViewmodelOffsetController : ToggleableBehaviour
+class ViewmodelOffsetController : MonoBehaviour
 {
     OffsetManager _offsetManager;
 
@@ -10,16 +10,18 @@ class ViewmodelOffsetController : ToggleableBehaviour
 
     float MaxOffsetScale => 0.05f * Config.ViewmodelOffsetScale;
 
-    protected override void OnConfigured()
+    void OnConfigured()
     {
         enabled = Config.EnableViewmodelOffset;
     }
 
-    protected override void Awake()
+    void Awake()
     {
-        base.Awake();
         _offsetManager = OffsetManager.Instance;
         _cameraController = Locator.GetPlayerCameraController();
+
+        Config.OnConfigured += OnConfigured;
+        OnConfigured();
     }
 
     void Update()
@@ -28,5 +30,10 @@ class ViewmodelOffsetController : ToggleableBehaviour
         float offsetY = -Mathf.Sin(verticalLookAmount * Mathf.PI / 3f);
         float offsetZ = Mathf.Cos(verticalLookAmount * Mathf.PI / 3f) - 1f;
         _offsetManager.AddToolOffset(MaxOffsetScale * new Vector3(0f, offsetY, offsetZ), Tools.All);
+    }
+
+    void OnDestroy()
+    {
+        Config.OnConfigured -= OnConfigured;
     }
 }
