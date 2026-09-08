@@ -8,7 +8,7 @@ class ViewmodelSwayController : MonoBehaviour
 
     PlayerCameraController _cameraController;
 
-    PlayerCharacterController _playerController;
+    PlayerCharacterController _player;
 
     Vector2 _currentSway;
 
@@ -25,7 +25,7 @@ class ViewmodelSwayController : MonoBehaviour
     {
         _offsetManager = OffsetManager.Instance;
         _cameraController = Locator.GetPlayerCameraController();
-        _playerController = Locator.GetPlayerController();
+        _player = Locator.GetPlayerController();
 
         Config.OnConfigured += OnConfigured;
         OnConfigured();
@@ -37,7 +37,8 @@ class ViewmodelSwayController : MonoBehaviour
         float deltaTime = OWTime.IsPaused(OWTime.PauseType.Reading) ? Time.unscaledDeltaTime : Time.deltaTime;
         if (deltaTime != 0f)
         {
-            _currentSway = Vector2.SmoothDamp(_currentSway, Vector2.zero, ref _swayVelocity, 0.2f, Mathf.Infinity, deltaTime);
+            _currentSway = Vector2.SmoothDamp(_currentSway, Vector2.zero, ref _swayVelocity, 0.2f, Mathf.Infinity,
+                                              deltaTime);
 
             if (OWInput.IsInputMode(InputMode.Character) && !(PlayerState.InZeroG() && PlayerState.IsWearingSuit()))
             {
@@ -49,7 +50,7 @@ class ViewmodelSwayController : MonoBehaviour
                 if (_cameraController._zoomed || isAlarmWakingPlayer)
                     lookInput *= PlayerCameraController.ZOOM_SCALAR;
 
-                if (_playerController._isTurningLocked)
+                if (_player._isTurningLocked)
                     lookInput.x = 0f;
                 else
                     lookInput.x *= (Mathf.Cos(degreesY / 90f * Mathf.PI) + 1f) * 0.5f;
@@ -68,7 +69,8 @@ class ViewmodelSwayController : MonoBehaviour
         var swayX = Vector3.right * _currentSway.x * xScale;
         var swayY = Vector3.up * _currentSway.y * yScale;
         var swayCameraZ = Vector3.forward * (yScale - 1f);
-        var swayPlayerZ = _cameraController.transform.InverseTransformDirection(_playerController.transform.forward) * (xScale - 1f);
+        var swayPlayerZ =
+            _cameraController.transform.InverseTransformDirection(_player.transform.forward) * (xScale - 1f);
 
         var offset = MaxDisplacement * (swayX + swayY + swayCameraZ + swayPlayerZ);
         _offsetManager.AddToolOffset(offset, Tools.All);

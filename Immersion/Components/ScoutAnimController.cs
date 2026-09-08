@@ -45,16 +45,17 @@ class ScoutAnimController : MonoBehaviour
             {
                 float targetRecoil = Mathf.Max(_lastScoutLaunchTime + 0.5f - Time.time, 0f) * 2f;
                 float dampTime = targetRecoil > _animScale ? 0.05f : 0.1f;
-                _animScale = Mathf.SmoothDamp(_animScale, targetRecoil, ref _animVelocity, dampTime, Mathf.Infinity, deltaTime);
+                _animScale = Mathf.SmoothDamp(_animScale, targetRecoil, ref _animVelocity, dampTime, Mathf.Infinity,
+                                              deltaTime);
             }
 
             if (_animScale != 0f)
             {
-                var cameraOffsetRotation = Quaternion.Euler(_animScale * new Vector3(-5f, 0f, -5f));
-                var probeLauncherOffsetPosition = _animScale * new Vector3(0.1f, -0.1f, -0.2f);
-                var probeLauncherOffsetRotation = Quaternion.Euler(new Vector3(-15f, 0f, -15f) * _animScale);
-                _offsetManager.AddCameraOffset(cameraOffsetRotation);
-                _offsetManager.AddToolOffset(probeLauncherOffsetPosition, probeLauncherOffsetRotation, Tools.ProbeLauncher);
+                var cameraOffsetRot = Quaternion.Euler(_animScale * new Vector3(-5f, 0f, -5f));
+                var probeLauncherOffsetPos = _animScale * new Vector3(0.1f, -0.1f, -0.2f);
+                var probeLauncherOffsetRot = Quaternion.Euler(new Vector3(-15f, 0f, -15f) * _animScale);
+                _offsetManager.AddCameraOffset(cameraOffsetRot);
+                _offsetManager.AddToolOffset(probeLauncherOffsetPos, probeLauncherOffsetRot, Tools.ProbeLauncher);
             }
             else
                 _isAnimPlaying = false;

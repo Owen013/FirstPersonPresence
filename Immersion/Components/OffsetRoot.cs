@@ -16,9 +16,9 @@ class OffsetRoot : MonoBehaviour
     /// <param name="name">The name of the OffsetRoot GameObject.</param>
     /// <param name="offsetObject">The GameObject that this OffsetRoot is offsetting.</param>
     /// <returns>The new OffsetRoot.</returns>
-    public static OffsetRoot NewOffsetRoot(string name, GameObject offsetObject)
+    public static OffsetRoot NewOffsetRoot(GameObject offsetObject)
     {
-        var offsetRoot = new GameObject(name).AddComponent<OffsetRoot>();
+        var offsetRoot = new GameObject().AddComponent<OffsetRoot>();
         offsetRoot.transform.parent = offsetObject.transform.parent;
         offsetRoot.transform.localPosition = Vector3.zero;
         offsetRoot.transform.localEulerAngles = Vector3.zero;

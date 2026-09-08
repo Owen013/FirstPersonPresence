@@ -9,7 +9,7 @@ class OffsetManager : MonoBehaviour
 {
     public static OffsetManager Instance { get; private set; }
 
-    static readonly Dictionary<string, float> s_itemOffsetScales = new Dictionary<string, float>
+    static readonly Dictionary<string, float> s_itemOffsetScales = new()
     {
         ["DreamLantern"] = 1.2f,
         ["DreamLantern_Malfunctioning"] = 1.2f,
@@ -118,7 +118,8 @@ class OffsetManager : MonoBehaviour
         string itemId = item.GetItemType().GetName();
 
         // Dream Lanterns have different offset scales depending on the type.
-        if (itemId == "DreamLantern" && item is DreamLanternItem dreamLantern && dreamLantern.GetLanternType() != DreamLanternType.Functioning)
+        var dreamLantern = item as DreamLanternItem;
+        if (dreamLantern?.GetLanternType() != DreamLanternType.Functioning)
             itemId += $"_{dreamLantern.GetLanternType().GetName()}";
 
         if (s_itemOffsetScales.ContainsKey(itemId))
@@ -131,12 +132,26 @@ class OffsetManager : MonoBehaviour
     {
         Instance = this;
 
-        _cameraOffsetRoot = OffsetRoot.NewOffsetRoot("OffsetRoot_Camera", Locator.GetPlayerCamera().gameObject);
+        _cameraOffsetRoot = OffsetRoot.NewOffsetRoot(Locator.GetPlayerCamera().gameObject);
+        _cameraOffsetRoot.name = "OffsetRoot_Camera";
+
         var toolModeSwapper = Locator.GetToolModeSwapper();
-        _itemToolOffsetRoot = OffsetRoot.NewOffsetRoot("OffsetRoot_ItemCarryTool", toolModeSwapper.GetItemCarryTool().gameObject);
-        _signalscopeOffsetRoot = OffsetRoot.NewOffsetRoot("OffsetRoot_Signalscope", toolModeSwapper.GetSignalScope().gameObject);
-        _probeLauncherOffsetRoot = OffsetRoot.NewOffsetRoot("OffsetRoot_ProbeLauncher", toolModeSwapper.GetProbeLauncher().gameObject);
-        _translatorOffsetRoot = OffsetRoot.NewOffsetRoot("OffsetRoot_NomaiTranslatorProp", toolModeSwapper.GetTranslator().gameObject);
+
+        GameObject itemTool = toolModeSwapper.GetItemCarryTool().gameObject;
+        _itemToolOffsetRoot = OffsetRoot.NewOffsetRoot(itemTool);
+        _itemToolOffsetRoot.name = "OffsetRoot_ItemCarryTool";
+
+        GameObject signalscope = toolModeSwapper.GetSignalScope().gameObject;
+        _signalscopeOffsetRoot = OffsetRoot.NewOffsetRoot(signalscope);
+        _signalscopeOffsetRoot.name = "OffsetRoot_Signalscope";
+
+        GameObject probeLauncher = toolModeSwapper.GetProbeLauncher().gameObject;
+        _probeLauncherOffsetRoot = OffsetRoot.NewOffsetRoot(probeLauncher);
+        _probeLauncherOffsetRoot.name = "OffsetRoot_ProbeLauncher";
+
+        GameObject translator = toolModeSwapper.GetTranslator().gameObject;
+        _translatorOffsetRoot = OffsetRoot.NewOffsetRoot(translator);
+        _translatorOffsetRoot.name = "OffsetRoot_NomaiTranslatorProp";
 
         gameObject.AddComponent<ViewbobController>();
         gameObject.AddComponent<ViewmodelOffsetController>();
