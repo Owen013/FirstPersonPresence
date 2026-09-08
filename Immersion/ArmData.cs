@@ -12,19 +12,19 @@ namespace Immersion;
 class ArmData
 {
     [JsonProperty("arm_position")]
-    public readonly Vector3 armPosition;
+    public readonly Vector3 armPosition = default;
 
     [JsonProperty("arm_rotation")]
-    public readonly Vector3 armRotation;
+    public readonly Vector3 armRotation = default;
 
     [JsonProperty("arm_scale")]
-    public readonly float armScale;
+    public readonly float armScale = default;
 
     [JsonProperty("arm_shader")]
-    public readonly string armShader;
+    public readonly string armShader = default;
 
     [JsonProperty("bone_eulers")]
-    public readonly Dictionary<string, Vector3> boneEulers;
+    public readonly Dictionary<string, Vector3> boneEulers = default;
 
     static Dictionary<string, ArmData> s_armData;
 

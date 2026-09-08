@@ -11,16 +11,16 @@ class ViewmodelArm : MonoBehaviour
     static GameObject s_viewmodelArmAsset;
 
     [SerializeField]
-    SkinnedMeshRenderer _noSuitMesh;
+    SkinnedMeshRenderer _noSuitMesh = default;
 
     [SerializeField]
-    SkinnedMeshRenderer _noSuitMeshPrepass;
+    SkinnedMeshRenderer _noSuitMeshPrepass = default;
 
     [SerializeField]
-    SkinnedMeshRenderer _suitMesh;
+    SkinnedMeshRenderer _suitMesh = default;
 
     [SerializeField]
-    SkinnedMeshRenderer _suitMeshPrepass;
+    SkinnedMeshRenderer _suitMeshPrepass = default;
 
     Dictionary<string, Transform> _bones;
 
