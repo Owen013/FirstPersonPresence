@@ -10,6 +10,12 @@ class ViewmodelArm : MonoBehaviour
 {
     static GameObject s_viewmodelArmAsset;
 
+    static readonly string[] s_viewmodelShaders =
+    {
+        "Outer Wilds/Utility/View Model",
+        "Outer Wilds/Utility/View Model (Cutoff)"
+    };
+
     [SerializeField]
     SkinnedMeshRenderer _noSuitMesh = default;
 
@@ -84,7 +90,8 @@ class ViewmodelArm : MonoBehaviour
 
         // If using the viewmodel shader, the prepass meshes must be enabled to prevent viewmodel arms from being drawn
         // underneath other objects.
-        bool isViewmodel = shader.name == "Outer Wilds/Utility/View Model" || shader.name == "Outer Wilds/Utility/View Model (Cutoff)";
+        bool isViewmodel = shader.name == "Outer Wilds/Utility/View Model"
+                        || shader.name == "Outer Wilds/Utility/View Model (Cutoff)";
         _noSuitMeshPrepass.gameObject.SetActive(isViewmodel);
         _suitMeshPrepass.gameObject.SetActive(isViewmodel);
     }
@@ -116,7 +123,8 @@ class ViewmodelArm : MonoBehaviour
     }
 
     /// <summary>
-    /// Sets the position, rotation, scale, shader, and bone eulers of the Viewmodel Arm to those defined by an ArmData object.
+    /// Sets the position, rotation, scale, shader, and bone eulers of the Viewmodel Arm to those defined by an ArmData
+    /// object.
     /// </summary>
     /// <param name="armData">The ArmData to apply to this ViewmodelArm.</param>
     public void ApplyArmData(ArmData armData)
@@ -129,7 +137,8 @@ class ViewmodelArm : MonoBehaviour
     }
 
     /// <summary>
-    /// Sets the position, rotation, scale, shader, and bone eulers of the Viewmodel Arm to those defined by an ArmData object.
+    /// Sets the position, rotation, scale, shader, and bone eulers of the Viewmodel Arm to those defined by an ArmData
+    /// object.
     /// </summary>
     /// <param name="armDataId">The ID of the ArmData to apply to this ViewmodelArm.</param>
     public void ApplyArmData(string armDataId)
@@ -144,21 +153,27 @@ class ViewmodelArm : MonoBehaviour
     /// </summary>
     public void OutputArmDataJSON()
     {
-        var armPos = transform.localPosition;
-        var armRot = transform.localEulerAngles;
+        Vector3 armPos = transform.localPosition;
+        Vector3 armRot = transform.localEulerAngles;
 
-        string output = $"    \"[ARM DATA ID HERE]\" {{\n" +
-            $"        \"arm_local_position\": {{ \"x\": {armPos.x}, \"y\": {armPos.y}, \"z\": {armPos.z} }},\n" +
-            $"        \"arm_local_euler_angles\": {{ \"x\": {armRot.x}, \"y\": {armRot.y}, \"z\": {armRot.z} }},\n" +
-            $"        \"arm_scale\": {10f * transform.localScale.x},\n" +
-            $"        \"arm_shader\": \"{_noSuitMesh.material.shader.name}\",\n" +
-            $"        \"bones_local_euler_angles\": {{\n";
+        string output = $"    \"[ARM DATA ID HERE]\" {{\n";
+
+        string localPosJSON = $"\"x\": {armPos.x}, \"y\": {armPos.y}, \"z\": {armPos.z}";
+        output += $"        \"arm_local_position\": {{ {localPosJSON} }},\n";
+
+        string localRotJSON = $"\"x\": {armRot.x}, \"y\": {armRot.y}, \"z\": {armRot.z}";
+        output += $"        \"arm_local_euler_angles\": {{ {localRotJSON} }},\n";
+
+        output += $"        \"arm_scale\": {10f * transform.localScale.x},\n";
+        output += $"        \"arm_shader\": \"{_noSuitMesh.material.shader.name}\",\n";
+        output += $"        \"bones_local_euler_angles\": {{\n";
 
         int i = 0;
         foreach (var keyValuePair in _bones)
         {
-            var eulers = keyValuePair.Value.localEulerAngles;
-            output += $"            \"{keyValuePair.Key}\": {{ \"x\": {eulers.x}, \"y\": {eulers.y}, \"z\": {eulers.z} }}";
+            Vector3 eulers = keyValuePair.Value.localEulerAngles;
+            string eulersJSON = $"\"x\": {eulers.x}, \"y\": {eulers.y}, \"z\": {eulers.z}";
+            output += $"            \"{keyValuePair.Key}\": {{ {eulersJSON} }}";
             if (i < _bones.Count - 1)
                 output += ',';
             output += '\n';
@@ -258,9 +273,13 @@ class ViewmodelArm : MonoBehaviour
 
     void Start()
     {
-        var playerBody = Locator.GetPlayerBody();
-        _playerNoSuitMesh = playerBody.transform.Find("Traveller_HEA_Player_v2/player_mesh_noSuit:Traveller_HEA_Player/player_mesh_noSuit:Player_RightArm").gameObject;
-        _playerSuitMesh = playerBody.transform.Find("Traveller_HEA_Player_v2/Traveller_Mesh_v01:Traveller_Geo/Traveller_Mesh_v01:PlayerSuit_RightArm").gameObject;
+        var playerTransform = Locator.GetPlayerBody().transform;
+        _playerNoSuitMesh = playerTransform.Find(
+            "Traveller_HEA_Player_v2/player_mesh_noSuit:Traveller_HEA_Player/player_mesh_noSuit:Player_RightArm")
+            .gameObject;
+        _playerSuitMesh = playerTransform.Find(
+            "Traveller_HEA_Player_v2/Traveller_Mesh_v01:Traveller_Geo/Traveller_Mesh_v01:PlayerSuit_RightArm")
+            .gameObject;
     }
 
     void LateUpdate()
