@@ -37,8 +37,9 @@ public class ViewbobController : MonoBehaviour
         if (!_playerController._isMovementLocked)
         {
             if (OWTime.IsPaused(OWTime.PauseType.Reading))
-                _strength = Mathf.SmoothDamp(_strength, 0f, ref _velocity, 0.05f, Mathf.Infinity,
-                                             Time.unscaledDeltaTime);
+            {
+                _strength = Mathf.SmoothDamp(_strength, 0f, ref _velocity, 0.05f, Mathf.Infinity, Time.unscaledDeltaTime);
+            }
             else if (Time.deltaTime != 0f)
             {
                 _timePosition += _animController._animator.speed * Time.deltaTime;
@@ -47,9 +48,13 @@ public class ViewbobController : MonoBehaviour
                     Vector3 groundVel = _playerController.GetRelativeGroundVelocity();
                     groundVel.y = 0f;
                     if (Mathf.Abs(groundVel.x) < 0.05f)
+                    {
                         groundVel.x = 0f;
+                    }
                     if (Mathf.Abs(groundVel.z) < 0.05f)
+                    {
                         groundVel.z = 0f;
+                    }
                     groundVel /= SmolHatchlingAPI?.GetPlayerScale() ?? 1f;
 
                     float targetStrength = Mathf.Min(groundVel.magnitude / 6f, 2f);
@@ -57,7 +62,9 @@ public class ViewbobController : MonoBehaviour
                     _strength = Mathf.SmoothDamp(_strength, targetStrength, ref _velocity, smoothTime);
                 }
                 else
+                {
                     _strength = Mathf.SmoothDamp(_strength, 0f, ref _velocity, 1f);
+                }
             }
 
             Vector2 viewBob = new()

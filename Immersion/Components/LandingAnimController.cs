@@ -87,7 +87,9 @@ public class LandingAnimController : MonoBehaviour
         }
 
         if (Config.EnableCameraLandingAnim)
+        {
             _offsetManager.AddCameraOffset(new Vector3(0f, AnimPos, 0f));
+        }
         if (Config.EnableViewmodelLandingAnim)
         {
             var cameraTransform = _offsetManager.transform;

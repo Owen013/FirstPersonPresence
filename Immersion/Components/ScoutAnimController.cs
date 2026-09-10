@@ -57,7 +57,9 @@ public class ScoutAnimController : MonoBehaviour
                 _offsetManager.AddToolOffset(probeLauncherOffsetPos, probeLauncherOffsetRot, Tools.ProbeLauncher);
             }
             else
+            {
                 _isAnimPlaying = false;
+            }
         }
     }
 

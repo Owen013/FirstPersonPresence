@@ -44,7 +44,9 @@ public class HideStowedItemsController : MonoBehaviour
             _offsetManager.AddToolOffset(offsetRotation, Tools.ItemTool);
         }
         else
+        {
             _addedStowDegrees = 0f;
+        }
     }
 
     private void OnDisable()

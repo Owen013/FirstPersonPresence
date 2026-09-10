@@ -46,17 +46,27 @@ public class ViewmodelSwayController : MonoBehaviour
                 AlarmSequenceController alarmSequence = Locator.GetAlarmSequenceController();
                 bool isAlarmWakingPlayer = alarmSequence != null && alarmSequence.IsAlarmWakingPlayer();
                 if (_playerCamera._zoomed || isAlarmWakingPlayer)
+                {
                     lookInput *= PlayerCameraController.ZOOM_SCALAR;
+                }
 
                 if (_player._isTurningLocked)
+                {
                     lookInput.x = 0f;
+                }
                 else
+                {
                     lookInput.x *= (Mathf.Cos(degreesY / 90f * Mathf.PI) + 1f) * 0.5f;
+                }
 
                 if (degreesY >= PlayerCameraController._maxDegreesYNormal && lookInput.y > 0f)
+                {
                     lookInput.y = 0f;
+                }
                 else if (degreesY <= PlayerCameraController._minDegreesYNormal && lookInput.y < 0f)
+                {
                     lookInput.y = 0f;
+                }
 
                 _currentSway += -lookInput * (0.5f * Mathf.Cos(Mathf.PI * _currentSway.magnitude) + 0.5f);
             }

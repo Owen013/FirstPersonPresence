@@ -9,7 +9,7 @@ public class OffsetManager : MonoBehaviour
 {
     public static OffsetManager Instance { get; private set; }
 
-	private static readonly Dictionary<string, float> s_itemOffsetScales = new()
+    private static readonly Dictionary<string, float> s_itemOffsetScales = new()
     {
         ["DreamLantern"] = 1.2f,
         ["DreamLantern_Malfunctioning"] = 1.2f,
@@ -19,17 +19,17 @@ public class OffsetManager : MonoBehaviour
         ["Compass"] = 0.8f
     };
 
-	private OffsetRoot _cameraOffsetRoot;
+    private OffsetRoot _cameraOffsetRoot;
 
-	private OffsetRoot _itemToolOffsetRoot;
+    private OffsetRoot _itemToolOffsetRoot;
 
-	private OffsetRoot _signalscopeOffsetRoot;
+    private OffsetRoot _signalscopeOffsetRoot;
 
-	private OffsetRoot _probeLauncherOffsetRoot;
+    private OffsetRoot _probeLauncherOffsetRoot;
 
-	private OffsetRoot _translatorOffsetRoot;
+    private OffsetRoot _translatorOffsetRoot;
 
-	private float _currentItemOffsetScale = 1f;
+    private float _currentItemOffsetScale = 1f;
 
     /// <summary>
     /// Applies a translational offset to the player camera.
@@ -69,16 +69,24 @@ public class OffsetManager : MonoBehaviour
     {
         // apply different scaling factors for different tools
         if (toolsToOffset.HasFlag(Tools.ItemTool))
+        {
             _itemToolOffsetRoot.AddOffset(0.8f * _currentItemOffsetScale * position);
+        }
 
         if (toolsToOffset.HasFlag(Tools.Signalscope))
+        {
             _signalscopeOffsetRoot.AddOffset(position);
+        }
 
         if (toolsToOffset.HasFlag(Tools.ProbeLauncher))
+        {
             _probeLauncherOffsetRoot.AddOffset(3f * position);
+        }
 
         if (toolsToOffset.HasFlag(Tools.Translator))
+        {
             _translatorOffsetRoot.AddOffset(3f * position);
+        }
     }
 
     /// <summary>
@@ -89,16 +97,24 @@ public class OffsetManager : MonoBehaviour
     public void AddToolOffset(Quaternion rotation, Tools toolsToOffset)
     {
         if (toolsToOffset.HasFlag(Tools.ItemTool))
+        {
             _itemToolOffsetRoot.AddOffset(rotation);
+        }
 
         if (toolsToOffset.HasFlag(Tools.Signalscope))
+        {
             _signalscopeOffsetRoot.AddOffset(rotation);
+        }
 
         if (toolsToOffset.HasFlag(Tools.ProbeLauncher))
+        {
             _probeLauncherOffsetRoot.AddOffset(rotation);
+        }
 
         if (toolsToOffset.HasFlag(Tools.Translator))
+        {
             _translatorOffsetRoot.AddOffset(rotation);
+        }
     }
 
     /// <summary>
@@ -119,15 +135,21 @@ public class OffsetManager : MonoBehaviour
 
         // Dream Lanterns have different offset scales depending on the type.
         if (item is DreamLanternItem dreamLantern && dreamLantern.GetLanternType() != DreamLanternType.Functioning)
+        {
             itemId += $"_{dreamLantern.GetLanternType().GetName()}";
+        }
 
         if (s_itemOffsetScales.ContainsKey(itemId))
+        {
             Instance._currentItemOffsetScale = s_itemOffsetScales[itemId];
+        }
         else
+        {
             Instance._currentItemOffsetScale = 1f;
+        }
     }
 
-	private void Start()
+    private void Start()
     {
         Instance = this;
 
@@ -161,6 +183,8 @@ public class OffsetManager : MonoBehaviour
         gameObject.AddComponent<HideStowedItemsController>();
 
         if (HikersModAPI != null)
+        {
             gameObject.AddComponent<SprintingAnimController>();
+        }
     }
 }

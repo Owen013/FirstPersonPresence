@@ -84,8 +84,7 @@ public class ViewmodelArm : MonoBehaviour
 
         // If using the viewmodel shader, the prepass meshes must be enabled to prevent viewmodel arms from being drawn
         // underneath other objects.
-        bool isViewmodel = shader.name == "Outer Wilds/Utility/View Model"
-                        || shader.name == "Outer Wilds/Utility/View Model (Cutoff)";
+        bool isViewmodel = shader.name == "Outer Wilds/Utility/View Model" || shader.name == "Outer Wilds/Utility/View Model (Cutoff)";
         _noSuitMeshPrepass.gameObject.SetActive(isViewmodel);
         _suitMeshPrepass.gameObject.SetActive(isViewmodel);
     }
@@ -113,7 +112,9 @@ public class ViewmodelArm : MonoBehaviour
     public void SetBoneEulers(Dictionary<string, Vector3> boneEulers)
     {
         foreach (var boneEuler in boneEulers)
+        {
             _bones[boneEuler.Key].localEulerAngles = boneEuler.Value;
+        }
     }
 
     /// <summary>
@@ -139,7 +140,9 @@ public class ViewmodelArm : MonoBehaviour
     {
         var armData = ArmData.Find(armDataId);
         if (armData != null)
+        {
             ApplyArmData(armData);
+        }
     }
 
     /// <summary>
@@ -169,7 +172,9 @@ public class ViewmodelArm : MonoBehaviour
             string eulersJSON = $"\"x\": {eulers.x}, \"y\": {eulers.y}, \"z\": {eulers.z}";
             output += $"            \"{keyValuePair.Key}\": {{ {eulersJSON} }}";
             if (i < _bones.Count - 1)
+            {
                 output += ',';
+            }
             output += '\n';
             i++;
         }
@@ -204,7 +209,9 @@ public class ViewmodelArm : MonoBehaviour
     public static void OnPickUpItem(OWItem owItem)
     {
         if (Config.EnableViewmodelArms && ArmData.Exists(owItem) && owItem.transform.Find("ViewmodelArm") == null)
+        {
             ViewmodelArm.New(owItem);
+        }
 
         // Certain items need to be moved slightly to reduce near-clipping of viewmodel arm.
         switch (owItem.GetItemType().GetName())
@@ -238,7 +245,9 @@ public class ViewmodelArm : MonoBehaviour
         viewmodelArm._suitMeshPrepass.material.shader = prepassShader;
 
         if (armData != null)
+        {
             viewmodelArm.ApplyArmData(armData);
+        }
 
         return viewmodelArm;
     }

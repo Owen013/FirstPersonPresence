@@ -20,7 +20,9 @@ public static class Patches
         if (__instance.GetItemType().GetName() == "GhostbirdSkull")
         {
             foreach (var renderer in __instance.GetComponentsInChildren<SkinnedMeshRenderer>())
-                renderer.updateWhenOffscreen = true;
+            {
+				renderer.updateWhenOffscreen = true;
+			}
         }
     }
 
@@ -31,7 +33,9 @@ public static class Patches
         if (__instance.GetItemType().GetName() == "GhostbirdSkull")
         {
             foreach (var renderer in __instance.GetComponentsInChildren<SkinnedMeshRenderer>())
-                renderer.updateWhenOffscreen = false;
+            {
+				renderer.updateWhenOffscreen = false;
+			}
         }
     }
 
@@ -40,7 +44,9 @@ public static class Patches
     static void PlayerAnimController_LateUpdate_Postfix(PlayerAnimController __instance)
     {
         if (LandingAnimController.Instance != null)
-            LandingAnimController.Instance.UpdateLandingCrouchAnim(__instance._animator);
+        {
+			LandingAnimController.Instance.UpdateLandingCrouchAnim(__instance._animator);
+		}
     }
 
     [HarmonyPostfix]
