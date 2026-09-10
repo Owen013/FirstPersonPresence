@@ -118,8 +118,7 @@ class OffsetManager : MonoBehaviour
         string itemId = item.GetItemType().GetName();
 
         // Dream Lanterns have different offset scales depending on the type.
-        var dreamLantern = item as DreamLanternItem;
-        if (dreamLantern?.GetLanternType() != DreamLanternType.Functioning)
+        if (item is DreamLanternItem dreamLantern && dreamLantern.GetLanternType() != DreamLanternType.Functioning)
             itemId += $"_{dreamLantern.GetLanternType().GetName()}";
 
         if (s_itemOffsetScales.ContainsKey(itemId))
