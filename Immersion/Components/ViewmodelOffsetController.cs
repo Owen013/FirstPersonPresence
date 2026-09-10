@@ -4,18 +4,18 @@ namespace Immersion.Components;
 
 public class ViewmodelOffsetController : MonoBehaviour
 {
-    OffsetManager _offsetManager;
+    private OffsetManager _offsetManager;
 
-    PlayerCameraController _cameraController;
+    private PlayerCameraController _cameraController;
 
-    float MaxOffsetScale => 0.05f * Config.ViewmodelOffsetScale;
+    private float MaxOffsetScale => 0.05f * Config.ViewmodelOffsetScale;
 
-    void OnConfigured()
+    private void OnConfigured()
     {
         enabled = Config.EnableViewmodelOffset;
     }
 
-    void Awake()
+    private void Awake()
     {
         _offsetManager = OffsetManager.Instance;
         _cameraController = Locator.GetPlayerCameraController();
@@ -24,7 +24,7 @@ public class ViewmodelOffsetController : MonoBehaviour
         OnConfigured();
     }
 
-    void Update()
+    private void Update()
     {
         float verticalLookAmount = _cameraController.GetDegreesY() / 90f;
         float offsetY = -Mathf.Sin(verticalLookAmount * Mathf.PI / 3f);
@@ -32,7 +32,7 @@ public class ViewmodelOffsetController : MonoBehaviour
         _offsetManager.AddToolOffset(MaxOffsetScale * new Vector3(0f, offsetY, offsetZ), Tools.All);
     }
 
-    void OnDestroy()
+    private void OnDestroy()
     {
         Config.OnConfigured -= OnConfigured;
     }

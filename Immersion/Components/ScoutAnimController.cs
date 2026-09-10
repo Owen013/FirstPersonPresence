@@ -4,22 +4,22 @@ namespace Immersion.Components;
 
 public class ScoutAnimController : MonoBehaviour
 {
-    OffsetManager _offsetManager;
+    private OffsetManager _offsetManager;
 
-    float _lastScoutLaunchTime;
+    private float _lastScoutLaunchTime;
 
-    bool _isAnimPlaying;
+    private bool _isAnimPlaying;
 
-    float _animScale;
+    private float _animScale;
 
-    float _animVelocity;
+    private float _animVelocity;
 
-    void OnConfigured()
+    private void OnConfigured()
     {
         enabled = Config.EnableScoutAnim;
     }
 
-    void Awake()
+    private void Awake()
     {
         _offsetManager = OffsetManager.Instance;
 
@@ -36,7 +36,7 @@ public class ScoutAnimController : MonoBehaviour
         OnConfigured();
     }
 
-    void Update()
+    private void Update()
     {
         if (_isAnimPlaying)
         {
@@ -45,8 +45,7 @@ public class ScoutAnimController : MonoBehaviour
             {
                 float targetRecoil = Mathf.Max(_lastScoutLaunchTime + 0.5f - Time.time, 0f) * 2f;
                 float dampTime = targetRecoil > _animScale ? 0.05f : 0.1f;
-                _animScale = Mathf.SmoothDamp(_animScale, targetRecoil, ref _animVelocity, dampTime, Mathf.Infinity,
-                                              deltaTime);
+                _animScale = Mathf.SmoothDamp(_animScale, targetRecoil, ref _animVelocity, dampTime, Mathf.Infinity, deltaTime);
             }
 
             if (_animScale != 0f)
@@ -62,14 +61,14 @@ public class ScoutAnimController : MonoBehaviour
         }
     }
 
-    void OnDisable()
+    private void OnDisable()
     {
         _isAnimPlaying = false;
         _animScale = 0f;
         _animVelocity = 0f;
     }
 
-    void OnDestroy()
+    private void OnDestroy()
     {
         Config.OnConfigured -= OnConfigured;
     }

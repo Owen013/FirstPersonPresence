@@ -4,22 +4,22 @@ namespace Immersion.Components;
 
 public class BreathingAnimController : MonoBehaviour
 {
-    OffsetManager _offsetManager;
+    private OffsetManager _offsetManager;
 
-    Vector3 _animPosition;
+    private Vector3 _animPosition;
 
-    Vector3 _animTargetPosition;
+    private Vector3 _animTargetPosition;
 
-    Vector3 _animVelocity;
+    private Vector3 _animVelocity;
 
-    float _nextUpdateTime;
+    private float _nextUpdateTime;
 
-    void OnConfigured()
+    private void OnConfigured()
     {
         enabled = Config.EnableBreathingAnim;
     }
 
-    void Awake()
+    private void Awake()
     {
         _offsetManager = OffsetManager.Instance;
 
@@ -27,7 +27,7 @@ public class BreathingAnimController : MonoBehaviour
         OnConfigured();
     }
 
-    void Update()
+    private void Update()
     {
         if (Time.deltaTime != 0f)
             _animPosition = Vector3.SmoothDamp(_animPosition, _animTargetPosition, ref _animVelocity, 2f);
@@ -42,7 +42,7 @@ public class BreathingAnimController : MonoBehaviour
         }
     }
 
-    void OnDestroy()
+    private void OnDestroy()
     {
         Config.OnConfigured -= OnConfigured;
     }

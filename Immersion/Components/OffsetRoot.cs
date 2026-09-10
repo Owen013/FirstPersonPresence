@@ -4,11 +4,11 @@ namespace Immersion.Components;
 
 public class OffsetRoot : MonoBehaviour
 {
-    GameObject offsetObject;
+    private GameObject offsetObject;
 
-    Vector3 nextLocalPosition;
+    private Vector3 nextLocalPosition;
 
-    Quaternion nextLocalRotation;
+    private Quaternion nextLocalRotation;
 
     /// <summary>
     /// Creates a new OffsetRoot for the specified GameObject.
@@ -56,13 +56,13 @@ public class OffsetRoot : MonoBehaviour
         AddOffset(rotation);
     }
 
-    void ResetOffset()
+    private void ResetOffset()
     {
         transform.localPosition = Vector3.zero;
         transform.localRotation = Quaternion.identity;
     }
 
-    void ApplyOffset()
+    private void ApplyOffset()
     {
         ResetOffset();
 
@@ -74,7 +74,7 @@ public class OffsetRoot : MonoBehaviour
         nextLocalRotation = Quaternion.identity;
     }
 
-    void LateUpdate()
+    private void LateUpdate()
     {
         ApplyOffset();
     }

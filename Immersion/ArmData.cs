@@ -5,7 +5,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Reflection;
 using UnityEngine;
-using static Immersion.ModMain;
+using static Immersion.Immersion;
 
 namespace Immersion;
 
@@ -26,7 +26,7 @@ public class ArmData
     [JsonProperty("bone_eulers")]
     public readonly Dictionary<string, Vector3> boneEulers = default;
 
-    static Dictionary<string, ArmData> s_armData;
+    private static Dictionary<string, ArmData> s_armData;
 
     /// <summary>
     /// Determines if there is an ArmData of a certain ID.

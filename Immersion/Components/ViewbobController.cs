@@ -1,28 +1,28 @@
 ﻿using UnityEngine;
-using static Immersion.ModMain;
+using static Immersion.Immersion;
 
 namespace Immersion.Components;
 
 public class ViewbobController : MonoBehaviour
 {
-    OffsetManager _offsetManager;
+    private OffsetManager _offsetManager;
 
-    PlayerCharacterController _playerController;
+    private PlayerCharacterController _playerController;
 
-    PlayerAnimController _animController;
+    private PlayerAnimController _animController;
 
-    float _timePosition;
+    private float _timePosition;
 
-    float _strength;
+    private float _strength;
 
-    float _velocity;
+    private float _velocity;
 
-    void OnConfigured()
+    private void OnConfigured()
     {
         enabled = Config.EnableHeadBob || Config.EnableViewmodelBob;
     }
 
-    void Awake()
+    private void Awake()
     {
         _offsetManager = OffsetManager.Instance;
         _playerController = Locator.GetPlayerController();
@@ -32,7 +32,7 @@ public class ViewbobController : MonoBehaviour
         OnConfigured();
     }
 
-    void Update()
+    private void Update()
     {
         if (!_playerController._isMovementLocked)
         {
@@ -90,14 +90,14 @@ public class ViewbobController : MonoBehaviour
         }
     }
 
-    void OnDisable()
+    private void OnDisable()
     {
         _timePosition = 0f;
         _strength = 0f;
         _velocity = 0f;
     }
 
-    void OnDestroy()
+    private void OnDestroy()
     {
         Config.OnConfigured -= OnConfigured;
     }

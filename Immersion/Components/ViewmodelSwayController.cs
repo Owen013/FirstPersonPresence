@@ -4,22 +4,22 @@ namespace Immersion.Components;
 
 public class ViewmodelSwayController : MonoBehaviour
 {
-    OffsetManager _offsetManager;
+    private OffsetManager _offsetManager;
 
-    PlayerCameraController _playerCamera;
+    private PlayerCameraController _playerCamera;
 
-    PlayerCharacterController _player;
+    private PlayerCharacterController _player;
 
-    Vector2 _currentSway;
+    private Vector2 _currentSway;
 
-    Vector2 _swayVelocity;
+    private Vector2 _swayVelocity;
 
-    void OnConfigured()
+    private void OnConfigured()
     {
         enabled = Config.EnableViewmodelSway;
     }
 
-    void Awake()
+    private void Awake()
     {
         _offsetManager = OffsetManager.Instance;
         _playerCamera = Locator.GetPlayerCameraController();
@@ -29,7 +29,7 @@ public class ViewmodelSwayController : MonoBehaviour
         OnConfigured();
     }
 
-    void Update()
+    private void Update()
     {
         float degreesY = _playerCamera.GetDegreesY();
         float deltaTime = OWTime.IsPaused(OWTime.PauseType.Reading) ? Time.unscaledDeltaTime : Time.deltaTime;
@@ -73,13 +73,13 @@ public class ViewmodelSwayController : MonoBehaviour
         _offsetManager.AddToolOffset(offset, Tools.All);
     }
 
-    void OnDisable()
+    private void OnDisable()
     {
         _currentSway = Vector3.zero;
         _swayVelocity = Vector3.zero;
     }
 
-    void OnDestroy()
+    private void OnDestroy()
     {
         Config.OnConfigured -= OnConfigured;
     }

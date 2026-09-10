@@ -1,5 +1,5 @@
 ﻿using UnityEngine;
-using static Immersion.ModMain;
+using static Immersion.Immersion;
 
 namespace Immersion.Components;
 
@@ -9,19 +9,19 @@ public class LandingAnimController : MonoBehaviour
 
     public float AnimPos { get; private set; }
 
-    OffsetManager _offsetManager;
+    private OffsetManager _offsetManager;
 
-    PlayerCharacterController _player;
+    private PlayerCharacterController _player;
 
-    Vector3 _lastPlayerVelocity;
+    private Vector3 _lastPlayerVelocity;
 
-    bool _isCrouching;
+    private bool _isCrouching;
 
-    float _lastLandedSpeed;
+    private float _lastLandedSpeed;
 
-    float _animVelocity;
+    private float _animVelocity;
 
-    float MinPosition => -0.3f * Config.MaxLandingAnimDistance;
+    private float MinPosition => -0.3f * Config.MaxLandingAnimDistance;
 
     public void UpdateLandingCrouchAnim(Animator playerAnimator)
     {
@@ -33,12 +33,12 @@ public class LandingAnimController : MonoBehaviour
         }
     }
 
-    void OnConfigured()
+    private void OnConfigured()
     {
         enabled = Config.EnableCameraLandingAnim || Config.EnableViewmodelLandingAnim;
     }
 
-    void Awake()
+    private void Awake()
     {
         Instance = this;
         _offsetManager = OffsetManager.Instance;
@@ -63,7 +63,7 @@ public class LandingAnimController : MonoBehaviour
         OnConfigured();
     }
 
-    void Update()
+    private void Update()
     {
         float deltaTime = OWTime.IsPaused(OWTime.PauseType.Reading) ? Time.unscaledDeltaTime : Time.deltaTime;
         if (deltaTime != 0f)
@@ -101,7 +101,7 @@ public class LandingAnimController : MonoBehaviour
         _lastPlayerVelocity = _player.GetAttachedOWRigidbody().GetVelocity();
     }
 
-    void OnDisable()
+    private void OnDisable()
     {
         _lastPlayerVelocity = Vector3.zero;
         AnimPos = 0f;
@@ -109,7 +109,7 @@ public class LandingAnimController : MonoBehaviour
         _isCrouching = false;
     }
 
-    void OnDestroy()
+    private void OnDestroy()
     {
         Config.OnConfigured -= OnConfigured;
     }

@@ -7,9 +7,9 @@ using System.Reflection;
 
 namespace Immersion;
 
-public class ModMain : ModBehaviour
+public class Immersion : ModBehaviour
 {
-    public static ModMain Instance { get; private set; }
+    public static Immersion Instance { get; private set; }
 
     public static IModAssets ModAssets => Instance != null ? Instance.ModHelper?.Assets : null;
 
@@ -27,13 +27,13 @@ public class ModMain : ModBehaviour
         Locator.GetPlayerCamera()?.nearClipPlane = Config.FixViewmodelClipping ? 0.05f : 0.1f;
     }
 
-    void Awake()
+    private void Awake()
     {
         Instance = this;
         new Harmony("Owen_013.FirstPersonPresence").PatchAll(Assembly.GetExecutingAssembly());
     }
 
-    void Start()
+    private void Start()
     {
         // check for other mods
         SmolHatchlingAPI = ModHelper.Interaction.TryGetModApi<ISmolHatchling>("Owen013.TeenyHatchling");

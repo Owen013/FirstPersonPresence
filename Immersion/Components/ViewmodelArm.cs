@@ -2,41 +2,41 @@
 using OWML.Utils;
 using System.Collections.Generic;
 using UnityEngine;
-using static Immersion.ModMain;
+using static Immersion.Immersion;
 
 namespace Immersion.Components;
 
 public class ViewmodelArm : MonoBehaviour
 {
-    static GameObject s_viewmodelArmAsset;
+    private static GameObject s_viewmodelArmAsset;
 
     [SerializeField]
-    SkinnedMeshRenderer _noSuitMesh = default;
+    private SkinnedMeshRenderer _noSuitMesh = default;
 
     [SerializeField]
-    SkinnedMeshRenderer _noSuitMeshPrepass = default;
+    private SkinnedMeshRenderer _noSuitMeshPrepass = default;
 
     [SerializeField]
-    SkinnedMeshRenderer _suitMesh = default;
+    private SkinnedMeshRenderer _suitMesh = default;
 
     [SerializeField]
-    SkinnedMeshRenderer _suitMeshPrepass = default;
+    private SkinnedMeshRenderer _suitMeshPrepass = default;
 
-    Dictionary<string, Transform> _bones;
+    private Dictionary<string, Transform> _bones;
 
-    Type _type;
+    private ViewmodelArmType _type;
 
-    PlayerTool _playerTool;
+    private PlayerTool _playerTool;
 
-    OWItem _owItem;
+    private OWItem _owItem;
 
-    ItemTool _itemCarryTool;
+    private ItemTool _itemCarryTool;
 
-    GameObject _playerNoSuitMesh;
+    private GameObject _playerNoSuitMesh;
 
-    GameObject _playerSuitMesh;
+    private GameObject _playerSuitMesh;
 
-    enum Type
+    private enum ViewmodelArmType
     {
         Invalid = 0,
         PlayerTool = 1,
@@ -51,7 +51,7 @@ public class ViewmodelArm : MonoBehaviour
     public static ViewmodelArm New(PlayerTool playerTool)
     {
         var newViewmodelArm = NewViewmodelArm(playerTool.transform, ArmData.Find(playerTool));
-        newViewmodelArm._type = Type.PlayerTool;
+        newViewmodelArm._type = ViewmodelArmType.PlayerTool;
         newViewmodelArm._playerTool = playerTool;
         return newViewmodelArm;
     }
@@ -64,7 +64,7 @@ public class ViewmodelArm : MonoBehaviour
     public static ViewmodelArm New(OWItem owItem)
     {
         var newViewmodelArm = NewViewmodelArm(owItem.transform, ArmData.Find(owItem));
-        newViewmodelArm._type = Type.OWItem;
+        newViewmodelArm._type = ViewmodelArmType.OWItem;
         newViewmodelArm._owItem = owItem;
         newViewmodelArm._owItem.onPickedUp.AddListener((_) => newViewmodelArm.gameObject.SetActive(true));
         newViewmodelArm._itemCarryTool = Locator.GetToolModeSwapper().GetItemCarryTool();
@@ -222,7 +222,7 @@ public class ViewmodelArm : MonoBehaviour
         }
     }
 
-    static ViewmodelArm NewViewmodelArm(Transform parent, ArmData armData = null)
+    private static ViewmodelArm NewViewmodelArm(Transform parent, ArmData armData = null)
     {
         var viewmodelArm = Instantiate(s_viewmodelArmAsset).GetComponent<ViewmodelArm>();
         viewmodelArm.name = "ViewmodelArm";
@@ -243,7 +243,7 @@ public class ViewmodelArm : MonoBehaviour
         return viewmodelArm;
     }
 
-    void Awake()
+    private void Awake()
     {
         _bones = new Dictionary<string, Transform>
         {
@@ -265,7 +265,7 @@ public class ViewmodelArm : MonoBehaviour
         };
     }
 
-    void Start()
+    private void Start()
     {
         var playerTransform = Locator.GetPlayerBody().transform;
         _playerNoSuitMesh = playerTransform.Find(
@@ -276,7 +276,7 @@ public class ViewmodelArm : MonoBehaviour
             .gameObject;
     }
 
-    void LateUpdate()
+    private void LateUpdate()
     {
         if (!Config.EnableViewmodelArms)
         {
@@ -286,7 +286,7 @@ public class ViewmodelArm : MonoBehaviour
 
         switch (_type)
         {
-            case Type.PlayerTool:
+            case ViewmodelArmType.PlayerTool:
                 bool isToolAway = !_playerTool.IsEquipped() && !_playerTool.IsPuttingAway();
                 if (isToolAway || OWInput.IsInputMode(InputMode.ShipCockpit))
                 {
@@ -295,7 +295,7 @@ public class ViewmodelArm : MonoBehaviour
                 }
                 break;
 
-            case Type.OWItem:
+            case ViewmodelArmType.OWItem:
                 if (_itemCarryTool.GetHeldItem() != _owItem)
                 {
                     gameObject.SetActive(false);

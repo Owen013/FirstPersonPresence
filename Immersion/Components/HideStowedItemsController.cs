@@ -5,18 +5,18 @@ namespace Immersion.Components;
 
 public class HideStowedItemsController : MonoBehaviour
 {
-    OffsetManager _offsetManager;
+    private OffsetManager _offsetManager;
 
-    ToolModeSwapper _toolModeSwapper;
+    private ToolModeSwapper _toolModeSwapper;
 
-    float _addedStowDegrees;
+    private float _addedStowDegrees;
 
-    void OnConfigured()
+    private void OnConfigured()
     {
         enabled = Config.HideStowedItems;
     }
 
-    void Awake()
+    private void Awake()
     {
         _offsetManager = OffsetManager.Instance;
         _toolModeSwapper = Locator.GetToolModeSwapper();
@@ -25,7 +25,7 @@ public class HideStowedItemsController : MonoBehaviour
         OnConfigured();
     }
 
-    void Update()
+    private void Update()
     {
         var itemCarryTool = _toolModeSwapper.GetItemCarryTool();
         OWItem heldItem = itemCarryTool.GetHeldItem();
@@ -47,12 +47,12 @@ public class HideStowedItemsController : MonoBehaviour
             _addedStowDegrees = 0f;
     }
 
-    void OnDisable()
+    private void OnDisable()
     {
         _addedStowDegrees = 0f;
     }
 
-    void OnDestroy()
+    private void OnDestroy()
     {
         Config.OnConfigured -= OnConfigured;
     }

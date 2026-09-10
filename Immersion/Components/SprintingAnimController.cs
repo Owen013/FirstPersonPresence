@@ -1,22 +1,22 @@
 ﻿using UnityEngine;
-using static Immersion.ModMain;
+using static Immersion.Immersion;
 
 namespace Immersion.Components;
 
 public class SprintingAnimController : MonoBehaviour
 {
-    OffsetManager _offsetManager;
+    private OffsetManager _offsetManager;
 
-    float _animStrength;
+    private float _animStrength;
 
-    float _animVelocity;
+    private float _animVelocity;
 
-    void OnConfigured()
+    private void OnConfigured()
     {
         enabled = Config.EnableSprintingAnim;
     }
 
-    void Awake()
+    private void Awake()
     {
         _offsetManager = OffsetManager.Instance;
 
@@ -24,26 +24,25 @@ public class SprintingAnimController : MonoBehaviour
         OnConfigured();
     }
 
-    void Update()
+    private void Update()
     {
         float deltaTime = OWTime.IsPaused(OWTime.PauseType.Reading) ? Time.unscaledDeltaTime : Time.deltaTime;
         if (deltaTime != 0f)
         {
             float targetStrength = HikersModAPI.IsSprinting() ? 1f : 0f;
-            _animStrength = Mathf.SmoothDamp(_animStrength, targetStrength, ref _animVelocity, 0.2f, Mathf.Infinity,
-                                             deltaTime);
+            _animStrength = Mathf.SmoothDamp(_animStrength, targetStrength, ref _animVelocity, 0.2f, Mathf.Infinity, deltaTime);
         }
 
         _offsetManager.AddToolOffset(Quaternion.Euler(15f * _animStrength, 0f, 0f), Tools.All);
     }
 
-    void OnDisable()
+    private void OnDisable()
     {
         _animStrength = 0f;
         _animVelocity = 0f;
     }
 
-    void OnDestroy()
+    private void OnDestroy()
     {
         Config.OnConfigured -= OnConfigured;
     }
