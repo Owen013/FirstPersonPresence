@@ -6,15 +6,9 @@ using static Immersion.ModMain;
 
 namespace Immersion.Components;
 
-class ViewmodelArm : MonoBehaviour
+public class ViewmodelArm : MonoBehaviour
 {
     static GameObject s_viewmodelArmAsset;
-
-    static readonly string[] s_viewmodelShaders =
-    {
-        "Outer Wilds/Utility/View Model",
-        "Outer Wilds/Utility/View Model (Cutoff)"
-    };
 
     [SerializeField]
     SkinnedMeshRenderer _noSuitMesh = default;

@@ -2,7 +2,7 @@
 
 namespace Immersion.Components;
 
-class ViewmodelSwayController : MonoBehaviour
+public class ViewmodelSwayController : MonoBehaviour
 {
     OffsetManager _offsetManager;
 

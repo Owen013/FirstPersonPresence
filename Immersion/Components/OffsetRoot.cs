@@ -2,7 +2,7 @@
 
 namespace Immersion.Components;
 
-class OffsetRoot : MonoBehaviour
+public class OffsetRoot : MonoBehaviour
 {
     GameObject offsetObject;
 

@@ -5,7 +5,7 @@ using static Immersion.ModMain;
 
 namespace Immersion.Components;
 
-class OffsetManager : MonoBehaviour
+public class OffsetManager : MonoBehaviour
 {
     public static OffsetManager Instance { get; private set; }
 

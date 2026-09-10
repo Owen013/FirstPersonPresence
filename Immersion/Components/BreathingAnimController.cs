@@ -2,7 +2,7 @@
 
 namespace Immersion.Components;
 
-class BreathingAnimController : MonoBehaviour
+public class BreathingAnimController : MonoBehaviour
 {
     OffsetManager _offsetManager;
 

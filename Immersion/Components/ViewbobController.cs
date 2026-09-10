@@ -3,7 +3,7 @@ using static Immersion.ModMain;
 
 namespace Immersion.Components;
 
-class ViewbobController : MonoBehaviour
+public class ViewbobController : MonoBehaviour
 {
     OffsetManager _offsetManager;
 

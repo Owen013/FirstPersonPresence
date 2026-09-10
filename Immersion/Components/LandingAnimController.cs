@@ -3,7 +3,7 @@ using static Immersion.ModMain;
 
 namespace Immersion.Components;
 
-class LandingAnimController : MonoBehaviour
+public class LandingAnimController : MonoBehaviour
 {
     public static LandingAnimController Instance { get; private set; }
 

@@ -2,7 +2,7 @@
 
 namespace Immersion.Components;
 
-class ScoutAnimController : MonoBehaviour
+public class ScoutAnimController : MonoBehaviour
 {
     OffsetManager _offsetManager;
 

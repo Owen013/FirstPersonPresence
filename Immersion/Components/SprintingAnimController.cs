@@ -3,7 +3,7 @@ using static Immersion.ModMain;
 
 namespace Immersion.Components;
 
-class SprintingAnimController : MonoBehaviour
+public class SprintingAnimController : MonoBehaviour
 {
     OffsetManager _offsetManager;
 

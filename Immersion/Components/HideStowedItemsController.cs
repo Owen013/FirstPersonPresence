@@ -3,7 +3,7 @@ using UnityEngine;
 
 namespace Immersion.Components;
 
-class HideStowedItemsController : MonoBehaviour
+public class HideStowedItemsController : MonoBehaviour
 {
     OffsetManager _offsetManager;
 

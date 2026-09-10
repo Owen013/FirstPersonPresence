@@ -3,7 +3,7 @@
 namespace Immersion;
 
 [Flags]
-enum Tools
+public enum Tools
 {
     None = 0,
     ItemTool = 1,

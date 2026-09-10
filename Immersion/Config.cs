@@ -3,7 +3,7 @@ using System;
 
 namespace Immersion;
 
-static class Config
+public static class Config
 {
     public static bool EnableViewmodelArms { get; private set; }
 

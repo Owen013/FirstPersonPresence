@@ -9,7 +9,7 @@ using static Immersion.ModMain;
 
 namespace Immersion;
 
-class ArmData
+public class ArmData
 {
     [JsonProperty("arm_position")]
     public readonly Vector3 armPosition = default;
@@ -175,13 +175,13 @@ class ArmData
                 }
                 return null;
 
-            // TSTA items
+            // TSTA items.
             case "CloakMineral":
             case "StrangerSeal":
             case "GhostbirdSkull":
                 return $"TSTA_{itemTypeName}";
 
-            // Dreambound compass
+            // Dreambound items.
             case "Compass":
                 return "Dreambound_Compass";
         }
