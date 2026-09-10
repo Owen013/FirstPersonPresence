@@ -11,11 +11,11 @@ public class ModMain : ModBehaviour
 {
     public static ModMain Instance { get; private set; }
 
-    public static IModAssets ModAssets => Instance.ModHelper.Assets;
+    public static IModAssets ModAssets => Instance != null ? Instance.ModHelper?.Assets : null;
 
-    public static IModEvents ModEvents => Instance.ModHelper.Events;
+    public static IModEvents ModEvents => Instance != null ? Instance.ModHelper?.Events : null;
 
-    public static IModConsole ModConsole => Instance.ModHelper.Console;
+    public static IModConsole ModConsole => Instance != null ? Instance.ModHelper?.Console : null;
 
     public static ISmolHatchling SmolHatchlingAPI { get; private set; }
 

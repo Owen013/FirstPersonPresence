@@ -39,7 +39,8 @@ static class Patches
     [HarmonyPatch(typeof(PlayerAnimController), nameof(PlayerAnimController.LateUpdate))]
     static void PlayerAnimController_LateUpdate_Postfix(PlayerAnimController __instance)
     {
-        LandingAnimController.Instance?.UpdateLandingCrouchAnim(__instance._animator);
+        if (LandingAnimController.Instance != null)
+            LandingAnimController.Instance.UpdateLandingCrouchAnim(__instance._animator);
     }
 
     [HarmonyPostfix]

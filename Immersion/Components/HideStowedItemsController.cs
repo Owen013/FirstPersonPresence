@@ -31,7 +31,7 @@ class HideStowedItemsController : MonoBehaviour
         OWItem heldItem = itemCarryTool.GetHeldItem();
 
         // Compass item is not supposed to be stowed when at the cockpit.
-        bool isHoldingCompass = heldItem?.GetItemType().GetName() == "Compass";
+        bool isHoldingCompass = heldItem != null && heldItem.GetItemType().GetName() == "Compass";
         bool isUsingCompassAtCockpit = isHoldingCompass && OWInput.IsInputMode(InputMode.ShipCockpit);
 
         bool isItemStowed = _toolModeSwapper.GetToolMode() != ToolMode.Item && !itemCarryTool.IsPuttingAway();
