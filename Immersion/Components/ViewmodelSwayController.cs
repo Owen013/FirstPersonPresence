@@ -6,15 +6,13 @@ class ViewmodelSwayController : MonoBehaviour
 {
     OffsetManager _offsetManager;
 
-    PlayerCameraController _cameraController;
+    PlayerCameraController _playerCamera;
 
     PlayerCharacterController _player;
 
     Vector2 _currentSway;
 
     Vector2 _swayVelocity;
-
-    float MaxDisplacement => 0.25f * Config.ViewmodelSwayScale;
 
     void OnConfigured()
     {
@@ -24,7 +22,7 @@ class ViewmodelSwayController : MonoBehaviour
     void Awake()
     {
         _offsetManager = OffsetManager.Instance;
-        _cameraController = Locator.GetPlayerCameraController();
+        _playerCamera = Locator.GetPlayerCameraController();
         _player = Locator.GetPlayerController();
 
         Config.OnConfigured += OnConfigured;
@@ -33,7 +31,7 @@ class ViewmodelSwayController : MonoBehaviour
 
     void Update()
     {
-        float degreesY = _cameraController.GetDegreesY();
+        float degreesY = _playerCamera.GetDegreesY();
         float deltaTime = OWTime.IsPaused(OWTime.PauseType.Reading) ? Time.unscaledDeltaTime : Time.deltaTime;
         if (deltaTime != 0f)
         {
@@ -43,11 +41,11 @@ class ViewmodelSwayController : MonoBehaviour
             if (OWInput.IsInputMode(InputMode.Character) && !(PlayerState.InZeroG() && PlayerState.IsWearingSuit()))
             {
                 Vector2 lookInput = OWInput.GetAxisValue(InputLibrary.look);
-                lookInput *= _cameraController._playerCamera.fieldOfView / _cameraController._initFOV;
+                lookInput *= _playerCamera._playerCamera.fieldOfView / _playerCamera._initFOV;
                 lookInput *= InputUtil.IsMouseMoveAxis(InputLibrary.look.AxisID) ? 0.01666667f : deltaTime;
-                var alarmController = Locator.GetAlarmSequenceController();
-                bool isAlarmWakingPlayer = alarmController != null && alarmController.IsAlarmWakingPlayer();
-                if (_cameraController._zoomed || isAlarmWakingPlayer)
+                AlarmSequenceController alarmSequence = Locator.GetAlarmSequenceController();
+                bool isAlarmWakingPlayer = alarmSequence != null && alarmSequence.IsAlarmWakingPlayer();
+                if (_playerCamera._zoomed || isAlarmWakingPlayer)
                     lookInput *= PlayerCameraController.ZOOM_SCALAR;
 
                 if (_player._isTurningLocked)
@@ -68,11 +66,10 @@ class ViewmodelSwayController : MonoBehaviour
         float yScale = Mathf.Sqrt(Mathf.Clamp01(1f - _currentSway.y * _currentSway.y));
         var swayX = Vector3.right * _currentSway.x * xScale;
         var swayY = Vector3.up * _currentSway.y * yScale;
-        var swayCameraZ = Vector3.forward * (yScale - 1f);
-        var swayPlayerZ =
-            _cameraController.transform.InverseTransformDirection(_player.transform.forward) * (xScale - 1f);
-
-        var offset = MaxDisplacement * (swayX + swayY + swayCameraZ + swayPlayerZ);
+        var swayZY = Vector3.forward * (yScale - 1f);
+        Vector3 playerForward = _playerCamera.transform.InverseTransformDirection(_player.transform.forward);
+        Vector3 swayZX = playerForward * (xScale - 1f);
+        Vector3 offset = 0.25f * Config.ViewmodelSwayScale * (swayX + swayY + swayZY + swayZX);
         _offsetManager.AddToolOffset(offset, Tools.All);
     }
 

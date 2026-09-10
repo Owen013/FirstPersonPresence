@@ -37,7 +37,8 @@ class ViewbobController : MonoBehaviour
         if (!_playerController._isMovementLocked)
         {
             if (OWTime.IsPaused(OWTime.PauseType.Reading))
-                _strength = Mathf.SmoothDamp(_strength, 0f, ref _velocity, 0.05f, Mathf.Infinity, Time.unscaledDeltaTime);
+                _strength = Mathf.SmoothDamp(_strength, 0f, ref _velocity, 0.05f, Mathf.Infinity,
+                                             Time.unscaledDeltaTime);
             else if (Time.deltaTime != 0f)
             {
                 _timePosition += _animController._animator.speed * Time.deltaTime;
@@ -59,12 +60,17 @@ class ViewbobController : MonoBehaviour
                     _strength = Mathf.SmoothDamp(_strength, 0f, ref _velocity, 1f);
             }
 
-            var viewBob = _strength * new Vector2(Mathf.Sin(_timePosition * 2f * Mathf.PI), Mathf.Cos(_timePosition * 4f * Mathf.PI));
+            Vector2 viewBob = new()
+            {
+                x = _strength * Mathf.Sin(_timePosition * 2f * Mathf.PI),
+                y = _strength * Mathf.Cos(_timePosition * 4f * Mathf.PI)
+            };
             if (Config.EnableHeadBob)
             {
                 float headBobScale = 0.02f * Config.HeadBobScale;
                 _offsetManager.AddCameraOffset(headBobScale * new Vector3(viewBob.x, viewBob.y));
             }
+
             if (Config.EnableViewmodelBob)
             {
                 float viewmodelBobScale = 0.02f * Config.ViewmodelBobScale;
